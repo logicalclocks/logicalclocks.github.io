@@ -279,6 +279,7 @@
 - [Predictor (KServe)](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/predictor/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/predictor/index.md))
 - [Transformer (KServe)](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/transformer/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/transformer/index.md))
 - [Inference Logger](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/inference-logger/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/inference-logger/index.md))
+- [Transformation Tracing](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/transformation-tracing/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/transformation-tracing/index.md))
 - [Inference Batcher](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/inference-batcher/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/inference-batcher/index.md))
 - [Resources](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/resources/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/resources/index.md))
 - [Autoscaling](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/autoscaling/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/autoscaling/index.md))
@@ -341,6 +342,7 @@
 - [KEDA Autoscaling](https://docs.hopsworks.ai/latest/setup_installation/admin/keda/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/keda/index.md))
 - [Envoy Gateway](https://docs.hopsworks.ai/latest/setup_installation/admin/envoy_gateway/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/envoy_gateway/index.md))
 - [Kafka Quotas](https://docs.hopsworks.ai/latest/setup_installation/admin/kafka_quotas/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/kafka_quotas/index.md))
+- [OnlineFS Configuration](https://docs.hopsworks.ai/latest/setup_installation/admin/onlinefs/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/onlinefs/index.md))
 - [Uninstalling Hopsworks](https://docs.hopsworks.ai/latest/setup_installation/admin/uninstall/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/uninstall/index.md))
 
 #### Upgrades

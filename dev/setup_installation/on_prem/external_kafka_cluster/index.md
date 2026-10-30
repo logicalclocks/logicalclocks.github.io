@@ -24,49 +24,20 @@ hopsworks:
 ### Online Feature Store service configuration
 
 The Online Feature Store service (OnlineFS in short) consumes the feature store topics and writes them to the online feature store, so it needs to connect to the external Kafka cluster too.
-Point it at the brokers and give it the credentials it needs:
+Enter its connection in `Cluster Settings` → `OnlineFS` as Kafka client properties, with the brokers, the security protocol and the credentials, as described in [OnlineFS configuration][onlinefs-kafka-connection].
+Enter the same Kafka cluster that the `kafka_connector` data sources of the projects use (see [Data Source configuration](#data-source-configuration)), because Hopsworks creates the topics there and the feature store clients write to it.
+OnlineFS consumes from that one cluster only, so the online feature groups of a project without a `kafka_connector` data source, whose topics are on the embedded cluster, do not reach the online feature store.
 
-```yaml
-onlinefs:
-  dependencies:
-    kafka:
-      url: "cluster_identifier.us-east-2.aws.confluent.cloud:9092"
-      securityProtocol: SASL_SSL
-  configmapOverrides:
-    kafka:
-      sasl.jaas.config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="username" password="password";'
-      sasl.mechanism: PLAIN
-    kafkaVectorDb:
-      sasl.jaas.config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="username" password="password";'
-      sasl.mechanism: PLAIN
-    producer:
-      sasl.jaas.config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="username" password="password";'
-      sasl.mechanism: PLAIN
-```
+Pointing OnlineFS at another Kafka cluster moves neither topics nor data.
+Records left on the previous cluster are not ingested, and on the new cluster OnlineFS starts from the earliest records it retains, as described in [Consumer offsets][onlinefs-offsets].
+A cluster that configured OnlineFS through the `onlinefs` Helm values keeps that configuration until a connection is saved in Cluster Settings.
+Saving the same brokers there counts as a new cluster for the offsets, so OnlineFS reads the retained records again.
 
-OnlineFS opens three Kafka clients on these brokers, and each section of `configmapOverrides` adds or overrides the properties of one of them, so any client configuration the external cluster needs goes into all three:
+The principal of the connection needs Describe and Read on the topics OnlineFS consumes and on its consumer groups, and Write on the notification topics, as listed in [Permissions on the Kafka cluster][onlinefs-kafka-permissions].
 
-- `kafka`: the consumer that writes the feature group rows to RonDB.
-- `kafkaVectorDb`: the consumer that writes embeddings to the vector database.
-- `producer`: the producer of the notifications of feature groups that have a notification topic.
-
-With a `securityProtocol` other than `PLAINTEXT`, the chart also points the three clients at the truststore and keystore of the Hopsworks certificates.
-The values are stored in the OnlineFS ConfigMap, so the password in `sasl.jaas.config` is readable there in plain text.
-
-The OnlineFS principal needs Describe and Read on the topics it consumes, Describe and Read on the consumer groups `onlinefs_rondb` and `onlinefs_vectordb`, and Write on the notification topics.
-
-OnlineFS subscribes to the topics matching `onlinefs.configmapOverrides.onlinefssite.kafkaConsumer.topicPattern`, by default `.*_onlinefs`.
-A non-empty `topicList` in the same section replaces the pattern and does not include the topics Hopsworks creates later, so their data would never reach the online feature store.
-A cluster set up with a topic list sets `topicList` to an empty string, and widens `topicPattern` until it also matches the project topics it consumes that do not end in `_onlinefs`:
-
-```yaml
-onlinefs:
-  configmapOverrides:
-    onlinefssite:
-      kafkaConsumer:
-        topicList: ""
-        topicPattern: ".*_onlinefs|my_project_topic"
-```
+OnlineFS subscribes to the topics matching `.*_onlinefs` by default.
+To consume project topics that do not end in `_onlinefs`, widen the pattern in the [subscription][onlinefs-subscription], for example to `.*_onlinefs|my_project_topic`.
+A topic list does not include the topics Hopsworks creates later, so their data would never reach the online feature store.
 
 ## Topics on the external Kafka cluster
 

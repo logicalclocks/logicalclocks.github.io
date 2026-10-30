@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -62,7 +62,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         enabled: false
       opensearchReindex:
         enabled: true
-      payaraVersion: 6.2025.11-jdk21.2
+      payaraVersion: 6.2025.11-jdk21.3
       payaraconfigmapName: post-boot-commands
       podAnnotations: {}
       podDisruptionBudget:
@@ -80,10 +80,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           auto_jvm: true
           jvm:
             memory:
-              buffer: 2048
-              compressedClassSpaceSize: 512
-              heap: 4096
-              metaspace: 2048
+              buffer: 512
+              compressedClassSpaceSize: 256
+              heap: 1024
+              metaspace: 512
               nonMethodCodeHeapSize: 5
               nonProfiledCodeHeapSize: 48
               profiledCodeHeapSize: 48
@@ -151,10 +151,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             auto_jvm: true
             jvm:
               memory:
-                buffer: 2048
-                compressedClassSpaceSize: 512
-                heap: 4096
-                metaspace: 2048
+                buffer: 512
+                compressedClassSpaceSize: 256
+                heap: 1024
+                metaspace: 512
                 nonMethodCodeHeapSize: 5
                 nonProfiledCodeHeapSize: 48
                 profiledCodeHeapSize: 48
@@ -300,7 +300,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     Rebuild the featurestore search index after an upgrade, when what the index holds has changed since its last rebuild. The hook keys its request with the index generation, featurestore-index-5.1, which the chart bumps only with a change to what the backend indexes: a generation already rebuilt is answered with that run, so patch upgrades and ArgoCD syncs do not rebuild again, and a cluster that missed the rebuild gets it on its next upgrade. Runs requested by earlier charts carry no key, so the first upgrade with this chart rebuilds once. The rebuild runs in the backend after the upgrade and takes hours on a large cluster, with search incomplete until it finishes; its progress shows under Cluster Settings > Service Operations > OpenSearch Index Commands. A failed hook Job is removed after global._hopsworks.jobs.ttlSecondsAfterFinished in the default mode, or when the hook next renders; with global._hopsworks.mode set, as under ArgoCD, delete post-upgrade-opensearch-reindex-job by hand if you turn this off after a failed attempt.
 
 `hopsworks.payaraVersion` <a class="headerlink" href="#helm.hopsworks.payaraVersion" title="Permanent link">#</a> { #helm.hopsworks.payaraVersion }
-:   Type `string`, default `"6.2025.11-jdk21.2"`.
+:   Type `string`, default `"6.2025.11-jdk21.3"`.
 
 `hopsworks.payaraconfigmapName` <a class="headerlink" href="#helm.hopsworks.payaraconfigmapName" title="Permanent link">#</a> { #helm.hopsworks.payaraconfigmapName }
 :   Type `string`, default `"post-boot-commands"`.
@@ -1351,11 +1351,11 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           tag: null
         postInstall:
           pullPolicy: IfNotPresent
-          tag: 6.2025.11-jdk21.2
+          tag: 6.2025.11-jdk21.3
         registry: null
         worker:
           pullPolicy: IfNotPresent
-          tag: 6.2025.11-jdk21.2
+          tag: 6.2025.11-jdk21.3
     ```
 
 <div class="hops-values" markdown>
@@ -1394,7 +1394,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     pull policy for the admin sidecar's payara-node image. admindeployment.yaml already read this key before it was declared here, and its fallback cannot reach global._hopsworks.imagePullPolicy, so the sidecar was pinned to IfNotPresent with no way to override it.
 
 `hopsworks.image.postInstall.tag` <a class="headerlink" href="#helm.hopsworks.image.postInstall.tag" title="Permanent link">#</a> { #helm.hopsworks.image.postInstall.tag }
-:   Type `string`, default `"6.2025.11-jdk21.2"`.
+:   Type `string`, default `"6.2025.11-jdk21.3"`.
 
 `hopsworks.image.registry` <a class="headerlink" href="#helm.hopsworks.image.registry" title="Permanent link">#</a> { #helm.hopsworks.image.registry }
 :   Type `string`, default `nil`.
@@ -1404,7 +1404,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"IfNotPresent"`.
 
 `hopsworks.image.worker.tag` <a class="headerlink" href="#helm.hopsworks.image.worker.tag" title="Permanent link">#</a> { #helm.hopsworks.image.worker.tag }
-:   Type `string`, default `"6.2025.11-jdk21.2"`.
+:   Type `string`, default `"6.2025.11-jdk21.3"`.
 
 </div>
 
@@ -2152,10 +2152,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           jvm:
             garbageCollector: ''
             memory:
-              buffer: 2048
-              compressedClassSpaceSize: 512
-              heap: 4096
-              metaspace: 2048
+              buffer: 512
+              compressedClassSpaceSize: 256
+              heap: 1024
+              metaspace: 512
               nonMethodCodeHeapSize: 5
               nonProfiledCodeHeapSize: 48
               profiledCodeHeapSize: 48
@@ -2209,16 +2209,16 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `""`.
 
 `hopsworks.resources.admin.jvm.memory.buffer` <a class="headerlink" href="#helm.hopsworks.resources.admin.jvm.memory.buffer" title="Permanent link">#</a> { #helm.hopsworks.resources.admin.jvm.memory.buffer }
-:   Type `int`, default `2048`.
-
-`hopsworks.resources.admin.jvm.memory.compressedClassSpaceSize` <a class="headerlink" href="#helm.hopsworks.resources.admin.jvm.memory.compressedClassSpaceSize" title="Permanent link">#</a> { #helm.hopsworks.resources.admin.jvm.memory.compressedClassSpaceSize }
 :   Type `int`, default `512`.
 
+`hopsworks.resources.admin.jvm.memory.compressedClassSpaceSize` <a class="headerlink" href="#helm.hopsworks.resources.admin.jvm.memory.compressedClassSpaceSize" title="Permanent link">#</a> { #helm.hopsworks.resources.admin.jvm.memory.compressedClassSpaceSize }
+:   Type `int`, default `256`.
+
 `hopsworks.resources.admin.jvm.memory.heap` <a class="headerlink" href="#helm.hopsworks.resources.admin.jvm.memory.heap" title="Permanent link">#</a> { #helm.hopsworks.resources.admin.jvm.memory.heap }
-:   Type `int`, default `4096`.
+:   Type `int`, default `1024`.
 
 `hopsworks.resources.admin.jvm.memory.metaspace` <a class="headerlink" href="#helm.hopsworks.resources.admin.jvm.memory.metaspace" title="Permanent link">#</a> { #helm.hopsworks.resources.admin.jvm.memory.metaspace }
-:   Type `int`, default `2048`.
+:   Type `int`, default `512`.
 
 `hopsworks.resources.admin.jvm.memory.nonMethodCodeHeapSize` <a class="headerlink" href="#helm.hopsworks.resources.admin.jvm.memory.nonMethodCodeHeapSize" title="Permanent link">#</a> { #helm.hopsworks.resources.admin.jvm.memory.nonMethodCodeHeapSize }
 :   Type `int`, default `5`.
@@ -2763,6 +2763,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         oauth_group_mapping_sync_enabled: 'false'
         oauth_logout_redirect_uri: hopsworks/
         oauth_redirect_uri: hopsworks/callback
+        onlinefs_deployment_name: onlinefs-deployment
         onlinefs_service_thread_number: '10'
         onlinefs_user_email: onlinefs@hopsworks.ai
         onlinefs_user_password: onlinefspw
@@ -4010,6 +4011,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.oauth_redirect_uri` <a class="headerlink" href="#helm.hopsworks.variables.oauth_redirect_uri" title="Permanent link">#</a> { #helm.hopsworks.variables.oauth_redirect_uri }
 :   Type `string`, default `"hopsworks/callback"`.
+
+`hopsworks.variables.onlinefs_deployment_name` <a class="headerlink" href="#helm.hopsworks.variables.onlinefs_deployment_name" title="Permanent link">#</a> { #helm.hopsworks.variables.onlinefs_deployment_name }
+:   Type `string`, default `"onlinefs-deployment"`.
+    Name of the OnlineFS Deployment, which Hopsworks restarts to apply the OnlineFS settings saved in Cluster Settings. Must match onlinefs.deployment.name.
 
 `hopsworks.variables.onlinefs_service_thread_number` <a class="headerlink" href="#helm.hopsworks.variables.onlinefs_service_thread_number" title="Permanent link">#</a> { #helm.hopsworks.variables.onlinefs_service_thread_number }
 :   Type `string`, default `"10"`.

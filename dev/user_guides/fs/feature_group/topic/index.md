@@ -25,7 +25,7 @@ Setting `topic_name` to an empty string clears the feature group override, so th
 
 !!! note "Topics of online-enabled feature groups must end in `_onlinefs`"
     The OnlineFS service subscribes to the topics matching the `.*_onlinefs` pattern, so a topic whose name does not match it is never consumed into the online feature store.
-    Administrators can change the pattern with the `onlinefs.configmapOverrides.onlinefssite.kafkaConsumer.topicPattern` Helm value, as described in the [external Kafka cluster][external-kafka-cluster] guide.
+    Administrators can change the pattern in `Cluster Settings` → `OnlineFS`, as described in the [OnlineFS subscription][onlinefs-subscription] guide.
 
 ## Before you change the topic
 

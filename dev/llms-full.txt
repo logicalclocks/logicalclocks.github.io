@@ -8583,7 +8583,7 @@ Setting `topic_name` to an empty string clears the feature group override, so th
 
 !!! note "Topics of online-enabled feature groups must end in `_onlinefs`"
     The OnlineFS service subscribes to the topics matching the `.*_onlinefs` pattern, so a topic whose name does not match it is never consumed into the online feature store.
-    Administrators can change the pattern with the `onlinefs.configmapOverrides.onlinefssite.kafkaConsumer.topicPattern` Helm value, as described in the [external Kafka cluster][external-kafka-cluster] guide.
+    Administrators can change the pattern in `Cluster Settings` → `OnlineFS`, as described in the [OnlineFS subscription][onlinefs-subscription] guide.
 
 ## Before you change the topic
 
@@ -27782,6 +27782,251 @@ Model inputs and predictions are logged in separate events, sharing the same `re
     ```
 
 ================================================================================
+# Transformation Tracing
+Source: https://docs.hopsworks.ai/latest/user_guides/mlops/serving/transformation-tracing/
+
+# How To Trace Feature View Transformations in a Deployment
+
+## Introduction
+
+A model deployment whose model was trained from a feature view runs that feature view's on-demand and model-dependent transformations on every request, as a DAG of transformation functions.
+Transformation tracing measures how long each of them takes.
+
+With tracing on, the deployment:
+
+- counts every request's transformations on its Prometheus endpoint, per feature view and per transformation function, with the fastest and slowest feature vector of the last minute;
+- records a sample of the requests as traces: the request, its feature lookup, each transformation phase with one span per function in DAG order, the prediction and the feature log write;
+- shows those traces in the `Transformations` section of the deployment page.
+
+It applies to deployments created with `model.deploy(...)` from a model with a feature view, to feature view deployments, and to predictor scripts that call `get_feature_vector` or `get_feature_vectors`.
+
+!!! info "Create the deployment with tracing"
+    Tracing exports its spans through a collector sidecar, which is added to the deployment's pods when the deployment is created or updated with tracing enabled.
+    A running pod cannot gain a container, so a deployment created without tracing has to be updated with it, which restarts it.
+    Once it has tracing, it can be switched off and on, and its sampling changed, while it runs.
+
+## Code
+
+### Step 1: Deploy with tracing
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+model = project.get_model_registry().get_model("fraud_model", version=1)
+
+deployment = model.deploy(
+    name="fraud",
+    tracing={"enabled": True, "sampling_percentage": 10},
+)
+deployment.start()
+```
+
+A feature view deployment takes the same argument:
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+fv = project.get_feature_store().get_feature_view("transactions", version=1)
+
+deployment = fv.deploy(
+    training_dataset_version=1,
+    tracing={"enabled": True, "sampling_percentage": 10},
+)
+deployment.start()
+```
+
+`sampling_percentage` is the share of requests recorded as traces, from 0 to 100, and defaults to 10.
+Every request is counted in the metrics, whatever the sampling.
+
+Tracing stays on for `duration_days`, 7 by default, and then Hopsworks switches it off:
+
+```python
+deployment = model.deploy(
+    name="fraud",
+    tracing={"enabled": True, "duration_days": 30},
+)
+```
+
+A longer period stores more traces in the online feature store; making sure it has room for them is up to you.
+
+To add tracing to an existing deployment, update it; this restarts its pods:
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+deployment = project.get_model_serving().get_deployment("fraud")
+
+deployment.tracing = {"enabled": True}
+deployment.save()
+```
+
+### Step 2: Switch tracing off and on while the deployment runs
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+deployment = project.get_model_serving().get_deployment("fraud")
+
+deployment.set_tracing(active=False)
+deployment.set_tracing(active=True, sampling_percentage=50)
+deployment.set_tracing(active=True, duration_days=30)
+```
+
+Switching tracing on, or changing `duration_days` while it is on, keeps it on for `duration_days` from now.
+`deployment.tracing.active_until` is when it will be switched off.
+Hopsworks checks every 5 minutes: once the period has ended it switches tracing off, sets `active` to `False` and records the end in `deployment.tracing.expired_at`.
+
+The deployment is not restarted.
+Its pods apply the change within about a minute, and pods started later begin with it.
+Switched off, the deployment records no metrics and no traces and runs no timing code.
+Only requests are ever traced: Prometheus scrapes of the deployment and its other endpoints are not.
+
+The same change over the REST API, where a field left out keeps its value:
+
+```bash
+curl -X PUT \
+  -H "Authorization: ApiKey $HOPSWORKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"active": true, "samplingPercentage": 50, "durationDays": 30}' \
+  "https://$HOPSWORKS_HOST/hopsworks-api/api/project/$PROJECT_ID/serving/$DEPLOYMENT_ID/tracing"
+```
+
+A deployment created without tracing answers `400` with error code `240062`, as does a `samplingPercentage` outside 0 to 100 or a `durationDays` below 1.
+The response carries `activeUntil` and `expiredAt` in epoch milliseconds.
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-method"></code> [`Model.deploy`][hsml.model.Model.deploy]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Deployment`][hsml.deployment.Deployment]
+        - <code class="doc-symbol doc-symbol-method"></code> <autoref identifier="hsml.deployment.Deployment.set_tracing" optional><code>set_tracing</code></autoref>
+        - <code class="doc-symbol doc-symbol-method"></code> <autoref identifier="hsml.deployment.Deployment.delete_traces" optional><code>delete_traces</code></autoref>
+        - <code class="doc-symbol doc-symbol-attribute"></code> [`tracing`][hsml.deployment.Deployment.tracing]
+    - <code class="doc-symbol doc-symbol-class"></code> [`DeploymentTracingConfig`][hsml.deployment_tracing_config.DeploymentTracingConfig]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+
+## Web UI
+
+The deployment page of a deployment that serves a feature view has a `Transformations` section.
+While tracing is on, the section lists the traced requests; expanding one shows its spans with their durations.
+While it is off, the section is titled `Feature View Transformations: Metrics` and shows `Tracing is disabled`; clicking it shows how to turn tracing on.
+On a deployment created with tracing, the switch in the section header turns it off and on, like `set_tracing`, and shows the sampling and the time tracing will be switched off.
+Once the period has ended, the section says when tracing was switched off.
+
+The deployment's Grafana dashboard, opened with `View in Grafana` in the `Metrics` section, charts the metrics under `Feature view transformations`.
+
+## Metrics
+
+| Metric | Labels | Meaning |
+| --- | --- | --- |
+| `hopsworks_transformations_calls_total`, `hopsworks_transformations_seconds_total` | `feature_view`, `feature_view_version`, `kind` | Count and total time of all on-demand (`kind="on_demand"`) or all model-dependent (`kind="model_dependent"`) transformations of one feature vector |
+| `hopsworks_transformations_window_min_seconds`, `hopsworks_transformations_window_max_seconds` | the above | Fastest and slowest feature vector in the last complete 60 second window |
+| `hopsworks_transformation_function_calls_total`, `hopsworks_transformation_function_seconds_total`, `hopsworks_transformation_function_errors_total` | the above, `transformation`, `outputs` | The same per transformation function, and the calls that raised |
+| `hopsworks_transformation_function_window_min_seconds`, `hopsworks_transformation_function_window_max_seconds` | the above | Fastest and slowest call of the function in the last complete 60 second window |
+| `hopsworks_transformation_dag_edge` | the above, `depends_on` | 1 for each edge of the transformation DAG |
+
+The average time is `rate(..._seconds_total[5m]) / rate(..._calls_total[5m])`.
+`outputs` identifies a function, since one function can be attached to several features.
+
+## Traces
+
+A traced request records:
+
+```text
+predict
+├── feature_lookup
+│   └── transformations
+│       ├── on_demand_transformations
+│       │   └── one span per on-demand function, in DAG order
+│       └── model_dependent_transformations
+│           └── one span per model-dependent function, in DAG order
+├── model_predict
+└── feature_log
+    └── feature_log_write
+        └── feature_view.log
+```
+
+`feature_log` only queues the log write and returns, and `feature_log_write` runs on a background thread after the response is sent.
+The deployment page draws the write and `feature_view.log` as a separate background log process on its own time axis, so they are not counted in the request time.
+
+Only the first row of a request is traced, so a batch request records one `transformations` span; all of its rows are counted in the metrics.
+
+## Trace storage limits
+
+Traces are stored in the online feature store's disk tablespace, which feature groups with disk columns share.
+Each deployment's `duration_days` bounds how long it records traces; three cluster settings bound what model and feature view deployments store there:
+
+| Variable | Default | Effect |
+| --- | --- | --- |
+| `serving_tracing_max_traces_per_minute` | `60` | Most traces one predictor pod records per minute, whatever the sampling percentage. Below 1, no cap. |
+| `serving_tracing_retention_days` | `7` | Traces older than this are deleted. `0` keeps them. |
+| `serving_tracing_pause_free_percent` | `20` | Tracing is paused on every model and feature view deployment while less than this percentage of the tablespace is free. |
+
+Hopsworks checks the tablespace every 5 minutes.
+A paused deployment reads `paused_reason == "DISK_NEARLY_FULL"` on `deployment.tracing`, and its page says tracing is paused.
+Deleted traces free space for later traces in the same tables, not in the tablespace, so a pause lifts once an administrator adds a data file to the tablespace and at least 10 points more than the threshold are free.
+The settings are Helm values under `hopsworks.variables`; a changed cap reaches running pods the next time their tracing is switched or they restart.
+Deleting a deployment deletes its traces.
+
+The `LowDiskDataFileExtents` alert fires when less than 20% of the tablespace is free.
+
+To delete a deployment's traces yourself, all of them or those created before a time:
+
+```python
+from datetime import datetime, timedelta
+
+deployment.delete_traces()
+deployment.delete_traces(
+    until_datetime=datetime.now() - timedelta(days=1), batch_size=1000
+)
+```
+
+Each request deletes at most `batch_size` rows (default 1000, at most 10000) from each trace table in one transaction, since RonDB caps the operations one transaction holds; `delete_traces` repeats it until none are left and returns the number of rows deleted.
+Over the REST API, one request deletes one batch and returns `{"deleted": <rows>}`; repeat it until `deleted` is 0.
+`until` is in epoch milliseconds and is optional:
+
+```bash
+curl -X DELETE \
+  -H "Authorization: ApiKey $HOPSWORKS_API_KEY" \
+  "https://$HOPSWORKS_HOST/hopsworks-api/api/project/$PROJECT_ID/otel/servings/$DEPLOYMENT_ID/traces?until=1793145600000&batchSize=1000"
+```
+
+A `batchSize` outside 1 to 10000 answers `400` with error code `240064`.
+
+## Overhead
+
+The figures below are a guideline to the overhead to expect, not a guarantee: they depend on the transformation functions, the hardware and the load.
+They were measured on a feature view with five transformation functions.
+
+| State | Added time per feature vector |
+| --- | --- |
+| Tracing switched off, or deployment created without tracing | none |
+| Tracing on, request not sampled | 17 to 34 µs, about 45% of the transformations' own time |
+| Tracing on, request sampled | 0.4 to 0.65 ms |
+
+Request latency inside the predictor pod, for 300 sequential requests of one row each:
+
+| Deployment | p50 | p95 | p99 |
+| --- | --- | --- | --- |
+| Created without tracing | 3.1 ms | 4.3 ms | 4.9 to 5.1 ms |
+| Tracing on, 10% sampled | 3.6 to 4.1 ms | 6.6 to 7.1 ms | 8.4 ms |
+
+The p95 and p99 of the traced deployment fall on its sampled requests.
+Tracing does not change the predictor's memory: both deployments peaked at about 420 MB resident.
+
+The collector sidecar requests 0.5 CPU and 1 GiB of memory per replica by default, set by the cluster administrator.
+A deployment created with tracing serves its requests with one worker process per replica, so that its metrics count every request; scale it with replicas.
+Setting the `KSERVE_WORKERS` environment variable raises the worker count, and the metrics then count only the requests of the worker each scrape reaches.
+
+================================================================================
 # Inference Batcher
 Source: https://docs.hopsworks.ai/latest/user_guides/mlops/serving/inference-batcher/
 
@@ -33114,49 +33359,20 @@ hopsworks:
 ### Online Feature Store service configuration
 
 The Online Feature Store service (OnlineFS in short) consumes the feature store topics and writes them to the online feature store, so it needs to connect to the external Kafka cluster too.
-Point it at the brokers and give it the credentials it needs:
+Enter its connection in `Cluster Settings` → `OnlineFS` as Kafka client properties, with the brokers, the security protocol and the credentials, as described in [OnlineFS configuration][onlinefs-kafka-connection].
+Enter the same Kafka cluster that the `kafka_connector` data sources of the projects use (see [Data Source configuration](#data-source-configuration)), because Hopsworks creates the topics there and the feature store clients write to it.
+OnlineFS consumes from that one cluster only, so the online feature groups of a project without a `kafka_connector` data source, whose topics are on the embedded cluster, do not reach the online feature store.
 
-```yaml
-onlinefs:
-  dependencies:
-    kafka:
-      url: "cluster_identifier.us-east-2.aws.confluent.cloud:9092"
-      securityProtocol: SASL_SSL
-  configmapOverrides:
-    kafka:
-      sasl.jaas.config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="username" password="password";'
-      sasl.mechanism: PLAIN
-    kafkaVectorDb:
-      sasl.jaas.config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="username" password="password";'
-      sasl.mechanism: PLAIN
-    producer:
-      sasl.jaas.config: 'org.apache.kafka.common.security.plain.PlainLoginModule required username="username" password="password";'
-      sasl.mechanism: PLAIN
-```
+Pointing OnlineFS at another Kafka cluster moves neither topics nor data.
+Records left on the previous cluster are not ingested, and on the new cluster OnlineFS starts from the earliest records it retains, as described in [Consumer offsets][onlinefs-offsets].
+A cluster that configured OnlineFS through the `onlinefs` Helm values keeps that configuration until a connection is saved in Cluster Settings.
+Saving the same brokers there counts as a new cluster for the offsets, so OnlineFS reads the retained records again.
 
-OnlineFS opens three Kafka clients on these brokers, and each section of `configmapOverrides` adds or overrides the properties of one of them, so any client configuration the external cluster needs goes into all three:
+The principal of the connection needs Describe and Read on the topics OnlineFS consumes and on its consumer groups, and Write on the notification topics, as listed in [Permissions on the Kafka cluster][onlinefs-kafka-permissions].
 
-- `kafka`: the consumer that writes the feature group rows to RonDB.
-- `kafkaVectorDb`: the consumer that writes embeddings to the vector database.
-- `producer`: the producer of the notifications of feature groups that have a notification topic.
-
-With a `securityProtocol` other than `PLAINTEXT`, the chart also points the three clients at the truststore and keystore of the Hopsworks certificates.
-The values are stored in the OnlineFS ConfigMap, so the password in `sasl.jaas.config` is readable there in plain text.
-
-The OnlineFS principal needs Describe and Read on the topics it consumes, Describe and Read on the consumer groups `onlinefs_rondb` and `onlinefs_vectordb`, and Write on the notification topics.
-
-OnlineFS subscribes to the topics matching `onlinefs.configmapOverrides.onlinefssite.kafkaConsumer.topicPattern`, by default `.*_onlinefs`.
-A non-empty `topicList` in the same section replaces the pattern and does not include the topics Hopsworks creates later, so their data would never reach the online feature store.
-A cluster set up with a topic list sets `topicList` to an empty string, and widens `topicPattern` until it also matches the project topics it consumes that do not end in `_onlinefs`:
-
-```yaml
-onlinefs:
-  configmapOverrides:
-    onlinefssite:
-      kafkaConsumer:
-        topicList: ""
-        topicPattern: ".*_onlinefs|my_project_topic"
-```
+OnlineFS subscribes to the topics matching `.*_onlinefs` by default.
+To consume project topics that do not end in `_onlinefs`, widen the pattern in the [subscription][onlinefs-subscription], for example to `.*_onlinefs|my_project_topic`.
+A topic list does not include the topics Hopsworks creates later, so their data would never reach the online feature store.
 
 ## Topics on the external Kafka cluster
 
@@ -36112,6 +36328,359 @@ kafka-configs.sh --bootstrap-server <broker>:9091 --command-config <cfg> \
 ```
 
 The chart does not remove it for you, because an operator may have set client-ID quotas deliberately.
+
+================================================================================
+# OnlineFS Configuration
+Source: https://docs.hopsworks.ai/latest/setup_installation/admin/onlinefs/
+
+# OnlineFS Configuration { #onlinefs-configuration }
+
+## Introduction { #onlinefs-introduction }
+
+The Online Feature Store service (OnlineFS in short) consumes the feature store topics from Kafka, and writes the feature group rows to the online feature store (RonDB) and the embeddings to the vector database (OpenSearch).
+Administrators configure it in Hopsworks under `Cluster Settings` → `OnlineFS`.
+
+The `onlinefs` Helm chart keeps deploying OnlineFS.
+Replicas, resources, scheduling, autoscaling and the disruption budget stay in the [OnlineFS Helm values][helm-values-onlinefs].
+Hopsworks keeps the settings in its database and changes only one annotation on the pod template of the OnlineFS Deployment, which the chart does not render, so a `helm upgrade` undoes neither and ArgoCD reports no drift.
+
+Hopsworks stores four groups of settings:
+
+- The [Kafka connection][onlinefs-kafka-connection].
+- The [topic subscription][onlinefs-subscription].
+- The [Kafka client properties][onlinefs-kafka-client-properties] of each Kafka client of OnlineFS.
+- The [service settings][onlinefs-service-settings].
+
+At startup, OnlineFS reads its Helm configuration, then fetches the saved settings from Hopsworks and applies them over it.
+A saved setting wins over the Helm values and over the environment variables the chart sets.
+A setting that was never saved keeps its Helm value, and with nothing saved OnlineFS runs with its Helm configuration.
+Hopsworks applies a change by [restarting the OnlineFS pods][onlinefs-applying-changes].
+
+Users who are not administrators see the [status][onlinefs-status] read-only in their project settings, without the revisions and the restart error.
+
+## Kafka connection { #onlinefs-kafka-connection }
+
+The connection is a set of Kafka client properties.
+Left empty, which is the default, OnlineFS connects as its Helm configuration says: to the Kafka cluster bundled with Hopsworks, unless `onlinefs.dependencies.kafka` points it elsewhere.
+
+A connection that is set must contain `bootstrap.servers`, and it replaces the Helm connection as a group.
+OnlineFS removes the connection keys from the Helm configuration of each of its Kafka clients and uses the entered ones in their place.
+The connection keys are `bootstrap.servers`, `bootstrap.controllers`, `security.protocol`, `security.providers`, and every key starting with `ssl.` or `sasl.`.
+None of the TLS settings of the chart carry over: the truststore and keystore of the Hopsworks certificates, their passwords, and the empty `ssl.endpoint.identification.algorithm`, which turns off host name verification.
+Add the ones the cluster needs to the connection.
+
+The connection applies to every Kafka client of OnlineFS: the consumer that writes to RonDB, the consumer that writes to the vector database, the producer of feature group notifications, and the admin client that reports the consumer group metrics.
+Because they all follow one connection, the [client properties][onlinefs-kafka-client-properties] of a single client cannot contain connection keys.
+
+A connection to a cluster with `SASL_SSL` and SCRAM:
+
+```properties
+bootstrap.servers=b-1.kafka.example.com:9096,b-2.kafka.example.com:9096
+security.protocol=SASL_SSL
+sasl.mechanism=SCRAM-SHA-512
+sasl.jaas.config=org.apache.kafka.common.security.scram.ScramLoginModule required username="onlinefs" password="<password>";
+```
+
+<figure>
+  <img src="../../../assets/images/admin/onlinefs/kafka-connection.png" alt="The Kafka connection editor with a saved SCRAM connection whose sasl.jaas.config value is hidden" />
+  <figcaption>A saved SCRAM connection, with its secret hidden</figcaption>
+</figure>
+
+Without truststore settings, OnlineFS accepts broker certificates signed by a certificate authority in the default truststore of its JVM.
+
+With an [external Kafka cluster][external-kafka-cluster], enter the cluster that the `kafka_connector` data sources of the projects use.
+
+### Certificates { #onlinefs-kafka-certificates }
+
+Certificates and keys go into the connection either inline in PEM form, or as paths to files inside the OnlineFS pod.
+Hopsworks stores the connection as properties only, so a truststore or keystore file has to exist in the pod already.
+
+In PEM form:
+
+| Key | Value |
+| --- | --- |
+| `ssl.truststore.type` | `PEM` |
+| `ssl.truststore.certificates` | The certificates of the certificate authorities that signed the broker certificates. |
+| `ssl.keystore.type` | `PEM`, for a cluster that authenticates clients by certificate. |
+| `ssl.keystore.certificate.chain` | The client certificate chain. |
+| `ssl.keystore.key` | The private key of the client, in PKCS#8 form. |
+| `ssl.key.password` | The password of the private key, when it is encrypted. |
+
+A PEM value keeps its line breaks, from the `-----BEGIN` line to the `-----END` line.
+Line breaks are accepted only in the values of keys ending in `.certificates`, `.certificate.chain` or `.key`, which can be up to 5000 characters long.
+Every other value, in any of the settings on this page, is a single line of at most 1000 characters.
+Outside the Kafka connection, keys and values can use only Latin-1 characters, each of the four property maps can hold at most 5000 characters in total, and the topic pattern and the comma-separated topic list are each at most 1000 characters.
+The Kafka connection as a whole can hold up to 64 KiB, enough for a CA certificate, a client certificate and a key given inline.
+
+As files, `ssl.truststore.location` and `ssl.keystore.location` point at a truststore and a keystore inside the OnlineFS pod, with their passwords in `ssl.truststore.password`, `ssl.keystore.password` and `ssl.key.password`.
+The chart mounts the Hopsworks certificates under `/certs`.
+
+### Credentials { #onlinefs-kafka-credentials }
+
+Hopsworks stores the connection encrypted in its database with the master encryption password, and re-encrypts it when that password changes.
+A first connection saved while a master encryption password change is running can stay encrypted with the old password.
+An OnlineFS pod that starts then cannot fetch its settings and does not consume, and the [status][onlinefs-status] shows `CONNECTION_UNREADABLE`.
+
+<figure>
+  <img src="../../../assets/images/admin/onlinefs/connection-unreadable.png" alt="The OnlineFS status card with the settings state Connection unreadable and an explanation of the recovery" />
+  <figcaption>The status of a connection that does not decrypt</figcaption>
+</figure>
+
+The settings cannot be read either, so the page offers `Reset to Helm configuration` in place of the form.
+The reset clears the connection, and it can be entered again.
+
+<figure>
+  <img src="../../../assets/images/admin/onlinefs/settings-unreadable.png" alt="The OnlineFS settings page reporting that the settings could not be read, with the Reset to Helm configuration button" />
+  <figcaption>The reset offered when the settings cannot be read</figcaption>
+</figure>
+
+Hopsworks shows the value of every key whose name contains `password`, `jaas` or `secret`, or ends in `.key`, as `********`.
+Saving with `********` left in place keeps the stored value, so a credential has to be entered again only to change it.
+Only OnlineFS receives the values unmasked, and neither Hopsworks nor OnlineFS logs them.
+
+## Subscription { #onlinefs-subscription }
+
+OnlineFS subscribes to its topics either by a pattern or by a list:
+
+- A pattern is a Java regular expression, by default `.*_onlinefs`.
+  OnlineFS consumes every topic whose name it matches, including topics created later.
+- A topic list names the topics, separated by commas.
+  Hopsworks trims the names and drops empty entries and duplicates.
+  A name can contain letters, digits, `.`, `_` and `-`, and be up to 249 characters long.
+
+A topic created later is not consumed until it is added to the list, so its data does not reach the online feature store until then.
+Hopsworks creates the topics of new feature groups and projects, so subscribe by pattern unless every topic is known in advance.
+To consume project topics that do not end in `_onlinefs`, widen the pattern, for example to `.*_onlinefs|fraud_transactions`.
+The [ingestion topic][feature-group-ingestion-topic] guide describes which topic a feature group writes to.
+
+Left empty, OnlineFS keeps the subscription of its Helm values, under `onlinefs.configmapOverrides.onlinefssite.kafkaConsumer`.
+A saved subscription replaces both Helm values, `topicPattern` and `topicList`, because a non-empty topic list in the Helm values would otherwise take precedence over a saved pattern.
+
+## Kafka client properties { #onlinefs-kafka-client-properties }
+
+Three sets of Kafka client properties tune one client each:
+
+- The consumer properties apply to the consumer that writes feature group rows to RonDB, in the consumer group `onlinefs_rondb`.
+- The VectorDB consumer properties apply to the consumer that writes embeddings to the vector database, in the consumer group `onlinefs_vectordb`.
+- The producer properties apply to the producer of feature group notifications.
+
+Each set is applied last, over the properties the chart sets for that client and over the connection.
+For example, `max.poll.records=500` in the consumer properties replaces the 1000 the chart sets.
+The properties the chart sets are in `onlinefs-kafka.properties`, `onlinefs-kafka-vector-db.properties` and `producer.properties` of the OnlineFS ConfigMap.
+
+A set that contains a connection key is refused when saving, because every client follows the one [Kafka connection][onlinefs-kafka-connection].
+
+## Service settings { #onlinefs-service-settings }
+
+Service settings are keys of `onlinefs-site.xml`, written as `section.key`.
+Only the keys below are accepted, with a value of the listed type, and every integer must be 0 or more.
+`service.threadNumber` and `service.reportingQueueSizePerThread` must be at least `1`, because OnlineFS sizes its reporting thread pool and queues from them and cannot start with `0`.
+`rondb.batchSize` and `opensearch.batchSize` must be at least `1`, because OnlineFS splits the rows it writes into batches of that size.
+`service.ronDbThreadNumber` and `service.vectorDbThreadNumber` cannot both be `0`, because OnlineFS would then consume nothing.
+The default is the value the chart sets, or the default of OnlineFS where the chart sets none.
+
+**`service`**
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `service.threadNumber` | integer | `10` | Maximum number of threads that report ingestion to Hopsworks and send feature group notifications. |
+| `service.ronDbThreadNumber` | integer | `10` | Number of Kafka consumer threads that write to RonDB. |
+| `service.vectorDbThreadNumber` | integer | `10`, or `0` without VectorDB ingestion | Number of Kafka consumer threads that write embeddings to the vector database. Set it above 0 only when `onlinefs.deployment.vectordb.enabled` is true, because only then does the chart provide the OpenSearch credentials. |
+| `service.reportingQueueSizePerThread` | integer | `100` | Queue size per reporting and notification thread. |
+| `service.getSessionRetrySleepMs` | integer | `100` | Milliseconds between attempts to get a RonDB session. |
+| `service.pauseRetrySleepMs` | integer | `5000` | Milliseconds between attempts while ingestion is paused on a failure that looks transient, such as a RonDB or Hopsworks upgrade. |
+| `service.maxPauseMs` | integer | `0` | Milliseconds after which OnlineFS gives up on a batch paused on such a failure, and drops its rows. `0` waits until the failure resolves. |
+| `service.maxBlacklistSize` | integer | `100` | Maximum number of entries in the lists of feature groups and projects whose records OnlineFS skips. |
+| `service.maxFeatureGroupCacheSize` | integer | `1000` | Maximum number of entries in the feature group metadata cache. |
+| `service.maxFeatureStoreCacheSize` | integer | `1000` | Maximum number of entries in the feature store metadata cache. |
+| `service.maxFeatureViewCacheSize` | integer | `1000` | Maximum number of entries in the feature view metadata cache. |
+| `service.featureGroupCacheExpire` | integer | `30` | Minutes after which a feature group cache entry expires. |
+| `service.featureStoreCacheExpire` | integer | `30` | Minutes after which a feature store cache entry expires. |
+| `service.featureViewCacheExpire` | integer | `10` | Minutes after which a feature view cache entry expires. |
+| `service.verifyFeatureGroupTopic` | boolean | `true` | Drop records that did not arrive on the online topic of the feature group their headers name. See [OnlineFS drops records that arrive on another topic][upgrade-onlinefs-topics] before turning it off. |
+| `service.region` | string | none | Region written into feature group notifications. |
+
+**`rondb`**
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `rondb.batchSize` | integer | `300` | Maximum number of rows per RonDB commit. |
+| `rondb.maxRetries` | integer | `3` | Retries of a failed RonDB commit. |
+| `rondb.missingTableRetries` | integer | `5` | Lookups of a table that RonDB reports as missing, before OnlineFS treats its feature group as deleted. |
+| `rondb.maxCachedSessions` | integer | `20` | Maximum number of ClusterJ sessions cached per connection. |
+| `rondb.maxCachedInstances` | integer | `1024` | Maximum number of ClusterJ instances cached. |
+| `rondb.reconnectTimeout` | integer | `5` | ClusterJ reconnect timeout, in seconds. |
+| `rondb.maxTransactions` | integer | `1024` | Maximum number of concurrent ClusterJ transactions. |
+| `rondb.useSessionCache` | boolean | `false` | Return ClusterJ sessions to a cache instead of closing them. |
+| `rondb.useDynamicObjectCache` | boolean | `false` | Return ClusterJ objects to a cache instead of releasing them. |
+
+**`kafkaConsumer`**
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `kafkaConsumer.pollTimeoutMs` | integer | `1000` | Kafka consumer poll timeout, in milliseconds. |
+
+**`opensearch`**
+
+| Key | Type | Default | Description |
+| --- | --- | --- | --- |
+| `opensearch.batchSize` | integer | `1000` | Maximum number of embeddings per vector database commit. |
+| `opensearch.maxRetries` | integer | `10` | Retries of a failed vector database commit. |
+
+Every other key is refused:
+
+- `kafkaConsumer.topicPattern` and `kafkaConsumer.topicList` are set through the [subscription][onlinefs-subscription].
+- `hopsworks.*`, `kafka.propertiesFile*`, `metrics.port`, `rondb.connectionString`, `opensearch.host`, `opensearch.userName` and `opensearch.password` come from the deployment: the endpoints, the credentials, the files the chart mounts, and the port its probes check.
+- `rondb.poolSize` stays in the Helm values, because every pooled connection of every pod takes a RonDB API slot from the pool that the HopsFS NameNodes also use.
+
+## Applying changes { #onlinefs-applying-changes }
+
+`Save`, `Restart` and `Reset to Helm configuration` each restart OnlineFS:
+
+- `Save` stores the settings.
+- `Restart` leaves the settings as they are.
+- `Reset to Helm configuration` clears every saved setting, so OnlineFS returns to its Helm configuration.
+
+Hopsworks restarts OnlineFS with a rollout of its Deployment, as `kubectl rollout restart` does.
+It writes the revision of the saved settings into the `onlinefs.hopsworks.ai/settings-revision` annotation of the pod template, and Kubernetes replaces the pods.
+Each new pod fetches the settings when it starts.
+A change saved during a rollout is applied by a further rollout once that one ends.
+
+The rollout strategy of the Deployment decides the order in which pods are replaced:
+
+- With a single replica the chart sets no strategy, so Kubernetes starts the new pod first and stops the old one once the new one is ready.
+- With two or more replicas the chart stops a pod before it starts its replacement, so that a rollout completes on a node pool with no room for an extra pod.
+  The other pods keep consuming meanwhile.
+- `onlinefs.deployment.strategy` in the Helm values replaces both, for example with `maxSurge: 1` and `maxUnavailable: 0` to start every new pod first.
+  It applies to Helm upgrades as well.
+
+A new pod started first needs room on the node pool, and free RonDB API slots for its connections.
+Kubernetes counts a pod as ready once its metrics port answers, so an old pod can stop shortly before its replacement consumes.
+Kafka keeps the records while pods are replaced, and OnlineFS continues from its stored offsets.
+
+When Kubernetes reports that the rollout cannot progress, for example because a new pod cannot be scheduled or keeps crashing, the restart stops and the status shows the settings as `FAILED`, with the reason.
+Fix the cause and press `Restart`.
+
+## Status { #onlinefs-status }
+
+The status shows the state of the OnlineFS Deployment, its desired, ready, updated and available replicas, and whether the latest settings are applied.
+
+<figure>
+  <img src="../../../assets/images/admin/onlinefs/status.png" alt="The OnlineFS status card with the Deployment running, 2 of 2 replicas ready and the settings applied" />
+  <figcaption>The OnlineFS status, with the Restart action</figcaption>
+</figure>
+
+| State | Meaning |
+| --- | --- |
+| `RUNNING` | The Deployment runs its replicas and no rollout is in progress. |
+| `UPDATING` | A rollout is in progress. |
+| `STOPPED` | The Deployment has 0 replicas. |
+| `FAILED` | Kubernetes reports that the rollout cannot progress, with the reason. |
+| `NOT_FOUND` | No Deployment named by the `onlinefs_deployment_name` variable, by default `onlinefs-deployment`, exists in the namespace Hopsworks is installed in. |
+| `UNKNOWN` | Hopsworks does not run on Kubernetes. |
+
+| Settings state | Meaning |
+| --- | --- |
+| `NONE` | Nothing was ever saved, and OnlineFS runs with its Helm configuration. |
+| `PENDING` | Settings were saved or reset, or `Restart` was pressed, and the rollout has not completed yet. |
+| `FAILED` | The last restart stopped on an error, shown with the status. |
+| `NOT_FETCHED` | The pods were replaced, but none fetched the latest settings, because the OnlineFS image they run does not fetch settings from Hopsworks. |
+| `CONNECTION_UNREADABLE` | The saved Kafka connection does not decrypt with the current master encryption password, so an OnlineFS pod that starts cannot fetch its settings. It takes precedence over the other states. See [Credentials][onlinefs-kafka-credentials]. |
+| `APPLIED` | The pods were replaced and fetched the latest settings. |
+
+`APPLIED` says nothing about whether OnlineFS reaches the Kafka cluster.
+The OnlineFS logs and the OnlineFS dashboard show that.
+
+Administrators also see the revision of the saved settings, the revision the last completed restart applied, the revision OnlineFS fetched last, and the error of the last restart.
+
+## Consumer offsets { #onlinefs-offsets }
+
+OnlineFS stores its consumer offsets in the online feature store of each project, per consumer group, topic and partition.
+It keeps the offsets of a saved connection apart from those of the Helm connection, and starts new ones whenever the saved `bootstrap.servers` changes:
+
+- With the Helm connection, OnlineFS uses the offsets it has always used, so an upgraded cluster resumes where it was.
+- A saved connection whose `bootstrap.servers` differs from the previous one, or a connection saved where there was none, starts a new set of offsets.
+  OnlineFS then reads that cluster from the earliest records it retains, because the chart sets `auto.offset.reset=earliest`.
+  This also holds for a cluster OnlineFS used before.
+- Changing any other key of the connection, such as the credentials, keeps the offsets.
+- Resetting to the Helm configuration returns to the offsets of the Helm connection.
+
+Hopsworks tells Kafka clusters apart by `bootstrap.servers` alone.
+A new broker list for the same cluster, or moving a connection from the Helm values into Cluster Settings, also makes OnlineFS read the retained records again and write them to the online feature store again.
+Plan such a change for a time when that load is acceptable.
+A change of the Helm connection itself, in the Helm values, keeps the offsets of the Helm connection, as in earlier releases.
+
+## Startup { #onlinefs-startup }
+
+Each OnlineFS pod asks Hopsworks for the saved settings once at startup, before it consumes.
+Hopsworks answers only the OnlineFS service user, named by the `onlinefs_service_user_email` variable, by default `onlinefs@hopsworks.ai`, because the answer contains the Kafka credentials.
+
+- When Hopsworks answers, OnlineFS applies the saved settings, or runs with its Helm configuration when nothing is saved.
+- When Hopsworks is an older release without these settings, OnlineFS runs with its Helm configuration.
+- When Hopsworks cannot be reached, answers with a server error, or refuses the API key, OnlineFS logs the error and asks again, after 1 second at first and doubling up to 60 seconds.
+
+In the last case OnlineFS does not fall back to its Helm configuration, because that could make it consume from another Kafka cluster than the one saved, while waiting loses nothing: Kafka keeps the records.
+A pod that starts while Hopsworks is down therefore waits for Hopsworks, whether settings are saved or not.
+Running pods are not affected, since they ask only at startup.
+
+## Permissions on the Kafka cluster { #onlinefs-kafka-permissions }
+
+On a Kafka cluster with authorization, the principal of the connection needs:
+
+| Resource | Operations | Needed for |
+| --- | --- | --- |
+| The topics OnlineFS subscribes to | Describe, Read | Consuming the feature group rows. |
+| The consumer groups `onlinefs_rondb` and `onlinefs_vectordb` | Describe, Read | Joining the consumer groups and reporting their metrics. |
+| The notification topics of feature groups | Write | Sending feature group notifications. |
+
+A `group.id` in the consumer properties or the VectorDB consumer properties changes the name of the consumer group to grant.
+OnlineFS creates no topics.
+On an external Kafka cluster, Hopsworks creates them with the `kafka_connector` data source of each project, as described in [Topics on the external Kafka cluster][topics-on-the-external-kafka-cluster].
+
+## REST API { #onlinefs-rest-api }
+
+Administrators can manage the settings with the REST API, also with an API key of scope `ADMIN`:
+
+```text
+GET    /hopsworks-api/api/admin/onlinefs/config
+PUT    /hopsworks-api/api/admin/onlinefs/config
+DELETE /hopsworks-api/api/admin/onlinefs/config
+POST   /hopsworks-api/api/admin/onlinefs/restart
+GET    /hopsworks-api/api/admin/onlinefs/status
+```
+
+`PUT` saves the settings and `DELETE` resets them to the Helm configuration, and both return the resulting settings.
+`POST` on `restart` restarts OnlineFS with the settings unchanged and returns the status.
+All three restart OnlineFS as described in [Applying changes][onlinefs-applying-changes].
+
+```json
+{
+  "kafkaConnection": {
+    "bootstrap.servers": "b-1.kafka.example.com:9096",
+    "security.protocol": "SASL_SSL",
+    "sasl.mechanism": "SCRAM-SHA-512",
+    "sasl.jaas.config": "********"
+  },
+  "topicPattern": ".*_onlinefs",
+  "topicList": null,
+  "kafkaConsumerOverrides": {"max.poll.records": "500"},
+  "kafkaProducerOverrides": {},
+  "kafkaVectordbOverrides": {},
+  "siteOverrides": {"service.ronDbThreadNumber": "12"},
+  "revision": 7,
+  "updated": "2026-10-27T15:00:00.000Z"
+}
+```
+
+- A `PUT` replaces every setting, so send the whole configuration as a `GET` returns it.
+- An empty or absent `kafkaConnection` keeps the Helm connection.
+- At most one of `topicPattern` and `topicList` is set, and `topicList` is an array of topic names.
+  With both `null`, OnlineFS keeps the subscription of its Helm values.
+- A value of `********` keeps the stored value of that key.
+- `revision` and `updated` are read-only and ignored on `PUT`.
+
+Every logged-in user can read the status of OnlineFS with `GET /hopsworks-api/api/onlinefs/status`, also with an API key of scope `FEATURESTORE`.
+It returns the state, the replica counts, the message, the settings state, and whether any setting is saved, without the revisions and the restart error.
 
 ================================================================================
 # Uninstalling Hopsworks
@@ -41239,7 +41808,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -41272,7 +41841,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.
 | [`hive`][helm-values-hive] |  | 79 |
 | [`hopsfs`][helm-values-hopsfs] |  | 222 |
 | [`hopsfs-csi`][helm-values-hopsfs-csi] |  | 29 |
-| [`hopsworks`][helm-values-hopsworks] |  | 980 |
+| [`hopsworks`][helm-values-hopsworks] |  | 981 |
 | [`hw-envoy-gateway`][helm-values-hw-envoy-gateway] |  | 40 |
 | [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) | 24 |
 | [`hw-kueue`][helm-values-hw-kueue] |  | 63 |
@@ -41319,7 +41888,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -42444,7 +43013,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -43310,7 +43879,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -43592,7 +44161,7 @@ Values under `certs-operator` configure the operator that issues the TLS certifi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -43780,7 +44349,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -44113,7 +44682,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -44564,7 +45133,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -45062,7 +45631,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -45480,7 +46049,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -46624,7 +47193,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 
@@ -46894,7 +47463,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -46952,7 +47521,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         enabled: false
       opensearchReindex:
         enabled: true
-      payaraVersion: 6.2025.11-jdk21.2
+      payaraVersion: 6.2025.11-jdk21.3
       payaraconfigmapName: post-boot-commands
       podAnnotations: {}
       podDisruptionBudget:
@@ -46970,10 +47539,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           auto_jvm: true
           jvm:
             memory:
-              buffer: 2048
-              compressedClassSpaceSize: 512
-              heap: 4096
-              metaspace: 2048
+              buffer: 512
+              compressedClassSpaceSize: 256
+              heap: 1024
+              metaspace: 512
               nonMethodCodeHeapSize: 5
               nonProfiledCodeHeapSize: 48
               profiledCodeHeapSize: 48
@@ -47041,10 +47610,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             auto_jvm: true
             jvm:
               memory:
-                buffer: 2048
-                compressedClassSpaceSize: 512
-                heap: 4096
-                metaspace: 2048
+                buffer: 512
+                compressedClassSpaceSize: 256
+                heap: 1024
+                metaspace: 512
                 nonMethodCodeHeapSize: 5
                 nonProfiledCodeHeapSize: 48
                 profiledCodeHeapSize: 48
@@ -47190,7 +47759,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     Rebuild the featurestore search index after an upgrade, when what the index holds has changed since its last rebuild. The hook keys its request with the index generation, featurestore-index-5.1, which the chart bumps only with a change to what the backend indexes: a generation already rebuilt is answered with that run, so patch upgrades and ArgoCD syncs do not rebuild again, and a cluster that missed the rebuild gets it on its next upgrade. Runs requested by earlier charts carry no key, so the first upgrade with this chart rebuilds once. The rebuild runs in the backend after the upgrade and takes hours on a large cluster, with search incomplete until it finishes; its progress shows under Cluster Settings > Service Operations > OpenSearch Index Commands. A failed hook Job is removed after global._hopsworks.jobs.ttlSecondsAfterFinished in the default mode, or when the hook next renders; with global._hopsworks.mode set, as under ArgoCD, delete post-upgrade-opensearch-reindex-job by hand if you turn this off after a failed attempt.
 
 `hopsworks.payaraVersion` <a class="headerlink" href="#helm.hopsworks.payaraVersion" title="Permanent link">#</a> { #helm.hopsworks.payaraVersion }
-:   Type `string`, default `"6.2025.11-jdk21.2"`.
+:   Type `string`, default `"6.2025.11-jdk21.3"`.
 
 `hopsworks.payaraconfigmapName` <a class="headerlink" href="#helm.hopsworks.payaraconfigmapName" title="Permanent link">#</a> { #helm.hopsworks.payaraconfigmapName }
 :   Type `string`, default `"post-boot-commands"`.
@@ -48241,11 +48810,11 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           tag: null
         postInstall:
           pullPolicy: IfNotPresent
-          tag: 6.2025.11-jdk21.2
+          tag: 6.2025.11-jdk21.3
         registry: null
         worker:
           pullPolicy: IfNotPresent
-          tag: 6.2025.11-jdk21.2
+          tag: 6.2025.11-jdk21.3
     ```
 
 <div class="hops-values" markdown>
@@ -48284,7 +48853,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     pull policy for the admin sidecar's payara-node image. admindeployment.yaml already read this key before it was declared here, and its fallback cannot reach global._hopsworks.imagePullPolicy, so the sidecar was pinned to IfNotPresent with no way to override it.
 
 `hopsworks.image.postInstall.tag` <a class="headerlink" href="#helm.hopsworks.image.postInstall.tag" title="Permanent link">#</a> { #helm.hopsworks.image.postInstall.tag }
-:   Type `string`, default `"6.2025.11-jdk21.2"`.
+:   Type `string`, default `"6.2025.11-jdk21.3"`.
 
 `hopsworks.image.registry` <a class="headerlink" href="#helm.hopsworks.image.registry" title="Permanent link">#</a> { #helm.hopsworks.image.registry }
 :   Type `string`, default `nil`.
@@ -48294,7 +48863,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"IfNotPresent"`.
 
 `hopsworks.image.worker.tag` <a class="headerlink" href="#helm.hopsworks.image.worker.tag" title="Permanent link">#</a> { #helm.hopsworks.image.worker.tag }
-:   Type `string`, default `"6.2025.11-jdk21.2"`.
+:   Type `string`, default `"6.2025.11-jdk21.3"`.
 
 </div>
 
@@ -49042,10 +49611,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           jvm:
             garbageCollector: ''
             memory:
-              buffer: 2048
-              compressedClassSpaceSize: 512
-              heap: 4096
-              metaspace: 2048
+              buffer: 512
+              compressedClassSpaceSize: 256
+              heap: 1024
+              metaspace: 512
               nonMethodCodeHeapSize: 5
               nonProfiledCodeHeapSize: 48
               profiledCodeHeapSize: 48
@@ -49099,16 +49668,16 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `""`.
 
 `hopsworks.resources.admin.jvm.memory.buffer` <a class="headerlink" href="#helm.hopsworks.resources.admin.jvm.memory.buffer" title="Permanent link">#</a> { #helm.hopsworks.resources.admin.jvm.memory.buffer }
-:   Type `int`, default `2048`.
-
-`hopsworks.resources.admin.jvm.memory.compressedClassSpaceSize` <a class="headerlink" href="#helm.hopsworks.resources.admin.jvm.memory.compressedClassSpaceSize" title="Permanent link">#</a> { #helm.hopsworks.resources.admin.jvm.memory.compressedClassSpaceSize }
 :   Type `int`, default `512`.
 
+`hopsworks.resources.admin.jvm.memory.compressedClassSpaceSize` <a class="headerlink" href="#helm.hopsworks.resources.admin.jvm.memory.compressedClassSpaceSize" title="Permanent link">#</a> { #helm.hopsworks.resources.admin.jvm.memory.compressedClassSpaceSize }
+:   Type `int`, default `256`.
+
 `hopsworks.resources.admin.jvm.memory.heap` <a class="headerlink" href="#helm.hopsworks.resources.admin.jvm.memory.heap" title="Permanent link">#</a> { #helm.hopsworks.resources.admin.jvm.memory.heap }
-:   Type `int`, default `4096`.
+:   Type `int`, default `1024`.
 
 `hopsworks.resources.admin.jvm.memory.metaspace` <a class="headerlink" href="#helm.hopsworks.resources.admin.jvm.memory.metaspace" title="Permanent link">#</a> { #helm.hopsworks.resources.admin.jvm.memory.metaspace }
-:   Type `int`, default `2048`.
+:   Type `int`, default `512`.
 
 `hopsworks.resources.admin.jvm.memory.nonMethodCodeHeapSize` <a class="headerlink" href="#helm.hopsworks.resources.admin.jvm.memory.nonMethodCodeHeapSize" title="Permanent link">#</a> { #helm.hopsworks.resources.admin.jvm.memory.nonMethodCodeHeapSize }
 :   Type `int`, default `5`.
@@ -49653,6 +50222,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         oauth_group_mapping_sync_enabled: 'false'
         oauth_logout_redirect_uri: hopsworks/
         oauth_redirect_uri: hopsworks/callback
+        onlinefs_deployment_name: onlinefs-deployment
         onlinefs_service_thread_number: '10'
         onlinefs_user_email: onlinefs@hopsworks.ai
         onlinefs_user_password: onlinefspw
@@ -50901,6 +51471,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.oauth_redirect_uri` <a class="headerlink" href="#helm.hopsworks.variables.oauth_redirect_uri" title="Permanent link">#</a> { #helm.hopsworks.variables.oauth_redirect_uri }
 :   Type `string`, default `"hopsworks/callback"`.
 
+`hopsworks.variables.onlinefs_deployment_name` <a class="headerlink" href="#helm.hopsworks.variables.onlinefs_deployment_name" title="Permanent link">#</a> { #helm.hopsworks.variables.onlinefs_deployment_name }
+:   Type `string`, default `"onlinefs-deployment"`.
+    Name of the OnlineFS Deployment, which Hopsworks restarts to apply the OnlineFS settings saved in Cluster Settings. Must match onlinefs.deployment.name.
+
 `hopsworks.variables.onlinefs_service_thread_number` <a class="headerlink" href="#helm.hopsworks.variables.onlinefs_service_thread_number" title="Permanent link">#</a> { #helm.hopsworks.variables.onlinefs_service_thread_number }
 :   Type `string`, default `"10"`.
 
@@ -51826,7 +52400,7 @@ See [Envoy Gateway][envoy-gateway] for what the chart installs and what the clus
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: `global._hopsworks.envoyGateway.enabled`, [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -52265,7 +52839,7 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -52672,7 +53246,7 @@ With `kueue.enabled=false` Hopsworks uses a Kueue installed outside its release;
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -53058,7 +53632,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -53541,7 +54115,7 @@ Values under `judge` configure Judge, the active cluster arbitrator service.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -53676,7 +54250,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -54546,7 +55120,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -56306,7 +56880,7 @@ Values under `minio` configure MinIO, an S3-compatible object store deployed ins
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) is `true`.
 
@@ -56561,7 +57135,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -57537,7 +58111,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -58047,7 +58621,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -58207,7 +58781,7 @@ Values under `ray` configure the KubeRay operator, which runs the Ray clusters b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.ray.enabled`](global.md#helm.global._hopsworks.ray.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -58354,7 +58928,7 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -61272,7 +61846,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -62857,7 +63431,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -63940,7 +64514,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -64248,7 +64822,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793193988` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
