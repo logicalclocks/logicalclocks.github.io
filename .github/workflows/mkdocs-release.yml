@@ -10,17 +10,22 @@ on:
     types:
       - trigger-rebuild
 
+  # Runs this branch's own workflow; mkdocs-release-notes uses it to rebuild a
+  # release branch whose release pages are stale.
+  workflow_dispatch:
+
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: false
+  queue: max
 
 jobs:
   publish-release:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Extract branch name (push)
-        if: ${{ github.event_name == 'push' }}
+      - name: Extract branch name (push, workflow_dispatch)
+        if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         run: echo "BRANCH=${GITHUB_REF#refs/heads/}" >> "$GITHUB_ENV"
 
       - name: Extract branch name (repository_dispatch)
@@ -57,6 +62,18 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ env.BRANCH }}
+
+      # The release pages live on main only, and every docs version shows main's
+      # copy. A branch without the hook predates them.
+      - name: Add the release pages from main
+        if: ${{ env.BRANCH != 'main' }}
+        run: |
+          if [ -f scripts/releases_hook.py ]; then
+            paths="docs/releases docs/css/releases.css docs/js/client-release-notes.js scripts/releases_hook.py"
+            files=$(git ls-tree --name-only origin/main -- $paths)
+            rm -rf $paths
+            if [ -n "$files" ]; then git checkout origin/main -- $files; fi
+          fi
 
       - name: Checkout the API repo
         uses: actions/checkout@v4

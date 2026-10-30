@@ -333,6 +333,8 @@ nav:
   - Python API: python-api
   - Java API: javadoc
   - Community ↗: https://community.hopsworks.ai/
+  # Expanded by scripts/releases_hook.py; see .claude/docs/releases.md on main.
+  - Releases: releases/index.md
 
 theme:
   name: material
@@ -386,11 +388,16 @@ extra:
 
 extra_css:
   - css/custom.css
+  - css/releases.css
   - css/marctech.css
 
 extra_javascript:
   - js/quickstart-fullscreen.js
+  - js/client-release-notes.js
   - js/values-filter.js
+
+hooks:
+  - scripts/releases_hook.py
 
 plugins:
   - search
