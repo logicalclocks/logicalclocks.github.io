@@ -179,12 +179,11 @@ A record that fails the check is dropped, logged by OnlineFS (`Record dropped, i
 - **Records that reach OnlineFS on another topic name.**
   A Kafka where records reach OnlineFS on a topic other than the one Hopsworks resolves for their feature group, such as a multi-region secondary that reads topics renamed or prefixed by mirroring, needs `onlinefs.configmapOverrides.onlinefssite.service.verifyFeatureGroupTopic: false`.
   With the check off, OnlineFS logs a warning at startup and keeps the behaviour of 5.2.1, without the fix.
-  Projects that share a topic need no change: their records arrive on the topic resolved for them.
-- **Projects that set another project's topic.**
+- **Projects that use another project's topic.**
   Creating a project, changing its topic, creating an online feature group or changing its topic, or creating a Kafka topic fails with `TOPIC_IN_USE_BY_ANOTHER_PROJECT` (190026) when the topic is the online topic of another project, the topic of another project's feature group, or a topic another project owns.
-  The upgrade leaves a project or feature group already configured that way as it is, and updates that keep its topic still succeed.
+  Because of a security fix, give each project and online feature group that already uses another project's topic a topic of its own after the upgrade, then restart its producers as above; the upgrade leaves such a topic in place, and updates that keep it still succeed.
   A project whose own topic is taken that way cannot create online feature groups until it gets a topic of its own, while the project that created the topic, or whose default `<project>_onlinefs` topic it is, keeps using it.
-  With an external Kafka (`enable_bring_your_own_kafka`), where Hopsworks owns no topics and projects may share one, this is not enforced.
+  With an external Kafka (`enable_bring_your_own_kafka`), where Hopsworks owns no topics, the same security fix needs each project to have topics of its own there, and Kafka credentials that write only to them.
 - **After the upgrade**, check that the topic mismatch panels stay at zero.
   A drop means one of the cases above: its insert never completes its online ingestion, and the project's `get_failures` does not list the dropped records.
 
