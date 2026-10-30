@@ -10,8 +10,8 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | Upgrade | OpenSearch | What needs action |
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
-| [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, and from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
-| 5.2.0 or 5.2.1 to a later 5.2.x | stays on 3.8.0 | From 5.2.0, [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch [security configuration][opensearch-security-configuration] of 5.2.1, and [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], and from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523]. |
+| 5.2.0, 5.2.1 or 5.2.2 to a later 5.2.x | stays on 3.8.0 | From 5.2.0, [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch [security configuration][opensearch-security-configuration] of 5.2.1, from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522], and with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -249,3 +249,15 @@ What changes for users and operators ([details](kueue_external.md#what-changes))
 - A workload whose pods are not all ready 30 minutes after admission is evicted and queued again (Kueue 0.19 `waitForPodsReady`).
 - The Ray autoscaler and job-submitter sidecars count against quota (Kueue 0.19).
 - A workload without a priority class gets the WorkloadPriorityClass named `default`, when one exists (Kueue 0.20).
+
+## Changes from 5.2.3 { #upgrade-changes-from-523 }
+
+These changes ship in 5.2.3.
+They apply to an upgrade from 5.1.x to 5.2.3 or later, and from 5.2.0, 5.2.1 or 5.2.2 to a later 5.2 release.
+
+### Envoy image of Python apps { #upgrade-python-app-envoy }
+
+Python apps pull their Envoy sidecar from `global._hopsworks.imageRegistry`, as `<registry>/envoyproxy/envoy:<tag>` with the tag in `hopsworks.variables.python_app_envoy_image_version` (`v1.38.0`); before, the chart did not set the backend's `python_app_envoy_image`, so clusters pulled `envoyproxy/envoy:v1.38.0` from Docker Hub.
+The default registry, `docker.hops.works`, has the image.
+A cluster whose `global._hopsworks.imageRegistry` is its own registry mirrors `envoyproxy/envoy:v1.38.0` there, at the path `envoyproxy/envoy`, before the upgrade, or its Python apps cannot start; the chart's `vendor_images.sh` does not list the image.
+The chart now writes `python_app_envoy_image` on every upgrade, replacing a value set by hand, so a cluster that pointed it at another image mirrors that image as above.
