@@ -172,26 +172,34 @@ The deployment page draws the write and `feature_view.log` as a separate backgro
 
 Only the first row of a request is traced, so a batch request records one `transformations` span; all of its rows are counted in the metrics.
 
-## Trace storage limits
+## Trace storage
 
-Traces are stored in the online feature store's disk tablespace, which feature groups with disk columns share.
-Each deployment's `duration_days` bounds how long it records traces; three cluster settings bound what model and feature view deployments store there:
+Traces are kept in the online feature store only, in the project's `serving_traces` feature group, and are never written to the offline store.
+A trace is two rows: its root span, and the rest of its spans as JSON.
+The feature group has a time to live, 36 hours by default, counted from the start of each trace, so the deployment page shows the requests traced in that window.
+Expired traces disappear from reads at once and RonDB deletes them in the background.
+To keep a project's traces longer or shorter, change the feature group's time to live with [`enable_ttl`][hsfs.feature_group.FeatureGroup.enable_ttl].
+
+The rows are in the online feature store's disk tablespace, which feature groups with disk columns share; the start time and the keys stay in memory, as the time to live requires.
+Each deployment's `duration_days` bounds how long it records traces; these cluster settings bound what model and feature view deployments store:
 
 | Variable | Default | Effect |
 | --- | --- | --- |
+| `serving_tracing_online_ttl_hours` | `36` | Time to live of a project's `serving_traces` feature group, applied when it is created. |
 | `serving_tracing_max_traces_per_minute` | `60` | Most traces one predictor pod records per minute, whatever the sampling percentage. Below 1, no cap. |
-| `serving_tracing_retention_days` | `7` | Traces older than this are deleted. `0` keeps them. |
 | `serving_tracing_pause_free_percent` | `20` | Tracing is paused on every model and feature view deployment while less than this percentage of the tablespace is free. |
+| `serving_tracing_retention_days` | `7` | Days traces written before `serving_traces` existed are kept. `0` keeps them. |
 
+At the cap, a predictor pod keeps at most `60 * 60 * 36` traces online, about 1.5 KB of RonDB memory each with five transformation functions.
 Hopsworks checks the tablespace every 5 minutes.
 A paused deployment reads `paused_reason == "DISK_NEARLY_FULL"` on `deployment.tracing`, and its page says tracing is paused.
-Deleted traces free space for later traces in the same tables, not in the tablespace, so a pause lifts once an administrator adds a data file to the tablespace and at least 10 points more than the threshold are free.
+Expired and deleted traces free space for later traces in the same table, not in the tablespace, so a pause lifts once an administrator adds a data file to the tablespace and at least 10 points more than the threshold are free.
 The settings are Helm values under `hopsworks.variables`; a changed cap reaches running pods the next time their tracing is switched or they restart.
 Deleting a deployment deletes its traces.
 
 The `LowDiskDataFileExtents` alert fires when less than 20% of the tablespace is free.
 
-To delete a deployment's traces yourself, all of them or those created before a time:
+To delete a deployment's traces before they expire, all of them or those started before a time:
 
 ```python
 from datetime import datetime, timedelta
@@ -202,7 +210,7 @@ deployment.delete_traces(
 )
 ```
 
-Each request deletes at most `batch_size` rows (default 1000, at most 10000) from each trace table in one transaction, since RonDB caps the operations one transaction holds; `delete_traces` repeats it until none are left and returns the number of rows deleted.
+Each request deletes at most `batch_size` rows (default 1000, at most 10000) in one transaction, since RonDB caps the operations one transaction holds; `delete_traces` repeats it until none are left and returns the number of rows deleted.
 Over the REST API, one request deletes one batch and returns `{"deleted": <rows>}`; repeat it until `deleted` is 0.
 `until` is in epoch milliseconds and is optional:
 
