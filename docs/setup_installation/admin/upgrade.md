@@ -178,9 +178,15 @@ From the 5.2.x patch release that uses Strimzi 1.3, and in 5.3, the chart deploy
 An upgrade from a release that already uses Strimzi 1.3 crosses none of this.
 
 - **Upgrade central before its satellites**, the reverse of the order from 5.1.x to 5.2.x.
-  A satellite runs on central's operator, so a satellite upgraded first has its controller replaced onto the 1.3.0 image by the 1.2.0 operator.
-  The controller restarts until central is upgraded and recovers a few minutes after that, and the satellite's Kafka is unavailable throughout.
-  A satellite upgraded after central keeps its pods on the old image under the 1.3.0 operator, and its own upgrade replaces each of them once.
+  A satellite runs on central's operator, and the 1.2.0 operator would replace the satellite's controller onto the 1.3.0 image without the configuration that image reads, which leaves the satellite's Kafka down until central is upgraded.
+  The satellite's upgrade therefore refuses to start while its Kafka was last reconciled by an older 1.x operator.
+  Upgrade central, wait until the satellite's Kafka reports the 1.3.0 operator, then upgrade the satellite:
+
+    ```sh
+    kubectl get kafka <cluster> -n <satellite-namespace> -o jsonpath='{.status.operatorLastSuccessfulVersion}'
+    ```
+
+  Until its own upgrade, the satellite keeps its pods on the old image under the 1.3.0 operator, and that upgrade replaces each of them once.
 - **No step before `helm upgrade`.**
   The `strimzi-crd-upgrade` hook applies the Strimzi 1.3.0 CRDs before the operator is replaced.
 - **The brokers and controllers are replaced once**, by the new operator, for the new image.
