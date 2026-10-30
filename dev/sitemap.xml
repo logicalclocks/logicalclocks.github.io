@@ -1720,4 +1720,8 @@
          <loc>https://docs.hopsworks.ai/latest/python-api/hsml/transformer/</loc>
          <lastmod>2026-10-30</lastmod>
     </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hsml/triton/signature/</loc>
+         <lastmod>2026-10-30</lastmod>
+    </url>
 </urlset>

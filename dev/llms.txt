@@ -571,6 +571,9 @@
 #### <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> torch
 - [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> signature](https://docs.hopsworks.ai/latest/python-api/hsml/torch/signature/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/torch/signature/index.md))
 - [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> transformer](https://docs.hopsworks.ai/latest/python-api/hsml/transformer/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/transformer/index.md))
+
+#### <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> triton
+- [<code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> signature](https://docs.hopsworks.ai/latest/python-api/hsml/triton/signature/) ([md](https://docs.hopsworks.ai/latest/python-api/hsml/triton/signature/index.md))
 - [Java API](javadoc)
 
 ## Reference

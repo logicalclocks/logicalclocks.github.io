@@ -67563,6 +67563,22 @@ Source: https://docs.hopsworks.ai/latest/python-api/hsml/transformer/
       show_root_heading: true
 
 ================================================================================
+# <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code> signature
+Source: https://docs.hopsworks.ai/latest/python-api/hsml/triton/signature/
+
+::: hsml.triton.signature
+    options:
+      heading_level: 1
+      members: false
+      show_root_full_path: true
+      show_root_heading: true
+
+::: hsml.triton.signature.create_model
+    options:
+      heading_level: 2
+      show_root_heading: true
+
+================================================================================
 # REST API Status Codes
 Source: https://docs.hopsworks.ai/latest/reference/rest_error_codes/
 
