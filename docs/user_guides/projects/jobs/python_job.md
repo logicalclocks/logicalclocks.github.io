@@ -94,6 +94,7 @@ There you can also set the following configuration settings for a `PYTHON` job.
   Empty means no limit.
   A container that writes more is evicted and the execution fails.
   Files written to `/hopsfs` are stored in HopsFS and don't count against this disk.
+  While a file is open for writing, the HopsFS mount keeps a copy of it on the node's local disk until the file is closed.
 - `Additional files`: List of files that will be locally accessible in the working directory of the application.
   Only recommended to use if project datasets are not mounted under `/hopsfs`.
   You can always modify the arguments in the job settings.

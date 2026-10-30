@@ -32,6 +32,7 @@ Next step is to configure Jupyter, Click `edit configuration` to get to the conf
   Empty means no limit.
   An instance that writes more is evicted and its running kernels stop.
   Files written to `/hopsfs` are stored in HopsFS and don't count against this disk.
+  While a file is open for writing, the HopsFS mount keeps a copy of it on the node's local disk until the file is closed.
 
 - `HopsFS mount`: Memory (MB), cores and namenode connections of the container that serves `/hopsfs`, for every kernel.
   The fields show the cluster defaults and may need tuning when notebooks read large datasets or do many concurrent reads or writes on `/hopsfs`.

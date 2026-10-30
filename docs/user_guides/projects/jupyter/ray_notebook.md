@@ -57,6 +57,7 @@ Resource allocation for the Driver and Workers can be configured.
 - `Driver disk`: Local disk in GB the Driver may use.
   Empty means no limit.
   Files written to `/hopsfs` are stored in HopsFS and don't count against this disk.
+  While a file is open for writing, the HopsFS mount keeps a copy of it on the node's local disk until the file is closed.
 
 - `Worker memory`: Memory in MBs to allocate for each worker
 
