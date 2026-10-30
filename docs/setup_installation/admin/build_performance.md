@@ -17,9 +17,10 @@ An administrator account on a Hopsworks cluster, and Helm access to the deployme
 The daemon is deployed by the Helm chart and is disabled by default:
 
 ```yaml
-hopsworks:
-  buildkitd:
-    enabled: true
+global:
+  _hopsworks:
+    buildkitd:
+      enabled: true
 ```
 
 Enabling it deploys a StatefulSet with its own state volume. Once it is running, the chart also points the backend at it: `docker_operations_buildkit_addr` and the client TLS settings are filled in from `buildkitd.name`, `buildkitd.port`, `buildkitd.replicas` and `buildkitd.tls`. You do not set those variables yourself unless you are pointing builds at a daemon the chart does not manage.
@@ -72,9 +73,36 @@ allowed_devices = ["/dev/fuse"]
 allowed_annotations = ["io.kubernetes.cri-o.Devices"]
 ```
 
-To allow the annotation only for this daemon rather than for every pod on the node, use a CRI-O
-workload with an `activation_annotation` and set the matching annotation through
-`buildkitd.podAnnotations`; `values.rhel8.yaml` in the chart shows the pairing.
+To allow the annotation only for this daemon rather than for every pod on the node, use a CRI-O workload that the daemon's pod opts into through its activation annotation:
+
+```toml
+[crio.runtime]
+allowed_devices = ["/dev/fuse"]
+
+[crio.runtime.workloads.buildkitd]
+activation_annotation = "io.hopsworks.buildkitd-devices"
+allowed_annotations = ["io.kubernetes.cri-o.Devices"]
+```
+
+```yaml
+hopsworks:
+  buildkitd:
+    podAnnotations:
+      io.hopsworks.buildkitd-devices: "true"
+```
+
+On containerd, install a device plugin or CDI provider that advertises `/dev/fuse`, and request the resource it advertises:
+
+```yaml
+hopsworks:
+  buildkitd:
+    rootless:
+      enabled: true
+      deviceInjection: "devicePlugin"
+      devicePluginResource: "github.com/fuse"   # whatever your provider advertises
+  variables:
+    docker_operations_oci_worker_snapshotter: "fuse-overlayfs"
+```
 
 Name the snapshotter explicitly rather than leaving it on `auto`. If FUSE turns out to be
 unavailable the daemon then fails where you can see it, instead of quietly selecting `native` and
@@ -94,7 +122,29 @@ rather than `native`, that a second identical build reuses layers from the first
 cache survives a restart of the StatefulSet. Under enforcing SELinux the device may additionally
 need a matching SCC or targeted policy; do not disable SELinux labelling wholesale to get past it.
 
-On RHEL 8 the rootful daemon above remains the recommended configuration.
+### RHEL 8 and other 4.18 kernels { #buildkitd-rhel8 }
+
+What sets RHEL 8 apart is its 4.18 kernel, which predates unprivileged overlayfs (5.11).
+Run the rootful daemon there: overlayfs in a privileged container has no kernel floor, so builds stack layers rather than copying them, and a privileged container runs SELinux-unconfined, so nothing needs a custom policy.
+Give it a dedicated, tainted builder node, as above.
+
+```yaml
+global:
+  _hopsworks:
+    buildkitd:
+      enabled: true
+hopsworks:
+  buildkitd:
+    rootless:
+      enabled: false
+  variables:
+    # With the rootful daemon, auto selects overlayfs.
+    docker_operations_oci_worker_snapshotter: "auto"
+```
+
+The rootless configurations above work on 4.18 through fuse-overlayfs, but have not been verified on a RHEL 8 node, which is why the rootful daemon is the recommended configuration there.
+This applies to RHEL 8 nodes running a current upstream Kubernetes.
+OpenShift releases recent enough for Hopsworks require RHCOS workers rather than RHEL 8, and OpenShift builds through buildah rather than through this daemon.
 
 ### Sizing the state volume
 
@@ -152,7 +202,7 @@ docker_operations_buildkit_cache_scope
 | `project` | Each project gets its own cache. No sharing at all. |
 | `off` | No cache mount. |
 
-A cache only survives between builds if the daemon does, so this pairs with `buildkitd.enabled`.
+A cache only survives between builds if the daemon does, so this pairs with `global._hopsworks.buildkitd.enabled`.
 
 `shared` is scoped by index configuration rather than by a single cluster-wide identifier. Two projects resolving through the same configuration share, which is the point; a project configured against a different private index gets a different cache, so it cannot receive an artifact fetched under someone else's credentials. Where the index configuration is cluster-wide, which is the normal setup, every project shares.
 
@@ -229,7 +279,8 @@ The chart ships **v0.31.2**. Do not pin below it. Earlier releases carry publish
 
 Both are fixed in v0.28.1; v0.31.2 also covers a Seccomp/AppArmor bypass, an unbounded-parsing denial of service, and a command injection through Git bundle checkout.
 
-A per-build daemon is affected by the same advisories, so this is not a reason to leave `buildkitd.enabled` off. Upgrading the image is the fix in both modes.
+A per-build daemon is affected by the same advisories, so this is not a reason to leave `global._hopsworks.buildkitd.enabled` off.
+Upgrading the image is the fix in both modes.
 
 If you repin to a different version, set `buildkitd.gc.keySyntax` to match it:
 

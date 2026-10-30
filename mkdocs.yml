@@ -84,6 +84,8 @@ nav:
                   - REST API: user_guides/fs/data_source/creation/rest_api.md
                   - Unity Catalog: user_guides/fs/data_source/creation/unity_catalog.md
                   - SAP HANA: user_guides/fs/data_source/creation/sap_hana.md
+                  - Hopsworks: user_guides/fs/data_source/creation/hopsworks.md
+                  - SharePoint: user_guides/fs/data_source/creation/sharepoint.md
               - Usage: user_guides/fs/data_source/usage.md
           - Feature Group:
               - user_guides/fs/feature_group/index.md
@@ -255,6 +257,7 @@ nav:
                   - Predictor (KServe): user_guides/mlops/serving/predictor.md
                   - Transformer (KServe): user_guides/mlops/serving/transformer.md
                   - Inference Logger: user_guides/mlops/serving/inference-logger.md
+                  - Transformation Tracing: user_guides/mlops/serving/transformation-tracing.md
                   - Inference Batcher: user_guides/mlops/serving/inference-batcher.md
                   - Resources: user_guides/mlops/serving/resources.md
                   - Autoscaling: user_guides/mlops/serving/autoscaling.md
@@ -274,7 +277,13 @@ nav:
       - Agents:
           - user_guides/agents/index.md
           - Agent Tasks: user_guides/agents/tasks/index.md
-          - Agent Deployments: user_guides/agents/deployments/index.md
+          - Agent Deployments:
+              - user_guides/agents/deployments/index.md
+              - Agent Memory: user_guides/agents/memory/index.md
+              - Feedback: user_guides/agents/feedback/index.md
+              - Evaluation: user_guides/agents/evaluation/index.md
+              - Monitoring: user_guides/agents/monitoring/index.md
+              - Failure Analysis: user_guides/agents/failure_analysis/index.md
       - Migration 3.X to 4.0: user_guides/migration/40_migration.md
   - Administration:
       - setup_installation/index.md
@@ -296,9 +305,21 @@ nav:
           - IAM Role Chaining: setup_installation/admin/roleChaining.md
           - Configure Project Mapping: setup_installation/admin/configure-project-mapping.md
           - Airflow 3 operator notes: setup_installation/admin/airflow3.md
-          - Kafka 4 and KRaft upgrade notes: setup_installation/admin/kafka4.md
           - Search Index: setup_installation/admin/search_index.md
-          - Upgrading OpenSearch: setup_installation/admin/upgrade_opensearch.md
+          - HopsFS DataNode Drain: setup_installation/admin/hopsfs_datanode_drain.md
+          - HopsFS CSI Driver: setup_installation/admin/hopsfs_csi.md
+          - Dedicated Node Pools: setup_installation/admin/node_pools.md
+          - KEDA Autoscaling: setup_installation/admin/keda.md
+          - Envoy Gateway: setup_installation/admin/envoy_gateway.md
+          - Kafka Quotas: setup_installation/admin/kafka_quotas.md
+          - OnlineFS Configuration: setup_installation/admin/onlinefs.md
+          - Uninstalling Hopsworks: setup_installation/admin/uninstall.md
+          - Upgrades:
+              - Upgrading Hopsworks: setup_installation/admin/upgrade.md
+              - Upgrading with Helm 4: setup_installation/admin/helm4.md
+              - Upgrading OpenSearch: setup_installation/admin/upgrade_opensearch.md
+              - Kafka 4 and KRaft upgrade notes: setup_installation/admin/kafka4.md
+              - Kueue outside the Hopsworks namespace: setup_installation/admin/kueue_external.md
           - Monitoring:
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
               - Export metrics: setup_installation/admin/monitoring/export-metrics.md
@@ -327,6 +348,7 @@ nav:
           - Service Operations: setup_installation/admin/operationLogs.md
           - Query Engine (Trino): setup_installation/admin/trino.md
           - Superset: setup_installation/admin/superset.md
+          - GPU Scheduling with Run:ai: setup_installation/admin/run_ai.md
       - Helm Chart Values Reference:
           - setup_installation/common/helm_chart_values/index.md
           - global: setup_installation/common/helm_chart_values/global.md
@@ -340,6 +362,7 @@ nav:
           - hopsfs: setup_installation/common/helm_chart_values/hopsfs.md
           - hopsfs-csi: setup_installation/common/helm_chart_values/hopsfs-csi.md
           - hopsworks: setup_installation/common/helm_chart_values/hopsworks.md
+          - hw-envoy-gateway: setup_installation/common/helm_chart_values/hw-envoy-gateway.md
           - hw-keda: setup_installation/common/helm_chart_values/hw-keda.md
           - hw-kueue: setup_installation/common/helm_chart_values/hw-kueue.md
           - hw-kyverno: setup_installation/common/helm_chart_values/hw-kyverno.md
@@ -464,6 +487,7 @@ plugins:
         user_guides/integrations/flink.md: user_guides/integrations/index.md
         tutorials/index.md: index.md
         setup_installation/common/arrow_flight_duckdb.md: user_guides/fs/feature_view/training-data.md
+        user_guides/agents/chat_contract/index.md: user_guides/agents/deployments/index.md#the-chat-contract
   - hopsworks-apigen:
       modules:
         - hopsworks_common
