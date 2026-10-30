@@ -71,6 +71,11 @@ The following restrictions apply during this window, also for workloads that use
 
 Deletes and `upsert_if_newer` work as on 5.1.
 
+The Python client 5.1.3 and later avoids the first two restrictions: it marks the rows for the offline store only in the form the 5.0 online store reads, and it retries a search that OpenSearch 1.3 refuses with the filters outside the nearest-neighbor query.
+Hopsworks 5.1.3 includes this client for jobs and notebooks, and a client installed with `pip` needs 5.1.3 or later itself.
+Rows that an earlier client wrote in the window still need the repair described above.
+Creating a cosine embedding feature group still fails with every client, because OpenSearch 1.3 itself does not support `cosinesimil` with faiss.
+
 ## 5.1.x to 5.2.x { #upgrade-51-to-52 }
 
 ### OpenSearch 3.8.0 { #upgrade-opensearch-38 }
