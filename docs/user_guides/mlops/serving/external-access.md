@@ -138,6 +138,13 @@ On a cluster where the [Agent Router][agent-router] is enabled, the groups grant
 Users granted on a deployment can use only that model there, and cannot list the project's models.
 A Data Owner can turn the project endpoint off for the project or for one deployment, which leaves the deployment's own path as it is.
 
+### Limits and traces of the project endpoint
+
+An administrator can set token and request limits on the project endpoint, per project, per user and per deployment, as described under [Rate limits and token quotas][agent-router-rate-limits].
+The limits that apply to a project are shown, read-only, in the project settings, and a request over a limit gets `429`.
+Members with the role Data Owner or Data Scientist see the project's request traces under Agent Router traces in the project settings, with a filter on the deployment.
+Prompts and responses are not stored in them unless an administrator turned that on, as described under [Tracing][agent-router-tracing].
+
 ## Refreshing External User Groups
 
 Every time an external user signs in to Hopsworks using a pre-configured [authentication method](../../../setup_installation/admin/auth.md), Hopsworks fetches the external user groups and updates the internal state accordingly.

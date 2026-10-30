@@ -379,7 +379,9 @@ Data Owners can turn the endpoint off per project and per deployment, both on by
 Rendering fails when `aiGateway.enabled` is on and `envoyGateway.enabled` is off.
 An upgrade that leaves `aiGateway` alone changes nothing: the Istio Lua filter is the same, no object is added, and the backend finds no `envoy-ai-gateway-config` ConfigMap and does nothing.
 
-Before enabling, recreate the deployments named `v1` or containing `aiproject` under another name, check cert-manager and the backend role, and on an airgapped cluster mirror the three images, as listed under [Turning it on][agent-router-enable].
+The feature also brings a Redis and Envoy Gateway's rate-limit service for the project endpoint's [rate limits][agent-router-rate-limits], a trace collector and a table Job for [tracing][agent-router-tracing], and an access log on the AI Gateway's Envoy, with a Grafana datasource and dashboards; with the feature off none of them is rendered.
+
+Before enabling, recreate the deployments named `v1` or containing `aiproject` under another name, check cert-manager and the backend role, which needs `backendtrafficpolicies` too, and on an airgapped cluster mirror the four images, as listed under [Turning it on][agent-router-enable].
 Enable with one `helm upgrade`: no predictive pod, Knative pod or `kserve-ingress-gateway` pod restarts, and the AI Gateway's Envoy pods roll once when the first route attaches.
 Disable in one upgrade with `aiGateway.enabled: false`, as described under [Turning it off][agent-router-disable], which also lists what a `helm rollback` leaves behind and how to remove it.
 

@@ -45,6 +45,10 @@ The values are listed in [Envoy Gateway values][helm-values-hw-envoy-gateway] an
   The sidecar's metrics follow the OpenTelemetry generative AI conventions, for example `gen_ai_client_token_usage` and `gen_ai_server_request_duration_seconds`, labelled with the model and the backend, `<Hopsworks namespace>/<project namespace>-<deployment>-aibackend`.
   Prometheus sets their `namespace` label to the project's namespace, so token usage can be summed per project and per deployment, and a user who is not an administrator sees in Grafana only the projects they are a member of.
   Grafana shows them in the ModelServing folder: the dashboard Agent Router (Project Endpoints) has tokens, requests, errors and latency per project and deployment, or across all projects, and the vLLM Deployment Metrics dashboard has a Project endpoint row for each deployment.
+- In the `hw-envoy-gateway` subchart, a Redis for the rate limiter, which runs Superset's Redis image, and Envoy Gateway's rate-limit service (`envoyproxy/ratelimit`), which Envoy Gateway deploys from its own configuration and which keeps its counters in that Redis.
+  Redis keeps no data on disk, and every counter key expires, as described under [Rate limits and token quotas][agent-router-rate-limits].
+- In the `kserve` subchart, the trace collector `agent-router-otlp`, a Deployment and Service on port 4318 that stores the spans of the ext_proc sidecar in the table `agent_router.spans`, and a Job that creates that table, as described under [Tracing][agent-router-tracing].
+  The Grafana datasource `agent-router-traces` and the dashboard Agent Router traces in the AgentRouter folder are provisioned with them.
 - A branch in the Istio Lua filter that rewrites `/v1/<project>/v1/<rest>` to the host `v1.<namespace>.<domain>` and the path `/v1/<rest>`, and a first route in the Istio forward VirtualService that sends that host to the AI Gateway.
   With `enabled` off, the Lua filter is the one of a chart without the feature, so an existing deployment named `v1` keeps its path.
 - The six CustomResourceDefinitions (CRDs) of Agent Router, 2 MB together, shipped in the `envoy-ai-gateway-crds` image and applied by a second `pre-install, pre-upgrade` hook Job, `envoy-ai-gateway-crd-install`, for the reason the Envoy Gateway ones are, as described in [CustomResourceDefinitions][envoy-gateway-crds].
@@ -80,12 +84,98 @@ An existing deployment with such a name stays editable and restartable, and whil
 With the project endpoint on, the backend leaves the project route out of a project that has one, saying so in its deployments' status notes, and a deployment named `v1` stops answering on its per-deployment path, because the Istio rewrite sends `/v1/<project>/v1/...` to the AI Gateway and `model-serving-authenticator` then checks `v1` as the project endpoint.
 Recreate it under another name before enabling the feature.
 
+## Identity headers { #agent-router-identity }
+
+For a request that passes the check, `model-serving-authenticator` returns three headers that Envoy adds to the request: `x-hopsworks-user`, the username, `x-hopsworks-project`, the project's namespace, and `x-hopsworks-project-id`, its numeric id.
+Members and external users get all three.
+The rate limits, the traces, the access logs and the usage metrics are keyed on them.
+Clients cannot set them: the AI Gateway's ClientTrafficPolicy removes them from the incoming request before the check runs, so a client that sends them has them dropped, and only the authenticator's values reach the backend.
+The id comes from the label `serving.hops.works/project-id` of the ConfigMap `<namespace>-project-teams`, which the Hopsworks backend writes when it creates the ConfigMap and on every rebuild of a project's routes.
+When the label is missing, the id header is empty, the authenticator logs a warning and the request is still allowed, so the request is not limited, traced or logged per project until the next rebuild writes the label.
+
+## Rate limits and token quotas { #agent-router-rate-limits }
+
+Administrators limit the project endpoint at three scopes:
+
+- `PROJECT`: all requests to the project's endpoint share one bucket.
+- `USER`: each user has a bucket of their own, keyed on `x-hopsworks-user`.
+- `DEPLOYMENT`: each deployment has a bucket of its own, keyed on the request's `model`.
+
+Each scope takes a limit on `TOKENS`, the input and output tokens of a request together, or on `REQUESTS`, with a unit of `MINUTE`, `HOUR` or `DAY`.
+A rule is shared by every route of a project, so a project with several routes still has one bucket per rule.
+Limits are admin-only, because they cap what a project can spend on shared GPUs and a project owner could otherwise lift their own cap.
+
+There are two places to set them:
+
+- The cluster default is the Hopsworks variable `project_endpoint_rate_limits`, a comma-separated list of `SCOPE:KIND=VALUE/UNIT`, for example `PROJECT:TOKENS=1000000/HOUR,USER:REQUESTS=60/MINUTE`.
+  When it is empty or unset, there are no limits.
+  An administrator edits it in the admin UI under quotas and rate limits.
+- An override per project is set on the admin page of that project, with the same scopes, kinds and units.
+  A value of `-1` makes the scope unlimited for that project, and removing the override makes the cluster default apply again.
+  The same limits are available as `projectEndpointLimits` of `projectQuotas` in `PUT /admin/projects/{id}`, and `GET /admin/projects/{id}?expand=quotas` returns the effective ones with a `source` of `DEFAULT` or `PROJECT`.
+
+The backend turns the effective limits into one BackendTrafficPolicy per project, `<namespace>-aiproject-ratelimit`, in the release namespace, and updates it when a limit or a deployment changes, with no restart.
+Project members see the limits of their project, read-only, in the project settings.
+
+A request over a limit gets `429` with the `x-ratelimit-*` headers.
+A token limit charges the request after the response: the sidecar reads the token counts from the response, and Envoy subtracts them from the bucket then.
+A stream that is running is therefore never cut when it crosses the limit, and the next request gets the `429`.
+For the same reason, a request is refused only after the bucket has already gone empty, so a single request can overshoot the limit.
+
+The rate limiter fails open.
+When Redis or the rate-limit service is down, requests are let through, because a rate limiter that is down must not take down model serving.
+The counters live in Redis memory only, so they reset when the Redis pod restarts, and the limits are not exact across that restart.
+
+## Tracing { #agent-router-tracing }
+
+The ext_proc sidecar writes an OpenTelemetry span for every request.
+The Agent Router controller adds `hopsworks.user`, `hopsworks.project.id` and `session.id`, from `x-hopsworks-user`, `x-hopsworks-project-id` and `agent-session-id`, to every span, and the sidecar sends them over OTLP/HTTP to the collector `agent-router-otlp`.
+The collector writes them to the table `agent_router.spans` in RonDB, through the `hopsworksroot` credential from the Secret `mysql-users-secrets`.
+It drops a span that has no `hopsworks.project.id`, and counts the drops in its log, because a span of no project cannot be shown to anyone.
+
+Two values of `kserve.envoyGateway.aiGateway.tracing` control it:
+
+- `ttlSeconds`, 604800 (seven days) by default, is the age after which RonDB's native TTL deletes a span row, from the column `created_at`.
+  The table is created by a Job when `aiGateway.enabled` is on, and the Job runs again when the value changes, with `ALTER TABLE ... ALGORITHM=INPLACE`.
+- `captureContent`, `false` by default, decides whether prompts and responses are stored.
+  While it is false, the sidecar gets `OPENINFERENCE_HIDE_INPUTS`, `OPENINFERENCE_HIDE_OUTPUTS` and `OPENINFERENCE_HIDE_EMBEDDINGS_TEXT` set to `true`, so the message contents, the output text and the embedding inputs are left out of the spans, and the `messages` column is empty.
+  Model name, token counts, status, timing, user and session stay, because they are what usage and debugging need.
+  Prompts carry user data, so turn it on only when the users of the cluster have agreed to the retention.
+
+Two audiences read the table:
+
+- Administrators, in Grafana: the MySQL datasource `agent-router-traces` and the dashboard Agent Router traces, in the AgentRouter folder, list the spans of every project, filtered by project, deployment, user and time.
+  The Hopsworks Grafana proxy refuses these queries to anyone who is not an administrator, because the table holds every project's spans.
+- Project members with the role Data Owner or Data Scientist, in the project settings under Agent Router traces, which shows only their project's traces, with a filter on the deployment.
+  The backend adds the project's id to every query, so a member cannot read another project's spans.
+
+Turning the feature off leaves the table and its rows in RonDB, where the TTL keeps deleting them.
+Drop `agent_router.spans` by hand when it is no longer wanted.
+
+## Access logs { #agent-router-access-logs }
+
+The AI Gateway's Envoy writes one JSON line per request to its standard output, without bodies and without the `authorization` header.
+The fields are `log_type` (`agent_router_access`), `start_time`, `method`, `path`, `status`, `duration_ms`, `response_flags`, `request_id`, `traceparent`, `project_id`, `project`, `user`, `model`, `backend`, `input_tokens`, `output_tokens`, `total_tokens` and `upstream_host`.
+Filebeat collects them with the other pods of the release namespace, and Logstash writes the lines that carry a `project_id` to the index `agentrouter_<project id>-YYYY.MM.dd`, and drops the others.
+Members of a project with the role Data Owner or Data Scientist read their project's indices, `agentrouter_<project id>-*`, in OpenSearch Dashboards, which is created as an index pattern with the project.
+The service log viewer role reads all of them.
+The `OpenSearchCleaner` deletes an index older than `elastic_logs_index_expiration`, the setting that applies to the project's other logs.
+
+## Usage attribution { #agent-router-usage }
+
+The `gen_ai_*` metrics of the sidecar carry the label `hopsworks_user`, taken from `x-hopsworks-user`, next to the model and the backend.
+The number of values is bounded by the number of project members.
+The Agent Router dashboard has a `user` variable and panels for tokens and requests per user, and a table of usage by project, user and model over the dashboard's time range, which serves as the basis for charging usage back.
+The access logs carry the same user, model and token counts per request, for audits.
+
 ## Limitations { #agent-router-limitations }
 
 - Knative-mode LLM deployments and Standard-mode ones that scale to zero through the KEDA interceptor are not served by the project endpoint, because the interceptor does not wake a deployment reached this way.
   They stay on their per-deployment path, and the backend says so in the deployment's status note.
 - Any member of the project can reach every one of its deployments through the endpoint, unless a Data Owner turns the endpoint off for the project or for a deployment, as described under [Access to the project endpoint][agent-router-access].
-- Token limits, external providers, MCP and `InferencePool` backends are not part of it.
+- External providers, MCP and `InferencePool` backends are not part of it.
+- The span table relies on RonDB's native TTL, which deletes rows by the age of `created_at`, and it has `TEXT` columns for messages, attributes and events, so the rows of one span can be large when `captureContent` is on, and a shorter `ttlSeconds` bounds the table's size.
+- Enabling the feature, or changing `captureContent` or the tracing endpoint, changes the GatewayConfig, which rolls the AI Gateway's Envoy pods once, for the reason given under [What the chart installs][agent-router-components].
 - OpenShift: `values.openshift.yaml` leaves both values off, like Envoy Gateway itself.
 - The controller logs `Failed to add finalizer to object` once per ReferenceGrant it sees, the per-project grants of the Hopsworks Gateway included.
   The chart's Role refuses that write on purpose: a finalizer of the controller on those grants would block their deletion once the controller is gone, and the AI routes and backends never cross a namespace, so the controller needs nothing from the grants.
@@ -95,10 +185,12 @@ Recreate it under another name before enabling the feature.
 - `docker.hops.works/envoyproxy/ai-gateway-controller`: the controller.
 - `docker.hops.works/envoyproxy/ai-gateway-extproc`: the ext_proc sidecar.
   It runs in no pod until the first route exists, and is named by the controller's `--extProcImage` argument.
+- `docker.hops.works/envoyproxy/ratelimit`: Envoy Gateway's rate-limit service.
 - `docker.hops.works/hopsworks/envoy-ai-gateway-crds`: the CRDs, read by the hook.
 
-Like the Envoy Gateway images, the two `envoyproxy` images are mirrors of the Docker Hub images at the same path, and the CRD image is a Hopsworks image under the `hopsworks` project.
-An airgapped install overrides all three, as the chart's `values.airgap.yaml` shows.
+Like the Envoy Gateway images, the three `envoyproxy` images are mirrors of the Docker Hub images at the same path, and the CRD image is a Hopsworks image under the `hopsworks` project.
+The Redis of the rate limiter uses Superset's Redis image, and the trace collector uses the `otlp-sidecar` image of the agent sidecar, so an airgapped cluster that mirrors those already has them.
+An airgapped install overrides the four images above, as the chart's `values.airgap.yaml` shows.
 
 ## Cluster requirements { #agent-router-requirements }
 
@@ -106,7 +198,7 @@ An airgapped install overrides all three, as the chart's `values.airgap.yaml` sh
 - cert-manager, because the controller's webhook certificate is a cert-manager Certificate.
   The `kserve` subchart installs cert-manager unless the platform brings its own.
 - With `rbac.useExistingRole`, the chart renders no backend role.
-  Add to the existing one `get, list, watch, create, update, patch, delete` on `aigatewayroutes` and `aiservicebackends` of `aigateway.envoyproxy.io` and on `backends` of `gateway.envoyproxy.io`, on top of the Envoy Gateway permissions listed under [Cluster requirements][envoy-gateway-requirements].
+  Add to the existing one `get, list, watch, create, update, patch, delete` on `aigatewayroutes` and `aiservicebackends` of `aigateway.envoyproxy.io` and on `backends` and `backendtrafficpolicies` of `gateway.envoyproxy.io`, on top of the Envoy Gateway permissions listed under [Cluster requirements][envoy-gateway-requirements].
 
 ## Turning it on { #agent-router-enable }
 
@@ -116,7 +208,7 @@ Before enabling:
 
 1. List the deployments with a [reserved name][agent-router-reserved-names] and recreate them under another name first: `kubectl get isvc -A --field-selector metadata.name=v1`, and `kubectl get isvc -A --no-headers -o custom-columns=NS:.metadata.namespace,NAME:.metadata.name | grep aiproject`.
 2. Check the [cluster requirements][agent-router-requirements]: Envoy Gateway, cert-manager, the backend role.
-3. On an airgapped cluster, mirror the three [images][agent-router-images].
+3. On an airgapped cluster, mirror the four [images][agent-router-images].
 4. Two more hook Jobs run before the templates: the CRD Job `envoy-ai-gateway-crd-install` and the existing `kserve-ingress-gateway-apply`, which now also applies the AI Gateway; a few seconds each.
 
 Enable with one `helm upgrade` (`aiGateway.enabled: true`).
