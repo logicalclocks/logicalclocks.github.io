@@ -15,14 +15,14 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
 | [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], and from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
 1. Take a backup and check that it completed, as described in [Disaster Recovery][disaster-recovery].
 2. Pass `helm upgrade --timeout` long enough for the hooks of that upgrade.
    The upgrade from 5.1.x to 5.2.x has two that can run for hours: the [OpenSearch index pass][opensearch-set-the-timeout] and the [Kafka migration][kafka4-kraft-upgrade].
-3. If you run satellite clusters, read the order in which they upgrade relative to the central cluster, for [OpenSearch][opensearch-satellite-clusters] and for [Kafka][kafka4-before-you-start].
+3. If you run satellite clusters, read the order in which they upgrade relative to the central cluster, for [OpenSearch][opensearch-satellite-clusters], for [Kafka][kafka4-before-you-start] from 5.1.x to 5.2.x, and for [Strimzi 1.3][upgrade-strimzi-13].
 4. If this is the first upgrade of the release with Helm 4, read [Upgrading with Helm 4][upgrading-with-helm-4] first.
 
 ## 5.0.x to 5.1.x { #upgrade-50-to-51 }
@@ -60,8 +60,8 @@ Follow [Upgrading OpenSearch][upgrading-opensearch]: it covers what keeps workin
 
 ### Kafka 4 and KRaft { #upgrade-kafka-kraft }
 
-The upgrade migrates every Kafka from ZooKeeper to KRaft and moves Strimzi from 0.45 to 1.2.
-Run the read-only checks in [Before you start][kafka4-before-you-start] first, and read [Kafka 4 and KRaft upgrade notes][kafka4-kraft-upgrade], including the step and the `ignoreDifferences` entry that ArgoCD needs.
+The upgrade migrates every Kafka from ZooKeeper to KRaft and moves Strimzi from 0.45 to 1.2, or to 1.3 from the 5.2.x patch release that uses it.
+Run the read-only checks in [Before you start][kafka4-before-you-start] first, and read [Kafka 4 and KRaft upgrade notes][kafka4-kraft-upgrade], including the step that ArgoCD needs and, with Strimzi 1.2, its `ignoreDifferences` entry.
 
 ### Migration V109 waits for the statistics cleaner { #upgrade-v109-statistics-cleaner }
 
@@ -168,6 +168,37 @@ Delete that Job and run the upgrade again.
 OpenSearch stays on 3.8.0.
 An upgrade from 5.2.0 or 5.2.1 also gets the [changes from 5.2.2][upgrade-changes-from-522].
 An upgrade from 5.2.0 also crosses two changes of 5.2.1, described under 5.1.x to 5.2.x: [Feature groups shared with a subset of their features][upgrade-trino-subset-shares], and the OpenSearch [Security configuration][opensearch-security-configuration], which addresses a vulnerability.
+
+### Strimzi 1.3 { #upgrade-strimzi-13 }
+
+From the 5.2.x patch release that uses Strimzi 1.3, and in 5.3, the chart deploys Strimzi 1.3.0 in place of 1.2.0, and Kafka stays on 4.3.1.
+An upgrade from a release that already uses Strimzi 1.3 crosses none of this.
+
+- **Upgrade central before its satellites**, the reverse of the order from 5.1.x to 5.2.x.
+  A satellite runs on central's operator, and the 1.2.0 operator would replace the satellite's controller onto the 1.3.0 image without the configuration that image reads, which leaves the satellite's Kafka down until central is upgraded.
+  The satellite's upgrade therefore refuses to start while its Kafka was last reconciled by an older 1.x operator.
+  Upgrade central, wait until the satellite's Kafka reports the 1.3.0 operator, then upgrade the satellite:
+
+    ```sh
+    kubectl get kafka <cluster> -n <satellite-namespace> -o jsonpath='{.status.operatorLastSuccessfulVersion}'
+    ```
+
+  Until its own upgrade, the satellite keeps its pods on the old image under the 1.3.0 operator, and that upgrade replaces each of them once.
+- **No step before `helm upgrade`.**
+  The `strimzi-crd-upgrade` hook applies the Strimzi 1.3.0 CRDs before the operator is replaced.
+- **The brokers and controllers are replaced once**, by the new operator, for the new image.
+  The chart stops the outgoing operator before it starts the new one, through `kafka.strimzi-kafka-operator.deploymentStrategy`, so that the 1.2.0 operator does not act on the new image.
+  A pod the 1.2.0 operator replaces onto the 1.3.0 image lacks the configuration that image reads, and restarts until the new operator takes over.
+  It then recovers on its own, which can take a few minutes, because Kubernetes waits up to five minutes between restarts of a failing container.
+  The setting makes that unlikely rather than impossible: nothing waits for the old operator to exit.
+  If your values set `kafka.strimzi-kafka-operator.deploymentStrategy.type: Recreate`, also set `rollingUpdate: null` there, or the merged strategy is rejected.
+  A single-broker cluster is unavailable while its broker is replaced, a single-controller cluster has no KRaft quorum while its controller is replaced, and OnlineFS catches up afterwards.
+- **Three new tags to mirror on an airgapped cluster**: `strimzi/operator`, `strimzi/kafka` and `strimzi/crds`, which `vendor_images.sh` lists.
+- **The operator deletes pods with background propagation during a rolling update.**
+  Strimzi 1.3 turns its `UseBackgroundPodDeletion` feature gate on by default, so that CNI plugins which remove a pod's network endpoints when its object is deleted, such as Cilium, no longer cut a broker off before it has shut down.
+  To keep the earlier foreground deletion, set `kafka.strimzi-kafka-operator.featureGates: "-UseBackgroundPodDeletion"`.
+- **Under ArgoCD, the `ignoreDifferences` entry for the Kafka CRD is no longer needed.**
+  Strimzi 1.3.0's Kafka CRD no longer has the empty map that the entry in [Under ArgoCD][kafka4-argocd] ignores, and the entry matches nothing on it, so it can stay.
 
 ### ICEBERG feature groups in Trino { #upgrade-iceberg-trino }
 

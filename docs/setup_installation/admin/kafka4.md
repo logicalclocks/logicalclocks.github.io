@@ -3,6 +3,7 @@
 Administrative reference for cluster operators upgrading a self-managed Hopsworks cluster to 5.2.
 
 Hopsworks 5.2 moves the bundled Kafka from Strimzi 0.45 with Kafka 3.9 to Strimzi 1.2 with Kafka 4.3.1.
+From the 5.2.x patch release that uses Strimzi 1.3, and in 5.3, the operator is Strimzi 1.3 with the same Kafka, and an upgrade from 5.1 to that patch release goes through the same steps.
 Kafka 4 has no ZooKeeper, so an existing cluster is migrated to KRaft as part of the upgrade.
 The chart performs that migration itself; this page covers what to prepare, what to expect and how to verify the result.
 
@@ -18,7 +19,7 @@ Two pre-upgrade hooks run before any new component is applied:
    On a cluster already on KRaft it exits in seconds.
 2. `strimzi-crd-upgrade` converts the Strimzi custom resources from the `v1beta2` API to `v1` and brings the CRDs up to the new operator's version.
 
-The release then replaces the operator with Strimzi 1.2 and rolls the brokers to Kafka 4.3.1.
+The release then replaces the operator with the Strimzi 1.x it ships and rolls the brokers to Kafka 4.3.1.
 
 ## What to expect
 
@@ -27,7 +28,7 @@ The release then replaces the operator with Strimzi 1.2 and rolls the brokers to
   Helm's `--timeout` applies to each hook on its own: give it at least that budget plus room for the rest of the release.
   On timeout the hook fails rather than hangs, and re-running the upgrade resumes from wherever the operator got to.
 - **Broker pods are replaced about seven times**: during the migration, when the finalised cluster drops its ZooKeeper-era settings, and when the brokers move to Kafka 4.3.1.
-  The controller pods are replaced twice.
+  The controller pods are replaced three times after the migration creates them, the last time when they move to Kafka 4.3.1.
   Strimzi replaces pods rather than restarting containers, so `restartCount` stays 0 throughout; watch pod names and ages instead.
   A single-broker cluster is unavailable for the duration of each replacement, and OnlineFS catches up afterwards; clusters with a replication factor above 1 roll without interruption.
 - **ZooKeeper and the new controllers run side by side** until the migration is finalised.
@@ -38,8 +39,8 @@ The release then replaces the operator with Strimzi 1.2 and rolls the brokers to
   Do not `helm rollback` after the migration has started, and do not run this upgrade with `--atomic`, which performs that rollback for you the moment a hook times out: the earlier revision puts the ZooKeeper-shaped Kafka resource back against a cluster that may already have finalised KRaft.
   Re-run the upgrade instead.
 - **One `helm upgrade` migrates the cluster and its CRDs.**
-  The `strimzi-crd-upgrade` hook converts the resources still stored as `v1beta2` through the 0.51.0 CRDs, then applies the 1.2.0 CRDs in the same upgrade, as described in [Strimzi CRDs][kafka4-strimzi-crds].
-- **ArgoCD needs one manual step**, and every Application needs an `ignoreDifferences` entry for the Kafka CRD, as described in [Under ArgoCD][kafka4-argocd].
+  The `strimzi-crd-upgrade` hook converts the resources still stored as `v1beta2` through the 0.51.0 CRDs, then applies the new operator's CRDs in the same upgrade, as described in [Strimzi CRDs][kafka4-strimzi-crds].
+- **ArgoCD needs one manual step**, and on a release with Strimzi 1.2 an Application that shows the Kafka CRD OutOfSync needs an `ignoreDifferences` entry for it, as described in [Under ArgoCD][kafka4-argocd].
 
 ## Before you start { #kafka4-before-you-start }
 
@@ -57,7 +58,7 @@ The upgrade refuses, or waits until it times out, on each problem they find.
 
     - `ok`: nothing to do; go on with checks 2 to 4.
     - `converted`: an earlier 5.2 upgrade converted the CRDs, which it does only once every Kafka on the Kubernetes cluster is on KRaft.
-      Nothing to do, and checks 2 to 4 do not apply: the state field is gone, and the operator may already be 1.2.
+      Nothing to do, and checks 2 to 4 do not apply: the state field is gone, and the operator may already be 1.x.
     - `strimzi-0.39`: the CRDs cannot report the migration state, so the migration hook refuses rather than guess.
       A cluster has these when it was first installed on Hopsworks 4.3, 4.5 or a 4.4 release before 4.4.19, and has been upgraded with `helm upgrade` or ArgoCD since.
       Apply the Strimzi 0.45.2 CRDs, then wait until check 2 shows a state.
@@ -69,7 +70,7 @@ The upgrade refuses, or waits until it times out, on each problem they find.
         ```
 
         Do not apply the 5.2 chart's own CRDs for that: the apiserver rejects them while `v1beta2` is still a stored version.
-        An airgapped cluster has to mirror that bundle too; the `strimzi/crds` image carries only the 0.51.0 and 1.2.0 bundles.
+        An airgapped cluster has to mirror that bundle too; the `strimzi/crds` image carries only the 0.51.0 bundle and the operator's own.
 
 2. **Every Kafka**, in all namespaces, because the central cluster's operator also runs the satellites':
 
@@ -115,8 +116,8 @@ Then:
 
 ## Strimzi CRDs { #kafka4-strimzi-crds }
 
-Strimzi 1.2 stores its resources as `kafka.strimzi.io/v1`.
-The `strimzi-crd-upgrade` hook converts CRDs that still store `v1beta2` through the 0.51.0 CRDs, then applies the 1.2.0 CRDs with `v1beta2` still served.
+Strimzi 1.x stores its resources as `kafka.strimzi.io/v1`.
+The `strimzi-crd-upgrade` hook converts CRDs that still store `v1beta2` through the 0.51.0 CRDs, then applies the new operator's CRDs with `v1beta2` still served.
 
 Under Helm, `v1beta2` stays served on that Kubernetes cluster afterwards.
 Helm builds a release's current objects from the manifest it stored, so a release stored at `v1beta2`, such as a satellite upgraded to 5.2 before central, can only be upgraded while that version is served.
@@ -134,7 +135,7 @@ An uninstall with hooks runs the failed release's cleanup Job, which on a Kubern
 
 A Kubernetes cluster upgraded with a 5.2 pre-release chart can be left on the 0.51.0 CRDs.
 The Strimzi operator then logs `Kafka <name> in namespace <namespace> was MODIFIED` every few seconds for each Kafka and runs at its CPU limit.
-Upgrading central with 5.2.0 or later applies the 1.2.0 CRDs and ends it.
+Upgrading central with 5.2.0 or later applies the CRDs of its Strimzi 1.x and ends it.
 To check, run the following; `false` means the Kubernetes cluster still has the 0.51.0 CRDs:
 
 ```sh
@@ -174,12 +175,13 @@ The `strimzi-crd-upgrade` hook therefore stops the sync after the conversion, an
 
 4. **Sync**, with the Sync button or `argocd app sync hopsworks`.
     Auto-sync does not retry a revision whose last attempt failed, so this sync is manual.
-    It applies the 1.2.0 CRDs, the operator and the `v1` resources, upgrades Kafka, and runs the PostSync hooks.
+    It applies the new operator's CRDs, the operator and the `v1` resources, upgrades Kafka, and runs the PostSync hooks.
 
-5. **Give the Application an `ignoreDifferences` entry for the Kafka CRD**, on a fresh install as much as on an upgrade.
+5. **On a release with Strimzi 1.2, if the Application shows the Kafka CRD OutOfSync, give it an `ignoreDifferences` entry for that CRD**, on a fresh install as much as on an upgrade.
     Upstream's 1.2.0 Kafka CRD declares an empty `properties: {}` map under `status.clusterSecurity`, and the apiserver drops an empty map when it stores a CRD, so the live object never matches the render.
-    Without the entry the Application never reaches Synced, and selfHeal re-applies that one CRD every five minutes.
+    Not every Application compares the two in a way that notices; one that does never reaches Synced without the entry, and selfHeal re-applies that one CRD every five minutes.
     The entry matches nothing on 5.1.x, so you can add it before the upgrade.
+    Strimzi 1.3.0's Kafka CRD has no such map, so a release with Strimzi 1.3 does not need the entry, and it can stay because it matches nothing there either.
     `helm upgrade` is not affected.
 
     ```yaml
