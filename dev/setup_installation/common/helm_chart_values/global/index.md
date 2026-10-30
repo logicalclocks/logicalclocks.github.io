@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793364584` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -125,6 +125,14 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.
         wipeDataOnUninstall: true
       _kserve:
         servingruntime:
+          tritonserver:
+            enabled: false
+            env: []
+            extraTags: []
+            image: ''
+            imagePullSecrets: []
+            imageRegistry: ''
+            tag: ''
           vllmomni:
             tag: v0.28.0
           vllmopenai:
@@ -405,23 +413,19 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.
 
         ```yaml
         servingruntime:
+          tritonserver:
+            enabled: false
+            env: []
+            extraTags: []
+            image: ''
+            imagePullSecrets: []
+            imageRegistry: ''
+            tag: ''
           vllmomni:
             tag: v0.28.0
           vllmopenai:
             tag: v0.28.0
         ```
-
-`global._kserve.servingruntime` <a class="headerlink" href="#helm.global._kserve.servingruntime" title="Permanent link">#</a> { #helm.global._kserve.servingruntime }
-:   Type `object`, default `{"vllmomni":{"tag":"v0.28.0"},"vllmopenai":{"tag":"v0.28.0"}}`.
-    Mirrors the kserve subchart's `kserve.servingruntime` layout. Tags here drive both the kserve ClusterServingRuntime images and the kube_serving_vllm*_versions hopsworks variable seeds.
-
-`global._kserve.servingruntime.vllmomni` <a class="headerlink" href="#helm.global._kserve.servingruntime.vllmomni" title="Permanent link">#</a> { #helm.global._kserve.servingruntime.vllmomni }
-:   Type `object`, default `{"tag":"v0.28.0"}`.
-    vLLM-Omni runtime image tag. Drives both the kserve ClusterServingRuntime image and the kube_serving_vllm_omni_versions hopsworks variable seed.
-
-`global._kserve.servingruntime.vllmopenai` <a class="headerlink" href="#helm.global._kserve.servingruntime.vllmopenai" title="Permanent link">#</a> { #helm.global._kserve.servingruntime.vllmopenai }
-:   Type `object`, default `{"tag":"v0.28.0"}`.
-    vLLM-OpenAI runtime image tag. Drives both the kserve ClusterServingRuntime image and the kube_serving_vllm_versions hopsworks variable seed.
 
 `global.imageDigests` <a class="headerlink" href="#helm.global.imageDigests" title="Permanent link">#</a> { #helm.global.imageDigests }
 :   Type `object`, default `{}`.
@@ -906,6 +910,105 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.
 `global._hopsworks.restoreFromBackup.superset.initiatedBy` <a class="headerlink" href="#helm.global._hopsworks.restoreFromBackup.superset.initiatedBy" title="Permanent link">#</a> { #helm.global._hopsworks.restoreFromBackup.superset.initiatedBy }
 :   Type `string`, default `nil`.
     who initiated this restore, recorded in the superset-restore-audit ConfigMap. Defaults to helm/<release>@rev<revision>. Deployment metadata, not an authenticated identity: the Kubernetes audit log has the actor
+
+</div>
+
+## servingruntime { #helm-values-global-servingruntime }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    global:
+      _kserve:
+        servingruntime:
+          tritonserver:
+            enabled: false
+            env: []
+            extraTags: []
+            image: ''
+            imagePullSecrets: []
+            imageRegistry: ''
+            tag: ''
+          vllmomni:
+            tag: v0.28.0
+          vllmopenai:
+            tag: v0.28.0
+    ```
+
+<div class="hops-values" markdown>
+
+`global._kserve.servingruntime` <a class="headerlink" href="#helm.global._kserve.servingruntime" title="Permanent link">#</a> { #helm.global._kserve.servingruntime }
+:   Type `object`.
+    Mirrors the kserve subchart's `kserve.servingruntime` layout. Tags here drive both the kserve ClusterServingRuntime images and the kube_serving_vllm*_versions and kube_serving_triton_versions hopsworks variable seeds.
+
+    ??? note "Default"
+
+        ```yaml
+        tritonserver:
+          enabled: false
+          env: []
+          extraTags: []
+          image: ''
+          imagePullSecrets: []
+          imageRegistry: ''
+          tag: ''
+        vllmomni:
+          tag: v0.28.0
+        vllmopenai:
+          tag: v0.28.0
+        ```
+
+`global._kserve.servingruntime.tritonserver` <a class="headerlink" href="#helm.global._kserve.servingruntime.tritonserver" title="Permanent link">#</a> { #helm.global._kserve.servingruntime.tritonserver }
+:   Type `object`.
+    NVIDIA Triton Inference Server runtime. Off by default, and the chart ships no Triton image: the cluster supplies one that runs `tritonserver` from `PATH` as a non-root user and contains the backends its models need. The kserve subchart renders the `kserve-tritonserver` ClusterServingRuntime from this block, and the hopsworks subchart seeds the kube_serving_triton_versions variable from it (`tag` then `extraTags`; empty, which hides Triton, when disabled).
+
+    ??? note "Default"
+
+        ```yaml
+        enabled: false
+        env: []
+        extraTags: []
+        image: ''
+        imagePullSecrets: []
+        imageRegistry: ''
+        tag: ''
+        ```
+
+`global._kserve.servingruntime.tritonserver.enabled` <a class="headerlink" href="#helm.global._kserve.servingruntime.tritonserver.enabled" title="Permanent link">#</a> { #helm.global._kserve.servingruntime.tritonserver.enabled }
+:   Type `bool`, default `false`.
+    Render the `kserve-tritonserver` ClusterServingRuntime and offer Triton deployments. `imageRegistry`, `image` and `tag` are then required.
+
+`global._kserve.servingruntime.tritonserver.env` <a class="headerlink" href="#helm.global._kserve.servingruntime.tritonserver.env" title="Permanent link">#</a> { #helm.global._kserve.servingruntime.tritonserver.env }
+:   Type `list`, default `[]`.
+    Additional environment variables for the Triton container
+
+`global._kserve.servingruntime.tritonserver.extraTags` <a class="headerlink" href="#helm.global._kserve.servingruntime.tritonserver.extraTags" title="Permanent link">#</a> { #helm.global._kserve.servingruntime.tritonserver.extraTags }
+:   Type `list`, default `[]`.
+    Further tags deployments may pin besides `tag`, so deployments created on an earlier tag keep working after `tag` changes.
+
+`global._kserve.servingruntime.tritonserver.image` <a class="headerlink" href="#helm.global._kserve.servingruntime.tritonserver.image" title="Permanent link">#</a> { #helm.global._kserve.servingruntime.tritonserver.image }
+:   Type `string`, default `""`.
+    Triton image repository in `imageRegistry`, for example `nvidia/tritonserver`.
+
+`global._kserve.servingruntime.tritonserver.imagePullSecrets` <a class="headerlink" href="#helm.global._kserve.servingruntime.tritonserver.imagePullSecrets" title="Permanent link">#</a> { #helm.global._kserve.servingruntime.tritonserver.imagePullSecrets }
+:   Type `list`, default `[]`.
+    Pull secrets for the Triton image only, for example an NGC API key for `nvcr.io`. Kubernetes looks them up in the predictor pod's namespace, which is the project namespace. Empty uses the chart-wide pull secrets.
+
+`global._kserve.servingruntime.tritonserver.imageRegistry` <a class="headerlink" href="#helm.global._kserve.servingruntime.tritonserver.imageRegistry" title="Permanent link">#</a> { #helm.global._kserve.servingruntime.tritonserver.imageRegistry }
+:   Type `string`, default `""`.
+    Registry of the Triton image, for example `nvcr.io`. When enabled it is added to Knative's `registries-skipping-tag-resolving`, so Knative does not resolve the tag to a digest against a registry it cannot reach or authenticate to.
+
+`global._kserve.servingruntime.tritonserver.tag` <a class="headerlink" href="#helm.global._kserve.servingruntime.tritonserver.tag" title="Permanent link">#</a> { #helm.global._kserve.servingruntime.tritonserver.tag }
+:   Type `string`, default `""`.
+    Default Triton image tag, for example `26.09-py3`. Each deployment pins its own tag, so changing this does not move running deployments.
+
+`global._kserve.servingruntime.vllmomni` <a class="headerlink" href="#helm.global._kserve.servingruntime.vllmomni" title="Permanent link">#</a> { #helm.global._kserve.servingruntime.vllmomni }
+:   Type `object`, default `{"tag":"v0.28.0"}`.
+    vLLM-Omni runtime image tag. Drives both the kserve ClusterServingRuntime image and the kube_serving_vllm_omni_versions hopsworks variable seed.
+
+`global._kserve.servingruntime.vllmopenai` <a class="headerlink" href="#helm.global._kserve.servingruntime.vllmopenai" title="Permanent link">#</a> { #helm.global._kserve.servingruntime.vllmopenai }
+:   Type `object`, default `{"tag":"v0.28.0"}`.
+    vLLM-OpenAI runtime image tag. Drives both the kserve ClusterServingRuntime image and the kube_serving_vllm_versions hopsworks variable seed.
 
 </div>
 

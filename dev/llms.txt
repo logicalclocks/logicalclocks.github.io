@@ -581,3 +581,9 @@
 ## Reference
 - [REST API Status Codes](https://docs.hopsworks.ai/latest/reference/rest_error_codes/) ([md](https://docs.hopsworks.ai/latest/reference/rest_error_codes/index.md))
 - [Docs for AI agents](https://docs.hopsworks.ai/latest/ai/) ([md](https://docs.hopsworks.ai/latest/ai/index.md))
+
+## Releases
+- [Releases](https://docs.hopsworks.ai/latest/releases/) ([md](https://docs.hopsworks.ai/latest/releases/index.md))
+- [5.2](https://docs.hopsworks.ai/latest/releases/5.2/) ([md](https://docs.hopsworks.ai/latest/releases/5.2/index.md))
+- [5.1](https://docs.hopsworks.ai/latest/releases/5.1/) ([md](https://docs.hopsworks.ai/latest/releases/5.1/index.md))
+- [5.0](https://docs.hopsworks.ai/latest/releases/5.0/) ([md](https://docs.hopsworks.ai/latest/releases/5.0/index.md))

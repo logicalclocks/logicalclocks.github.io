@@ -4,7 +4,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793364584` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -249,6 +249,8 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           enabled: true
         trino:
           enabled: true
+        triton:
+          enabled: false
         vllm:
           enabled: true
     ```
@@ -300,6 +302,8 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           enabled: true
         trino:
           enabled: true
+        triton:
+          enabled: false
         vllm:
           enabled: true
         ```
@@ -460,6 +464,14 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 `hw-kyverno.policyExceptions.trino.enabled` <a class="headerlink" href="#helm.hw-kyverno.policyExceptions.trino.enabled" title="Permanent link">#</a> { #helm.hw-kyverno.policyExceptions.trino.enabled }
 :   Type `bool`, default `true`.
     Enable PolicyException for trino
+
+`hw-kyverno.policyExceptions.triton` <a class="headerlink" href="#helm.hw-kyverno.policyExceptions.triton" title="Permanent link">#</a> { #helm.hw-kyverno.policyExceptions.triton }
+:   Type `object`, default `{"enabled":false}`.
+    PolicyException for Triton (model-server: triton) KServe serving deployments. Off by default: the Triton image is supplied by the cluster, so enable it only when that image does not meet the restricted policy requirements.
+
+`hw-kyverno.policyExceptions.triton.enabled` <a class="headerlink" href="#helm.hw-kyverno.policyExceptions.triton.enabled" title="Permanent link">#</a> { #helm.hw-kyverno.policyExceptions.triton.enabled }
+:   Type `bool`, default `false`.
+    Enable PolicyException for Triton model serving deployments
 
 `hw-kyverno.policyExceptions.vllm` <a class="headerlink" href="#helm.hw-kyverno.policyExceptions.vllm" title="Permanent link">#</a> { #helm.hw-kyverno.policyExceptions.vllm }
 :   Type `object`, default `{"enabled":true}`.

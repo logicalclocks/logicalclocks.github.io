@@ -17,7 +17,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793364584` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -40,7 +40,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.
 
 | Values | Upstream charts | Keys |
 | --- | --- | --- |
-| [`global`][helm-values-global] |  | 149 |
+| [`global`][helm-values-global] |  | 157 |
 | [`airflow`][helm-values-airflow] |  | 151 |
 | [`arrowflight`][helm-values-arrowflight] |  | 46 |
 | [`certs-operator`][helm-values-certs-operator] |  | 29 |
@@ -54,7 +54,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793348603` (Hopsworks `5.
 | [`hw-envoy-gateway`][helm-values-hw-envoy-gateway] |  | 40 |
 | [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) | 24 |
 | [`hw-kueue`][helm-values-hw-kueue] |  | 63 |
-| [`hw-kyverno`][helm-values-hw-kyverno] |  | 58 |
+| [`hw-kyverno`][helm-values-hw-kyverno] |  | 60 |
 | [`judge`][helm-values-judge] |  | 23 |
 | [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 1.2.0](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/1.2.0) | 102 |
 | [`kserve`][helm-values-kserve] |  | 281 |
