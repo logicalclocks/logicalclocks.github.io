@@ -89,9 +89,6 @@ dynamic_batching {
 
 With `max_batch_size` above 0, `dims` leave out the batch dimension, and the first entry of `shape` in a request is the batch size.
 
-Whether dynamic batching raises throughput depends on the model and the backend: in the [benchmark][triton-performance] it lowered the throughput of an XGBoost model on CPU.
-Measure your model with and without it.
-
 ### GPUs
 
 Request GPUs in the deployment's [resources](../../serving/resources.md); Hopsworks gives Triton deployments no GPU by default.
@@ -310,31 +307,3 @@ See the [REST API guide][open-inference-protocol-v2] for the inference URL, the 
 | Disk logging | No | The upload runs the Hopsworks library inside the serving container, which the Triton image does not have |
 | Several models or ensembles per deployment | No | A deployment serves one Triton model, named after the deployment |
 | Model load and unload requests | No | Triton runs with `--model-control-mode=none` |
-
-## Performance { #triton-performance }
-
-In an internal benchmark with a 10 MB XGBoost model and one deployment instance on 2 CPU cores, Triton reached 3.0 times the peak throughput of a FastAPI server and 4.1 times that of the Python model server.
-At 128 concurrent requests, its median latency was 26% lower than the FastAPI server's and 43% lower than the Python model server's.
-
-| Deployment | Peak requests/s | Median latency at 128 concurrent requests | Median latency at 256 concurrent requests |
-| ---------- | --------------: | ----------------------------------------: | ----------------------------------------: |
-| Triton, FIL backend | 4711 | 59 ms | 98 ms |
-| FastAPI server, deployed as an endpoint | 1552 | 80 ms | 165 ms |
-| Python model server | 1158 | 104 ms | 202 ms |
-
-The setup:
-
-- The model is an XGBoost binary classifier, 423 trees of depth 8 on 32 features, 9.9 MB as JSON, and each request carries one row.
-- Each deployment runs one instance in Standard mode with 2 CPU cores and 4 GiB, without a GPU, on an AMD Ryzen Threadripper PRO 5955WX.
-- Triton 26.09 serves the model with the FIL backend and one CPU model instance.
-- The FastAPI server and the Python model server call `xgboost.Booster.inplace_predict` with 2 threads.
-- A client outside the cluster sends requests through the Istio gateway in a closed loop, 30 seconds per concurrency level.
-- Latencies are measured at the client and include a network round trip of about 37 ms.
-
-The numbers have limits:
-
-- Up to 16 concurrent requests, the three deployments had the same latency, because the network round trip dominated it.
-- At 64 concurrent requests, the FastAPI server served about 10% more requests per second than Triton.
-  Triton was ahead from 128 concurrent requests on, and kept scaling up to 768 while the other two peaked at 128.
-- Triton's dynamic batching lowered the throughput of this model on CPU.
-- The results depend on the model, the backend and the hardware, so benchmark your own model before choosing a model server.
