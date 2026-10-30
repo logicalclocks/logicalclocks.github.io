@@ -61,8 +61,8 @@ The following restrictions apply during this window, also for workloads that use
 - Similarity search fails with `[knn] unknown token [START_OBJECT] after [filter]` on an embedding feature group created after the central upgrade.
   The 5.1 central cluster creates its index on faiss, and the client puts the search filters inside the nearest-neighbor query for faiss, which OpenSearch 1.3 cannot parse.
   Embedding feature groups created before the central upgrade keep working, and search recovers once the satellite is on 5.1.
-- In a stream feature group, an insert with several rows for one primary key leaves the last of those rows in the online store instead of the one with the latest event time, and rows of a feature group with a time-to-live that have already expired can be written to the online store.
-  The 5.1 client marks those rows for the offline store only, in a way the 5.0 online store does not read.
+- In a stream feature group, an insert with several rows for one primary key leaves the last of those rows in the online store instead of the one with the latest event time.
+  The 5.1 client marks the older rows for the offline store only, in a way the 5.0 online store does not read.
   The offline store is not affected, and feature groups that are not stream feature groups drop those rows in the client.
   The rows stay as they are after the satellite's upgrade, so insert the newest values of the affected keys again once the satellite is on 5.1.
 - Creating a new cosine embedding feature group fails while the satellite runs OpenSearch 1.3, for both shared project indexes and dedicated indexes.
