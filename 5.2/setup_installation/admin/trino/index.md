@@ -246,14 +246,11 @@ The chart ships two kinds of catalog over the feature store:
 
 - `delta`, `hudi`, `iceberg` and `hive` impersonate the querying user, so HopsFS permissions apply on top of the access-control rules.
   They serve a project's own feature groups, and feature groups or feature stores shared whole, which HopsFS grants the receiving project.
-- `delta_shared`, `hudi_shared` and `iceberg_shared` do not impersonate.
-  They read HopsFS as the `trino` user, which is a HopsFS superuser, because a feature group shared with a subset of its features grants the receiving project no HopsFS access.
+- `delta_shared`, `hudi_shared` and `iceberg_shared` serve feature groups shared with a subset of their features, only while `hopsworks.variables.trino_feature_group_subset_shares_enabled` is `"true"`.
+  From 5.2.1 it defaults to `"false"` because of a security fix, as [Feature groups shared with a subset of their features][upgrade-trino-subset-shares] describes.
 
-For the second kind the access-control rules are the only gate.
-The base policy grants nobody access to them, not even administrators, and Hopsworks adds a rule per subset share that allows the receiving project the shared features of that one table and denies the rest.
-They are read-only at the connector as well, so no rule can let a query write through them.
-Do not add rules for these catalogs to the base policy: any rule that reaches one of them reads every project's feature store.
-Administrators are denied them because Trino runs a view as the user recorded as its owner, so a view recorded as owned by an administrator would reach them too.
+The base policy grants nobody access to the second kind, administrators included, and while the value is `"true"` Hopsworks adds a rule per subset share that allows the receiving project the shared features of that one table and denies the rest.
+Because of the same security fix, do not add rules for these catalogs to the base policy.
 
 ### Reading the rules file
 
@@ -342,7 +339,7 @@ The list of denied columns in the rule is shortened here.
   A share of a private catalog also adds, before that deny, a rule letting the owner keep running the catalog's `system` functions.
 
 A feature group shared whole adds one table rule on `hive|iceberg|delta|hudi` for its table in the owner's feature store.
-A feature group shared with a subset of its features adds a catalog rule on the shared catalog of its format, such as `delta_shared`, and a table rule there that denies every unshared feature and hidden column, followed by the metadata table deny.
+While `trino_feature_group_subset_shares_enabled` is `"true"`, a feature group shared with a subset of its features adds a catalog rule on the shared catalog of its format, such as `delta_shared`, and a table rule there that denies every unshared feature and hidden column, followed by the metadata table deny.
 
 #### Debugging a share
 
