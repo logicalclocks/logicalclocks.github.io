@@ -141,7 +141,7 @@ On 5.1.0 and 5.1.1, the OpenSearch roles and mappings behind grants and shares m
 Granting or sharing again is therefore refused: revoke and grant again, or unshare and share again.
 The other configuration types are still applied from the chart's files.
 
-- Give a restricted project member that reads the project's embedding indices a grant or a share.
+- Give a restricted project member that reads the project's embedding indices a grant or a share; without one it gets HTTP 403 on those indices.
   Read access comes only from a grant or a share, limited to the granted features.
 - At pod start nothing is applied until every OpenSearch node has joined and runs the same version, so the last pod of a rolling upgrade, or the last to start, applies it.
   A pod started while another is down logs a warning and skips it, and a skip is not retried before the next pod start.
