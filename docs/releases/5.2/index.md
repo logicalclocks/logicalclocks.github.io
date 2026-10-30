@@ -1,5 +1,8 @@
 ---
 releases:
+  "5.2.3":
+    released: "2026-10-29"
+    python_client: "5.2.2"
   "5.2.2":
     released: "2026-10-28"
     python_client: "5.2.2"
@@ -14,6 +17,20 @@ releases:
 # Release notes { #hopsworks-5-2 }
 
 The releases of Hopsworks 5.2, newest first.
+
+## 5.2.3 { #hopsworks-5-2-3 }
+
+### Breaking changes
+
+- [HELM] Mirror `envoyproxy/envoy:v1.38.0` to the path `envoyproxy/envoy` of your registry before the upgrade when `global._hopsworks.imageRegistry` points at your own: Python apps now pull their Envoy sidecar from that registry instead of Docker Hub, so air-gapped installs can start them ([Envoy image of Python apps][docs-upgrade-python-app-envoy]).
+
+### Upgrade steps
+
+Follow [Changes from 5.2.3][docs-upgrade-changes-from-523] in the upgrade guide.
+
+### Configuration changes
+
+- [HELM] Added `hopsworks.variables.python_app_envoy_image_version` (default `v1.38.0`), the tag of the Envoy sidecar of Python apps ([values][values-python-app-envoy]).
 
 ## 5.2.2 { #hopsworks-5-2-2 }
 
@@ -473,11 +490,14 @@ Follow [Before every upgrade][docs-upgrade-before] and [5.1.x to 5.2.x][docs-upg
 [values-hw-keda]: https://docs.hopsworks.ai/5.2/setup_installation/common/helm_chart_values/hw-keda/
 [values-kafka]: https://docs.hopsworks.ai/5.2/setup_installation/common/helm_chart_values/kafka/#helm.kafka.cluster.kafka.config.minInsyncReplicas
 [values-hopsworks-analytics]: https://docs.hopsworks.ai/5.2/setup_installation/common/helm_chart_values/hopsworks/#helm.hopsworks.variables.hopsworks_analytics
+[values-python-app-envoy]: https://docs.hopsworks.ai/5.2/setup_installation/common/helm_chart_values/hopsworks/#helm.hopsworks.variables.python_app_envoy_image_version
 [values-netpol]: https://docs.hopsworks.ai/5.2/setup_installation/common/helm_chart_values/hopsworks/#helm.hopsworks.variables.project_namespace_network_policy_enabled
 [docs-os]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade_opensearch/
 [docs-upgrade-before]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-before-every-upgrade
 [docs-upgrade-51-to-52]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-51-to-52
 [docs-upgrade-changes-from-522]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-changes-from-522
+[docs-upgrade-changes-from-523]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-changes-from-523
+[docs-upgrade-python-app-envoy]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-python-app-envoy
 [docs-upgrade-v109]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-v109-statistics-cleaner
 [docs-upgrade-onlinefs]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-onlinefs-topics
 [docs-upgrade-ddl]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-ddl-sql-node

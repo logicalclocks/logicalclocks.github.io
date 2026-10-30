@@ -99,7 +99,7 @@ Never write it by hand: the notes are hopsworks-api's own, shown as they are on 
   Check a repo with `gh repo view <org>/<repo> --json visibility` before linking it.
 - Write a security fix as "Addressed vulnerabilities in <component>", such as "Addressed vulnerabilities in jobs", and nothing more: never write "Fixed a security issue in", and never say what was exposed, who could exploit it or how, because the notes are public and clusters on older releases stay vulnerable.
   Fixes of known vulnerabilities in dependencies and images stay one entry per group, such as "Addressed vulnerabilities in the Grafana and Superset images".
-  A breaking change or upgrade step that a security fix needs says what to do and that a security fix needs it, never what users could do before or can no longer do, which names the issue, so "Because of a security fix, share the whole feature group with a project that queries it in Trino and may read all its features", not "can no longer be queried in Trino".
+  A breaking change or upgrade step that a security fix needs says what to do and that a security fix needs it, with only the effects an operator acts on, such as an error code or a value to set, never what users could do before or can no longer do, which names the issue, so "Because of a security fix, share the whole feature group with a project that queries it in Trino and may read all its features", not "can no longer be queried in Trino".
   Keep "to address a vulnerability" for an action that is itself the fix, such as rotating credentials, and for an entry whose subject is the change, such as "Changed how OnlineFS checks the topic of the records it writes, to address a vulnerability"; after an action the reader takes to adjust, it reads as if that action were the fix.
 
 `### What's changed` and `### Configuration changes` are each one flat list with no subcategories.
@@ -137,7 +137,7 @@ Say in each one what changed, what the behaviour was before, who is affected and
 Outline the behaviour before the change in a few words, such as "instead of `default`" or "which used to keep them", so a reader can tell whether they relied on it; check it against the previous release, not the commit message.
 A breaking change that a security fix needs leaves out the behaviour before and what users can no longer do, because either describes the issue; it says only what to do, as the security rule above says.
 A fix that takes away something users rely on is a breaking change, also when it addresses a vulnerability.
-A breaking change is not repeated under `### What's changed`; a value it adds, removes or renames is still listed under `### Configuration changes`, which says what the value does, while the breaking change says what to do.
+A breaking change is not repeated under `### What's changed`; a value it adds, removes or renames is still listed under `### Configuration changes`, which says what the value does, while the breaking change says what to do; for the opt-out of a security fix it says only that the value turns the fix off, as `hopsworks.variables.trino_feature_group_subset_shares_enabled` does in 5.2.1.
 A change that ships in patch releases of two minor versions at about the same time, such as 5.0.14 and 5.1.2, is listed in both releases, without a marker; the `(also in ...)` marker is only for an X.Y.0 entry.
 
 Deprecations are what a release marks for removal but still accepts, such as a Helm value the chart keeps only so existing values files validate.

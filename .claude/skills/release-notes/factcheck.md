@@ -16,6 +16,7 @@ The hard rules of `draft.md` in this folder apply to you too: don't edit any fil
 3. Noticed by users or operators, and worth a line.
 4. In the right subsection, as the guide defines them.
 5. Security fixes as "Addressed vulnerabilities in <component>" only: no entry says "Fixed a security issue in", and nothing in an entry, a breaking change or an upgrade step says what was exposed, who could exploit it or how, or what users could do before the fix or can no longer do.
+   An error code or a value an operator acts on is allowed.
    Check this first: it outweighs every other rule, because the notes are public.
 6. Written to the rules: after its tags a past-tense verb, except in a breaking change, one line plus at most one to act on, no Jira key, PR, commit, customer, or link to a private GitHub repo (the guide lists which source repos are private), absolute docs links of the release's minor version, or of the oldest docs version that has the page, one sentence per line.
 7. Every link resolves: the page exists in `branch-X.Y` of the docs repo, on its remote that points at `logicalclocks`, and so does the anchor.

@@ -54,6 +54,7 @@ COMPONENTS = {
     ],
     "consul-k8s": ["charts/consul/values.yaml:consul.global.imageK8S"],
     "Docker registry": ["charts/docker-registry/values.yaml:image.tag"],
+    "Envoy of Python apps": [f"{HOPSWORKS}:variables.python_app_envoy_image_version"],
     "Filebeat": [
         f"{HOPSWORKS}:image.filebeat.tag",
         "charts/olk/values.yaml:filebeat.image.tag",
