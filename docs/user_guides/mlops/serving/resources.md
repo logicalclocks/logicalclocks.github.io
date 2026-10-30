@@ -6,17 +6,23 @@ description: Documentation on how to allocate resources to a model deployment
 
 ## Introduction
 
-Resource allocation can be configured ==per component== (predictor and transformer) in a deployment, allowing you to specify how many CPUs, GPUs, and memory are allocated.
+Resource allocation can be configured ==per component== (predictor and transformer) in a deployment, allowing you to specify how many CPUs, GPUs, and memory are allocated, and how much local disk a component may use.
 For each component, you can set minimum (requests) and maximum (limits) resources, as well as the number of instances.
 
 ??? info "Resource defaults"
 
-    | Field              | Default Request | Default Limit  | Validation                                         |
-    | ------------------ | --------------- | -------------- | -------------------------------------------------- |
-    | CPU (cores)        | 0.2             | -1 (unlimited) | Request cannot exceed limit (unless -1, unlimited) |
-    | Memory (MB)        | 32              | -1 (unlimited) | Request cannot exceed limit (unless -1, unlimited) |
-    | GPUs               | 0               | 0              | Request must equal limit                           |
-    | Shared Memory (MB) | 128             | n/a            | n/a                                                |
+    | Field              | Default Request | Default Limit    | Validation                                         |
+    | ------------------ | --------------- | ---------------- | -------------------------------------------------- |
+    | CPU (cores)        | 0.2             | -1 (unlimited)   | Request cannot exceed limit (unless -1, unlimited) |
+    | Memory (MB)        | 32              | -1 (unlimited)   | Request cannot exceed limit (unless -1, unlimited) |
+    | GPUs               | 0               | 0                | Request must equal limit                           |
+    | Shared Memory (MB) | 128             | n/a              | n/a                                                |
+    | Disk (GB)          | equals limit    | unset (no limit) | 1 to 16384, set on the limit only                  |
+
+!!! note "Local disk"
+    The model files are downloaded to the predictor's local disk when an instance starts, so a disk limit on the predictor must fit them, plus whatever the model server writes.
+    A component that uses more local disk than its limit is evicted and restarted.
+    With no limit, a component can use the node's free disk, which the other pods on the node share.
 
 !!! tip "Automatic downscale of inactive instances"
     Setting the number of instances to **0** for a component enables **scale-to-zero**: its instances scale down to zero after a period without requests and the next request wakes it.
@@ -56,6 +62,7 @@ To navigate to the advanced creation form, click on `Advanced options`.
 
 In the `Resource allocation` section of the form, you can optionally set the resources to be allocated to the predictor and/or the transformer (if available).
 Moreover, you can choose the minimum number of replicas for each of these components.
+`Disk (GB)` limits a component's local disk; leave it empty for no limit.
 
 !!! note "Scale-to-zero capabilities"
     Set the number of instances to **0** to enable scale-to-zero on the component.
@@ -104,6 +111,9 @@ Once you are done with the changes, click on `Create new deployment` at the bott
       num_instances=1, requests=minimum_res, limits=maximum_res
   )
   ```
+
+To limit a component's local disk, pass `disk` in GB to its limits, for example `Resources(cores=2, memory=256, gpus=1, disk=50)`.
+The same amount is requested, so `disk` is not accepted on the requests.
 
 ### Step 3 (Optional): Define the transformer resource configuration
 
