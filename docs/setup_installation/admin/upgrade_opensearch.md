@@ -198,7 +198,7 @@ Upgrade every satellite to 5.1.x before the central cluster moves to 5.2.x, beca
 Then upgrade every satellite to 5.2.x before the central cluster, because a satellite's Kafka has to move to KRaft before the central upgrade converts the Strimzi resources.
 Hopsworks clients on OpenSearch 2.19 against a satellite's OpenSearch 3.8 were verified.
 
-A satellite's OpenSearch roles and security configuration come from the satellite's own chart, so a satellite below 5.1.2 keeps the problems described in [Security configuration][opensearch-security-configuration] whatever the central cluster runs.
+Because of a security fix, upgrade each satellite to 5.1.2 or later too, since a satellite's OpenSearch roles and security configuration come from its own chart, not from the central cluster's.
 
 To copy a satellite's indices on 5.1.x first, upgrade the satellite's release as described in the next section, since each release runs its own Job.
 
