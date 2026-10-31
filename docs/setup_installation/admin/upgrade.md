@@ -190,6 +190,26 @@ OpenSearch stays on 3.8.0.
 An upgrade from 5.2.0 or 5.2.1 also gets the [changes from 5.2.2][upgrade-changes-from-522].
 An upgrade from 5.2.0 also crosses two changes of 5.2.1, described under 5.1.x to 5.2.x: [Feature groups shared with a subset of their features][upgrade-trino-subset-shares], and the OpenSearch [Security configuration][opensearch-security-configuration], which addresses a vulnerability.
 
+### Superset initialization { #upgrade-superset-initialization }
+
+From 5.3, the chart initializes Superset's metadata database before new web and Celery containers start.
+Existing metadata is migrated in place.
+The initialization Job runs with the release under Helm and Flux, and is recreated during an Argo CD sync, so it does not depend on workload readiness.
+New Superset pods remain in `Init` until migrations and the configured initialization commands complete.
+Inspect the initialization Job's logs if those pods remain blocked; the Job and startup gates each have a 1,800-second timeout, configurable with `superset.superset.initialization.timeoutSeconds`.
+This change does not repair a partial schema left by an earlier failed installation.
+
+Remove an explicit `superset.superset.init.enabled: true` override so the chart can replace the old post-install hook.
+With `helm upgrade --reuse-values`, pass `--set superset.superset.init.enabled=false` on the first upgrade.
+Replace an existing `superset.superset.init.enabled: false` opt-out with the following setting when an external process initializes the metadata database:
+
+```yaml
+superset:
+  superset:
+    initialization:
+      enabled: false
+```
+
 ### ICEBERG feature groups in Trino { #upgrade-iceberg-trino }
 
 From 5.3, the Trino `iceberg` catalog reads an ICEBERG feature group on HopsFS once Hopsworks has registered its current Iceberg metadata in the Hive metastore.
