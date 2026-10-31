@@ -175,7 +175,7 @@ Only the first row of a request is traced, so a batch request records one `trans
 ## Trace storage
 
 Traces are kept in the online feature store only, in the project's `serving_traces` feature group, and are never written to the offline store.
-A trace is two rows: its root span, and the rest of its spans as JSON.
+A trace is typically two rows: its root span, and the rest of its spans as JSON; a trace whose spans arrive in several batches, or exceed 60,000 bytes, takes more.
 The feature group has a time to live, 36 hours by default, counted from the start of each trace, so the deployment page shows the requests traced in that window.
 Expired traces disappear from reads at once and RonDB deletes them in the background.
 To keep a project's traces longer or shorter, change the feature group's time to live with [`enable_ttl`][hsfs.feature_group.FeatureGroup.enable_ttl].
