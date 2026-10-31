@@ -212,7 +212,8 @@ deployment.delete_traces(
 
 Each request deletes at most `batch_size` rows (default 1000, at most 10000) in one transaction, since RonDB caps the operations one transaction holds; `delete_traces` repeats it until none are left and returns the number of rows deleted.
 Over the REST API, one request deletes one batch and returns `{"deleted": <rows>}`; repeat it until `deleted` is 0.
-`until` is in epoch milliseconds and is optional:
+`until` is in epoch milliseconds and is optional.
+With it, a trace whose request started before `until` is deleted whole, together with the spans it recorded after `until`:
 
 ```bash
 curl -X DELETE \
