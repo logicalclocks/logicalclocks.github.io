@@ -1,5 +1,8 @@
 ---
 releases:
+  "5.0.15":
+    released: "TBD"
+    python_client: "5.0.10"
   "5.0.14":
     released: "2026-10-16"
     python_client: "5.0.10"
@@ -48,6 +51,23 @@ releases:
 # Release notes { #hopsworks-5-0 }
 
 The releases of Hopsworks 5.0, newest first.
+
+## 5.0.15 { #hopsworks-5-0-15 }
+
+### What's changed
+
+- Changed the RonDB REST server to size its buffer pool from its memory limit, return idle buffers after 15 minutes and opt out of transparent huge pages, so that its memory stays bounded.
+
+### Breaking changes
+
+- [API] A batch REST request with more than 4096 operations, or a batch feature vector request with more than 4096 entries, is now rejected by the RonDB REST server with HTTP 413, where it accepted any number; split larger batches, or raise `rondb.rondb.rdrs.internal.maxOperationsPerBatchRequest`.
+- [API] A primary key read of a BLOB or TEXT value larger than 2 MiB now fails that operation with HTTP 413, and a feature vector with such a value fails with error 22 `Feature value too large.`, where the RonDB REST server returned it; raise `rondb.rondb.rdrs.internal.maxBlobTextValueBytes` (`0` for no limit) if you store larger values.
+- [HELM] Remove `rondb.rondb.rdrs.internal.bufferSize`, `gomaxprocs` and `maxAllocatedBuffers` from your values, which the chart ignored, or `helm upgrade` fails before changing anything.
+
+### Configuration changes
+
+- [HELM] Changed the memory request and limit of the RonDB REST server pods (`rondb.rondb.resources.requests.memory.rdrsMiB`, `rondb.rondb.resources.limits.memory.rdrsMiB`) from 100 MiB and 500 MiB to 2 GiB; check node capacity before the upgrade.
+- [HELM] Added the RonDB REST server settings the chart didn't expose, under `rondb.rondb.rdrs`, such as its buffer pool, its request, BLOB and batch size limits, its rate limit and its use of transparent huge pages.
 
 ## 5.0.14 { #hopsworks-5-0-14 }
 
