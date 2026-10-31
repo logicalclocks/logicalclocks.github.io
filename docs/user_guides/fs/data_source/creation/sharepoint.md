@@ -226,12 +226,48 @@ The `Syncs` tab links it in the `Index` column once the first run has created it
 | `content_hash` | SharePoint's quickXorHash of the content |
 | `sync_id`, `execution_id`, `indexed_at` | the sync and the run that last wrote the row, and when |
 | `ingestion_date` | the partition: the UTC day the file was first indexed, which is the day it was copied in, or for a file already in the dataset, the day indexing was turned on |
+| `list_item_id`, `content_type` | the file's item in the document library, and its content type |
+| `etag`, `ctag` | SharePoint versions of the item: `etag` changes on every edit, `ctag` only when the content changes |
+| `metadata_json` | the document library's column values for the file, custom columns included, as a JSON object |
+| `metadata_truncated` | a JSON array of the columns cut or left out of `metadata_json` for size, or empty |
+| `metadata_state` | `complete`, or `missing` when the last run could not read the file's columns |
+| `metadata_hash` | a hash of the metadata columns, which changes when any of them does |
 
 The table holds no file content; the file is in the dataset at `hopsfs_path`.
 
+#### Library columns
+
+Each run that indexes also reads the library's column values from Microsoft Graph, with the data source's credentials, for every file in the synced folder.
+`metadata_json` holds every visible column, keyed by its internal name, with values as Graph returns them: a person or lookup column appears as `<Name>LookupId` with its numeric id.
+Columns that repeat a column of the row, such as the name, path, size and times, are left out.
+A text value over 32 KB is cut, any other value over 32 KB is left out, and the largest values are left out until the whole is under 256 KB; `metadata_truncated` names them.
+
+Editing only a file's columns in SharePoint does not copy the file again: the next run rewrites the file's row with the new values.
+If the run cannot read the columns, the files are still copied and indexed, every row keeps its previous values, a new file's row is marked `missing`, and the run is reported as partial with `metadata not updated` and the reason.
+Rows marked `missing` are read again on every run.
+
+The library's column definitions, as Graph returns them, are written to `columns.json` in the sync's audit directory whenever they change:
+
+```text
+DataSources/<data source>/audit/<dataset>/columns.json
+```
+
+In a terminal, DuckDB lists the column keys in use and filters on their values:
+
+```bash
+duckdb -c "SELECT key, count(*) AS files
+FROM (SELECT unnest(json_keys(metadata_json)) AS key
+      FROM delta_scan('/hopsfs/featurestore/acme_featurestore.db/sharepoint_reports_1')
+      WHERE metadata_json IS NOT NULL)
+GROUP BY key ORDER BY files DESC;"
+duckdb -c "SELECT file_name, web_url
+FROM delta_scan('/hopsfs/featurestore/acme_featurestore.db/sharepoint_reports_1')
+WHERE metadata_json->>'\$.Department' = 'Finance';"
+```
+
 Each run that does not fail lists the folder with its SharePoint metadata and compares it with the table:
 
-- A file whose copy is in the dataset and that has no row, or whose path, size, modification time, editor or hash changed, is written.
+- A file whose copy is in the dataset and that has no row, or whose path, size, modification time, editor, hash or library column values changed, is written.
   A new file goes into today's partition; a changed or renamed file keeps the partition of the day it was first indexed.
 - A row whose file is gone from both SharePoint and the dataset is deleted, and so is a row whose path now holds another SharePoint file.
   A copy-only sync keeps its files, so it keeps their rows too.
@@ -247,7 +283,9 @@ delta-rs 1.4 rewrites a file to delete rows from it and does not write deletion 
 Indexing can be turned on for an existing sync: its next run indexes every copied file that is still in the SharePoint folder.
 A file a copy-only sync kept after it was deleted in SharePoint has no metadata to index, so it gets no row.
 Turning it off keeps the feature group, and a new name starts a new one.
-The sync script must be template version 2 or later; reset it to default if the data source page shows an older version.
+The sync script must be template version 2 or later, and version 3 or later to read the library columns; reset it to default if the data source page shows an older version.
+Resetting a version 2 script to version 3 adds the new columns to an existing index on its next run, which then reads the library columns of every file and rewrites every row once.
+After that, the index cannot be written by a version 2 script again.
 Deleting the sync deletes the feature group, unless the files are kept.
 The name of an index must not be that of an existing feature group, and a sync deletes only the feature group its runs created.
 
