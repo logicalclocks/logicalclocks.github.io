@@ -231,13 +231,14 @@ The `Syncs` tab links it in the `Index` column once the first run has created it
 | `metadata_json` | the document library's column values for the file, custom columns included, as a JSON object |
 | `metadata_truncated` | a JSON array of the columns cut or left out of `metadata_json` for size, or null when none were |
 | `metadata_state` | whether the metadata columns are current; see [Library columns](#library-columns) |
-| `metadata_hash` | a SHA-256 of `list_item_id`, `content_type`, `etag`, `ctag`, `metadata_json` and the version of the rules that choose the columns; it changes when any of them does |
+| `metadata_hash` | a SHA-256 of `list_item_id`, `content_type`, `etag`, `ctag`, `metadata_json`, `metadata_truncated` and the version of the rules that choose the columns; it changes when any of them does |
 
 The table holds no file content; the file is in the dataset at `hopsfs_path`.
 
 #### Library columns
 
-Each run that indexes also reads the library's column values from Microsoft Graph, with the data source's credentials, for every file in the synced folder.
+Each run that indexes also reads the library's column values from Microsoft Graph, with the data source's credentials, for every file the sync selects, opening only the folders that hold one.
+The values are readable by everyone who can read the project's feature store, whatever SharePoint permissions the items carry, as the copied files are readable by everyone who can read the dataset.
 `metadata_json` holds every visible column, keyed by its internal name, with values as Graph returns them: a person or lookup column appears as `<Name>LookupId` with its numeric id.
 Columns that repeat a column of the row, such as the name, path, size and times, are left out.
 A text value over 32 KiB is cut, any other value over 32 KiB is left out, and the largest values are left out until the whole is under 256 KiB; `metadata_truncated` names them.
@@ -248,17 +249,19 @@ Editing only a file's columns in SharePoint does not copy the file again: the ne
 
 | State | Meaning |
 | --- | --- |
-| `complete` | the last run that read the library read this file's columns |
-| `stale` | the last run could not read the library; the values are from an earlier run |
-| `missing` | the last run read the library but not this file, or the file is no longer in SharePoint; the values, if any, are from an earlier run |
+| `complete` | the last run that read the library read these values for the file |
+| `stale` | the values are from an earlier run: the last run could not read the library, or it read other values for a file whose copy failed |
+| `missing` | the last run did not read this file's columns: the library read did not return it, the read failed before the file's first row was written, or the file is no longer in SharePoint; the values, if any, are from an earlier run |
 | null | the row was written before the sync script read library columns, and no run since has read them |
 
 If a run cannot read the library, the files are still copied and indexed, `complete` rows become `stale` with their values kept, a new file's row is `missing`, and the run is reported as partial with `metadata not updated` and the reason.
-The next run that reads the library makes them `complete` again.
-The row of a file whose copy failed keeps describing the copy in the dataset; it stays `complete` only when the run read the same column values for the file, and otherwise becomes `stale`, or `missing` when the read did not return the file.
+The next run that reads the library rewrites them with the values it read, as `complete`.
+The row of a file whose copy failed keeps describing the copy in the dataset, so it keeps its values: it is `complete` when the run read the same values for the file, `stale` when it read other values, and `missing` when the read did not return the file.
 A file a copy-only sync keeps after it was deleted in SharePoint keeps its row, marked `missing`.
 If a run cannot write the index at all, the table stays as the last run left it and the run reports the error.
 Filter on `metadata_state = 'complete'` when the values must be current.
+A `complete` row can still lack a column, or hold a cut value, that `metadata_truncated` names, so a filter on a library column can miss such files.
+Count the rows whose `metadata_truncated` names a column the filter uses before treating its result as exhaustive.
 
 The library's column definitions, as Graph returns them, are written to `columns.json` in the sync's audit directory whenever they change:
 
@@ -277,6 +280,10 @@ GROUP BY key ORDER BY files DESC;"
 duckdb -c "SELECT file_name, web_url
 FROM delta_scan('/hopsfs/featurestore/acme_featurestore.db/sharepoint_reports_1')
 WHERE metadata_state = 'complete' AND metadata_json->>'\$.Department' = 'Finance';"
+duckdb -c "SELECT count(*) AS unchecked
+FROM delta_scan('/hopsfs/featurestore/acme_featurestore.db/sharepoint_reports_1')
+WHERE metadata_state = 'complete'
+  AND list_contains(CAST(CAST(metadata_truncated AS JSON) AS VARCHAR[]), 'Department');"
 ```
 
 Each run that does not fail lists the folder with its SharePoint metadata and compares it with the table:
