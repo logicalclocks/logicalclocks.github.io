@@ -196,8 +196,13 @@ From 5.3, the chart initializes Superset's metadata database before new web and 
 Existing metadata is migrated in place.
 The initialization Job runs with the release under Helm and Flux, and is recreated during an Argo CD sync, so it does not depend on workload readiness.
 New Superset pods remain in `Init` until migrations and the configured initialization commands complete.
+The startup gate waits for the Kubernetes Job, so custom database credentials stay with the application and initialization Job.
+The completed Job is retained for later pod restarts.
 Inspect the initialization Job's logs if those pods remain blocked; the Job and startup gates each have a 1,800-second timeout, configurable with `superset.superset.initialization.timeoutSeconds`.
 This change does not repair a partial schema left by an earlier failed installation.
+
+The chart binds a namespace Role for Job waiting and migration leases to Superset's configured ServiceAccount.
+If you override a Superset workload's `initContainers` list, preserve the `wait-for-initialization` container from the chart defaults.
 
 Remove an explicit `superset.superset.init.enabled: true` override so the chart can replace the old post-install hook.
 With `helm upgrade --reuse-values`, pass `--set superset.superset.init.enabled=false` on the first upgrade.
