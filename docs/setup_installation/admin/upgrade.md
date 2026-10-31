@@ -200,6 +200,7 @@ Inspect the initialization Job's logs if those pods remain blocked; the Job and 
 This change does not repair a partial schema left by an earlier failed installation.
 
 Remove an explicit `superset.superset.init.enabled: true` override so the chart can replace the old post-install hook.
+With `helm upgrade --reuse-values`, pass `--set superset.superset.init.enabled=false` on the first upgrade.
 Replace an existing `superset.superset.init.enabled: false` opt-out with the following setting when an external process initializes the metadata database:
 
 ```yaml
