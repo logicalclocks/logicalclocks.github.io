@@ -229,9 +229,9 @@ The `Syncs` tab links it in the `Index` column once the first run has created it
 | `list_item_id`, `content_type` | the file's item in the document library, and its content type |
 | `etag`, `ctag` | SharePoint versions of the item: `etag` changes on every edit, `ctag` only when the content changes |
 | `metadata_json` | the document library's column values for the file, custom columns included, as a JSON object |
-| `metadata_truncated` | a JSON array of the columns cut or left out of `metadata_json` for size, or empty |
-| `metadata_state` | `complete`, or `missing` when the last run could not read the file's columns |
-| `metadata_hash` | a hash of the metadata columns, which changes when any of them does |
+| `metadata_truncated` | a JSON array of the columns cut or left out of `metadata_json` for size, or null when none were |
+| `metadata_state` | whether the metadata columns are current; see [Library columns](#library-columns) |
+| `metadata_hash` | a SHA-256 of `list_item_id`, `content_type`, `etag`, `ctag`, `metadata_json` and the version of the rules that choose the columns; it changes when any of them does |
 
 The table holds no file content; the file is in the dataset at `hopsfs_path`.
 
@@ -240,11 +240,25 @@ The table holds no file content; the file is in the dataset at `hopsfs_path`.
 Each run that indexes also reads the library's column values from Microsoft Graph, with the data source's credentials, for every file in the synced folder.
 `metadata_json` holds every visible column, keyed by its internal name, with values as Graph returns them: a person or lookup column appears as `<Name>LookupId` with its numeric id.
 Columns that repeat a column of the row, such as the name, path, size and times, are left out.
-A text value over 32 KB is cut, any other value over 32 KB is left out, and the largest values are left out until the whole is under 256 KB; `metadata_truncated` names them.
+A text value over 32 KiB is cut, any other value over 32 KiB is left out, and the largest values are left out until the whole is under 256 KiB; `metadata_truncated` names them.
 
 Editing only a file's columns in SharePoint does not copy the file again: the next run rewrites the file's row with the new values.
-If the run cannot read the columns, the files are still copied and indexed, every row keeps its previous values, a new file's row is marked `missing`, and the run is reported as partial with `metadata not updated` and the reason.
-Rows marked `missing` are read again on every run.
+
+`metadata_state` says whether the values are current:
+
+| State | Meaning |
+| --- | --- |
+| `complete` | the last run that read the library read this file's columns |
+| `stale` | the last run could not read the library; the values are from an earlier run |
+| `missing` | the last run read the library but not this file, or the file is no longer in SharePoint; the values, if any, are from an earlier run |
+| null | the row was written before the sync script read library columns, and no run since has read them |
+
+If a run cannot read the library, the files are still copied and indexed, `complete` rows become `stale` with their values kept, a new file's row is `missing`, and the run is reported as partial with `metadata not updated` and the reason.
+The next run that reads the library makes them `complete` again.
+The row of a file whose copy failed keeps describing the copy in the dataset; it stays `complete` only when the run read the same column values for the file, and otherwise becomes `stale`, or `missing` when the read did not return the file.
+A file a copy-only sync keeps after it was deleted in SharePoint keeps its row, marked `missing`.
+If a run cannot write the index at all, the table stays as the last run left it and the run reports the error.
+Filter on `metadata_state = 'complete'` when the values must be current.
 
 The library's column definitions, as Graph returns them, are written to `columns.json` in the sync's audit directory whenever they change:
 
@@ -262,7 +276,7 @@ FROM (SELECT unnest(json_keys(metadata_json)) AS key
 GROUP BY key ORDER BY files DESC;"
 duckdb -c "SELECT file_name, web_url
 FROM delta_scan('/hopsfs/featurestore/acme_featurestore.db/sharepoint_reports_1')
-WHERE metadata_json->>'\$.Department' = 'Finance';"
+WHERE metadata_state = 'complete' AND metadata_json->>'\$.Department' = 'Finance';"
 ```
 
 Each run that does not fail lists the folder with its SharePoint metadata and compares it with the table:
