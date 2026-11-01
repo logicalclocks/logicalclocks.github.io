@@ -9,7 +9,7 @@ With tracing on, the deployment:
 
 - counts every request's transformations on its Prometheus endpoint, per feature view and per transformation function, with the fastest and slowest feature vector of the last minute;
 - records a sample of the requests as traces: the request, its feature lookup, each transformation phase with one span per function in DAG order, the prediction and the feature log write;
-- shows those traces in the `Transformations` section of the deployment page.
+- shows those traces in the `Prediction Latency Analytics` section of the deployment page.
 
 It applies to deployments created with `model.deploy(...)` from a model with a feature view, to feature view deployments, and to predictor scripts that call `get_feature_vector` or `get_feature_vectors`.
 
@@ -129,30 +129,47 @@ The response carries `activeUntil` and `expiredAt` in epoch milliseconds.
 
 ## Web UI
 
-The deployment page of a deployment that serves a feature view has a `Transformations` section.
+The deployment page of a deployment that serves a feature view has a `Prediction Latency Analytics` section.
 While tracing is on, the section lists the traced requests; expanding one shows its spans with their durations.
-While it is off, the section is titled `Feature View Transformations: Metrics` and shows `Tracing is disabled`; clicking it shows how to turn tracing on.
+While it is off, the section shows `Tracing is disabled`; clicking it shows how to turn tracing on.
 On a deployment created with tracing, the switch in the section header turns it off and on, like `set_tracing`, and shows the time tracing will be switched off.
 Next to it, `Traced requests` sets the sampling to 0.01%, 0.1%, 1%, 10% or 100%, without restarting the deployment.
 Once the period has ended, the section says when tracing was switched off.
 
-On a deployment created with tracing, the section opens with `Transformation time per request`: the number of requests and the minimum, p50, p95, p99 and maximum time a request spent in transformations, all its feature vectors and both phases, over the last 24 hours.
+On a deployment created with tracing, the section opens with `Request time by stage`, a table of the requests over the last 24 hours with, for each stage, the number of requests and the minimum, p50, p95, p99 and maximum time spent in it:
+
+| Stage | Time measured |
+| --- | --- |
+| Feature lookup | Reading the feature vectors, including their transformations |
+| Transformations | The on-demand and model-dependent transformations of all the request's feature vectors |
+| Model predict | `model_predict` |
+| Feature log (queueing) | Queueing the feature log write; the write itself runs after the response |
+
 The buttons next to it change the window to 6 hours, 1 hour, 10 minutes or 1 minute, and the values refresh every minute.
 Every request is counted while tracing is on, whatever the sampling.
+The stages are those of the default predictor; a predictor script that calls `get_feature_vector` or `get_feature_vectors` itself reports only `Transformations`.
 The quantiles are estimated from a histogram with ten buckets a decade, so one can be up to 26% off; the minimum and maximum are exact, read from gauges that cover up to the last two minutes.
 
 The same statistics over the REST API, with `window` one of `1m`, `10m`, `1h`, `6h` and `24h` (the default):
 
 ```bash
 curl -H "Authorization: ApiKey $HOPSWORKS_API_KEY" \
-  "https://$HOPSWORKS_HOST/hopsworks-api/api/project/$PROJECT_ID/serving/$DEPLOYMENT_ID/transformations/latency?window=1h"
+  "https://$HOPSWORKS_HOST/hopsworks-api/api/project/$PROJECT_ID/serving/$DEPLOYMENT_ID/latency?window=1h"
 ```
 
 ```json
-{"window": "1h", "requests": 1234, "minSeconds": 0.00011, "p50Seconds": 0.00016, "p95Seconds": 0.00031, "p99Seconds": 0.00052, "maxSeconds": 0.0019}
+{
+  "window": "1h",
+  "stages": [
+    {"stage": "feature_lookup", "requests": 1234, "minSeconds": 0.0019, "p50Seconds": 0.0023, "p95Seconds": 0.0031, "p99Seconds": 0.0042, "maxSeconds": 0.0094},
+    {"stage": "transformations", "requests": 1234, "minSeconds": 0.00011, "p50Seconds": 0.00016, "p95Seconds": 0.00031, "p99Seconds": 0.00052, "maxSeconds": 0.0019},
+    {"stage": "model_predict", "requests": 1234, "minSeconds": 0.00039, "p50Seconds": 0.00047, "p95Seconds": 0.00062, "p99Seconds": 0.00081, "maxSeconds": 0.0021},
+    {"stage": "feature_log", "requests": 0}
+  ]
+}
 ```
 
-With no requests in the window, `requests` is 0 and the statistics are left out.
+A stage without requests in the window has `requests` 0 and leaves the statistics out.
 Another `window` answers `400` with error code `240069`; a Prometheus that does not answer gives `503` with error code `240070`.
 
 The deployment's Grafana dashboard, opened with `View in Grafana` in the `Metrics` section, charts the metrics under `Feature view transformations`.
@@ -166,8 +183,8 @@ The deployment's Grafana dashboard, opened with `View in Grafana` in the `Metric
 | `hopsworks_transformation_function_calls_total`, `hopsworks_transformation_function_seconds_total`, `hopsworks_transformation_function_errors_total` | the above, `transformation`, `outputs` | The same per transformation function, and the calls that raised |
 | `hopsworks_transformation_function_window_min_seconds`, `hopsworks_transformation_function_window_max_seconds` | the above | Fastest and slowest call of the function in the last complete 60 second window |
 | `hopsworks_transformation_dag_edge` | the above, `depends_on` | 1 for each edge of the transformation DAG |
-| `hopsworks_transformations_request_seconds` | none | Histogram of the time one request spent in transformations, all its feature vectors and both phases, with buckets ten a decade from 10 µs to 10 s |
-| `hopsworks_transformations_request_window_min_seconds`, `hopsworks_transformations_request_window_max_seconds` | none | Fastest and slowest request in the current and the last complete 60 second window |
+| `hopsworks_prediction_stage_seconds` | `stage` | Histogram of the time one request spent in a stage, `feature_lookup`, `transformations`, `model_predict` or `feature_log`, with buckets ten a decade from 10 µs to 10 s |
+| `hopsworks_prediction_stage_window_min_seconds`, `hopsworks_prediction_stage_window_max_seconds` | `stage` | Fastest and slowest request in the stage in the current and the last complete 60 second window |
 
 The average time is `rate(..._seconds_total[5m]) / rate(..._calls_total[5m])`.
 `outputs` identifies a function, since one function can be attached to several features.
