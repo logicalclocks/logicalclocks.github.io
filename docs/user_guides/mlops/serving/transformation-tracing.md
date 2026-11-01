@@ -53,6 +53,7 @@ deployment.start()
 ```
 
 `sampling_percentage` is the share of requests recorded as traces, from 0 to 100, and defaults to 10.
+It can be a fraction of a percent: `0.01` records one request in 10,000.
 Every request is counted in the metrics, whatever the sampling.
 
 Tracing stays on for `duration_days`, 7 by default, and then Hopsworks switches it off:
@@ -131,8 +132,28 @@ The response carries `activeUntil` and `expiredAt` in epoch milliseconds.
 The deployment page of a deployment that serves a feature view has a `Transformations` section.
 While tracing is on, the section lists the traced requests; expanding one shows its spans with their durations.
 While it is off, the section is titled `Feature View Transformations: Metrics` and shows `Tracing is disabled`; clicking it shows how to turn tracing on.
-On a deployment created with tracing, the switch in the section header turns it off and on, like `set_tracing`, and shows the sampling and the time tracing will be switched off.
+On a deployment created with tracing, the switch in the section header turns it off and on, like `set_tracing`, and shows the time tracing will be switched off.
+Next to it, `Traced requests` sets the sampling to 0.01%, 0.1%, 1%, 10% or 100%, without restarting the deployment.
 Once the period has ended, the section says when tracing was switched off.
+
+On a deployment created with tracing, the section opens with `Transformation time per request`: the number of requests and the minimum, p50, p95, p99 and maximum time a request spent in transformations, all its feature vectors and both phases, over the last 24 hours.
+The buttons next to it change the window to 6 hours, 1 hour, 10 minutes or 1 minute, and the values refresh every minute.
+Every request is counted while tracing is on, whatever the sampling.
+The quantiles are estimated from a histogram with ten buckets a decade, so one can be up to 26% off; the minimum and maximum are exact, read from gauges that cover up to the last two minutes.
+
+The same statistics over the REST API, with `window` one of `1m`, `10m`, `1h`, `6h` and `24h` (the default):
+
+```bash
+curl -H "Authorization: ApiKey $HOPSWORKS_API_KEY" \
+  "https://$HOPSWORKS_HOST/hopsworks-api/api/project/$PROJECT_ID/serving/$DEPLOYMENT_ID/transformations/latency?window=1h"
+```
+
+```json
+{"window": "1h", "requests": 1234, "minSeconds": 0.00011, "p50Seconds": 0.00016, "p95Seconds": 0.00031, "p99Seconds": 0.00052, "maxSeconds": 0.0019}
+```
+
+With no requests in the window, `requests` is 0 and the statistics are left out.
+Another `window` answers `400` with error code `240069`; a Prometheus that does not answer gives `503` with error code `240070`.
 
 The deployment's Grafana dashboard, opened with `View in Grafana` in the `Metrics` section, charts the metrics under `Feature view transformations`.
 
@@ -145,6 +166,8 @@ The deployment's Grafana dashboard, opened with `View in Grafana` in the `Metric
 | `hopsworks_transformation_function_calls_total`, `hopsworks_transformation_function_seconds_total`, `hopsworks_transformation_function_errors_total` | the above, `transformation`, `outputs` | The same per transformation function, and the calls that raised |
 | `hopsworks_transformation_function_window_min_seconds`, `hopsworks_transformation_function_window_max_seconds` | the above | Fastest and slowest call of the function in the last complete 60 second window |
 | `hopsworks_transformation_dag_edge` | the above, `depends_on` | 1 for each edge of the transformation DAG |
+| `hopsworks_transformations_request_seconds` | none | Histogram of the time one request spent in transformations, all its feature vectors and both phases, with buckets ten a decade from 10 µs to 10 s |
+| `hopsworks_transformations_request_window_min_seconds`, `hopsworks_transformations_request_window_max_seconds` | none | Fastest and slowest request in the current and the last complete 60 second window |
 
 The average time is `rate(..._seconds_total[5m]) / rate(..._calls_total[5m])`.
 `outputs` identifies a function, since one function can be attached to several features.
