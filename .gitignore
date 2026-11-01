@@ -136,3 +136,6 @@ target/
 
 # Local build stub for the CI-generated Java API dir
 docs/javadoc
+
+# Working files of the /release-notes skill
+.release-notes/

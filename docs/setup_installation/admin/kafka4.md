@@ -104,6 +104,9 @@ Then:
 - **A satellite cluster that shares the central operator** is upgraded before central.
   The CRD conversion re-stores every Kafka resource on the Kubernetes cluster, and a satellite still on ZooKeeper would lose its ZooKeeper configuration in the process.
   The conversion refuses while any other Kafka is not on KRaft, so the wrong order fails safely, but it blocks central's upgrade until the satellite is done.
+  Between a satellite's upgrade and the central cluster's, the satellite's Kafka runs 4.3.1, which the central cluster's previous operator does not run.
+  Its Kafka resource reports `NotReady` with `UnsupportedKafkaVersionException` and is not reconciled, while its brokers keep serving.
+  The central upgrade replaces the operator and clears this, so upgrade the central cluster soon after the last satellite.
 - **Record the topics**, so you can confirm nothing was lost:
 
     ```sh

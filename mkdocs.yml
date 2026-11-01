@@ -242,6 +242,7 @@ nav:
                   - Torch: user_guides/mlops/registry/frameworks/tch.md
                   - Scikit-learn: user_guides/mlops/registry/frameworks/skl.md
                   - LLM: user_guides/mlops/registry/frameworks/llm.md
+                  - Triton: user_guides/mlops/registry/frameworks/triton.md
                   - Python: user_guides/mlops/registry/frameworks/python.md
               - Import from HuggingFace: user_guides/mlops/registry/import_huggingface.md
               - Model Schema: user_guides/mlops/registry/model_schema.md
@@ -257,6 +258,7 @@ nav:
                   - Predictor (KServe): user_guides/mlops/serving/predictor.md
                   - Transformer (KServe): user_guides/mlops/serving/transformer.md
                   - Inference Logger: user_guides/mlops/serving/inference-logger.md
+                  - Transformation Tracing: user_guides/mlops/serving/transformation-tracing.md
                   - Inference Batcher: user_guides/mlops/serving/inference-batcher.md
                   - Resources: user_guides/mlops/serving/resources.md
                   - Autoscaling: user_guides/mlops/serving/autoscaling.md
@@ -311,6 +313,7 @@ nav:
           - KEDA Autoscaling: setup_installation/admin/keda.md
           - Envoy Gateway: setup_installation/admin/envoy_gateway.md
           - Kafka Quotas: setup_installation/admin/kafka_quotas.md
+          - OnlineFS Configuration: setup_installation/admin/onlinefs.md
           - Uninstalling Hopsworks: setup_installation/admin/uninstall.md
           - Upgrades:
               - Upgrading Hopsworks: setup_installation/admin/upgrade.md
@@ -347,6 +350,7 @@ nav:
           - Query Engine (Trino): setup_installation/admin/trino.md
           - Superset: setup_installation/admin/superset.md
           - GPU Scheduling with Run:ai: setup_installation/admin/run_ai.md
+          - Triton Inference Server: setup_installation/admin/triton.md
       - Helm Chart Values Reference:
           - setup_installation/common/helm_chart_values/index.md
           - global: setup_installation/common/helm_chart_values/global.md
@@ -382,6 +386,8 @@ nav:
   - Reference:
       - REST API Status Codes: reference/rest_error_codes.md
   - Docs for AI agents: ai.md
+  # Expanded by scripts/releases_hook.py; see .claude/docs/releases.md.
+  - Releases: releases/index.md
 
 theme:
   name: material
@@ -434,6 +440,7 @@ extra:
 
 extra_css:
   - css/custom.css
+  - css/releases.css
 
 extra_javascript:
   - js/quickstart-fullscreen.js
@@ -450,11 +457,15 @@ extra_javascript:
   - js/hops-viz.js
   - js/hops-viz-tooltip.js
   - js/prov-hover.js
+  - js/client-release-notes.js
   - js/values-filter.js
 
 # Machine-readable artifacts for AI agents: llms.txt, llms-full.txt and a raw
 # Markdown sibling (<page>.md) next to every rendered page. See scripts/llms_hook.py.
+# llms_hook exports the release pages with the header lines and table that
+# releases_hook adds in on_files, before it renders their tags and client notes.
 hooks:
+  - scripts/releases_hook.py
   - scripts/llms_hook.py
 
 plugins:
