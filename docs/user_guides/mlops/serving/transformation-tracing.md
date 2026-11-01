@@ -136,18 +136,19 @@ On a deployment created with tracing, the switch in the section header turns it 
 Next to it, `Traced requests` sets the sampling to 0.01%, 0.1%, 1%, 10% or 100%, without restarting the deployment.
 Once the period has ended, the section says when tracing was switched off.
 
-On a deployment created with tracing, the section opens with `Request time by stage`, a table of the requests over the last 24 hours with, for each stage, the number of requests and the minimum, p50, p95, p99 and maximum time spent in it:
+On a deployment created with tracing, the section opens with `Request time by stage`, a table of the requests over the last 24 hours with a row for each stage of each feature view or model, `Feature view / model` naming it with its version, and the number of requests and the minimum, p50, p95, p99 and maximum time spent in it:
 
 | Stage | Time measured |
 | --- | --- |
 | Feature lookup | Reading the feature vectors, including their transformations |
 | Transformations | The on-demand and model-dependent transformations of all the request's feature vectors |
 | Model predict | `model_predict` |
-| Feature log (queueing) | Queueing the feature log write; the write itself runs after the response |
+| Feature log (queueing) | The default predictor queueing the feature log write, which runs after the response, or a predictor script's `log` call |
 
 The buttons next to it change the window to 6 hours, 1 hour, 10 minutes or 1 minute, and the values refresh every minute.
 Every request is counted while tracing is on, whatever the sampling.
-The stages are those of the default predictor; a predictor script that calls `get_feature_vector` or `get_feature_vectors` itself reports only `Transformations`.
+The default predictor reports every stage, for its feature view and its model.
+A predictor script that looks up or logs through several feature views gets a feature lookup, transformations and feature log row for each of them, since `get_feature_vector`, `get_feature_vectors`, their `_async` variants and `log` time themselves; its model calls are its own code, so it has no model predict row.
 The quantiles are estimated from a histogram with ten buckets a decade, so one can be up to 26% off; the minimum and maximum are exact, read from gauges that cover up to the last two minutes.
 
 The same statistics over the REST API, with `window` one of `1m`, `10m`, `1h`, `6h` and `24h` (the default):
@@ -161,15 +162,15 @@ curl -H "Authorization: ApiKey $HOPSWORKS_API_KEY" \
 {
   "window": "1h",
   "stages": [
-    {"stage": "feature_lookup", "requests": 1234, "minSeconds": 0.0019, "p50Seconds": 0.0023, "p95Seconds": 0.0031, "p99Seconds": 0.0042, "maxSeconds": 0.0094},
-    {"stage": "transformations", "requests": 1234, "minSeconds": 0.00011, "p50Seconds": 0.00016, "p95Seconds": 0.00031, "p99Seconds": 0.00052, "maxSeconds": 0.0019},
-    {"stage": "model_predict", "requests": 1234, "minSeconds": 0.00039, "p50Seconds": 0.00047, "p95Seconds": 0.00062, "p99Seconds": 0.00081, "maxSeconds": 0.0021},
-    {"stage": "feature_log", "requests": 0}
+    {"stage": "feature_lookup", "name": "fraud_fv:1", "requests": 1234, "minSeconds": 0.0019, "p50Seconds": 0.0023, "p95Seconds": 0.0031, "p99Seconds": 0.0042, "maxSeconds": 0.0094},
+    {"stage": "transformations", "name": "fraud_fv:1", "requests": 1234, "minSeconds": 0.00011, "p50Seconds": 0.00016, "p95Seconds": 0.00031, "p99Seconds": 0.00052, "maxSeconds": 0.0019},
+    {"stage": "model_predict", "name": "fraud_model:3", "requests": 1234, "minSeconds": 0.00039, "p50Seconds": 0.00047, "p95Seconds": 0.00062, "p99Seconds": 0.00081, "maxSeconds": 0.0021},
+    {"stage": "feature_log", "name": "fraud_fv:1", "requests": 1234, "minSeconds": 0.000013, "p50Seconds": 0.000022, "p95Seconds": 0.000031, "p99Seconds": 0.000039, "maxSeconds": 0.000041}
   ]
 }
 ```
 
-A stage without requests in the window has `requests` 0 and leaves the statistics out.
+`name` is the feature view or model as `<name>:<version>`. Only entries with requests in the window are returned.
 Another `window` answers `400` with error code `240069`; a Prometheus that does not answer gives `503` with error code `240070`.
 
 The deployment's Grafana dashboard, opened with `View in Grafana` in the `Metrics` section, charts the metrics under `Feature view transformations`.
@@ -183,8 +184,8 @@ The deployment's Grafana dashboard, opened with `View in Grafana` in the `Metric
 | `hopsworks_transformation_function_calls_total`, `hopsworks_transformation_function_seconds_total`, `hopsworks_transformation_function_errors_total` | the above, `transformation`, `outputs` | The same per transformation function, and the calls that raised |
 | `hopsworks_transformation_function_window_min_seconds`, `hopsworks_transformation_function_window_max_seconds` | the above | Fastest and slowest call of the function in the last complete 60 second window |
 | `hopsworks_transformation_dag_edge` | the above, `depends_on` | 1 for each edge of the transformation DAG |
-| `hopsworks_prediction_stage_seconds` | `stage` | Histogram of the time one request spent in a stage, `feature_lookup`, `transformations`, `model_predict` or `feature_log`, with buckets ten a decade from 10 µs to 10 s |
-| `hopsworks_prediction_stage_window_min_seconds`, `hopsworks_prediction_stage_window_max_seconds` | `stage` | Fastest and slowest request in the stage in the current and the last complete 60 second window |
+| `hopsworks_prediction_stage_seconds` | `stage`, `name` | Histogram of the time one request spent in a stage, `feature_lookup`, `transformations`, `model_predict` or `feature_log`, of the feature view or model `name` (`<name>:<version>`), with buckets ten a decade from 10 µs to 10 s |
+| `hopsworks_prediction_stage_window_min_seconds`, `hopsworks_prediction_stage_window_max_seconds` | `stage`, `name` | Fastest and slowest request in the stage in the current and the last complete 60 second window |
 
 The average time is `rate(..._seconds_total[5m]) / rate(..._calls_total[5m])`.
 `outputs` identifies a function, since one function can be attached to several features.
