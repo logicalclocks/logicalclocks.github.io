@@ -12,6 +12,33 @@ jobs:
         with:
           fetch-depth: 0
 
+      # Every docs version shows the release pages of main, so an edit on a
+      # release branch would be overwritten by main's copy. The backport PR adds
+      # the CSS, the script and the hook, so they are checked once the base has them.
+      - name: Check the release pages are only edited on main
+        if: ${{ startsWith(github.base_ref, 'branch-') }}
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          paths=docs/releases/
+          if git cat-file -e HEAD^1:scripts/releases_hook.py 2>/dev/null; then
+            paths="docs/releases docs/css/releases.css docs/js/client-release-notes.js scripts/releases_hook.py"
+          fi
+          if ! git diff --exit-code --stat HEAD^1 HEAD -- $paths; then
+            echo "::error::These paths come from main in every docs version, so these changes on $BASE_REF would never be published. Make them in a PR to main."
+            exit 1
+          fi
+
+      - name: Add the release pages from main
+        if: ${{ startsWith(github.base_ref, 'branch-') }}
+        run: |
+          if [ -f scripts/releases_hook.py ]; then
+            paths="docs/releases docs/css/releases.css docs/js/client-release-notes.js scripts/releases_hook.py"
+            files=$(git ls-tree --name-only origin/main -- $paths)
+            rm -rf $paths
+            if [ -n "$files" ]; then git checkout origin/main -- $files; fi
+          fi
+
       - name: Checkout the API repo
         uses: actions/checkout@v4
         with:

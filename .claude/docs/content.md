@@ -5,7 +5,7 @@
 One sentence per line throughout all prose.
 Use dashes for unordered lists.
 Use proper sentences: capital letter, ending punctuation.
-Never write a warning or restriction without explaining why.
+Never write a warning or restriction without explaining why, except one a security fix needs, which says only that, as the security rule in `.claude/CLAUDE.md` says.
 
 ## Markdown Lint Rules
 

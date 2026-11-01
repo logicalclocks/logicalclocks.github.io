@@ -8,13 +8,15 @@ description: What to do before and during each upgrade of a self-managed Hopswor
 
 Upgrade a self-managed Hopsworks cluster one minor release at a time, in order.
 Skipping a minor release is not supported, and for OpenSearch it fails at startup.
+Upgrade from the latest patch release of your current minor release to the latest patch release of the next one.
+Patch releases carry fixes for the upgrade itself, and these notes are written for the latest ones: the move to OpenSearch 3.8, for example, needs 5.2.1 or later.
 This page covers upgrades from 5.0.x and later.
 The commands assume Hopsworks is installed in the `hopsworks` namespace.
 
 | Upgrade | OpenSearch | What needs action |
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
-| [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, and from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], and from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523]. |
 | [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
@@ -22,7 +24,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 1. Take a backup and check that it completed, as described in [Disaster Recovery][disaster-recovery].
 2. Pass `helm upgrade --timeout` long enough for the hooks of that upgrade.
    The upgrade from 5.1.x to 5.2.x has two that can run for hours: the [OpenSearch index pass][opensearch-set-the-timeout] and the [Kafka migration][kafka4-kraft-upgrade].
-3. If you run satellite clusters, read the order in which they upgrade relative to the central cluster, for [OpenSearch][opensearch-satellite-clusters] and for [Kafka][kafka4-before-you-start].
+3. If you run satellite clusters, read the order in which they upgrade relative to the central cluster, for [OpenSearch][opensearch-satellite-clusters] and for [Kafka][kafka4-before-you-start], and leave [KEDA][keda-satellite-clusters] out of them.
 4. If this is the first upgrade of the release with Helm 4, read [Upgrading with Helm 4][upgrading-with-helm-4] first.
 
 ## 5.0.x to 5.1.x { #upgrade-50-to-51 }
@@ -49,6 +51,25 @@ A release installed by Helm 3 stays client-side under Helm 4 unless you pass `--
 An upgrade from 5.0 to 5.1 also conflicted on the `trino-password-file` and `trino-groups-file` Secrets, whose fields the backend owns.
 Running it again with `--force-conflicts` overwrites the Trino user database that the backend wrote (`password.db` and `group.db`), so check the Trino users afterwards.
 `--force-conflicts` applies to the whole release, as [The RSS ConfigMap][helm4-rss-configmap] explains.
+
+### Satellite clusters on 5.0 { #upgrade-50-to-51-satellites }
+
+Upgrade the central cluster first, as described in [Satellite clusters][opensearch-satellite-clusters].
+Until a satellite is on 5.1, the central cluster's 5.1 Python client writes to the satellite's 5.0 online store and searches its OpenSearch 1.3.
+The following restrictions apply during this window, also for workloads that use no 5.1 feature:
+
+- Similarity search fails with `[knn] unknown token [START_OBJECT] after [filter]` on an embedding feature group created after the central upgrade.
+  The 5.1 central cluster creates its index on faiss, and the client puts the search filters inside the nearest-neighbor query for faiss, which OpenSearch 1.3 cannot parse.
+  Embedding feature groups created before the central upgrade keep working, and search recovers once the satellite is on 5.1.
+- In a stream feature group, an insert with several rows for one primary key leaves the last of those rows in the online store instead of the one with the latest event time.
+  The 5.1 client marks the older rows for the offline store only, in a way the 5.0 online store does not read.
+  The offline store is not affected, and feature groups that are not stream feature groups drop those rows in the client.
+  The rows stay as they are after the satellite's upgrade, so insert the newest values of the affected keys again once the satellite is on 5.1.
+- Creating a new cosine embedding feature group fails while the satellite runs OpenSearch 1.3, for both shared project indexes and dedicated indexes.
+  The central cluster creates the embedding fields with the faiss engine, whose OpenSearch 1.3 implementation does not support the `cosinesimil` space type.
+  Postpone creation of these feature groups until the target satellite is upgraded to 5.1 and runs OpenSearch 2.19.
+
+Deletes and `upsert_if_newer` work as on 5.1.
 
 ## 5.1.x to 5.2.x { #upgrade-51-to-52 }
 
@@ -154,12 +175,9 @@ Set the value to 61 or more to keep the details.
 
 ### Feature groups shared with a subset of their features { #upgrade-trino-subset-shares }
 
-From 5.2.1, Trino serves feature groups shared with a subset of their features through `delta_shared`, `hudi_shared` and `iceberg_shared` only while `hopsworks.variables.trino_feature_group_subset_shares_enabled` is `"true"`.
-It defaults to `"false"`.
-Shares of a whole feature group, and the online and embedding access of a subset share, do not depend on it.
-
-Those catalogs read HopsFS as a superuser, and a data owner writes the table metadata that names a shared table's data files, so through the metastore they can point that table at another project's files.
-Keep the value at `"false"`.
+From 5.2.1, because of a security fix, share the whole feature group with a project that queries it in Trino and may read all its features.
+Shares of a whole feature group, and the online and embedding access of a subset share, are unchanged.
+`hopsworks.variables.trino_feature_group_subset_shares_enabled: "true"` keeps the behaviour of 5.2.0, without the fix; keep its default, `"false"`.
 
 ### `consul-server-acl-init` fails with `field is immutable` { #upgrade-consul-acl-init }
 
@@ -170,7 +188,7 @@ Delete that Job and run the upgrade again.
 
 OpenSearch stays on 3.8.0.
 An upgrade from 5.2.0 or 5.2.1 also gets the [changes from 5.2.2][upgrade-changes-from-522].
-An upgrade from 5.2.0 also crosses two changes of 5.2.1, described under 5.1.x to 5.2.x: [Feature groups shared with a subset of their features][upgrade-trino-subset-shares], and the OpenSearch [Security configuration][opensearch-security-configuration], which takes away the read access of restricted project members.
+An upgrade from 5.2.0 also crosses two changes of 5.2.1, described under 5.1.x to 5.2.x: [Feature groups shared with a subset of their features][upgrade-trino-subset-shares], and the OpenSearch [Security configuration][opensearch-security-configuration], which addresses a vulnerability.
 
 ### ICEBERG feature groups in Trino { #upgrade-iceberg-trino }
 
@@ -300,7 +318,6 @@ Before, it created no topics there, so every topic had to exist before ingestion
   A notification topic set before the upgrade is left as it is until its feature group moves to another one.
 - **Kafka changes through a shared feature store are refused.**
   Creating or deleting a topic or a schema, or setting a compatibility level, through a feature store shared from another project fails with `CHANGE_THROUGH_SHARED_FEATURE_STORE` (190027).
-  Before, the change was made in the project that shares the feature store, and with an external Kafka on that project's cluster.
   Reading through a shared feature store is unchanged.
 
 ### Envoy Gateway { #upgrade-envoy-gateway }
@@ -379,8 +396,7 @@ They apply to an upgrade from 5.1.x to 5.2.2 or later, from 5.2.0 or 5.2.1 to a 
 
 ### OnlineFS drops records that arrive on another topic { #upgrade-onlinefs-topics }
 
-OnlineFS writes a record only if it arrived on the online topic of the feature group that its headers name.
-Before, the headers alone decided, so a producer could write into another project's online feature groups.
+To address a vulnerability, OnlineFS writes a record only if it arrived on the online topic of the feature group that its headers name.
 A record that fails the check is dropped, logged by OnlineFS (`Record dropped, it did not arrive on the online topic of the feature group in its headers`) and counted in `onlinefs_topic_mismatch_total`, on the Topics row of the OnlineFS dashboard.
 
 - **Producers that hold on to an old topic.**
@@ -388,16 +404,15 @@ A record that fails the check is dropped, logged by OnlineFS (`Record dropped, i
   Producers that hold on to their topic include the inference logger of model deployments, streaming jobs and long-lived sessions.
 - **Records that reach OnlineFS on another topic name.**
   A Kafka where records reach OnlineFS on a topic other than the one Hopsworks resolves for their feature group, such as a multi-region secondary that reads topics renamed or prefixed by mirroring, needs `onlinefs.configmapOverrides.onlinefssite.service.verifyFeatureGroupTopic: false`.
-  With the check off, OnlineFS logs a warning at startup and attributes records by their headers, as before.
-  Projects that share a topic need no change: their records arrive on the topic resolved for them.
-- **A project can no longer use another project's online topic.**
+  With the check off, OnlineFS logs a warning at startup and keeps the behaviour of 5.2.1, without the fix.
+- **Projects that use another project's topic.**
   Creating a project, changing its topic, creating an online feature group or changing its topic, or creating a Kafka topic fails with `TOPIC_IN_USE_BY_ANOTHER_PROJECT` (190026) when the topic is the online topic of another project, the topic of another project's feature group, or a topic another project owns.
-  The upgrade leaves a project or feature group already configured that way as it is, and updates that keep its topic still succeed.
+  Because of a security fix, give each project and online feature group that already uses another project's topic a topic of its own after the upgrade, then restart its producers as above; the upgrade leaves such a topic in place, and updates that keep it still succeed.
   A project whose own topic is taken that way cannot create online feature groups until it gets a topic of its own, while the project that created the topic, or whose default `<project>_onlinefs` topic it is, keeps using it.
-  With an external Kafka (`enable_bring_your_own_kafka`), where Hopsworks owns no topics and projects may share one, 5.2.2 does not enforce this.
+  With an external Kafka (`enable_bring_your_own_kafka`), where Hopsworks owns no topics, the same security fix needs each project to have topics of its own there, and Kafka credentials that write only to them.
   From 5.3 a topic on an external Kafka is refused only when another project owns it because Hopsworks created it for that project, as described in [Bring your own Kafka][upgrade-byok-topics].
 - **After the upgrade**, check that the topic mismatch panels stay at zero.
-  A drop from a legitimate producer means one of the cases above: its insert never completes its online ingestion, and the project's `get_failures` does not list the dropped records.
+  A drop means one of the cases above: its insert never completes its online ingestion, and the project's `get_failures` does not list the dropped records.
 
 ### Schema migrations run on the DDL SQL node { #upgrade-ddl-sql-node }
 
@@ -428,3 +443,15 @@ hive:
 ```
 
 The Airflow `ddlConsulServiceName` cannot point at `mysql`, because its migrations need a single SQL node, so a cluster without the DDL SQL node runs with `global._hopsworks.airflow.enabled: false`.
+
+## Changes from 5.2.3 { #upgrade-changes-from-523 }
+
+These changes ship in 5.2.3.
+They apply to an upgrade from 5.1.x to 5.2.3 or later, and from 5.2.0, 5.2.1 or 5.2.2 to a later 5.2 release.
+
+### Envoy image of Python apps { #upgrade-python-app-envoy }
+
+Python apps pull their Envoy sidecar from `global._hopsworks.imageRegistry`, as `<registry>/envoyproxy/envoy:<tag>` with the tag in `hopsworks.variables.python_app_envoy_image_version` (`v1.38.0`); before, the chart did not set the backend's `python_app_envoy_image`, so clusters pulled `envoyproxy/envoy:v1.38.0` from Docker Hub.
+The default registry, `docker.hops.works`, has the image.
+A cluster whose `global._hopsworks.imageRegistry` is its own registry mirrors `envoyproxy/envoy:v1.38.0` there, at the path `envoyproxy/envoy`, before the upgrade, or its Python apps cannot start; the chart's `vendor_images.sh` does not list the image.
+The chart now writes `python_app_envoy_image` on every upgrade, replacing a value set by hand, so a cluster that pointed it at another image mirrors that image as above.
