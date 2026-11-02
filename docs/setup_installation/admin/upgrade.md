@@ -201,11 +201,13 @@ The completed Job is retained for later pod restarts.
 Inspect the initialization Job's logs if those pods remain blocked; the Job and startup gates each have a 1,800-second timeout, configurable with `superset.superset.initialization.timeoutSeconds`.
 This change does not repair a partial schema left by an earlier failed installation.
 
-The chart binds a namespace Role for Job waiting and migration leases to Superset's configured ServiceAccount.
+Superset now runs under its own `hopsworks-superset` ServiceAccount, which the chart binds to a namespace Role for Job waiting and migration leases.
+Move anything you granted the namespace's `default` ServiceAccount for Superset, such as image pull secrets, to `hopsworks-superset`, because Superset pods no longer use `default`.
+To use a ServiceAccount you manage instead, set `superset.superset.serviceAccount.create: false` and name it in `superset.superset.serviceAccountName`; the chart binds the Role to that account.
 If you override a Superset workload's `initContainers` list, preserve the `wait-for-initialization` container from the chart defaults.
 
 Remove an explicit `superset.superset.init.enabled: true` override so the chart can replace the old post-install hook.
-With `helm upgrade --reuse-values`, pass `--set superset.superset.init.enabled=false` on the first upgrade.
+With `helm upgrade --reuse-values`, pass `--set superset.superset.init.enabled=false --set superset.superset.serviceAccount.create=true` on the first upgrade, because reused values keep the previous defaults.
 Replace an existing `superset.superset.init.enabled: false` opt-out with the following setting when an external process initializes the metadata database:
 
 ```yaml
