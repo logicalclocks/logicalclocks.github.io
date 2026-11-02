@@ -9,7 +9,7 @@ With tracing on, the deployment:
 
 - counts every request's transformations on its Prometheus endpoint, per feature view and per transformation function, with the fastest and slowest feature vector of the last minute;
 - records a sample of the requests as traces: the request, its feature lookup, each transformation phase with one span per function in DAG order, the prediction and the feature log write;
-- shows those traces in the `Prediction Latency Analytics` section of the deployment page.
+- shows those traces in the `X-ray latencies` section of the deployment page.
 
 It applies to deployments created with `model.deploy(...)` from a model with a feature view, to feature view deployments, and to predictor scripts that call `get_feature_vector` or `get_feature_vectors`.
 
@@ -129,7 +129,7 @@ The response carries `activeUntil` and `expiredAt` in epoch milliseconds.
 
 ## Web UI
 
-The deployment page of a deployment that serves a feature view has a `Prediction Latency Analytics` section.
+The deployment page of a deployment that serves a feature view has an `X-ray latencies` section.
 While tracing is on, the section lists the traced requests; expanding one shows its spans with their durations.
 While it is off, the section shows `Tracing is disabled`; clicking it shows how to turn tracing on.
 On a deployment created with tracing, the switch in the section header turns it off and on, like `set_tracing`, and shows the time tracing will be switched off.
