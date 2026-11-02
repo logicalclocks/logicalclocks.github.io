@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793630223` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793635135` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -117,8 +117,8 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
       variables:
         kube_keda_installed: true
         kube_kserve_installed: true
-        kube_serving_vllm_omni_versions: v0.28.0
-        kube_serving_vllm_versions: v0.28.0
+        kube_serving_vllm_omni_versions: v0.32.0
+        kube_serving_vllm_versions: v0.32.0
       volumeMounts:
         admin: []
         migrate: []
@@ -172,8 +172,8 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         variables:
           kube_keda_installed: true
           kube_kserve_installed: true
-          kube_serving_vllm_omni_versions: v0.28.0
-          kube_serving_vllm_versions: v0.28.0
+          kube_serving_vllm_omni_versions: v0.32.0
+          kube_serving_vllm_versions: v0.32.0
         ```
 
 `hopsworks.agent_email` <a class="headerlink" href="#helm.hopsworks.agent_email" title="Permanent link">#</a> { #helm.hopsworks.agent_email }
@@ -2678,8 +2678,8 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         kube_scheduling_jobinit_memory_requests_mb: 256
         kube_serving_max_num_instances: '10'
         kube_serving_min_num_instances: '-1'
-        kube_serving_vllm_omni_versions: v0.28.0
-        kube_serving_vllm_versions: v0.28.0
+        kube_serving_vllm_omni_versions: v0.32.0
+        kube_serving_vllm_versions: v0.32.0
         kube_skip_namespace_creation: false
         kube_tainted_nodes: ''
         kube_type: kube_cluster
@@ -3747,10 +3747,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"-1"`.
 
 `hopsworks.variables.kube_serving_vllm_omni_versions` <a class="headerlink" href="#helm.hopsworks.variables.kube_serving_vllm_omni_versions" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_serving_vllm_omni_versions }
-:   Type `string`, default `"v0.28.0"`.
+:   Type `string`, default `"v0.32.0"`.
 
 `hopsworks.variables.kube_serving_vllm_versions` <a class="headerlink" href="#helm.hopsworks.variables.kube_serving_vllm_versions" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_serving_vllm_versions }
-:   Type `string`, default `"v0.28.0"`.
+:   Type `string`, default `"v0.32.0"`.
 
 `hopsworks.variables.kube_skip_namespace_creation` <a class="headerlink" href="#helm.hopsworks.variables.kube_skip_namespace_creation" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_skip_namespace_creation }
 :   Type `bool`, default `false`.

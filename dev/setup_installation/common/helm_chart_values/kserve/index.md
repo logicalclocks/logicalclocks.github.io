@@ -4,7 +4,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793630223` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793635135` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -35,10 +35,10 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
         servingruntime:
           vllmomni:
             imageRegistry: ''
-            tag: v0.28.0
+            tag: v0.32.0
           vllmopenai:
             imageRegistry: ''
-            tag: v0.28.0
+            tag: v0.32.0
       kserveUtilsImage:
         name: hopsworks/kserve-utils
         tag: 0.1.12
@@ -71,10 +71,10 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
           servingruntime:
             vllmomni:
               imageRegistry: ''
-              tag: v0.28.0
+              tag: v0.32.0
             vllmopenai:
               imageRegistry: ''
-              tag: v0.28.0
+              tag: v0.32.0
         ```
 
 `kserve.activator.minReplicas` <a class="headerlink" href="#helm.kserve.activator.minReplicas" title="Permanent link">#</a> { #helm.kserve.activator.minReplicas }
@@ -1160,12 +1160,12 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
             env: []
             image: vllm/vllm-omni
             imageRegistry: ''
-            tag: v0.28.0
+            tag: v0.32.0
           vllmopenai:
             env: []
             image: vllm/vllm-openai
             imageRegistry: ''
-            tag: v0.28.0
+            tag: v0.32.0
         storage:
           caBundleConfigMapName: ''
           caBundleVolumeMountPath: /etc/ssl/custom-certs
@@ -1467,7 +1467,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 :   Type `string`, default `"2.20.0"`.
 
 `kserve.kserve.servingruntime.vllmomni` <a class="headerlink" href="#helm.kserve.kserve.servingruntime.vllmomni" title="Permanent link">#</a> { #helm.kserve.kserve.servingruntime.vllmomni }
-:   Type `object`, default `{"env":[],"image":"vllm/vllm-omni","imageRegistry":"","tag":"v0.28.0"}`.
+:   Type `object`, default `{"env":[],"image":"vllm/vllm-omni","imageRegistry":"","tag":"v0.32.0"}`.
     backs the `vllm-omni` ClusterServingRuntime (vLLM-Omni)
 
 `kserve.kserve.servingruntime.vllmomni.env` <a class="headerlink" href="#helm.kserve.kserve.servingruntime.vllmomni.env" title="Permanent link">#</a> { #helm.kserve.kserve.servingruntime.vllmomni.env }
@@ -1479,7 +1479,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     Registry override for the vllm-omni image. Empty falls back to `global._hopsworks.imageRegistry`.
 
 `kserve.kserve.servingruntime.vllmopenai` <a class="headerlink" href="#helm.kserve.kserve.servingruntime.vllmopenai" title="Permanent link">#</a> { #helm.kserve.kserve.servingruntime.vllmopenai }
-:   Type `object`, default `{"env":[],"image":"vllm/vllm-openai","imageRegistry":"","tag":"v0.28.0"}`.
+:   Type `object`, default `{"env":[],"image":"vllm/vllm-openai","imageRegistry":"","tag":"v0.32.0"}`.
     backs the `vllm-openai` ClusterServingRuntime (standard vLLM)
 
 `kserve.kserve.servingruntime.vllmopenai.env` <a class="headerlink" href="#helm.kserve.kserve.servingruntime.vllmopenai.env" title="Permanent link">#</a> { #helm.kserve.kserve.servingruntime.vllmopenai.env }
