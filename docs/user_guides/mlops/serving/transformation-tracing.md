@@ -94,7 +94,7 @@ deployment.set_tracing(active=True, sampling_percentage=50)
 deployment.set_tracing(active=True, duration_days=30)
 ```
 
-Switching tracing on, or changing `duration_days` while it is on, keeps it on for `duration_days` from now.
+Switching tracing on, changing `duration_days` while it is on, or starting a stopped deployment whose tracing is on keeps it on for `duration_days` from then.
 `deployment.tracing.active_until` is when it will be switched off.
 Hopsworks checks every 5 minutes: once the period has ended it switches tracing off, sets `active` to `False` and records the end in `deployment.tracing.expired_at`.
 
@@ -228,13 +228,13 @@ Each deployment's `duration_days` bounds how long it records traces; these clust
 | --- | --- | --- |
 | `serving_tracing_online_ttl_hours` | `36` | Time to live of a project's `serving_traces` feature group, applied when it is created. |
 | `serving_tracing_max_traces_per_minute` | `60` | Most traces one predictor pod records per minute, whatever the sampling percentage. Below 1, no cap. |
-| `serving_tracing_pause_free_percent` | `20` | Tracing is paused on every model and feature view deployment while less than this percentage of the tablespace is free. |
-| `serving_tracing_retention_days` | `7` | Days traces written before `serving_traces` existed are kept. `0` keeps them. |
+| `serving_tracing_pause_free_percent` | `20` | Tracing is paused on every model and feature view deployment while less than this percentage of the tablespace, or of RonDB DataMemory, is free. |
 
 At the cap, a predictor pod keeps at most `60 * 60 * 36` traces online, about 1.5 KB of RonDB memory each with five transformation functions.
-Hopsworks checks the tablespace every 5 minutes.
-A paused deployment reads `paused_reason == "DISK_NEARLY_FULL"` on `deployment.tracing`, and its page says tracing is paused.
-Expired and deleted traces free space for later traces in the same table, not in the tablespace, so a pause lifts once an administrator adds a data file to the tablespace and at least 10 points more than the threshold are free.
+Hopsworks checks the tablespace and DataMemory every 5 minutes.
+A paused deployment reads `paused_reason == "DISK_NEARLY_FULL"` or `"MEMORY_NEARLY_FULL"` on `deployment.tracing`, and its page says tracing is paused.
+The pause lifts once both have at least 10 points more than the threshold free.
+Expired and deleted traces free space for later traces in the same table, not in the tablespace, so a disk pause lifts once an administrator adds a data file to the tablespace.
 The settings are Helm values under `hopsworks.variables`; a changed cap reaches running pods the next time their tracing is switched or they restart.
 Deleting a deployment deletes its traces.
 
