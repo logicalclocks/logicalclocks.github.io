@@ -4,7 +4,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793635135` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793641911` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -162,7 +162,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
         startup_timeout: 5000
         tolerations: []
         topologySpreadConstraint: {}
-        version: 3.8.0.1
+        version: 3.8.0.2
     ```
 
 <div class="hops-values" markdown>
@@ -248,7 +248,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
     The default topology spread constraint. If not defined the global topology spread constraint would be used instead.
 
 `olk.dashboard.version` <a class="headerlink" href="#helm.olk.dashboard.version" title="Permanent link">#</a> { #helm.olk.dashboard.version }
-:   Type `string`, default `"3.8.0.1"`.
+:   Type `string`, default `"3.8.0.2"`.
 
 </div>
 
@@ -529,7 +529,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
           type: ClusterIP
         tolerations: []
         topologySpreadConstraint: {}
-        version: 7.17.29.7
+        version: 7.17.29.8
         workers: 4
     ```
 
@@ -640,7 +640,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
     The default topology spread constraint. If not defined the global topology spread constraint would be used instead.
 
 `olk.logstash.version` <a class="headerlink" href="#helm.olk.logstash.version" title="Permanent link">#</a> { #helm.olk.logstash.version }
-:   Type `string`, default `"7.17.29.7"`.
+:   Type `string`, default `"7.17.29.8"`.
 
 `olk.logstash.workers` <a class="headerlink" href="#helm.olk.logstash.workers" title="Permanent link">#</a> { #helm.olk.logstash.workers }
 :   Type `int`, default `4`.
