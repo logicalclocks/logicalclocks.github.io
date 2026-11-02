@@ -92,7 +92,7 @@ There you can also set the following configuration settings for a `PYTHON` job.
 - `Container cores`: The number of cores to be allocated for the Python script
 - `Container disk`: The local disk in GB the Python script's container may use, for example under `/tmp`.
   Empty means no limit.
-  A container that writes more is evicted and the execution fails.
+  The job is evicted and the execution fails when its container, or its pod as a whole, writes more.
   Files written to `/hopsfs` are stored in HopsFS and don't count against this disk.
   While a file is open for writing, the HopsFS mount keeps a copy of it on the node's local disk until the file is closed.
 - `Additional files`: List of files that will be locally accessible in the working directory of the application.
@@ -203,7 +203,7 @@ The following table describes the job configuration parameters for a PYTHON job.
 | <nobr>`conf['resourceConfig']['cores']`</nobr> | float | Number of CPU cores to be allocated | `1.0` |
 | <nobr>`conf['resourceConfig']['memory']`</nobr> | int | Number of MBs to be allocated | `2048` |
 | <nobr>`conf['resourceConfig']['gpus']`</nobr> | int | Number of GPUs to be allocated | `0` |
-| <nobr>`conf['resourceConfig']['diskGb']`</nobr> | int | Local disk limit of the container in GB, `1` to `16384`. A container that writes more is evicted. Not set: no limit | `null` |
+| <nobr>`conf['resourceConfig']['diskGb']`</nobr> | int | Local disk limit of the container in GB, `1` to `16384`. A container or pod that writes more is evicted. Not set: no limit | `null` |
 | <nobr>`conf['logRedirection']`</nobr> | boolean | Whether logs are redirected | `true` |
 | <nobr>`conf['jobType']`</nobr> | string | Type of job | `"PYTHON"` |
 | <nobr>`conf['files']`</nobr> | string | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project>/Resources/file1.py,...` | `null` |

@@ -31,6 +31,7 @@ Next step is to configure Jupyter, Click `edit configuration` to get to the conf
 - `Container disk`: Local disk in GB the Jupyter instance may use.
   Empty means no limit.
   An instance that writes more is evicted and its running kernels stop.
+  With a PySpark kernel environment, the Spark tab's `Driver disk` applies instead.
   Files written to `/hopsfs` are stored in HopsFS and don't count against this disk.
   While a file is open for writing, the HopsFS mount keeps a copy of it on the node's local disk until the file is closed.
 

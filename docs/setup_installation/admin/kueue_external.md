@@ -45,6 +45,7 @@ managerConfig:
 ```
 
 That chart keeps its CRDs among its templates, so Argo CD upgrades them with a version bump.
+Leave the `resources-finalizer.argocd.argoproj.io` finalizer off that Application: deleting it then leaves the CRDs, and every queue, in place.
 
 ### Disk limits
 
@@ -57,7 +58,6 @@ Leave the exclusion out in two cases:
 - **The manager config sets `resources.quotaCheckStrategy: IgnoreUndeclared`.** That strategy already ignores resources no queue covers, and Kueue refuses to start with both.
 
 A cluster that already runs Kueue 0.20.3 gets the exclusion by running `bash hopsworks/charts/hw-kueue/files/upgrade-kueue.sh upgrade` from the new chart after upgrading Hopsworks, or by adding the `resources` block to its Argo CD values.
-Leave the `resources-finalizer.argocd.argoproj.io` finalizer off that Application: deleting it then leaves the CRDs, and every queue, in place.
 
 ## Why `helm upgrade` alone cannot do it
 

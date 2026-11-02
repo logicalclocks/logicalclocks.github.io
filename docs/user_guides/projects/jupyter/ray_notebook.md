@@ -93,7 +93,7 @@ Runtime environment and Additional files required for the Ray job can also be pr
 
 - `Ray cluster HopsFS mount`: Memory (MB), cores and namenode connections of the container that serves `/hopsfs` in the Ray head and in every worker.
   The fields show the cluster defaults and may need tuning when the notebook reads large datasets or does many concurrent reads or writes on `/hopsfs`.
-  The Jupyter server has its own HopsFS mount settings below the tabs, which do not apply to the Ray cluster.
+  The Jupyter server's own HopsFS mount is set on the Python or Spark tab and does not apply to the Ray cluster.
 
 <p align="center">
   <figure>
