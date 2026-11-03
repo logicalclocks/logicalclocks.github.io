@@ -8,6 +8,7 @@ Hopsworks provides an administrator with a view of the projects in a Hopsworks c
 
 A Hopsworks administrator is not automatically a member of all the projects in a cluster.
 However, they can see which projects exist, who is the project owner, and they can limit the storage quota and compute quota for each project.
+They can also transfer a project to a new owner.
 
 ## Prerequisites
 
@@ -84,6 +85,43 @@ Administrators can increase the number of Kafka topics a project is allowed to c
 
 Administrators have the option to force delete a project.
 This is useful if the project was not created or deleted properly, e.g., because of an error.
+It is also how an administrator deletes a project they do not own, since only the owner can delete a project from its settings.
+To force delete a project, click _Edit configuration_ next to it on the Project management page, then click _Force delete project_ under _Manage project_ and confirm.
+
+## Transferring a project to a new owner
+
+Every project has one owner, the user who created it unless it has been transferred since.
+The owner cannot be removed from the project and their role cannot be changed, so a project stays attached to an owner who has left until it is transferred.
+
+To transfer a project, click _Edit configuration_ next to it on the Project management page, then click _Transfer ownership_ under _Manage project_, choose the new owner and confirm.
+Any activated user with the user or administrator role can be chosen.
+The new owner is added to the project as a Data owner, or promoted to one, if they are not one already.
+The previous owner stays a Data owner, and can then be removed like any other member.
+The project limit of the new owner does not apply to a transfer made by an administrator.
+
+The transfer also gives the new owner:
+
+- the ownership of the project's root directory
+- the ownership of the datasets created with the project, so removing the previous owner leaves none of them with someone who is no longer a member: `Logs`, `Resources`, the datasets of the project's services such as `Jupyter`, `Models` or the training datasets, each with its `README.md`, and the project's feature store and Hive databases; datasets members created stay theirs, and so do the other files inside each dataset
+- the project count of the previous owner, which decides how many more projects each of them can create
+- the API keys of the project's Airflow DAGs, which run as the project owner
+
+If one of these steps fails, the owner has still changed and the transfer reports which step did not complete.
+Transfer the project to its current owner again to finish it, with the REST API below: the _Transfer ownership_ dialog does not offer the current owner.
+The permissions check that runs periodically also gives the project's root directory and the datasets created with the project back to the current owner.
+
+One transfer of a project runs at a time.
+While a transfer is still completing these steps, another transfer of the same project is refused with error code 150128, and composing or deleting one of the project's Airflow DAGs is refused with 290009, since the transfer replaces the DAGs' API keys.
+A transfer interrupted by a restart keeps other transfers of the project out for up to 15 minutes.
+
+The same transfer is available over the REST API, with the id of the project and of the new owner:
+
+```bash
+curl -X PUT -H "Authorization: ApiKey <administrator API key>" \
+  "https://<hopsworks>/hopsworks-api/api/admin/projects/<project id>/owner/<user id>"
+```
+
+How ownership interacts with group mapping is described in [Ownership and group mapping][ownership-and-group-mapping].
 
 ## Controlling who can create projects
 
