@@ -84,7 +84,8 @@ A `python` check is a function in a file the project owns, declared with the `@c
 
 ```python
 # evaluation/checks/pricing.py
-from hopsworks_agents.eval.checks import check, CheckContext, CheckResult, ungradable
+from hopsworks_agents.eval.checks import CheckContext, CheckResult, check, ungradable
+
 
 @check(needs_trace=True, description="The quoted price equals the catalogue price")
 def price_matches_catalogue(ctx: CheckContext, tolerance: float = 0.01):
@@ -94,9 +95,12 @@ def price_matches_catalogue(ctx: CheckContext, tolerance: float = 0.01):
     listed = float(lookups[-1].result_json["price"])
     quoted = float(ctx.answer.split()[-1])
     ok = abs(quoted - listed) <= tolerance
-    return CheckResult(passed=ok, score=1.0 if ok else 0.0,
-                       reason="" if ok else f"quoted {quoted}, catalogue says {listed}",
-                       assertions={"quoted": quoted, "listed": listed})
+    return CheckResult(
+        passed=ok,
+        score=1.0 if ok else 0.0,
+        reason="" if ok else f"quoted {quoted}, catalogue says {listed}",
+        assertions={"quoted": quoted, "listed": listed},
+    )
 ```
 
 The function receives a `CheckContext`: the question, the agent's answer, the task's expectation for this check, the trace's tool calls in order with their arguments and results, and the trial's and task's details.
