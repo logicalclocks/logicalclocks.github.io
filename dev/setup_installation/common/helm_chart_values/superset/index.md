@@ -4,7 +4,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793693086` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793703260` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -83,394 +83,8 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             repository: os-shell
             tag: 12-alpine-h2.1
       superset:
-        _publicRoleDefaultName: Public
-        allowAnonymousAccess: true
-        configOverrides:
-          feature_flags: |
-            FEATURE_FLAGS = {"ALERT_REPORTS": True, "DASHBOARD_RBAC": True}
-          flask_app_configuration: |
-            from flask import session
-            from flask import Flask
-            from datetime import timedelta
-
-            def make_session_permanent():
-                '''
-                Enable maxAge for the cookie 'session'
-                '''
-                session.permanent = True
-
-            # Set up max age of session to 24 hours
-            PERMANENT_SESSION_LIFETIME = timedelta(hours=24) # (default: "31 days")
-            SESSION_REFRESH_EACH_REQUEST = True # Default: True
-            def FLASK_APP_MUTATOR(app: Flask) -> None:
-                app.before_request_funcs.setdefault(None, []).append(make_session_permanent)
-          mysql: |
-            SQLALCHEMY_DATABASE_URI = f"mysql+mysqldb://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
-          proxyConfig: |
-            ENABLE_PROXY_FIX = True
-            APP_ICON = "/hopsworks-api/superset/static/assets/images/superset-logo-horiz.png"
-            LOGO_TARGET_PATH = "/hopsworks-api/superset/superset/welcome/"
-            {{- if .Values.init.loadExamples }}
-            PREVENT_UNSAFE_DB_CONNECTIONS = False
-            {{- else }}
-            PREVENT_UNSAFE_DB_CONNECTIONS = True
-            {{- end }}
-          public_role: |
-            {{- if .Values.publicRoleLike }}
-            PUBLIC_ROLE_LIKE = {{ .Values.publicRoleLike | quote }}
-            {{- end }}
-            {{- if .Values.allowAnonymousAccess }}
-            AUTH_ROLE_PUBLIC = {{ .Values._publicRoleDefaultName | quote }}
-            {{- end }}
-        extraEnv:
-          SUPERSET_APP_ROOT: /hopsworks-api/superset
-        extraEnvRaw:
-        - name: SUPERSET_USER
-          valueFrom:
-            secretKeyRef:
-              key: username
-              name: superset-admin-credentials
-        - name: SUPERSET_PASS
-          valueFrom:
-            secretKeyRef:
-              key: password
-              name: superset-admin-credentials
-        - name: DB_PASS
-          valueFrom:
-            secretKeyRef:
-              key: mysql-password
-              name: superset-mysql-users-secrets
-        - name: SUPERSET_SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              key: secret-key
-              name: superset-secret-key
-        extraRoles:
-        - name: Dataset
-          permissions:
-          - - can_duplicate
-            - Dataset
-          - - can_write
-            - Dataset
-          - - can_get_or_create_dataset
-            - Dataset
-          - - can_warm_up_cache
-            - Dataset
-        extraVolumeMounts:
-        - mountPath: /srv/hops/super_crypto/superset
-          name: super-crypto-material
-          readOnly: true
-        extraVolumes:
-        - name: super-crypto-material
-          secret:
-            optional: true
-            secretName: hopsworks-superset-crypto-material
-        fullnameOverride: hopsworks-superset
-        image:
-          pullPolicy: IfNotPresent
-          repository: docker.hops.works/hopsworks/superset
-          tag: 6.0.0p4.7
-        init:
-          adminUser:
-            email: admin@superset.com
-            firstname: Superset
-            lastname: Admin
-            password: $SUPERSET_PASS
-            username: $SUPERSET_USER
-          command:
-          - /bin/sh
-          - -c
-          - |
-            {{- if ((((.Values.global | default dict)._hopsworks | default dict).restoreFromBackup | default dict).superset | default dict).enabled }}
-            echo "Superset restore in progress (global._hopsworks.restoreFromBackup.superset.enabled): skipping init so no schema work runs while the database is reloaded. It runs on the upgrade that clears the flag."; exit 0
-            {{- end }}
-            . {{ .Values.configMountPath }}/superset_bootstrap.sh; . {{ .Values.configMountPath }}/superset_init.sh;
-            {{- if .Values.extraRoles }}
-            {{- range $role := .Values.extraRoles }}
-            python /scripts/create_role.py --role-name {{ $role.name }} --permissions '{{ $role.permissions | toJson | b64enc }}';
-            {{- end }}
-            {{- end }}
-            {{- if and .Values.publicRolePermissions (eq .Values.publicRoleLike .Values._publicRoleDefaultName) }}
-            python /scripts/create_role.py --role-name {{ .Values._publicRoleDefaultName }} --permissions '{{ .Values.publicRolePermissions | toJson | b64enc }}';
-            {{- end }}
-          containerSecurityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-              - ALL
-          initContainers:
-          - command:
-            - /bin/sh
-            - -c
-            - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -timeout 120s
-            envFrom:
-            - secretRef:
-                name: '{{ tpl .Values.envFromSecret . }}'
-            image: '{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}'
-            imagePullPolicy: '{{ .Values.initImage.pullPolicy }}'
-            name: wait-for-database
-            resources:
-              limits:
-                cpu: 500m
-                memory: 256Mi
-              requests:
-                cpu: 250m
-                memory: 128Mi
-            securityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-                - ALL
-          loadExamples: false
-          podSecurityContext:
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
-        initImage:
-          pullPolicy: IfNotPresent
-          repository: docker.hops.works/superset/dockerize
-          tag: 0.14.0-alpine-h2.1
-        postgresql:
-          enabled: false
-        publicRoleLike: Public
-        publicRolePermissions:
-        - - can_read
-          - Dashboard
-        - - can_read
-          - Chart
-        - - can_dashboard
-          - Superset
-        - - can_slice
-          - Superset
-        - - can_explore_json
-          - Superset
-        - - can_dashboard_permalink
-          - Superset
-        - - can_read
-          - DashboardPermalinkRestApi
-        - - can_read
-          - DashboardFilterStateRestApi
-        - - can_write
-          - DashboardFilterStateRestApi
-        - - can_time_range
-          - Api
-        - - can_query_form_data
-          - Api
-        - - can_query
-          - Api
-        - - can_read
-          - CssTemplate
-        - - can_read
-          - Theme
-        - - can_read
-          - EmbeddedDashboard
-        - - can_read
-          - CurrentUserRestApi
-        - - can_get
-          - Datasource
-        - - can_external_metadata
-          - Datasource
-        - - can_read
-          - Annotation
-        - - can_read
-          - AnnotationLayerRestApi
-        - - can_read
-          - ExplorePermalinkRestApi
         redis:
           enabled: true
-          image:
-            registry: docker.hops.works/superset
-            repository: redis
-            tag: 7.4.11-alpine-h4
-          master:
-            configuration: |-
-              maxmemory 256mb
-              maxmemory-policy allkeys-lru
-            containerSecurityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-                - ALL
-              enabled: true
-              readOnlyRootFilesystem: true
-              runAsGroup: 1001
-              runAsNonRoot: true
-              runAsUser: 1001
-              seLinuxOptions: {}
-              seccompProfile:
-                type: RuntimeDefault
-            podSecurityContext:
-              enabled: true
-              fsGroup: 1001
-              fsGroupChangePolicy: Always
-              runAsNonRoot: true
-              runAsUser: 1001
-              seccompProfile:
-                type: RuntimeDefault
-              supplementalGroups: []
-              sysctls: []
-            resources:
-              limits:
-                cpu: 500m
-                memory: 384Mi
-              requests:
-                cpu: 100m
-                memory: 384Mi
-          metrics:
-            containerSecurityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-                - ALL
-              enabled: true
-              readOnlyRootFilesystem: true
-              runAsGroup: 1001
-              runAsNonRoot: true
-              runAsUser: 1001
-              seLinuxOptions: {}
-              seccompProfile:
-                type: RuntimeDefault
-            enabled: true
-            image:
-              digest: ''
-              pullPolicy: IfNotPresent
-              registry: docker.hops.works/superset
-              repository: redis-exporter
-              tag: 1.90.0-alpine-h2.1
-            resources:
-              limits:
-                cpu: 100m
-                memory: 64Mi
-              requests:
-                cpu: 50m
-                memory: 64Mi
-            service:
-              annotations:
-                prometheus.io/port: '{{ .Values.metrics.service.port }}'
-                prometheus.io/scrape: 'true'
-        runAsUser: 1000
-        secretEnv:
-          create: false
-        service:
-          annotations:
-            consul.hashicorp.com/service-name: superset
-            consul.hashicorp.com/service-tags: app
-        supersetNode:
-          connections:
-            db_host: '{{ .Release.Name }}-mysql'
-            db_name: superset
-            db_pass: superset
-            db_port: '3306'
-            db_type: mysql
-            db_user: superset
-          containerSecurityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-              - ALL
-          initContainers:
-          - command:
-            - /bin/sh
-            - -c
-            - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -timeout 120s
-            envFrom:
-            - secretRef:
-                name: '{{ tpl .Values.envFromSecret . }}'
-            image: '{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}'
-            imagePullPolicy: '{{ .Values.initImage.pullPolicy }}'
-            name: wait-for-db
-            resources:
-              limits:
-                cpu: 500m
-                memory: 256Mi
-              requests:
-                cpu: 250m
-                memory: 128Mi
-            securityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-                - ALL
-          livenessProbe:
-            failureThreshold: 3
-            httpGet:
-              path: /hopsworks-api/superset/health
-              port: http
-            initialDelaySeconds: 15
-            periodSeconds: 15
-            successThreshold: 1
-            timeoutSeconds: 1
-          podSecurityContext:
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
-          readinessProbe:
-            failureThreshold: 3
-            httpGet:
-              path: /hopsworks-api/superset/health
-              port: http
-            initialDelaySeconds: 15
-            periodSeconds: 15
-            successThreshold: 1
-            timeoutSeconds: 1
-          replicas:
-            enabled: true
-            replicaCount: 1
-          startupProbe:
-            failureThreshold: 60
-            httpGet:
-              path: /hopsworks-api/superset/health
-              port: http
-            initialDelaySeconds: 15
-            periodSeconds: 5
-            successThreshold: 1
-            timeoutSeconds: 1
-        supersetWorker:
-          command:
-          - /bin/sh
-          - -c
-          - . {{ .Values.configMountPath }}/superset_bootstrap.sh; celery --app=superset.tasks.celery_app:app worker --pool=prefork -O fair -c 4
-          containerSecurityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-              - ALL
-          initContainers:
-          - command:
-            - /bin/sh
-            - -c
-            - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -wait "tcp://$REDIS_HOST:$REDIS_PORT" -timeout 120s
-            envFrom:
-            - secretRef:
-                name: '{{ tpl .Values.envFromSecret . }}'
-            image: '{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}'
-            imagePullPolicy: '{{ .Values.initImage.pullPolicy }}'
-            name: wait-for-db-redis
-            resources:
-              limits:
-                cpu: 500m
-                memory: 256Mi
-              requests:
-                cpu: 250m
-                memory: 128Mi
-            securityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-                - ALL
-          podSecurityContext:
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
-          replicas:
-            enabled: false
-          resources:
-            limits:
-              cpu: 500m
-              memory: 1024Mi
-            requests:
-              cpu: 500m
-              memory: 1024Mi
     ```
 
 <div class="hops-values" markdown>
@@ -560,411 +174,6 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             repository: os-shell
             tag: 12-alpine-h2.1
         ```
-
-`superset.superset` <a class="headerlink" href="#helm.superset.superset" title="Permanent link">#</a> { #helm.superset.superset }
-:   Type `object`, passed to the [`superset` 0.15.0](https://artifacthub.io/packages/helm/superset/superset/0.15.0) chart, whose other values are documented there.
-    override superset values
-
-    ??? note "Default"
-
-        ```yaml
-        _publicRoleDefaultName: Public
-        allowAnonymousAccess: true
-        configOverrides:
-          feature_flags: |
-            FEATURE_FLAGS = {"ALERT_REPORTS": True, "DASHBOARD_RBAC": True}
-          flask_app_configuration: |
-            from flask import session
-            from flask import Flask
-            from datetime import timedelta
-
-            def make_session_permanent():
-                '''
-                Enable maxAge for the cookie 'session'
-                '''
-                session.permanent = True
-
-            # Set up max age of session to 24 hours
-            PERMANENT_SESSION_LIFETIME = timedelta(hours=24) # (default: "31 days")
-            SESSION_REFRESH_EACH_REQUEST = True # Default: True
-            def FLASK_APP_MUTATOR(app: Flask) -> None:
-                app.before_request_funcs.setdefault(None, []).append(make_session_permanent)
-          mysql: |
-            SQLALCHEMY_DATABASE_URI = f"mysql+mysqldb://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
-          proxyConfig: |
-            ENABLE_PROXY_FIX = True
-            APP_ICON = "/hopsworks-api/superset/static/assets/images/superset-logo-horiz.png"
-            LOGO_TARGET_PATH = "/hopsworks-api/superset/superset/welcome/"
-            {{- if .Values.init.loadExamples }}
-            PREVENT_UNSAFE_DB_CONNECTIONS = False
-            {{- else }}
-            PREVENT_UNSAFE_DB_CONNECTIONS = True
-            {{- end }}
-          public_role: |
-            {{- if .Values.publicRoleLike }}
-            PUBLIC_ROLE_LIKE = {{ .Values.publicRoleLike | quote }}
-            {{- end }}
-            {{- if .Values.allowAnonymousAccess }}
-            AUTH_ROLE_PUBLIC = {{ .Values._publicRoleDefaultName | quote }}
-            {{- end }}
-        extraEnv:
-          SUPERSET_APP_ROOT: /hopsworks-api/superset
-        extraEnvRaw:
-        - name: SUPERSET_USER
-          valueFrom:
-            secretKeyRef:
-              key: username
-              name: superset-admin-credentials
-        - name: SUPERSET_PASS
-          valueFrom:
-            secretKeyRef:
-              key: password
-              name: superset-admin-credentials
-        - name: DB_PASS
-          valueFrom:
-            secretKeyRef:
-              key: mysql-password
-              name: superset-mysql-users-secrets
-        - name: SUPERSET_SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              key: secret-key
-              name: superset-secret-key
-        extraRoles:
-        - name: Dataset
-          permissions:
-          - - can_duplicate
-            - Dataset
-          - - can_write
-            - Dataset
-          - - can_get_or_create_dataset
-            - Dataset
-          - - can_warm_up_cache
-            - Dataset
-        extraVolumeMounts:
-        - mountPath: /srv/hops/super_crypto/superset
-          name: super-crypto-material
-          readOnly: true
-        extraVolumes:
-        - name: super-crypto-material
-          secret:
-            optional: true
-            secretName: hopsworks-superset-crypto-material
-        fullnameOverride: hopsworks-superset
-        image:
-          pullPolicy: IfNotPresent
-          repository: docker.hops.works/hopsworks/superset
-          tag: 6.0.0p4.7
-        init:
-          adminUser:
-            email: admin@superset.com
-            firstname: Superset
-            lastname: Admin
-            password: $SUPERSET_PASS
-            username: $SUPERSET_USER
-          command:
-          - /bin/sh
-          - -c
-          - |
-            {{- if ((((.Values.global | default dict)._hopsworks | default dict).restoreFromBackup | default dict).superset | default dict).enabled }}
-            echo "Superset restore in progress (global._hopsworks.restoreFromBackup.superset.enabled): skipping init so no schema work runs while the database is reloaded. It runs on the upgrade that clears the flag."; exit 0
-            {{- end }}
-            . {{ .Values.configMountPath }}/superset_bootstrap.sh; . {{ .Values.configMountPath }}/superset_init.sh;
-            {{- if .Values.extraRoles }}
-            {{- range $role := .Values.extraRoles }}
-            python /scripts/create_role.py --role-name {{ $role.name }} --permissions '{{ $role.permissions | toJson | b64enc }}';
-            {{- end }}
-            {{- end }}
-            {{- if and .Values.publicRolePermissions (eq .Values.publicRoleLike .Values._publicRoleDefaultName) }}
-            python /scripts/create_role.py --role-name {{ .Values._publicRoleDefaultName }} --permissions '{{ .Values.publicRolePermissions | toJson | b64enc }}';
-            {{- end }}
-          containerSecurityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-              - ALL
-          initContainers:
-          - command:
-            - /bin/sh
-            - -c
-            - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -timeout 120s
-            envFrom:
-            - secretRef:
-                name: '{{ tpl .Values.envFromSecret . }}'
-            image: '{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}'
-            imagePullPolicy: '{{ .Values.initImage.pullPolicy }}'
-            name: wait-for-database
-            resources:
-              limits:
-                cpu: 500m
-                memory: 256Mi
-              requests:
-                cpu: 250m
-                memory: 128Mi
-            securityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-                - ALL
-          loadExamples: false
-          podSecurityContext:
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
-        initImage:
-          pullPolicy: IfNotPresent
-          repository: docker.hops.works/superset/dockerize
-          tag: 0.14.0-alpine-h2.1
-        postgresql:
-          enabled: false
-        publicRoleLike: Public
-        publicRolePermissions:
-        - - can_read
-          - Dashboard
-        - - can_read
-          - Chart
-        - - can_dashboard
-          - Superset
-        - - can_slice
-          - Superset
-        - - can_explore_json
-          - Superset
-        - - can_dashboard_permalink
-          - Superset
-        - - can_read
-          - DashboardPermalinkRestApi
-        - - can_read
-          - DashboardFilterStateRestApi
-        - - can_write
-          - DashboardFilterStateRestApi
-        - - can_time_range
-          - Api
-        - - can_query_form_data
-          - Api
-        - - can_query
-          - Api
-        - - can_read
-          - CssTemplate
-        - - can_read
-          - Theme
-        - - can_read
-          - EmbeddedDashboard
-        - - can_read
-          - CurrentUserRestApi
-        - - can_get
-          - Datasource
-        - - can_external_metadata
-          - Datasource
-        - - can_read
-          - Annotation
-        - - can_read
-          - AnnotationLayerRestApi
-        - - can_read
-          - ExplorePermalinkRestApi
-        redis:
-          enabled: true
-          image:
-            registry: docker.hops.works/superset
-            repository: redis
-            tag: 7.4.11-alpine-h4
-          master:
-            configuration: |-
-              maxmemory 256mb
-              maxmemory-policy allkeys-lru
-            containerSecurityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-                - ALL
-              enabled: true
-              readOnlyRootFilesystem: true
-              runAsGroup: 1001
-              runAsNonRoot: true
-              runAsUser: 1001
-              seLinuxOptions: {}
-              seccompProfile:
-                type: RuntimeDefault
-            podSecurityContext:
-              enabled: true
-              fsGroup: 1001
-              fsGroupChangePolicy: Always
-              runAsNonRoot: true
-              runAsUser: 1001
-              seccompProfile:
-                type: RuntimeDefault
-              supplementalGroups: []
-              sysctls: []
-            resources:
-              limits:
-                cpu: 500m
-                memory: 384Mi
-              requests:
-                cpu: 100m
-                memory: 384Mi
-          metrics:
-            containerSecurityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-                - ALL
-              enabled: true
-              readOnlyRootFilesystem: true
-              runAsGroup: 1001
-              runAsNonRoot: true
-              runAsUser: 1001
-              seLinuxOptions: {}
-              seccompProfile:
-                type: RuntimeDefault
-            enabled: true
-            image:
-              digest: ''
-              pullPolicy: IfNotPresent
-              registry: docker.hops.works/superset
-              repository: redis-exporter
-              tag: 1.90.0-alpine-h2.1
-            resources:
-              limits:
-                cpu: 100m
-                memory: 64Mi
-              requests:
-                cpu: 50m
-                memory: 64Mi
-            service:
-              annotations:
-                prometheus.io/port: '{{ .Values.metrics.service.port }}'
-                prometheus.io/scrape: 'true'
-        runAsUser: 1000
-        secretEnv:
-          create: false
-        service:
-          annotations:
-            consul.hashicorp.com/service-name: superset
-            consul.hashicorp.com/service-tags: app
-        supersetNode:
-          connections:
-            db_host: '{{ .Release.Name }}-mysql'
-            db_name: superset
-            db_pass: superset
-            db_port: '3306'
-            db_type: mysql
-            db_user: superset
-          containerSecurityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-              - ALL
-          initContainers:
-          - command:
-            - /bin/sh
-            - -c
-            - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -timeout 120s
-            envFrom:
-            - secretRef:
-                name: '{{ tpl .Values.envFromSecret . }}'
-            image: '{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}'
-            imagePullPolicy: '{{ .Values.initImage.pullPolicy }}'
-            name: wait-for-db
-            resources:
-              limits:
-                cpu: 500m
-                memory: 256Mi
-              requests:
-                cpu: 250m
-                memory: 128Mi
-            securityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-                - ALL
-          livenessProbe:
-            failureThreshold: 3
-            httpGet:
-              path: /hopsworks-api/superset/health
-              port: http
-            initialDelaySeconds: 15
-            periodSeconds: 15
-            successThreshold: 1
-            timeoutSeconds: 1
-          podSecurityContext:
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
-          readinessProbe:
-            failureThreshold: 3
-            httpGet:
-              path: /hopsworks-api/superset/health
-              port: http
-            initialDelaySeconds: 15
-            periodSeconds: 15
-            successThreshold: 1
-            timeoutSeconds: 1
-          replicas:
-            enabled: true
-            replicaCount: 1
-          startupProbe:
-            failureThreshold: 60
-            httpGet:
-              path: /hopsworks-api/superset/health
-              port: http
-            initialDelaySeconds: 15
-            periodSeconds: 5
-            successThreshold: 1
-            timeoutSeconds: 1
-        supersetWorker:
-          command:
-          - /bin/sh
-          - -c
-          - . {{ .Values.configMountPath }}/superset_bootstrap.sh; celery --app=superset.tasks.celery_app:app worker --pool=prefork -O fair -c 4
-          containerSecurityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-              - ALL
-          initContainers:
-          - command:
-            - /bin/sh
-            - -c
-            - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -wait "tcp://$REDIS_HOST:$REDIS_PORT" -timeout 120s
-            envFrom:
-            - secretRef:
-                name: '{{ tpl .Values.envFromSecret . }}'
-            image: '{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}'
-            imagePullPolicy: '{{ .Values.initImage.pullPolicy }}'
-            name: wait-for-db-redis
-            resources:
-              limits:
-                cpu: 500m
-                memory: 256Mi
-              requests:
-                cpu: 250m
-                memory: 128Mi
-            securityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-                - ALL
-          podSecurityContext:
-            runAsNonRoot: true
-            seccompProfile:
-              type: RuntimeDefault
-          replicas:
-            enabled: false
-          resources:
-            limits:
-              cpu: 500m
-              memory: 1024Mi
-            requests:
-              cpu: 500m
-              memory: 1024Mi
-        ```
-
-`superset.superset.fullnameOverride` <a class="headerlink" href="#helm.superset.superset.fullnameOverride" title="Permanent link">#</a> { #helm.superset.superset.fullnameOverride }
-:   Type `string`, default `"hopsworks-superset"`.
-    Provide a name to override the full names of resources
-
-`superset.superset.runAsUser` <a class="headerlink" href="#helm.superset.superset.runAsUser" title="Permanent link">#</a> { #helm.superset.superset.runAsUser }
-:   Type `int`, default `1000`.
-    User ID directive. This user must have enough permissions to run the bootstrap script Running containers as root is not recommended in production. Change this to another UID - e.g. 1000 to be more secure
 
 </div>
 
@@ -1072,6 +281,1152 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 `superset.backups.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.superset.backups.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.superset.backups.ttlSecondsAfterFinished }
 :   Type `string`, default `nil`.
     ttlSecondsAfterFinished for finished backup Job pods (removes the pod, and its node-local dump scratch, after completion). null falls through to the global default
+
+</div>
+
+## superset { #helm-values-superset-superset }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    superset:
+      superset:
+        _publicRoleDefaultName: Public
+        allowAnonymousAccess: true
+        configOverrides:
+          databaseInitialization: |
+            # Only the initialization Job creates security tables.
+            FAB_CREATE_DB = os.getenv("SUPERSET_INIT_DB", "false").lower() == "true"
+          feature_flags: |
+            FEATURE_FLAGS = {"ALERT_REPORTS": True, "DASHBOARD_RBAC": True}
+          flask_app_configuration: |
+            from flask import session
+            from flask import Flask
+            from datetime import timedelta
+
+            def make_session_permanent():
+                '''
+                Enable maxAge for the cookie 'session'
+                '''
+                session.permanent = True
+
+            # Set up max age of session to 24 hours
+            PERMANENT_SESSION_LIFETIME = timedelta(hours=24) # (default: "31 days")
+            SESSION_REFRESH_EACH_REQUEST = True # Default: True
+            def FLASK_APP_MUTATOR(app: Flask) -> None:
+                app.before_request_funcs.setdefault(None, []).append(make_session_permanent)
+          mysql: |
+            SQLALCHEMY_DATABASE_URI = f"mysql+mysqldb://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+          proxyConfig: |
+            ENABLE_PROXY_FIX = True
+            APP_ICON = "/hopsworks-api/superset/static/assets/images/superset-logo-horiz.png"
+            LOGO_TARGET_PATH = "/hopsworks-api/superset/superset/welcome/"
+            {{- if .Values.init.loadExamples }}
+            PREVENT_UNSAFE_DB_CONNECTIONS = False
+            {{- else }}
+            PREVENT_UNSAFE_DB_CONNECTIONS = True
+            {{- end }}
+          public_role: |
+            {{- if .Values.publicRoleLike }}
+            PUBLIC_ROLE_LIKE = {{ .Values.publicRoleLike | quote }}
+            {{- end }}
+            {{- if .Values.allowAnonymousAccess }}
+            AUTH_ROLE_PUBLIC = {{ .Values._publicRoleDefaultName | quote }}
+            {{- end }}
+        extraEnv:
+          SUPERSET_APP_ROOT: /hopsworks-api/superset
+        extraEnvRaw:
+        - name: SUPERSET_USER
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: superset-admin-credentials
+        - name: SUPERSET_PASS
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: superset-admin-credentials
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              key: mysql-password
+              name: superset-mysql-users-secrets
+        - name: SUPERSET_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: secret-key
+              name: superset-secret-key
+        extraRoles:
+        - name: Dataset
+          permissions:
+          - - can_duplicate
+            - Dataset
+          - - can_write
+            - Dataset
+          - - can_get_or_create_dataset
+            - Dataset
+          - - can_warm_up_cache
+            - Dataset
+        extraVolumeMounts:
+        - mountPath: /srv/hops/super_crypto/superset
+          name: super-crypto-material
+          readOnly: true
+        extraVolumes:
+        - name: super-crypto-material
+          secret:
+            optional: true
+            secretName: hopsworks-superset-crypto-material
+        fullnameOverride: hopsworks-superset
+        image:
+          pullPolicy: IfNotPresent
+          repository: docker.hops.works/hopsworks/superset
+          tag: 6.0.0p4.7
+        init:
+          adminUser:
+            email: admin@superset.com
+            firstname: Superset
+            lastname: Admin
+            password: $SUPERSET_PASS
+            username: $SUPERSET_USER
+          command:
+          - /bin/sh
+          - -c
+          - |
+            {{- if ((((.Values.global | default dict)._hopsworks | default dict).restoreFromBackup | default dict).superset | default dict).enabled }}
+            echo "Superset restore in progress (global._hopsworks.restoreFromBackup.superset.enabled): skipping init so no schema work runs while the database is reloaded. It runs on the upgrade that clears the flag."; exit 0
+            {{- end }}
+            . {{ .Values.configMountPath }}/superset_bootstrap.sh; . {{ .Values.configMountPath }}/superset_init.sh;
+            {{- if .Values.extraRoles }}
+            {{- range $role := .Values.extraRoles }}
+            python /scripts/create_role.py --role-name {{ $role.name }} --permissions '{{ $role.permissions | toJson | b64enc }}';
+            {{- end }}
+            {{- end }}
+            {{- if and .Values.publicRolePermissions (eq .Values.publicRoleLike .Values._publicRoleDefaultName) }}
+            python /scripts/create_role.py --role-name {{ .Values._publicRoleDefaultName }} --permissions '{{ .Values.publicRolePermissions | toJson | b64enc }}';
+            {{- end }}
+          containerSecurityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+          enabled: false
+          initContainers:
+          - command:
+            - /bin/sh
+            - -c
+            - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -timeout 120s
+            envFrom:
+            - secretRef:
+                name: '{{ tpl .Values.envFromSecret . }}'
+            image: '{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}'
+            imagePullPolicy: '{{ .Values.initImage.pullPolicy }}'
+            name: wait-for-database
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 250m
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+          loadExamples: false
+          podSecurityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            limits:
+              cpu: '1'
+              memory: 2Gi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+        initImage:
+          pullPolicy: IfNotPresent
+          repository: docker.hops.works/superset/dockerize
+          tag: 0.14.0-alpine-h2.1
+        initialization:
+          enabled: true
+          timeoutSeconds: 1800
+        postgresql:
+          enabled: false
+        publicRoleLike: Public
+        publicRolePermissions:
+        - - can_read
+          - Dashboard
+        - - can_read
+          - Chart
+        - - can_dashboard
+          - Superset
+        - - can_slice
+          - Superset
+        - - can_explore_json
+          - Superset
+        - - can_dashboard_permalink
+          - Superset
+        - - can_read
+          - DashboardPermalinkRestApi
+        - - can_read
+          - DashboardFilterStateRestApi
+        - - can_write
+          - DashboardFilterStateRestApi
+        - - can_time_range
+          - Api
+        - - can_query_form_data
+          - Api
+        - - can_query
+          - Api
+        - - can_read
+          - CssTemplate
+        - - can_read
+          - Theme
+        - - can_read
+          - EmbeddedDashboard
+        - - can_read
+          - CurrentUserRestApi
+        - - can_get
+          - Datasource
+        - - can_external_metadata
+          - Datasource
+        - - can_read
+          - Annotation
+        - - can_read
+          - AnnotationLayerRestApi
+        - - can_read
+          - ExplorePermalinkRestApi
+        redis:
+          enabled: true
+          image:
+            registry: docker.hops.works/superset
+            repository: redis
+            tag: 7.4.11-alpine-h4
+          master:
+            configuration: |-
+              maxmemory 256mb
+              maxmemory-policy allkeys-lru
+            containerSecurityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              enabled: true
+              readOnlyRootFilesystem: true
+              runAsGroup: 1001
+              runAsNonRoot: true
+              runAsUser: 1001
+              seLinuxOptions: {}
+              seccompProfile:
+                type: RuntimeDefault
+            podSecurityContext:
+              enabled: true
+              fsGroup: 1001
+              fsGroupChangePolicy: Always
+              runAsNonRoot: true
+              runAsUser: 1001
+              seccompProfile:
+                type: RuntimeDefault
+              supplementalGroups: []
+              sysctls: []
+            resources:
+              limits:
+                cpu: 500m
+                memory: 384Mi
+              requests:
+                cpu: 100m
+                memory: 384Mi
+          metrics:
+            containerSecurityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              enabled: true
+              readOnlyRootFilesystem: true
+              runAsGroup: 1001
+              runAsNonRoot: true
+              runAsUser: 1001
+              seLinuxOptions: {}
+              seccompProfile:
+                type: RuntimeDefault
+            enabled: true
+            image:
+              digest: ''
+              pullPolicy: IfNotPresent
+              registry: docker.hops.works/superset
+              repository: redis-exporter
+              tag: 1.90.0-alpine-h2.1
+            resources:
+              limits:
+                cpu: 100m
+                memory: 64Mi
+              requests:
+                cpu: 50m
+                memory: 64Mi
+            service:
+              annotations:
+                prometheus.io/port: '{{ .Values.metrics.service.port }}'
+                prometheus.io/scrape: 'true'
+        runAsUser: 1000
+        secretEnv:
+          create: false
+        service:
+          annotations:
+            consul.hashicorp.com/service-name: superset
+            consul.hashicorp.com/service-tags: app
+        serviceAccount:
+          create: true
+        supersetCeleryBeat:
+          initContainers:
+          - command:
+            - /bin/sh
+            - -c
+            - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -wait "tcp://$REDIS_HOST:$REDIS_PORT" -timeout 120s
+            envFrom:
+            - secretRef:
+                name: '{{ tpl .Values.envFromSecret . }}'
+            image: '{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}'
+            imagePullPolicy: '{{ .Values.initImage.pullPolicy }}'
+            name: wait-for-db-redis
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 250m
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+          - command:
+            - /bin/bash
+            - -c
+            - |
+              {{- if .Values.initialization.enabled }}
+              exec kubectl wait --namespace {{ .Release.Namespace | quote }} \
+                --for=condition=complete --timeout={{ .Values.initialization.timeoutSeconds }}s \
+                job/{{ include "superset.initialization.jobName" . }}
+              {{- end }}
+            image: '{{- $image := include "hopsworkslib.toolboxImage" . -}}{{ $image }}{{ include "hopsworkslib.imageDigest" (dict "global" .Values.global "entry" $image) }}'
+            imagePullPolicy: '{{ include "hopsworkslib.imagePullPolicy" . | default "IfNotPresent" }}'
+            name: wait-for-initialization
+            resources:
+              limits:
+                cpu: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.limits.cpu }}'
+                memory: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.limits.memory }}'
+              requests:
+                cpu: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.requests.cpu }}'
+                memory: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.requests.memory }}'
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+        supersetCeleryFlower:
+          initContainers:
+          - command:
+            - /bin/sh
+            - -c
+            - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -wait "tcp://$REDIS_HOST:$REDIS_PORT" -timeout 120s
+            envFrom:
+            - secretRef:
+                name: '{{ tpl .Values.envFromSecret . }}'
+            image: '{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}'
+            imagePullPolicy: '{{ .Values.initImage.pullPolicy }}'
+            name: wait-for-db-redis
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 250m
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+          - command:
+            - /bin/bash
+            - -c
+            - |
+              {{- if .Values.initialization.enabled }}
+              exec kubectl wait --namespace {{ .Release.Namespace | quote }} \
+                --for=condition=complete --timeout={{ .Values.initialization.timeoutSeconds }}s \
+                job/{{ include "superset.initialization.jobName" . }}
+              {{- end }}
+            image: '{{- $image := include "hopsworkslib.toolboxImage" . -}}{{ $image }}{{ include "hopsworkslib.imageDigest" (dict "global" .Values.global "entry" $image) }}'
+            imagePullPolicy: '{{ include "hopsworkslib.imagePullPolicy" . | default "IfNotPresent" }}'
+            name: wait-for-initialization
+            resources:
+              limits:
+                cpu: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.limits.cpu }}'
+                memory: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.limits.memory }}'
+              requests:
+                cpu: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.requests.cpu }}'
+                memory: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.requests.memory }}'
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+        supersetNode:
+          connections:
+            db_host: '{{ .Release.Name }}-mysql'
+            db_name: superset
+            db_pass: superset
+            db_port: '3306'
+            db_type: mysql
+            db_user: superset
+          containerSecurityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+          initContainers:
+          - command:
+            - /bin/sh
+            - -c
+            - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -timeout 120s
+            envFrom:
+            - secretRef:
+                name: '{{ tpl .Values.envFromSecret . }}'
+            image: '{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}'
+            imagePullPolicy: '{{ .Values.initImage.pullPolicy }}'
+            name: wait-for-db
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 250m
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+          - command:
+            - /bin/bash
+            - -c
+            - |
+              {{- if .Values.initialization.enabled }}
+              exec kubectl wait --namespace {{ .Release.Namespace | quote }} \
+                --for=condition=complete --timeout={{ .Values.initialization.timeoutSeconds }}s \
+                job/{{ include "superset.initialization.jobName" . }}
+              {{- end }}
+            image: '{{- $image := include "hopsworkslib.toolboxImage" . -}}{{ $image }}{{ include "hopsworkslib.imageDigest" (dict "global" .Values.global "entry" $image) }}'
+            imagePullPolicy: '{{ include "hopsworkslib.imagePullPolicy" . | default "IfNotPresent" }}'
+            name: wait-for-initialization
+            resources:
+              limits:
+                cpu: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.limits.cpu }}'
+                memory: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.limits.memory }}'
+              requests:
+                cpu: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.requests.cpu }}'
+                memory: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.requests.memory }}'
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /hopsworks-api/superset/health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 1
+          podSecurityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /hopsworks-api/superset/health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 1
+          replicas:
+            enabled: true
+            replicaCount: 1
+          startupProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /hopsworks-api/superset/health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+        supersetWorker:
+          command:
+          - /bin/sh
+          - -c
+          - . {{ .Values.configMountPath }}/superset_bootstrap.sh; celery --app=superset.tasks.celery_app:app worker --pool=prefork -O fair -c 4
+          containerSecurityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+          initContainers:
+          - command:
+            - /bin/sh
+            - -c
+            - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -wait "tcp://$REDIS_HOST:$REDIS_PORT" -timeout 120s
+            envFrom:
+            - secretRef:
+                name: '{{ tpl .Values.envFromSecret . }}'
+            image: '{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}'
+            imagePullPolicy: '{{ .Values.initImage.pullPolicy }}'
+            name: wait-for-db-redis
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 250m
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+          - command:
+            - /bin/bash
+            - -c
+            - |
+              {{- if .Values.initialization.enabled }}
+              exec kubectl wait --namespace {{ .Release.Namespace | quote }} \
+                --for=condition=complete --timeout={{ .Values.initialization.timeoutSeconds }}s \
+                job/{{ include "superset.initialization.jobName" . }}
+              {{- end }}
+            image: '{{- $image := include "hopsworkslib.toolboxImage" . -}}{{ $image }}{{ include "hopsworkslib.imageDigest" (dict "global" .Values.global "entry" $image) }}'
+            imagePullPolicy: '{{ include "hopsworkslib.imagePullPolicy" . | default "IfNotPresent" }}'
+            name: wait-for-initialization
+            resources:
+              limits:
+                cpu: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.limits.cpu }}'
+                memory: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.limits.memory }}'
+              requests:
+                cpu: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.requests.cpu }}'
+                memory: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.requests.memory }}'
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+          podSecurityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          replicas:
+            enabled: false
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1024Mi
+            requests:
+              cpu: 500m
+              memory: 1024Mi
+    ```
+
+<div class="hops-values" markdown>
+
+`superset.superset` <a class="headerlink" href="#helm.superset.superset" title="Permanent link">#</a> { #helm.superset.superset }
+:   Type `object`, passed to the [`superset` 0.15.0](https://artifacthub.io/packages/helm/superset/superset/0.15.0) chart, whose other values are documented there.
+    override superset values
+
+    ??? note "Default"
+
+        ```yaml
+        _publicRoleDefaultName: Public
+        allowAnonymousAccess: true
+        configOverrides:
+          databaseInitialization: |
+            # Only the initialization Job creates security tables.
+            FAB_CREATE_DB = os.getenv("SUPERSET_INIT_DB", "false").lower() == "true"
+          feature_flags: |
+            FEATURE_FLAGS = {"ALERT_REPORTS": True, "DASHBOARD_RBAC": True}
+          flask_app_configuration: |
+            from flask import session
+            from flask import Flask
+            from datetime import timedelta
+
+            def make_session_permanent():
+                '''
+                Enable maxAge for the cookie 'session'
+                '''
+                session.permanent = True
+
+            # Set up max age of session to 24 hours
+            PERMANENT_SESSION_LIFETIME = timedelta(hours=24) # (default: "31 days")
+            SESSION_REFRESH_EACH_REQUEST = True # Default: True
+            def FLASK_APP_MUTATOR(app: Flask) -> None:
+                app.before_request_funcs.setdefault(None, []).append(make_session_permanent)
+          mysql: |
+            SQLALCHEMY_DATABASE_URI = f"mysql+mysqldb://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
+          proxyConfig: |
+            ENABLE_PROXY_FIX = True
+            APP_ICON = "/hopsworks-api/superset/static/assets/images/superset-logo-horiz.png"
+            LOGO_TARGET_PATH = "/hopsworks-api/superset/superset/welcome/"
+            {{- if .Values.init.loadExamples }}
+            PREVENT_UNSAFE_DB_CONNECTIONS = False
+            {{- else }}
+            PREVENT_UNSAFE_DB_CONNECTIONS = True
+            {{- end }}
+          public_role: |
+            {{- if .Values.publicRoleLike }}
+            PUBLIC_ROLE_LIKE = {{ .Values.publicRoleLike | quote }}
+            {{- end }}
+            {{- if .Values.allowAnonymousAccess }}
+            AUTH_ROLE_PUBLIC = {{ .Values._publicRoleDefaultName | quote }}
+            {{- end }}
+        extraEnv:
+          SUPERSET_APP_ROOT: /hopsworks-api/superset
+        extraEnvRaw:
+        - name: SUPERSET_USER
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: superset-admin-credentials
+        - name: SUPERSET_PASS
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: superset-admin-credentials
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              key: mysql-password
+              name: superset-mysql-users-secrets
+        - name: SUPERSET_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: secret-key
+              name: superset-secret-key
+        extraRoles:
+        - name: Dataset
+          permissions:
+          - - can_duplicate
+            - Dataset
+          - - can_write
+            - Dataset
+          - - can_get_or_create_dataset
+            - Dataset
+          - - can_warm_up_cache
+            - Dataset
+        extraVolumeMounts:
+        - mountPath: /srv/hops/super_crypto/superset
+          name: super-crypto-material
+          readOnly: true
+        extraVolumes:
+        - name: super-crypto-material
+          secret:
+            optional: true
+            secretName: hopsworks-superset-crypto-material
+        fullnameOverride: hopsworks-superset
+        image:
+          pullPolicy: IfNotPresent
+          repository: docker.hops.works/hopsworks/superset
+          tag: 6.0.0p4.7
+        init:
+          adminUser:
+            email: admin@superset.com
+            firstname: Superset
+            lastname: Admin
+            password: $SUPERSET_PASS
+            username: $SUPERSET_USER
+          command:
+          - /bin/sh
+          - -c
+          - |
+            {{- if ((((.Values.global | default dict)._hopsworks | default dict).restoreFromBackup | default dict).superset | default dict).enabled }}
+            echo "Superset restore in progress (global._hopsworks.restoreFromBackup.superset.enabled): skipping init so no schema work runs while the database is reloaded. It runs on the upgrade that clears the flag."; exit 0
+            {{- end }}
+            . {{ .Values.configMountPath }}/superset_bootstrap.sh; . {{ .Values.configMountPath }}/superset_init.sh;
+            {{- if .Values.extraRoles }}
+            {{- range $role := .Values.extraRoles }}
+            python /scripts/create_role.py --role-name {{ $role.name }} --permissions '{{ $role.permissions | toJson | b64enc }}';
+            {{- end }}
+            {{- end }}
+            {{- if and .Values.publicRolePermissions (eq .Values.publicRoleLike .Values._publicRoleDefaultName) }}
+            python /scripts/create_role.py --role-name {{ .Values._publicRoleDefaultName }} --permissions '{{ .Values.publicRolePermissions | toJson | b64enc }}';
+            {{- end }}
+          containerSecurityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+          enabled: false
+          initContainers:
+          - command:
+            - /bin/sh
+            - -c
+            - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -timeout 120s
+            envFrom:
+            - secretRef:
+                name: '{{ tpl .Values.envFromSecret . }}'
+            image: '{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}'
+            imagePullPolicy: '{{ .Values.initImage.pullPolicy }}'
+            name: wait-for-database
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 250m
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+          loadExamples: false
+          podSecurityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            limits:
+              cpu: '1'
+              memory: 2Gi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+        initImage:
+          pullPolicy: IfNotPresent
+          repository: docker.hops.works/superset/dockerize
+          tag: 0.14.0-alpine-h2.1
+        initialization:
+          enabled: true
+          timeoutSeconds: 1800
+        postgresql:
+          enabled: false
+        publicRoleLike: Public
+        publicRolePermissions:
+        - - can_read
+          - Dashboard
+        - - can_read
+          - Chart
+        - - can_dashboard
+          - Superset
+        - - can_slice
+          - Superset
+        - - can_explore_json
+          - Superset
+        - - can_dashboard_permalink
+          - Superset
+        - - can_read
+          - DashboardPermalinkRestApi
+        - - can_read
+          - DashboardFilterStateRestApi
+        - - can_write
+          - DashboardFilterStateRestApi
+        - - can_time_range
+          - Api
+        - - can_query_form_data
+          - Api
+        - - can_query
+          - Api
+        - - can_read
+          - CssTemplate
+        - - can_read
+          - Theme
+        - - can_read
+          - EmbeddedDashboard
+        - - can_read
+          - CurrentUserRestApi
+        - - can_get
+          - Datasource
+        - - can_external_metadata
+          - Datasource
+        - - can_read
+          - Annotation
+        - - can_read
+          - AnnotationLayerRestApi
+        - - can_read
+          - ExplorePermalinkRestApi
+        redis:
+          enabled: true
+          image:
+            registry: docker.hops.works/superset
+            repository: redis
+            tag: 7.4.11-alpine-h4
+          master:
+            configuration: |-
+              maxmemory 256mb
+              maxmemory-policy allkeys-lru
+            containerSecurityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              enabled: true
+              readOnlyRootFilesystem: true
+              runAsGroup: 1001
+              runAsNonRoot: true
+              runAsUser: 1001
+              seLinuxOptions: {}
+              seccompProfile:
+                type: RuntimeDefault
+            podSecurityContext:
+              enabled: true
+              fsGroup: 1001
+              fsGroupChangePolicy: Always
+              runAsNonRoot: true
+              runAsUser: 1001
+              seccompProfile:
+                type: RuntimeDefault
+              supplementalGroups: []
+              sysctls: []
+            resources:
+              limits:
+                cpu: 500m
+                memory: 384Mi
+              requests:
+                cpu: 100m
+                memory: 384Mi
+          metrics:
+            containerSecurityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              enabled: true
+              readOnlyRootFilesystem: true
+              runAsGroup: 1001
+              runAsNonRoot: true
+              runAsUser: 1001
+              seLinuxOptions: {}
+              seccompProfile:
+                type: RuntimeDefault
+            enabled: true
+            image:
+              digest: ''
+              pullPolicy: IfNotPresent
+              registry: docker.hops.works/superset
+              repository: redis-exporter
+              tag: 1.90.0-alpine-h2.1
+            resources:
+              limits:
+                cpu: 100m
+                memory: 64Mi
+              requests:
+                cpu: 50m
+                memory: 64Mi
+            service:
+              annotations:
+                prometheus.io/port: '{{ .Values.metrics.service.port }}'
+                prometheus.io/scrape: 'true'
+        runAsUser: 1000
+        secretEnv:
+          create: false
+        service:
+          annotations:
+            consul.hashicorp.com/service-name: superset
+            consul.hashicorp.com/service-tags: app
+        serviceAccount:
+          create: true
+        supersetCeleryBeat:
+          initContainers:
+          - command:
+            - /bin/sh
+            - -c
+            - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -wait "tcp://$REDIS_HOST:$REDIS_PORT" -timeout 120s
+            envFrom:
+            - secretRef:
+                name: '{{ tpl .Values.envFromSecret . }}'
+            image: '{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}'
+            imagePullPolicy: '{{ .Values.initImage.pullPolicy }}'
+            name: wait-for-db-redis
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 250m
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+          - command:
+            - /bin/bash
+            - -c
+            - |
+              {{- if .Values.initialization.enabled }}
+              exec kubectl wait --namespace {{ .Release.Namespace | quote }} \
+                --for=condition=complete --timeout={{ .Values.initialization.timeoutSeconds }}s \
+                job/{{ include "superset.initialization.jobName" . }}
+              {{- end }}
+            image: '{{- $image := include "hopsworkslib.toolboxImage" . -}}{{ $image }}{{ include "hopsworkslib.imageDigest" (dict "global" .Values.global "entry" $image) }}'
+            imagePullPolicy: '{{ include "hopsworkslib.imagePullPolicy" . | default "IfNotPresent" }}'
+            name: wait-for-initialization
+            resources:
+              limits:
+                cpu: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.limits.cpu }}'
+                memory: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.limits.memory }}'
+              requests:
+                cpu: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.requests.cpu }}'
+                memory: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.requests.memory }}'
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+        supersetCeleryFlower:
+          initContainers:
+          - command:
+            - /bin/sh
+            - -c
+            - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -wait "tcp://$REDIS_HOST:$REDIS_PORT" -timeout 120s
+            envFrom:
+            - secretRef:
+                name: '{{ tpl .Values.envFromSecret . }}'
+            image: '{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}'
+            imagePullPolicy: '{{ .Values.initImage.pullPolicy }}'
+            name: wait-for-db-redis
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 250m
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+          - command:
+            - /bin/bash
+            - -c
+            - |
+              {{- if .Values.initialization.enabled }}
+              exec kubectl wait --namespace {{ .Release.Namespace | quote }} \
+                --for=condition=complete --timeout={{ .Values.initialization.timeoutSeconds }}s \
+                job/{{ include "superset.initialization.jobName" . }}
+              {{- end }}
+            image: '{{- $image := include "hopsworkslib.toolboxImage" . -}}{{ $image }}{{ include "hopsworkslib.imageDigest" (dict "global" .Values.global "entry" $image) }}'
+            imagePullPolicy: '{{ include "hopsworkslib.imagePullPolicy" . | default "IfNotPresent" }}'
+            name: wait-for-initialization
+            resources:
+              limits:
+                cpu: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.limits.cpu }}'
+                memory: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.limits.memory }}'
+              requests:
+                cpu: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.requests.cpu }}'
+                memory: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.requests.memory }}'
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+        supersetNode:
+          connections:
+            db_host: '{{ .Release.Name }}-mysql'
+            db_name: superset
+            db_pass: superset
+            db_port: '3306'
+            db_type: mysql
+            db_user: superset
+          containerSecurityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+          initContainers:
+          - command:
+            - /bin/sh
+            - -c
+            - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -timeout 120s
+            envFrom:
+            - secretRef:
+                name: '{{ tpl .Values.envFromSecret . }}'
+            image: '{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}'
+            imagePullPolicy: '{{ .Values.initImage.pullPolicy }}'
+            name: wait-for-db
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 250m
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+          - command:
+            - /bin/bash
+            - -c
+            - |
+              {{- if .Values.initialization.enabled }}
+              exec kubectl wait --namespace {{ .Release.Namespace | quote }} \
+                --for=condition=complete --timeout={{ .Values.initialization.timeoutSeconds }}s \
+                job/{{ include "superset.initialization.jobName" . }}
+              {{- end }}
+            image: '{{- $image := include "hopsworkslib.toolboxImage" . -}}{{ $image }}{{ include "hopsworkslib.imageDigest" (dict "global" .Values.global "entry" $image) }}'
+            imagePullPolicy: '{{ include "hopsworkslib.imagePullPolicy" . | default "IfNotPresent" }}'
+            name: wait-for-initialization
+            resources:
+              limits:
+                cpu: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.limits.cpu }}'
+                memory: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.limits.memory }}'
+              requests:
+                cpu: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.requests.cpu }}'
+                memory: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.requests.memory }}'
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /hopsworks-api/superset/health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 1
+          podSecurityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /hopsworks-api/superset/health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 15
+            successThreshold: 1
+            timeoutSeconds: 1
+          replicas:
+            enabled: true
+            replicaCount: 1
+          startupProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /hopsworks-api/superset/health
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+        supersetWorker:
+          command:
+          - /bin/sh
+          - -c
+          - . {{ .Values.configMountPath }}/superset_bootstrap.sh; celery --app=superset.tasks.celery_app:app worker --pool=prefork -O fair -c 4
+          containerSecurityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
+          initContainers:
+          - command:
+            - /bin/sh
+            - -c
+            - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -wait "tcp://$REDIS_HOST:$REDIS_PORT" -timeout 120s
+            envFrom:
+            - secretRef:
+                name: '{{ tpl .Values.envFromSecret . }}'
+            image: '{{ .Values.initImage.repository }}:{{ .Values.initImage.tag }}'
+            imagePullPolicy: '{{ .Values.initImage.pullPolicy }}'
+            name: wait-for-db-redis
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 250m
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+          - command:
+            - /bin/bash
+            - -c
+            - |
+              {{- if .Values.initialization.enabled }}
+              exec kubectl wait --namespace {{ .Release.Namespace | quote }} \
+                --for=condition=complete --timeout={{ .Values.initialization.timeoutSeconds }}s \
+                job/{{ include "superset.initialization.jobName" . }}
+              {{- end }}
+            image: '{{- $image := include "hopsworkslib.toolboxImage" . -}}{{ $image }}{{ include "hopsworkslib.imageDigest" (dict "global" .Values.global "entry" $image) }}'
+            imagePullPolicy: '{{ include "hopsworkslib.imagePullPolicy" . | default "IfNotPresent" }}'
+            name: wait-for-initialization
+            resources:
+              limits:
+                cpu: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.limits.cpu }}'
+                memory: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.limits.memory }}'
+              requests:
+                cpu: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.requests.cpu }}'
+                memory: '{{ (include "hopsworkslib.initContainerResources" (dict "Values" .Values) | fromYaml).resources.requests.memory }}'
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+          podSecurityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          replicas:
+            enabled: false
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1024Mi
+            requests:
+              cpu: 500m
+              memory: 1024Mi
+        ```
+
+`superset.superset.fullnameOverride` <a class="headerlink" href="#helm.superset.superset.fullnameOverride" title="Permanent link">#</a> { #helm.superset.superset.fullnameOverride }
+:   Type `string`, default `"hopsworks-superset"`.
+    Provide a name to override the full names of resources
+
+`superset.superset.init.enabled` <a class="headerlink" href="#helm.superset.superset.init.enabled" title="Permanent link">#</a> { #helm.superset.superset.init.enabled }
+:   Type `bool`, default `false`.
+    The upstream hook stays disabled; use initialization.enabled to control the parent Job.
+
+`superset.superset.initialization` <a class="headerlink" href="#helm.superset.superset.initialization" title="Permanent link">#</a> { #helm.superset.superset.initialization }
+:   Type `object`, default `{"enabled":true,"timeoutSeconds":1800}`.
+    Metadata initialization Job and runtime startup gates, shared by Helm, Argo CD and Flux.
+
+`superset.superset.initialization.enabled` <a class="headerlink" href="#helm.superset.superset.initialization.enabled" title="Permanent link">#</a> { #helm.superset.superset.initialization.enabled }
+:   Type `bool`, default `true`.
+    Disable only when the metadata database is initialized outside this chart.
+
+`superset.superset.initialization.timeoutSeconds` <a class="headerlink" href="#helm.superset.superset.initialization.timeoutSeconds" title="Permanent link">#</a> { #helm.superset.superset.initialization.timeoutSeconds }
+:   Type `int`, default `1800`.
+    Maximum runtime of the initialization Job and each startup gate, in seconds.
+
+`superset.superset.runAsUser` <a class="headerlink" href="#helm.superset.superset.runAsUser" title="Permanent link">#</a> { #helm.superset.superset.runAsUser }
+:   Type `int`, default `1000`.
+    User ID directive. This user must have enough permissions to run the bootstrap script Running containers as root is not recommended in production. Change this to another UID - e.g. 1000 to be more secure
+
+`superset.superset.serviceAccount.create` <a class="headerlink" href="#helm.superset.superset.serviceAccount.create" title="Permanent link">#</a> { #helm.superset.superset.serviceAccount.create }
+:   Type `bool`, default `true`.
+    Create a ServiceAccount for Superset, so the initialization Role is not bound to the namespace's `default` account.
 
 </div>
 

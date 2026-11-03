@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793693086` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793703260` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2837,6 +2837,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         requests_verify: 'true'
         reserved_project_names: hopsworks,information_schema,airflow,glassfish_timers,grafana,hops,metastore,mysql,ndbinfo,performance_schema,sqoop,sys,base,python37,python38,python39,python310,filebeat,airflow,git,onlinefs,sklearnserver,rondb_replication,default,kube-system,kube-public,kube-node-lease,kube_system,kube_public,kube_node_lease
         rmyarn_user: rmyarn
+        rondb_default_max_online_tables: '-1'
         rondb_quotas: ''
         rondb_usage_cache_ttl_seconds: '60'
         rondb_usage_query_timeout_seconds: '10'
@@ -4264,6 +4265,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.rmyarn_user` <a class="headerlink" href="#helm.hopsworks.variables.rmyarn_user" title="Permanent link">#</a> { #helm.hopsworks.variables.rmyarn_user }
 :   Type `string`, default `"rmyarn"`.
+
+`hopsworks.variables.rondb_default_max_online_tables` <a class="headerlink" href="#helm.hopsworks.variables.rondb_default_max_online_tables" title="Permanent link">#</a> { #helm.hopsworks.variables.rondb_default_max_online_tables }
+:   Type `string`, default `"-1"`.
+    How many tables a project's online database may have, unless an administrator sets a limit for the project. Feature groups and Python app tables count; -1 is unlimited.
 
 `hopsworks.variables.rondb_quotas` <a class="headerlink" href="#helm.hopsworks.variables.rondb_quotas" title="Permanent link">#</a> { #helm.hopsworks.variables.rondb_quotas }
 :   Type `string`, default `""`.
