@@ -139,6 +139,12 @@ labels = requests.get(
 
 `token.expires_at` is the expiry in epoch milliseconds.
 
+!!! warning "Every project member can read the whole mailbox"
+    Any data scientist or data owner of the project can ask for an access token, and the token reads every message of the mailbox, not only the labels or query of a sync job.
+    A data scientist can also create a sync job with any query and read its feature group.
+    Add a Gmail data source only to a project whose members may read that mailbox, as with the passwords and keys of the other data sources.
+    Deleting the data source needs the data owner role; a sync job can be deleted by its creator or a data owner.
+
 ## Sync jobs
 
 A sync job is a Python job, listed on the `Jobs` page, that copies the mailbox into a feature group.
@@ -202,7 +208,8 @@ The `attachments` column lists the full paths of a message's files, such as `/Pr
     The schedule starts no run while another run of the job is still copying, so an hourly job first runs once the backfill ends; a run started by hand meanwhile does nothing and succeeds.
     Gmail limits how many requests a user's mailbox serves per minute, so a backfill of tens of thousands of emails can take hours.
     A throttled run waits and retries until Gmail serves it again, and never fails because of throttling; the job log reports how often Gmail throttled it.
-- `FULL_LOAD`: every run copies all the selected messages from the start date on, overwrites the feature group, and rebuilds the attachments directory.
+- `FULL_LOAD`: every run copies all the selected messages from the start date on, then removes the rows and attachments of the messages it did not copy.
+  The previous rows stay readable while it runs, and a run that fails part way leaves them in place.
     A run that selects no messages leaves the feature group as it was.
 
 The feature group is an archive of the mailbox:
