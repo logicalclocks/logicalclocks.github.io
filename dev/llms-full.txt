@@ -37455,7 +37455,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
 | [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], and from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -37704,6 +37704,23 @@ On the upgrade to 5.3:
   Later restarts and upgrades resume from the registry.
 - Leave the existing contents of `/var/lib/filebeat-data` in place.
   Nothing in the chart reads them, and they may belong to another Filebeat on the node.
+
+### Logstash 9 { #upgrade-logstash-9 }
+
+In 5.3, and from the 5.2.x patch release that ships it, Logstash moves from 7.17 to 9.5.
+The chart's own pipelines need nothing, and documents keep their field names, because the chart sets `pipeline.ecs_compatibility: disabled`.
+Pipelines, outputs and plugins you added through `logstash.extraPipelines`, `logstash.additional_audit_outputs` or `logstash.plugins` need a check before the upgrade:
+
+- **Rename the TLS settings of `elasticsearch`, `http` and `tcp` outputs in the same upgrade.**
+  The output plugins move up a major version: `elasticsearch` 11 to 12, `http` 5 to 6, `tcp` 6 to 7 and `opensearch` 1 to 2.
+  The new `elasticsearch`, `http` and `tcp` outputs refuse their old SSL settings, such as `cacert`, `ssl` and `ssl_certificate_verification` on `elasticsearch`, `cacert`, `client_cert`, `client_key`, `keystore` and `truststore` on `http`, and `ssl_enable`, `ssl_cert`, `ssl_cacert` and `ssl_verify` on `tcp`.
+  The 7.17 versions do not know the replacement names, such as `ssl_enabled` and `ssl_certificate_authorities`, so no TLS setting works on both versions, and the values of the upgrade itself must carry the new names.
+  Each plugin's page in the [Logstash plugin reference](https://www.elastic.co/docs/reference/logstash/plugins) lists them.
+- **A pipeline that fails to start stops all log shipping.**
+  Logstash keeps running the other pipelines, but the routing pipeline waits on every event for the one that did not start, so service, project and audit logs all stop while the Logstash pod stays ready.
+  After the upgrade, look for `is obsolete and is no longer available` in the Logstash log.
+- **The kafka integration, the `azure_event_hubs` input and the `webhdfs` output are no longer in the image.**
+  A pipeline that uses one of them needs it in `logstash.plugins`, which installs it when the Logstash pod starts, so it needs access to `rubygems.org` and cannot run on an airgapped cluster.
 
 ### Agent deployments reserve 2 GiB for their OTLP sidecar { #upgrade-agent-otlp-sidecar }
 
