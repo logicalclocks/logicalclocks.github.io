@@ -4,7 +4,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793711429` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793724356` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -529,7 +529,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
           type: ClusterIP
         tolerations: []
         topologySpreadConstraint: {}
-        version: 7.17.29.8
+        version: 9.5.6.0
         workers: 4
     ```
 
@@ -640,7 +640,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
     The default topology spread constraint. If not defined the global topology spread constraint would be used instead.
 
 `olk.logstash.version` <a class="headerlink" href="#helm.olk.logstash.version" title="Permanent link">#</a> { #helm.olk.logstash.version }
-:   Type `string`, default `"7.17.29.8"`.
+:   Type `string`, default `"9.5.6.0"`.
 
 `olk.logstash.workers` <a class="headerlink" href="#helm.olk.logstash.workers" title="Permanent link">#</a> { #helm.olk.logstash.workers }
 :   Type `int`, default `4`.
