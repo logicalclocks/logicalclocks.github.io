@@ -61,7 +61,7 @@ Editing a published suite means a new version, with `evals.suites.new_version(..
 | `llm_judge`, `tool_arguments_judge`, `pairwise` | A model's judgement against a rubric, or against a reference answer |
 | `sql_state` | The state of the world after the agent acted |
 | `human_review` | Nothing automatic: it defers to a person |
-| `python` | Whatever a function the project wrote decides; see [Writing your own checks](#writing-your-own-checks) |
+| `python` | Whatever the checks the project wrote decide: a file is named and every function in it declared with `@check` runs; see [Writing your own checks](#writing-your-own-checks) |
 
 A check that needs something from the task, such as the answer a `contains` looks for or the rubric a judge grades against, refuses the task when it joins the suite rather than failing silently at run time.
 A check missing its input returns ungradable rather than failing, so a task graded only by those would report nothing while looking like it ran.
@@ -121,18 +121,19 @@ evals.runs.replay(run, price_matches_catalogue)   # last night's trials, re-grad
 ```
 
 Then put the file where the job reads it.
-Uploading it registers one library entry per check it declares, and the UI's check picker lists the checks a file declares:
+Uploading it registers one library entry for the file, and a suite names the file as one row: every check it declares runs, each reported under its own name, the way a test file is pointed at and every test in it runs.
 
 ```python
 evals.checks.upload("evaluation/checks/pricing.py", tags=[agent.name])
 ```
 
-A suite's row names the file and the check, never the code:
-
 ```python
-check("python", "price_matches_catalogue",
-      file="Resources/agent_evals/checks/pricing.py", params={"tolerance": 0.005})
+check("python", "pricing", file="Resources/agent_evals/checks/pricing.py",
+      params={"price_matches_catalogue": {"tolerance": 0.005}})
 ```
+
+`only` and `exclude` narrow a row to some of the checks a file declares; `params` is keyed by check.
+Whether a check reads the trace, reads the task's expectation, its timeout and its description are stated on the decorator and nowhere else: Hopsworks scans the file when the row is saved and keeps what it declares on the row, so the task form asks for what each check expects and a monitor refuses a file that declares a check reading the expectation.
 
 Checks can also live in a git repository, including the agent's own.
 `git={"url": ..., "ref": ...}` with `path` names a file in a repository the evaluation job clones with the git providers of the account the job runs as; `git="deployment"` names a file in the evaluated deployment's repository at the commit it is running, so the checks version with the agent like its unit tests.
