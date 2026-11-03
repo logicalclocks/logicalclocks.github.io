@@ -1974,6 +1974,8 @@ Sections with defaults show a one-line summary of their answers, with **Edit** t
 For an agentic system the LLM's endpoint, model and key are saved as your account environment variables, `LLM_URL`, `LLM_MODEL` and `LLM_API_KEY`.
 For a batch or real-time system, **Monitoring** (collapsed) sets whether every prediction logs the features it used (on by default) and, in your own words, what to monitor and alert on, such as drift in a feature against the training data or a failed job.
 The build turns them into feature logging on the feature view, feature monitoring checks and alerts, and sends a failure alert for every job the system owns to the project's alert receiver.
+For a real-time system, **Prediction latency tracing** (collapsed, off by default) creates the deployment with tracing: the share of requests recorded as traces, from 0.01% to 100% (10% by default), and the days tracing stays on (7 by default).
+The deployment then times every request's feature lookup, transformations, model predict and feature logging, shown under X-ray latencies on its page, and can be switched off and on there without a restart; it serves one worker per replica, which the build's latency benchmark runs with.
 **Create** runs `hops factory run ml-batch --answers` (or `ml-realtime`, `ml-streaming`, `ml-agent`) in a Terminal tab named after the system, which records it and starts Claude Code on `/hops-build <name>`; the page opens the system once it is registered.
 **Location**, above the form of every factory, sets the folder the system's directory goes in, which holds its code and is its git repository: your home folder in the project by default, or another folder of the project you can write to, such as one in `Resources` so every member can open the code; from the CLI, run `hops factory run` in that folder.
 
@@ -28232,7 +28234,7 @@ With tracing on, the deployment:
 
 - counts every request's transformations on its Prometheus endpoint, per feature view and per transformation function, with the fastest and slowest feature vector of the last minute;
 - records a sample of the requests as traces: the request, its feature lookup, each transformation phase with one span per function in DAG order, the prediction and the feature log write;
-- shows those traces in the `Transformations` section of the deployment page.
+- shows those traces in the `X-ray latencies` section of the deployment page.
 
 It applies to deployments created with `model.deploy(...)` from a model with a feature view, to feature view deployments, and to predictor scripts that call `get_feature_vector` or `get_feature_vectors`.
 
@@ -28276,6 +28278,7 @@ deployment.start()
 ```
 
 `sampling_percentage` is the share of requests recorded as traces, from 0 to 100, and defaults to 10.
+It can be a fraction of a percent: `0.01` records one request in 10,000.
 Every request is counted in the metrics, whatever the sampling.
 
 Tracing stays on for `duration_days`, 7 by default, and then Hopsworks switches it off:
@@ -28316,7 +28319,7 @@ deployment.set_tracing(active=True, sampling_percentage=50)
 deployment.set_tracing(active=True, duration_days=30)
 ```
 
-Switching tracing on, or changing `duration_days` while it is on, keeps it on for `duration_days` from now.
+Switching tracing on, changing `duration_days` while it is on, or starting a stopped deployment whose tracing is on keeps it on for `duration_days` from then.
 `deployment.tracing.active_until` is when it will be switched off.
 Hopsworks checks every 5 minutes: once the period has ended it switches tracing off, sets `active` to `False` and records the end in `deployment.tracing.expired_at`.
 
@@ -28351,11 +28354,49 @@ The response carries `activeUntil` and `expiredAt` in epoch milliseconds.
 
 ## Web UI
 
-The deployment page of a deployment that serves a feature view has a `Transformations` section.
+The deployment page of a deployment that serves a feature view has an `X-ray latencies` section.
 While tracing is on, the section lists the traced requests; expanding one shows its spans with their durations.
-While it is off, the section is titled `Feature View Transformations: Metrics` and shows `Tracing is disabled`; clicking it shows how to turn tracing on.
-On a deployment created with tracing, the switch in the section header turns it off and on, like `set_tracing`, and shows the sampling and the time tracing will be switched off.
+While it is off, the section shows `Tracing is disabled`; clicking it shows how to turn tracing on.
+On a deployment created with tracing, the switch in the section header turns it off and on, like `set_tracing`, and shows the time tracing will be switched off.
+Next to it, `Traced requests` sets the sampling to 0.01%, 0.1%, 1%, 10% or 100%, without restarting the deployment.
 Once the period has ended, the section says when tracing was switched off.
+
+On a deployment created with tracing, the section opens with `Request time by stage`, a table of the requests over the last 24 hours with a row for each stage of each feature view or model, `Feature view / model` naming it with its version, and the number of requests and the minimum, p50, p95, p99 and maximum time spent in it:
+
+| Stage | Time measured |
+| --- | --- |
+| Feature lookup | Reading the feature vectors, including their transformations |
+| Transformations | The on-demand and model-dependent transformations of all the request's feature vectors |
+| Model predict | `model_predict` |
+| Feature log (queueing) | The default predictor queueing the feature log write, which runs after the response, or a predictor script's `log` call |
+
+The buttons next to it change the window to 6 hours, 1 hour, 10 minutes or 1 minute, and the values refresh every minute.
+Every request is counted while tracing is on, whatever the sampling.
+The default predictor reports every stage, for its feature view and its model.
+A predictor script that looks up or logs through several feature views gets a feature lookup, transformations and feature log row for each of them, since `get_feature_vector`, `get_feature_vectors`, their `_async` variants and `log` time themselves; its model calls are its own code, so it has no model predict row.
+The quantiles are estimated from a histogram with ten buckets a decade, so one can be up to 26% off; the minimum and maximum are exact, read from gauges that cover up to the last two minutes.
+
+The same statistics over the REST API, with `window` one of `1m`, `10m`, `1h`, `6h` and `24h` (the default):
+
+```bash
+curl -H "Authorization: ApiKey $HOPSWORKS_API_KEY" \
+  "https://$HOPSWORKS_HOST/hopsworks-api/api/project/$PROJECT_ID/serving/$DEPLOYMENT_ID/latency?window=1h"
+```
+
+```json
+{
+  "window": "1h",
+  "stages": [
+    {"stage": "feature_lookup", "name": "fraud_fv:1", "requests": 1234, "minSeconds": 0.0019, "p50Seconds": 0.0023, "p95Seconds": 0.0031, "p99Seconds": 0.0042, "maxSeconds": 0.0094},
+    {"stage": "transformations", "name": "fraud_fv:1", "requests": 1234, "minSeconds": 0.00011, "p50Seconds": 0.00016, "p95Seconds": 0.00031, "p99Seconds": 0.00052, "maxSeconds": 0.0019},
+    {"stage": "model_predict", "name": "fraud_model:3", "requests": 1234, "minSeconds": 0.00039, "p50Seconds": 0.00047, "p95Seconds": 0.00062, "p99Seconds": 0.00081, "maxSeconds": 0.0021},
+    {"stage": "feature_log", "name": "fraud_fv:1", "requests": 1234, "minSeconds": 0.000013, "p50Seconds": 0.000022, "p95Seconds": 0.000031, "p99Seconds": 0.000039, "maxSeconds": 0.000041}
+  ]
+}
+```
+
+`name` is the feature view or model as `<name>:<version>`. Only entries with requests in the window are returned.
+Another `window` answers `400` with error code `240069`; a Prometheus that does not answer gives `503` with error code `240070`.
 
 The deployment's Grafana dashboard, opened with `View in Grafana` in the `Metrics` section, charts the metrics under `Feature view transformations`.
 
@@ -28368,6 +28409,8 @@ The deployment's Grafana dashboard, opened with `View in Grafana` in the `Metric
 | `hopsworks_transformation_function_calls_total`, `hopsworks_transformation_function_seconds_total`, `hopsworks_transformation_function_errors_total` | the above, `transformation`, `outputs` | The same per transformation function, and the calls that raised |
 | `hopsworks_transformation_function_window_min_seconds`, `hopsworks_transformation_function_window_max_seconds` | the above | Fastest and slowest call of the function in the last complete 60 second window |
 | `hopsworks_transformation_dag_edge` | the above, `depends_on` | 1 for each edge of the transformation DAG |
+| `hopsworks_prediction_stage_seconds` | `stage`, `name` | Histogram of the time one request spent in a stage, `feature_lookup`, `transformations`, `model_predict` or `feature_log`, of the feature view or model `name` (`<name>:<version>`), with buckets ten a decade from 10 µs to 10 s |
+| `hopsworks_prediction_stage_window_min_seconds`, `hopsworks_prediction_stage_window_max_seconds` | `stage`, `name` | Fastest and slowest request in the stage in the current and the last complete 60 second window |
 
 The average time is `rate(..._seconds_total[5m]) / rate(..._calls_total[5m])`.
 `outputs` identifies a function, since one function can be attached to several features.
@@ -28395,26 +28438,34 @@ The deployment page draws the write and `feature_view.log` as a separate backgro
 
 Only the first row of a request is traced, so a batch request records one `transformations` span; all of its rows are counted in the metrics.
 
-## Trace storage limits
+## Trace storage
 
-Traces are stored in the online feature store's disk tablespace, which feature groups with disk columns share.
-Each deployment's `duration_days` bounds how long it records traces; three cluster settings bound what model and feature view deployments store there:
+Traces are kept in the online feature store only, in the project's `serving_traces` feature group, and are never written to the offline store.
+A trace is typically two rows: its root span, and the rest of its spans as JSON; a trace whose spans arrive in several batches, or exceed 60,000 bytes, takes more.
+The feature group has a time to live, 36 hours by default, counted from the start of each trace, so the deployment page shows the requests traced in that window.
+Expired traces disappear from reads at once and RonDB deletes them in the background.
+To keep a project's traces longer or shorter, change the feature group's time to live with [`enable_ttl`][hsfs.feature_group.FeatureGroup.enable_ttl].
+
+The rows are in the online feature store's disk tablespace, which feature groups with disk columns share; the start time and the keys stay in memory, as the time to live requires.
+Each deployment's `duration_days` bounds how long it records traces; these cluster settings bound what model and feature view deployments store:
 
 | Variable | Default | Effect |
 | --- | --- | --- |
+| `serving_tracing_online_ttl_hours` | `36` | Time to live of a project's `serving_traces` feature group, applied when it is created. |
 | `serving_tracing_max_traces_per_minute` | `60` | Most traces one predictor pod records per minute, whatever the sampling percentage. Below 1, no cap. |
-| `serving_tracing_retention_days` | `7` | Traces older than this are deleted. `0` keeps them. |
-| `serving_tracing_pause_free_percent` | `20` | Tracing is paused on every model and feature view deployment while less than this percentage of the tablespace is free. |
+| `serving_tracing_pause_free_percent` | `20` | Tracing is paused on every model and feature view deployment while less than this percentage of the tablespace, or of RonDB DataMemory, is free. |
 
-Hopsworks checks the tablespace every 5 minutes.
-A paused deployment reads `paused_reason == "DISK_NEARLY_FULL"` on `deployment.tracing`, and its page says tracing is paused.
-Deleted traces free space for later traces in the same tables, not in the tablespace, so a pause lifts once an administrator adds a data file to the tablespace and at least 10 points more than the threshold are free.
+At the cap, a predictor pod keeps at most `60 * 60 * 36` traces online, about 1.5 KB of RonDB memory each with five transformation functions.
+Hopsworks checks the tablespace and DataMemory every 5 minutes.
+A paused deployment reads `paused_reason == "DISK_NEARLY_FULL"` or `"MEMORY_NEARLY_FULL"` on `deployment.tracing`, and its page says tracing is paused.
+The pause lifts once both have at least 10 points more than the threshold free.
+Expired and deleted traces free space for later traces in the same table, not in the tablespace, so a disk pause lifts once an administrator adds a data file to the tablespace.
 The settings are Helm values under `hopsworks.variables`; a changed cap reaches running pods the next time their tracing is switched or they restart.
 Deleting a deployment deletes its traces.
 
 The `LowDiskDataFileExtents` alert fires when less than 20% of the tablespace is free.
 
-To delete a deployment's traces yourself, all of them or those created before a time:
+To delete a deployment's traces before they expire, all of them or those started before a time:
 
 ```python
 from datetime import datetime, timedelta
@@ -28425,9 +28476,10 @@ deployment.delete_traces(
 )
 ```
 
-Each request deletes at most `batch_size` rows (default 1000, at most 10000) from each trace table in one transaction, since RonDB caps the operations one transaction holds; `delete_traces` repeats it until none are left and returns the number of rows deleted.
+Each request deletes at most `batch_size` rows (default 1000, at most 10000) in one transaction, since RonDB caps the operations one transaction holds; `delete_traces` repeats it until none are left and returns the number of rows deleted.
 Over the REST API, one request deletes one batch and returns `{"deleted": <rows>}`; repeat it until `deleted` is 0.
-`until` is in epoch milliseconds and is optional:
+`until` is in epoch milliseconds and is optional.
+With it, a trace whose request started before `until` is deleted whole, together with the spans it recorded after `until`:
 
 ```bash
 curl -X DELETE \
