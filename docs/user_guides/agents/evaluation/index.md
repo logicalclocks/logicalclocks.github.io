@@ -61,6 +61,7 @@ Editing a published suite means a new version, with `evals.suites.new_version(..
 | `llm_judge`, `tool_arguments_judge`, `pairwise` | A model's judgement against a rubric, or against a reference answer |
 | `sql_state` | The state of the world after the agent acted |
 | `human_review` | Nothing automatic: it defers to a person |
+| `python` | Whatever a function the project wrote decides; see [Writing your own checks](#writing-your-own-checks) |
 
 A check that needs something from the task, such as the answer a `contains` looks for or the rubric a judge grades against, refuses the task when it joins the suite rather than failing silently at run time.
 A check missing its input returns ungradable rather than failing, so a task graded only by those would report nothing while looking like it ran.
@@ -75,6 +76,72 @@ template = evals.evaluators.save(
 ```
 
 Applying a saved evaluator copies its checks into the suite, so a published suite keeps meaning what it meant even if the library entry changes later.
+
+### Writing your own checks
+
+When no built-in check says what correct means for your agent, write one.
+A `python` check is a function in a file the project owns, declared with the `@check` decorator, and the evaluation job grades with it the way it grades with a built-in check: same results rows, same pass rates, same gates and monitors.
+
+```python
+# evaluation/checks/pricing.py
+from hopsworks_agents.eval.checks import check, CheckContext, CheckResult, ungradable
+
+@check(needs_trace=True, description="The quoted price equals the catalogue price")
+def price_matches_catalogue(ctx: CheckContext, tolerance: float = 0.01):
+    lookups = ctx.calls("lookup_product")
+    if not lookups:
+        return ungradable("the agent never looked the product up")
+    listed = float(lookups[-1].result_json["price"])
+    quoted = float(ctx.answer.split()[-1])
+    ok = abs(quoted - listed) <= tolerance
+    return CheckResult(passed=ok, score=1.0 if ok else 0.0,
+                       reason="" if ok else f"quoted {quoted}, catalogue says {listed}",
+                       assertions={"quoted": quoted, "listed": listed})
+```
+
+The function receives a `CheckContext`: the question, the agent's answer, the task's expectation for this check, the trace's tool calls in order with their arguments and results, and the trial's and task's details.
+Its keyword parameters are the check's settings, and their defaults are what a suite gets when it sets none.
+It returns `True` or `False`, a score from 0 to 1, a `CheckResult`, or `ungradable(reason)` when its precondition did not hold.
+A check that raises, times out or returns something else makes the trial ungradable with the reason on the row.
+It never passes and never counts against the agent, because a broken check is the harness failing.
+
+Try it before a run does, on inputs you choose or on a real conversation:
+
+```python
+from hopsworks_agents.eval.checks import run_check
+
+run_check(price_matches_catalogue, answer="It costs 19.99",
+          tools=[{"name": "lookup_product", "result": '{"price": 19.99}'}])
+run_check(price_matches_catalogue, trace=agent.trace("4bf1..."))
+evals.runs.replay(run, price_matches_catalogue)   # last night's trials, re-graded, nothing written
+```
+
+Then put the file where the job reads it.
+Uploading it registers one library entry per check it declares, and the UI's check picker lists the checks a file declares:
+
+```python
+evals.checks.upload("evaluation/checks/pricing.py", tags=[agent.name])
+```
+
+A suite's row names the file and the check, never the code:
+
+```python
+check("python", "price_matches_catalogue",
+      file="Resources/agent_evals/checks/pricing.py", params={"tolerance": 0.005})
+```
+
+Checks can also live in a git repository, including the agent's own.
+`git={"url": ..., "ref": ...}` with `path` names a file in a repository the evaluation job clones with the git providers of the account the job runs as; `git="deployment"` names a file in the evaluated deployment's repository at the commit it is running, so the checks version with the agent like its unit tests.
+`agents.checks.register(path, git=...)` creates the library entries from a local clone without uploading anything.
+A `module` names a module installed in the agent-pipeline environment the job runs in.
+
+A published suite is frozen, and that includes its checks.
+A file check is copied beside the suite's tasks when it is published; a git check is pinned by the job on the first run of the published version and read from that copy afterwards.
+`git="deployment"` is deliberately not frozen, and a module's version is its environment.
+Every result's assertions carry the `source` the check was graded with, so a run can always say which code decided it.
+
+A check that does not read the task's expectation can grade live traffic in a monitor, like any other expectation-free check.
+One declared with `reads_expectation=True` is refused there, since production traffic carries no task.
 
 ### How a judge decides pass or fail
 
