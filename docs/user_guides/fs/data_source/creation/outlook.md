@@ -184,7 +184,7 @@ The differences:
 - **Incremental runs:** each run copies the messages whose `receivedDateTime` is after the previous run's.
 - **Throttling:** Microsoft Graph allows 4 concurrent requests per mailbox and 10,000 requests per 10 minutes per app and mailbox.
     A throttled run honours Graph's `Retry-After` and retries, and fails once it has waited an hour in total; the next run resumes from its last upsert.
-    A scheduled run that finds the previous one still running does nothing, unless that run has not finished a window for two hours, in which case it fails, so a stuck job shows.
+    A scheduled run that finds the previous one still running does nothing, unless that run has recorded no progress for two hours, in which case it fails, so a stuck job shows.
 - **Message size:** a run reads one message at a time into memory, and needs about five times the message's size on top of about 350 MB.
     The default 2 GiB of a Python job covers the 150 MB maximum message size of Exchange Online.
 - **Moves:** a message moved to another folder keeps its `message_id`, so it is never copied twice, but its `labels` keep the folder it was in when it was copied until a full load.
