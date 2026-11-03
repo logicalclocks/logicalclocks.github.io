@@ -17,7 +17,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
 | [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], and from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] and [Agent Router][upgrade-agent-router] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -419,6 +419,21 @@ Clients keep their endpoint, Knative-mode deployments stay on Istio, and no depl
 
     - Every Standard-mode deployment answers through the usual endpoint, with both URL shapes.
     - The Knative-mode deployments are unchanged.
+
+### Agent Router { #upgrade-agent-router }
+
+New in 5.3 and off by default, on top of Envoy Gateway: `global._hopsworks.envoyGateway.aiGateway.enabled` installs the Agent Router controller, its six CRDs and a dedicated AI Gateway, and publishes `<inference endpoint>/v1/<project>/v1/...` for the project's Standard-mode vLLM deployments, as described in [Agent Router][agent-router].
+Data Owners can turn the LLM gateway off per project and per deployment, both on by default.
+Rendering fails when `aiGateway.enabled` is on and `envoyGateway.enabled` is off.
+An upgrade that leaves `aiGateway` alone changes nothing: the Istio Lua filter is the same, no object is added, and the backend finds no `envoy-ai-gateway-config` ConfigMap and does nothing.
+
+The feature also brings a Redis and Envoy Gateway's rate-limit service for the LLM gateway's [rate limits][agent-router-rate-limits], a trace collector and a table Job for [tracing][agent-router-tracing], and an access log on the AI Gateway's Envoy, and Grafana dashboards; with the feature off none of them is rendered.
+
+Before enabling, stop the started deployments named `v1` or containing `llmgateway` or recreate them under another name, check cert-manager, a network plugin that enforces NetworkPolicies and the backend's grants in the release namespace, and on an airgapped cluster mirror the four images, as listed under [Turning it on][agent-router-enable].
+A deployment named `v1` keeps its routes and is not served by the LLM gateway; find them with `SELECT p.projectname FROM serving s JOIN project p ON s.project_id = p.id WHERE s.name = 'v1'`.
+Project names whose namespace contains `llmgateway` are reserved from 5.3, and an existing project with such a namespace gets no LLM gateway.
+Enable with one `helm upgrade`: no predictive pod, Knative pod or `kserve-ingress-gateway` pod restarts, and the AI Gateway's Envoy pods roll once when the first route attaches.
+Disable in one upgrade with `aiGateway.enabled: false`, as described under [Turning it off][agent-router-disable], which also lists what a `helm rollback` leaves behind and how to remove it.
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 

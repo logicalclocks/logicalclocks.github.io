@@ -146,6 +146,41 @@ Refer to the official [vLLM OpenAI-compatible server documentation](https://docs
     openai_url = deployment.get_openai_url()
     ```
 
+### LLM gateway { #rest-api-llm-gateway }
+
+On a cluster where the [Agent Router][agent-router] is enabled, the vLLM deployments of a project are also served by one OpenAI-compatible endpoint, `<inference endpoint>/v1/<project>/v1/`, where the `model` of each request is the name of the deployment.
+A deployment is not served by it when it runs in Knative mode, when it scales to zero when idle (a minimum of 0 instances), when it autoscales on concurrency or requests per second, or when a started deployment of the project is named `v1` or contains `llmgateway`.
+On a cluster with the LLM gateway, a vLLM deployment created without a minimum number of instances gets a minimum of 1.
+The deployment stays on its own path in every case.
+
+```python
+ms = project.get_model_serving()
+
+# The URL of the LLM gateway, to use with any HTTP client
+project_url = ms.get_openai_url()
+
+# An OpenAI client for the LLM gateway: choose the deployment by `model`
+openai_client = ms.get_openai_client()
+response = openai_client.chat.completions.create(
+    model="my_llm_deployment",
+    messages=[{"role": "user", "content": "Hello"}],
+)
+
+# The state of the LLM gateway: enabled, available and url
+state = ms.get_llm_gateway()
+```
+
+`Deployment.get_openai_client()` returns a client for one deployment's own path instead.
+`Deployment.llm_gateway` is the deployment's switch as stored, and it does not tell whether the LLM gateway serves the deployment.
+
+Two switches, both on by default, keep deployments off the LLM gateway, and only a Data Owner of the project can change them.
+The first one is for the whole project: the LLM gateway card in the project settings, or `ms.set_llm_gateway(False)`.
+The LLM gateway answers `404` while it is off.
+The second is for one deployment: the LLM gateway card in the Overview of the deployment, or `deployment.set_llm_gateway(False)`.
+Neither restarts a deployment, and the per-deployment URLs keep working.
+A switch request answers `200` when the change is applied, and `202` with the same body when the change is saved but not applied to the LLM gateway yet; the backend applies it within a minute, and the Python client logs this at INFO level.
+When a started deployment with a reserved name keeps the LLM gateway from being served, the card in the project settings names it.
+
 ## Request Format
 
 The request format depends on the model server being used.
