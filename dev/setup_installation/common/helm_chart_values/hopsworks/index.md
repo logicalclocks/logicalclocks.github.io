@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793703260` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793711429` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2882,7 +2882,6 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         serving_tracing_max_traces_per_minute: '60'
         serving_tracing_online_ttl_hours: '36'
         serving_tracing_pause_free_percent: '20'
-        serving_tracing_retention_days: '7'
         spark_dir: /srv/hops/spark
         spark_executor_min_memory: '1024'
         spark_hops_utils_dir: /srv/hops/artifacts
@@ -4417,11 +4416,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.serving_tracing_pause_free_percent` <a class="headerlink" href="#helm.hopsworks.variables.serving_tracing_pause_free_percent" title="Permanent link">#</a> { #helm.hopsworks.variables.serving_tracing_pause_free_percent }
 :   Type `string`, default `"20"`.
-    Tracing of model and feature view deployments is paused while less than this percentage of the online feature store's disk tablespace is free, and resumes 10 points above it.
-
-`hopsworks.variables.serving_tracing_retention_days` <a class="headerlink" href="#helm.hopsworks.variables.serving_tracing_retention_days" title="Permanent link">#</a> { #helm.hopsworks.variables.serving_tracing_retention_days }
-:   Type `string`, default `"7"`.
-    Days the traces model and feature view deployments wrote to the agent trace feature groups before serving_traces existed are kept. 0 keeps them.
+    Tracing of model and feature view deployments is paused while less than this percentage of the online feature store's disk tablespace or of RonDB DataMemory is free, and resumes once both are 10 points above it.
 
 `hopsworks.variables.spark_dir` <a class="headerlink" href="#helm.hopsworks.variables.spark_dir" title="Permanent link">#</a> { #helm.hopsworks.variables.spark_dir }
 :   Type `string`, default `"/srv/hops/spark"`.
