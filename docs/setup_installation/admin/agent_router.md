@@ -80,17 +80,16 @@ The check is made by `model-serving-authenticator` on the request body, which th
 
 ## Reserved deployment names { #agent-router-reserved-names }
 
-From 5.3, `v1` is a reserved deployment name, and so is any name containing `llmgateway`, the infix of the LLM gateway's gateway objects, whether or not the LLM gateway is on.
+From 5.3, `v1` is a reserved deployment name, whether or not the LLM gateway is on.
 The backend refuses to create a deployment with such a name.
 An existing deployment with such a name stays editable and restartable, and while `aiGateway.enabled` is off it works as before.
 Only a started deployment with such a name matters once the LLM gateway is on: a stopped one does not block anything.
 While one is started, the backend leaves the project route out of that project, saying so in its deployments' status notes and in the LLM gateway card of the project settings.
-A deployment named `v1` keeps its routes and answers on its per-deployment path, and it is not served by the LLM gateway.
+A deployment named `v1` is not served by the LLM gateway.
+Through the Istio ingress it answers `404` on both its path and its host, since the AI Gateway takes `/v1/<project>/v1/` and `v1.<namespace>.<domain>` for every project.
+It keeps its routes on the Envoy Gateway, and answers there.
 Stop the deployment or recreate it under another name to have the LLM gateway in that project.
 Starting it again later has the same effect.
-
-From 5.3, a project name whose namespace contains `llmgateway` is reserved too, and the backend refuses to create a project with such a name.
-An existing project whose namespace contains `llmgateway` gets no LLM gateway, and the backend logs it once.
 
 ## Identity headers { #agent-router-identity }
 
@@ -126,7 +125,7 @@ There are two places to set them:
   Removing the override makes the cluster default apply again.
   The same limits are available as `llmGatewayLimits` of `projectQuotas` in `PUT /admin/projects/{id}`, and `GET /admin/projects/{id}?expand=quotas` returns the effective ones with a `source` of `DEFAULT` or `PROJECT`.
 
-The backend turns the effective limits into one BackendTrafficPolicy per project, `<namespace>-llmgateway-ratelimit`, in the release namespace, and updates it when a limit or a deployment changes, with no restart.
+The backend turns the effective limits into one BackendTrafficPolicy per project, `<namespace>-llmratelimit`, in the release namespace, and updates it when a limit or a deployment changes, with no restart.
 Project members see the limits of their project, read-only, in the quotas of the project settings and on the LLM gateway card.
 
 A request over a limit gets `429` with the `x-ratelimit-*` headers.
@@ -219,7 +218,7 @@ An airgapped install overrides the four images above, as the chart's `values.air
 - Envoy Gateway, enabled already or in the same upgrade, as described in [Envoy Gateway][envoy-gateway].
 - cert-manager, because the controller's webhook certificate is a cert-manager Certificate.
   The `kserve` subchart installs cert-manager unless the platform brings its own.
-- A network plugin that enforces NetworkPolicies, because the NetworkPolicies of Redis and of the trace collector decide which pods reach them.
+- A network plugin that enforces NetworkPolicies.
 - With `rbac.useExistingRole`, the chart renders no backend role.
   Grant the backend's service account, in the release namespace, `get, list, watch, create, update, patch, delete` on `aigatewayroutes` and `aiservicebackends` of `aigateway.envoyproxy.io` and on `backends` and `backendtrafficpolicies` of `gateway.envoyproxy.io`, on top of the Envoy Gateway permissions listed under [Cluster requirements][envoy-gateway-requirements].
   The chart grants them with a namespaced Role in the release namespace, the only namespace where the backend writes these objects.
@@ -231,7 +230,7 @@ An upgrade that leaves `aiGateway` alone changes nothing: the Istio Lua filter i
 Before enabling:
 
 1. List the started deployments with a [reserved name][agent-router-reserved-names] and stop them or recreate them under another name first.
-   A started deployment has an InferenceService and a stopped one has none, and only started ones count: `kubectl get isvc -A --field-selector metadata.name=v1`, and `kubectl get isvc -A --no-headers -o custom-columns=NS:.metadata.namespace,NAME:.metadata.name | grep llmgateway`.
+   A started deployment has an InferenceService and a stopped one has none, and only started ones count: `kubectl get isvc -A --field-selector metadata.name=v1`.
    The projects with a deployment named `v1`, started or not, are listed by this query on the Hopsworks database:
 
    ```sql
@@ -246,7 +245,7 @@ Enable with one `helm upgrade` (`aiGateway.enabled: true`).
 The CRD Job applies the six CRDs, the controller and the AI Gateway come up, the Envoy Gateway controller restarts once for its new configuration, the Istio Lua filter and the forward rule change without a pod restart, and the backend's next pass creates the backends and routes of the started Standard-mode vLLM deployments that are not behind the KEDA interceptor.
 The AI Gateway's Envoy pods roll once when the first route attaches, and again whenever the last LLM deployment of the cluster stops and another one starts later.
 No predictive pod, Knative pod or `kserve-ingress-gateway` pod restarts.
-Check that `kubectl get gateways.gateway.networking.k8s.io -n <namespace> <AI Gateway name>` reports `Programmed` (the name is `aiGateway.gatewayName`, `kserve-ai-gateway` by default), and that `kubectl get aigatewayroutes.aigateway.envoyproxy.io,aiservicebackends.aigateway.envoyproxy.io,backends.gateway.envoyproxy.io -n <namespace> -l serving.hops.works/gateway-route` lists one AIGatewayRoute per served LLM deployment, named `<project namespace>-llmgateway-route-<deployment>`, with its AIServiceBackend and Backend.
+Check that `kubectl get gateways.gateway.networking.k8s.io -n <namespace> <AI Gateway name>` reports `Programmed` (the name is `aiGateway.gatewayName`, `kserve-ai-gateway` by default), and that `kubectl get aigatewayroutes.aigateway.envoyproxy.io,aiservicebackends.aigateway.envoyproxy.io,backends.gateway.envoyproxy.io -n <namespace> -l serving.hops.works/gateway-route` lists one AIGatewayRoute per served LLM deployment, named `<project namespace>-<deployment>-llmroute`, with its AIServiceBackend and Backend.
 
 If the controller goes down while Envoy Gateway runs, `extensionManager.failOpen: true` keeps the predictive routes translating: Envoy Gateway ignores the failed hook and builds its configuration without the controller's changes.
 The AI routes depend on those changes, so they can stop answering until the controller is back.

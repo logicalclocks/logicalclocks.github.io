@@ -429,9 +429,8 @@ An upgrade that leaves `aiGateway` alone changes nothing: the Istio Lua filter i
 
 The feature also brings a Redis and Envoy Gateway's rate-limit service for the LLM gateway's [rate limits][agent-router-rate-limits], a trace collector and a table Job for [tracing][agent-router-tracing], and an access log on the AI Gateway's Envoy, and Grafana dashboards; with the feature off none of them is rendered.
 
-Before enabling, stop the started deployments named `v1` or containing `llmgateway` or recreate them under another name, check cert-manager, a network plugin that enforces NetworkPolicies and the backend's grants in the release namespace, and on an airgapped cluster mirror the four images, as listed under [Turning it on][agent-router-enable].
-A deployment named `v1` keeps its routes and is not served by the LLM gateway; find them with `SELECT p.projectname FROM serving s JOIN project p ON s.project_id = p.id WHERE s.name = 'v1'`.
-Project names whose namespace contains `llmgateway` are reserved from 5.3, and an existing project with such a namespace gets no LLM gateway.
+Before enabling, stop the started deployments named `v1` or recreate them under another name, check cert-manager, a network plugin that enforces NetworkPolicies and the backend's grants in the release namespace, and on an airgapped cluster mirror the four images, as listed under [Turning it on][agent-router-enable].
+A started deployment named `v1` answers `404` through the Istio ingress once the feature is on and is not served by the LLM gateway; it keeps answering through the Envoy Gateway. Find them with `SELECT p.projectname FROM serving s JOIN project p ON s.project_id = p.id WHERE s.name = 'v1'`.
 Enable with one `helm upgrade`: no predictive pod, Knative pod or `kserve-ingress-gateway` pod restarts, and the AI Gateway's Envoy pods roll once when the first route attaches.
 Disable in one upgrade with `aiGateway.enabled: false`, as described under [Turning it off][agent-router-disable], which also lists what a `helm rollback` leaves behind and how to remove it.
 

@@ -149,7 +149,7 @@ Refer to the official [vLLM OpenAI-compatible server documentation](https://docs
 ### LLM gateway { #rest-api-llm-gateway }
 
 On a cluster where the [Agent Router][agent-router] is enabled, the vLLM deployments of a project are also served by one OpenAI-compatible endpoint, `<inference endpoint>/v1/<project>/v1/`, where the `model` of each request is the name of the deployment.
-A deployment is not served by it when it runs in Knative mode, when it scales to zero when idle (a minimum of 0 instances), when it autoscales on concurrency or requests per second, or when a started deployment of the project is named `v1` or contains `llmgateway`.
+A deployment is not served by it when it runs in Knative mode, when it scales to zero when idle (a minimum of 0 instances), when it autoscales on concurrency or requests per second, or when a started deployment of the project is named `v1`.
 On a cluster with the LLM gateway, a vLLM deployment created without a minimum number of instances gets a minimum of 1.
 The deployment stays on its own path in every case.
 
