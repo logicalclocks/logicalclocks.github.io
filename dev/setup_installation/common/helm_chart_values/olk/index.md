@@ -4,7 +4,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793641911` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793693086` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -738,7 +738,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
         topologySpreadConstraint: {}
         transport_port: 9300
         ttlSecondsAfterFinished: null
-        version: 3.8.0.0
+        version: 3.8.0.1
     ```
 
 <div class="hops-values" markdown>
@@ -964,7 +964,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
     TTL in seconds for the create-repos Job. Overrides global default.
 
 `olk.opensearch.version` <a class="headerlink" href="#helm.olk.opensearch.version" title="Permanent link">#</a> { #helm.olk.opensearch.version }
-:   Type `string`, default `"3.8.0.0"`.
+:   Type `string`, default `"3.8.0.1"`.
 
 </div>
 
