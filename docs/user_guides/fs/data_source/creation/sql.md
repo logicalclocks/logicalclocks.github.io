@@ -156,6 +156,12 @@ For each such column, the feature group holds two features:
 
 A NULL value gives a NULL path and a NULL size, and an empty value gives an empty file and the size 0.
 The preview in the wizard shows the size of each value instead of its bytes.
+In the SDK, `get_data(file_columns=[...])` returns the features as an ingestion job stores them; pass `file_columns=[]` for a table whose only file columns are FILESTREAM columns.
+Without `file_columns`, `get_data` returns the source schema, which is what an external feature group uses.
+`data.column_metadata` lists each source column's type and whether it is, or can be, stored as files.
+
+A feature group created before this feature, with a `binary` feature for the column, keeps copying the bytes into the feature group.
+To store the values as files instead, create a new feature group with the path and size features.
 
 ```python
 from hopsworks_common.core.sink_job_configuration import SinkJobConfiguration
@@ -186,6 +192,7 @@ The directory also holds `.hopsworks-files.json`, which names the job and featur
 A job refuses a directory that belongs to another job or feature group, or that holds files but no `.hopsworks-files.json`.
 
 The feature group needs a primary key, since it names the files.
+It must be written by one ingestion job only: a job with file columns cannot share its feature group with another ingestion job.
 Its columns must be non-NULL and include every column of the table's primary key or of one of its unique indexes.
 A date and time key is matched to the microsecond, so two rows whose keys differ by less than a microsecond fail the run.
 A value can be at most 2147483647 bytes.
@@ -194,6 +201,7 @@ A run writes each file before it loads the row, and replaces a file that already
 Incremental ingestion needs the `MERGE` write mode, and picks up a changed value only with a cursor column that changes when the row is updated, such as a `datetime2` updated-at column.
 After a run succeeds, it deletes the files that no row of the feature group references, such as the files of deleted rows on a full load and of values that became NULL.
 A failed run deletes nothing, and the next successful run deletes what it left.
+A run that fails after writing files but before loading their rows leaves files that no row references yet, so a file in the files directory is not proof that its row was loaded: read the paths from the feature group.
 Earlier versions of the feature group can point at files that a later run replaced or deleted, so reading a file column at an earlier commit is not supported.
 Write the path features only through the ingestion job: a path written by another job or by an insert can point at a file that the next run deletes.
 
