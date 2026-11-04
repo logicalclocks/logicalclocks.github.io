@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793809617` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2773,6 +2773,9 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         opencost_currency: USD
         opencost_history_retention_days: '400'
         opensearch_default_embedding_index: ''
+        opensearch_default_max_index_size_mb: '-1'
+        opensearch_default_max_num_embedding_indices: '-1'
+        opensearch_default_max_vector_index_size_mb: '-1'
         opensearch_index_mapping_limit: '1000'
         opensearch_num_default_embedding_index: '1'
         payara_dir: /opt/payara/appserver/glassfish/domains/domain1
@@ -4065,6 +4068,18 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.opensearch_default_embedding_index` <a class="headerlink" href="#helm.hopsworks.variables.opensearch_default_embedding_index" title="Permanent link">#</a> { #helm.hopsworks.variables.opensearch_default_embedding_index }
 :   Type `string`, default `""`.
+
+`hopsworks.variables.opensearch_default_max_index_size_mb` <a class="headerlink" href="#helm.hopsworks.variables.opensearch_default_max_index_size_mb" title="Permanent link">#</a> { #helm.hopsworks.variables.opensearch_default_max_index_size_mb }
+:   Type `string`, default `"-1"`.
+    Size limit in MB on each OpenSearch index a project creates itself (named <project>_*), unless an administrator sets a limit for the project. An index that reaches it turns read-only; -1 is unlimited.
+
+`hopsworks.variables.opensearch_default_max_num_embedding_indices` <a class="headerlink" href="#helm.hopsworks.variables.opensearch_default_max_num_embedding_indices" title="Permanent link">#</a> { #helm.hopsworks.variables.opensearch_default_max_num_embedding_indices }
+:   Type `string`, default `"-1"`.
+    How many embedding indices a project may have in OpenSearch, unless an administrator sets a limit for the project; -1 is unlimited.
+
+`hopsworks.variables.opensearch_default_max_vector_index_size_mb` <a class="headerlink" href="#helm.hopsworks.variables.opensearch_default_max_vector_index_size_mb" title="Permanent link">#</a> { #helm.hopsworks.variables.opensearch_default_max_vector_index_size_mb }
+:   Type `string`, default `"-1"`.
+    Size limit in MB on each of a project's vector (embedding) indices, unless an administrator sets a limit for the project. An index that reaches it turns read-only; -1 is unlimited.
 
 `hopsworks.variables.opensearch_index_mapping_limit` <a class="headerlink" href="#helm.hopsworks.variables.opensearch_index_mapping_limit" title="Permanent link">#</a> { #helm.hopsworks.variables.opensearch_index_mapping_limit }
 :   Type `string`, default `"1000"`.
