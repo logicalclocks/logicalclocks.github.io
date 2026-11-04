@@ -204,6 +204,10 @@ If you supply project namespaces yourself, set `global._hopsworks.projectPodSecu
 Include it in `hopsworks.variables.project_namespace_labels` so Hopsworks also labels new project namespaces, preserving any existing entries in that setting.
 The `hopsworks.ai/project` label also controls namespace ownership during [uninstallation][uninstalling-hopsworks]; do not add it to a namespace you intend to manage yourself.
 
+For multiple releases on the same Kubernetes cluster, set `global._hopsworks.projectPodSecurity.namespaceMatchLabels` to each release's tenant labels. Every release must select a distinct set of project namespaces. Add these labels to existing and pre-created project namespaces and include them in `hopsworks.variables.project_namespace_labels` before upgrading.
+
+Review project scheduling and storage settings before upgrading. List any project workload PriorityClasses in `global._hopsworks.projectPodSecurity.allowedPriorityClasses`, including a cluster default class when one is configured. List any additional inline CSI drivers in `global._hopsworks.projectPodSecurity.additionalCSIDrivers`; the configured HopsFS driver is included automatically.
+
 ### Strimzi 1.3 { #upgrade-strimzi-13 }
 
 From the 5.2.x patch release that uses Strimzi 1.3, and in 5.3, the chart deploys Strimzi 1.3.1 in place of 1.2.0, and Kafka stays on 4.3.1.
