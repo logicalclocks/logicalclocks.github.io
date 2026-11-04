@@ -209,8 +209,10 @@ The `attachments` column lists the full paths of a message's files, such as `/Pr
     Gmail limits how many requests a user's mailbox serves per minute, so a backfill of tens of thousands of emails can take hours.
     A throttled run waits and retries until Gmail serves it again, and never fails because of throttling; the job log reports how often Gmail throttled it.
 - `FULL_LOAD`: every run copies all the selected messages from the start date on, then removes the rows and attachments of the messages it did not copy.
-  The previous rows stay readable while it runs, and a run that fails part way leaves them in place.
-    A run that selects no messages leaves the feature group as it was.
+    The previous rows stay readable while it runs, and a run that fails part way leaves them in place.
+    A run that selects no messages removes every row and its attachments, so a query or labels that match nothing empty the feature group.
+    Other files under the attachments directory are left in place.
+    A full load refuses an attachments directory that holds the attachments of another feature group; choose a new directory, or delete the old one.
 
 The feature group is an archive of the mailbox:
 
