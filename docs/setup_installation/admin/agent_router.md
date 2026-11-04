@@ -115,9 +115,20 @@ Limits are admin-only, because they cap what a project can spend on shared GPUs 
 
 There are two places to set them:
 
-- The cluster default is the Hopsworks variable `llm_gateway_rate_limits`, a comma-separated list of `SCOPE:KIND=VALUE/UNIT`, for example `PROJECT:TOKENS=1000000/HOUR,USER:REQUESTS=60/MINUTE`.
-  When it is empty or unset, there are no limits.
-  The variable is seeded empty, and an upgrade keeps the value an administrator set.
+- The cluster default of each scope and kind is a Hopsworks variable holding `VALUE/UNIT`, for example `1000000/HOUR`.
+  When it is empty or unset, that scope and kind has no limit.
+
+    | Variable | Limits |
+    | --- | --- |
+    | `llm_gateway_project_token_limit` | `PROJECT` `TOKENS` |
+    | `llm_gateway_project_request_limit` | `PROJECT` `REQUESTS` |
+    | `llm_gateway_user_token_limit` | `USER` `TOKENS` |
+    | `llm_gateway_user_request_limit` | `USER` `REQUESTS` |
+    | `llm_gateway_deployment_token_limit` | `DEPLOYMENT` `TOKENS` |
+    | `llm_gateway_deployment_request_limit` | `DEPLOYMENT` `REQUESTS` |
+
+  The variables are seeded empty, and an upgrade keeps the values an administrator set.
+  Saving a value that does not parse is refused with `422`.
   An administrator edits it in the admin UI under Settings, Quotas & rate limits, in the LLM gateway section.
   A change reaches the existing projects at the backend's next full pass, about 10 minutes later.
 - An override per project is set on the admin page that edits the project, under LLM gateway limits, with the same scopes, kinds and units, and applies immediately.
