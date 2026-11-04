@@ -108,10 +108,13 @@ An agent built on the Claude Agent SDK can run on your Claude Code login instead
 It is on by default; a Hopsworks administrator turns it off per cluster with the `agent_deployment_claude_login_enabled` variable, because Anthropic allows a product to offer claude.ai login only with its prior approval.
 
 The login the deployment uses is a long-lived token, not the session of your terminal: Claude Code rotates a session's refresh token whenever it refreshes, so a copy of it in every pod would log the terminal and the other pods out at their next refresh.
-Mint the token once and save it as a secret:
+Mint the token once from the deployment form:
 
-1. In a [terminal][start-the-terminal], run `claude setup-token`, which opens the same browser login as `claude login` and prints a token that is valid for a year.
-2. [Create a secret][how-to-create-a-secret] named `claude_code_oauth_token` under your account with the printed token as its value.
+1. Pick Claude Agents as the agent framework and click **Connect Claude Code login**.
+2. A [terminal][start-the-terminal] tab runs `claude-login`, which starts the claude.ai sign-in and opens it in a browser tab; sign in with your own Claude subscription and paste the code the page shows into the tab.
+3. The command saves the token Claude Code prints as the secret `claude_code_oauth_token` under your account, and the form reports the login as saved, with its date.
+
+The same command works from any terminal tab, and a token minted elsewhere with `claude setup-token` can be pasted on the form or [saved as that secret][how-to-create-a-secret] by hand.
 
 Every agent deployment you start afterwards gets the token as `CLAUDE_CODE_OAUTH_TOKEN`, which the Claude Code CLI bundled with the SDK reads.
 
@@ -119,7 +122,8 @@ Keep in mind:
 
 - An `ANTHROPIC_API_KEY` set on the deployment or on your account still wins over the token, so set one to opt a deployment out.
 - The token is yours: a deployment started by another project member runs on that member's token, and a deployment whose starter has no `claude_code_oauth_token` secret falls back to `ANTHROPIC_API_KEY` and cannot reach the model without one.
-- When the token expires, mint a new one, update the secret and restart the deployment, because the pod keeps the value it started with.
+- The token lasts a year and Claude Code does not renew it: when it expires, connect again, which replaces the secret, and restart the deployment, because the pod keeps the value it started with.
+- `claude setup-token` needs a Claude subscription, so an account with API access only cannot mint one and keeps using an `ANTHROPIC_API_KEY`.
 
 ### Deploy from a Git repository
 
