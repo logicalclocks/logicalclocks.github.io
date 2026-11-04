@@ -102,6 +102,22 @@ hops agent delete support_agent --yes
 
 Run `hops agent list` first to confirm that authentication and serving are reachable.
 
+### Reuse your Claude Code login
+
+An agent built on the Claude Agent SDK can run on the Claude Code login of your Hopsworks terminal instead of an `ANTHROPIC_API_KEY`, the way Claude Code agent tasks already do.
+A Hopsworks administrator turns this on per cluster with the `agent_deployment_terminal_login_enabled` variable.
+It is off by default, because Anthropic allows a product to offer claude.ai login only with its prior approval, so the variable is meant for internal clusters.
+
+Run `claude login` once in a [terminal][start-the-terminal].
+The terminal keeps the login in your home directory on HopsFS, and every agent deployment you start afterwards copies it into the pod before the agent starts.
+The deployment logs say which credential the agent runs on.
+
+Keep in mind:
+
+- An `ANTHROPIC_API_KEY` set on the deployment or on your account still wins over the login, so set one to opt a deployment out.
+- The login is yours: a deployment started by another project member runs on that member's login, and a deployment whose starter has not logged in falls back to `ANTHROPIC_API_KEY` and cannot reach the model without one.
+- When the login expires or you log out, log in again in the terminal and restart the deployment, because the pod keeps the copy it started with.
+
 ### Deploy from a Git repository
 
 An agent can be served from a Git repository instead of a project file.
