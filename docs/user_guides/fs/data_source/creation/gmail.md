@@ -212,7 +212,6 @@ The `attachments` column lists the full paths of a message's files, such as `/Pr
     The previous rows stay readable while it runs, and a run that fails part way leaves them in place.
     A run that selects no messages removes every row and its attachments, so a query or labels that match nothing empty the feature group.
     Other files under the attachments directory are left in place.
-    A full load refuses an attachments directory that holds the attachments of another feature group; choose a new directory, or delete the old one.
 
 The feature group is an archive of the mailbox:
 
@@ -225,6 +224,7 @@ The feature group is an archive of the mailbox:
     After changing the query or the labels, run a full load, or sync into a new feature group.
 
 Two sync jobs cannot write the same feature group, nor attachment directories that overlap, since their runs would overwrite each other's rows and files.
+A sync job also refuses an attachments directory that holds another feature group's attachments, or attachments it cannot tell are its own, since a full load would delete them; choose a new directory, or delete the old one. The directory's `_sync_owner.json` names the data source and feature group it belongs to.
 
 ### Configure a sync job in the UI
 
