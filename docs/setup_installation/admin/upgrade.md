@@ -442,7 +442,7 @@ Clients keep their endpoint, Knative-mode deployments stay on Istio, and no depl
 5.3 adds data sources to the search index.
 After the upgrade, the `post-upgrade-opensearch-reindex-job` hook requests one rebuild of the index, so that data sources created before the upgrade become searchable.
 The hook only records the request.
-Once the search command queue is idle, the backend empties the index and queues one command per artifact, which takes hours on a large cluster.
+Once the search command queue is idle, the backend empties the index and queues commands for each artifact, which takes hours on a large cluster.
 Until the rebuild finishes, search returns only the artifacts already indexed again.
 Its progress shows under `Cluster Settings` > `Service Operations` > `OpenSearch Index Commands`.
 
