@@ -106,8 +106,11 @@ def price_matches_catalogue(ctx: CheckContext, tolerance: float = 0.01):
 The function receives a `CheckContext`: the question, the agent's answer, the task's expectation for this check, the trace's tool calls in order with their arguments and results, and the trial's and task's details.
 Its keyword parameters are the check's settings, and their defaults are what a suite gets when it sets none.
 It returns `True` or `False`, a score from 0 to 1, a `CheckResult`, or `ungradable(reason)` when its precondition did not hold.
-A check that raises, times out or returns something else makes the trial ungradable with the reason on the row.
-It never passes and never counts against the agent, because a broken check is the harness failing.
+A bare score passes at `pass_score`, which defaults to 1.0; set it per check in the row's `params` (`{"scored": {"pass_score": 0.8}}`), where the job reads it, and it reaches the function only when the function declares a `pass_score` parameter.
+`@check` is used bare, with a name (`@check("price_ok")`) or with settings: `needs_trace` defaults to `True`, which reports the check ungradable when no trace arrived; `reads_expectation` defaults to `False`; `timeout_s` defaults to 30 seconds and is capped at 600.
+A check that raises, times out or returns something else makes that check's result ungradable with the reason on the row.
+It never passes and never counts against the agent, because a broken check is the harness failing; the trial keeps the verdicts of the other checks.
+A source that fails to load, or an `only` name the source does not declare, makes the trial `EVALUATOR_ERROR` with the reason on its rows.
 
 Try it before a run does, on inputs you choose or on a real conversation:
 
@@ -121,7 +124,10 @@ evals.runs.replay(run, price_matches_catalogue)   # last night's trials, re-grad
 ```
 
 Then put the file where the job reads it.
-Uploading it registers one library entry for the file, and a suite names the file as one row: every check it declares runs, each reported under its own name, the way a test file is pointed at and every test in it runs.
+Uploading it registers one library entry for the file, and a suite names the file as one row: every check it declares runs, each reported under its own name.
+When two rows of one suite declare the same name, the row later in the suite reports it as `<row>/<check>`.
+A `.py` file or a package directory with `__init__.py` can be named; a package is scanned module by module and is held to 2000 files and 20 MB.
+The file's directory is on the path while it is imported, so a helper beside it imports; the job reads project files off the HopsFS mount.
 
 ```python
 evals.checks.upload("evaluation/checks/pricing.py", tags=[agent.name])
@@ -133,20 +139,23 @@ check("python", "pricing", file="Resources/agent_evals/checks/pricing.py",
 ```
 
 `only` and `exclude` narrow a row to some of the checks a file declares; `params` is keyed by check.
-Whether a check reads the trace, reads the task's expectation, its timeout and its description are stated on the decorator and nowhere else: Hopsworks scans the file when the row is saved and keeps what it declares on the row, so the task form asks for what each check expects and a monitor refuses a file that declares a check reading the expectation.
+Whether a check reads the trace, reads the task's expectation, its timeout and its description are stated on the decorator and nowhere else: Hopsworks scans the file when the row is saved and keeps what it declares on the row, so the task form asks for what each check expects, a monitor refuses a file that declares a check reading the expectation, and a name in `only`, `exclude` or `params` the file does not declare is refused with the names it does.
 
 Checks can also live in a git repository, including the agent's own.
-`git={"url": ..., "ref": ...}` with `path` names a file in a repository the evaluation job clones with the git providers of the account the job runs as; `git="deployment"` names a file in the evaluated deployment's repository at the commit it is running, so the checks version with the agent like its unit tests.
-`agents.checks.register(path, git=...)` creates the library entries from a local clone without uploading anything.
+`git={"url": ..., "ref": ...}` with `path` names a file in a repository the evaluation job clones with the git providers of the account the job runs as; the url is https and carries no credentials, and an optional `commit` pins the row from the start.
+`git="deployment"` names a file in the evaluated deployment's repository at the commit it is running, so the checks version with the agent.
+`evals.checks.register(path, git=...)` saves one library entry from a local clone without uploading anything.
 A `module` names a module installed in the agent-pipeline environment the job runs in.
 
-A published suite is frozen, and that includes its checks.
-A file check is copied beside the suite's tasks when it is published; a git check is pinned by the job on the first run of the published version and read from that copy afterwards.
-`git="deployment"` is deliberately not frozen, and a module's version is its environment.
-Every result's assertions carry the `source` the check was graded with, so a run can always say which code decided it.
+A published suite is frozen, and that includes a check's code where the code has a version to freeze.
+A project file is not copied: the job reads it off the project on every run, published or not, and each result records the file's hash, so the file stays the project's to edit and a run still says which text graded it.
+A git check is pinned by the job on the first run of the published version and read from that copy afterwards; a repository too large to copy is pinned by its commit, which later runs clone at.
+`git="deployment"` is deliberately not pinned, and a module's version is its environment.
+Every result's assertions carry the `source` the check was graded with (`origin`, `sha256`, `commit`, `pinned`), so a run can always say which code decided it.
 
 A check that does not read the task's expectation can grade live traffic in a monitor, like any other expectation-free check.
-One declared with `reads_expectation=True` is refused there, since production traffic carries no task.
+One declared with `reads_expectation=True` is refused there for a project file, since production traffic carries no task; for a git or module source, which Hopsworks cannot scan, such a check is ungradable on each live trial instead.
+Check code runs in the evaluation job as the user who started the run, with the job's environment and credentials: whoever can write the file or push to the repository can run code there.
 
 ### How a judge decides pass or fail
 
