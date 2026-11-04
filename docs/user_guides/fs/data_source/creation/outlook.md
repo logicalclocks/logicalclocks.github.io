@@ -174,7 +174,7 @@ Two sync jobs cannot write the same feature group or overlapping attachment dire
 A sync job also refuses an attachments directory that holds another feature group's attachments, or attachments it cannot tell are its own, since a full load would delete them; choose a new directory, or delete the old one. The directory's `_sync_owner.json` names the data source and feature group it belongs to.
 The differences:
 
-- **Feature group name:** `jim@outlook.com` becomes `jim_outlooks`, and `support@contoso.com` becomes `support_contosos`.
+- **Feature group name:** `jane.doe@outlook.com` becomes `jane_doe_outlooks`, and `support@contoso.com` becomes `support_contosos`.
 - **Default attachments directory:** `Resources/outlook/<feature group>`.
 - **Messages selected:** by folder; there is no search query.
     A message in any chosen folder is copied, and a chosen folder's subfolders are copied only when chosen too.
@@ -242,11 +242,11 @@ hops datasource sync-jobs support_outlook
 
 !!! api "API reference"
 
-    - <code class="doc-symbol doc-symbol-class"></code> [`OutlookConnector`][hsfs.storage_connector.OutlookConnector]
-        - <code class="doc-symbol doc-symbol-method"></code> [`get_access_token`][hsfs.storage_connector.OutlookConnector.get_access_token]
-        - <code class="doc-symbol doc-symbol-method"></code> [`get_folders`][hsfs.storage_connector.OutlookConnector.get_folders]
-        - <code class="doc-symbol doc-symbol-method"></code> [`sync`][hsfs.storage_connector.OutlookConnector.sync]
-    - <code class="doc-symbol doc-symbol-class"></code> [`MailSyncJobConfig`][hsfs.storage_connector.MailSyncJobConfig]
+    - <code class="doc-symbol doc-symbol-class"></code> <autoref identifier="hsfs.storage_connector.OutlookConnector" optional><code>OutlookConnector</code></autoref>
+        - <code class="doc-symbol doc-symbol-method"></code> <autoref identifier="hsfs.storage_connector.OutlookConnector.get_access_token" optional><code>get_access_token</code></autoref>
+        - <code class="doc-symbol doc-symbol-method"></code> <autoref identifier="hsfs.storage_connector.OutlookConnector.get_folders" optional><code>get_folders</code></autoref>
+        - <code class="doc-symbol doc-symbol-method"></code> <autoref identifier="hsfs.storage_connector.OutlookConnector.sync" optional><code>sync</code></autoref>
+    - <code class="doc-symbol doc-symbol-class"></code> <autoref identifier="hsfs.storage_connector.MailSyncJobConfig" optional><code>MailSyncJobConfig</code></autoref>
 
     <a class="hops-api-cta" href="../../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
