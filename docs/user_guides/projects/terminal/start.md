@@ -29,8 +29,9 @@ When the terminal starts, the key is set as the provider's own variable (for exa
 - `codex` and `opencode` use the provider and model: every provider is written into `~/.codex/config.toml` as `model_providers.hops-<provider>`, so switching needs only that provider's key, and codex gets the model settings the provider's guide gives, such as Meta's and Kimi's 1M-token context window.
 - `claude` uses them for providers with an Anthropic-compatible API (Kimi, GLM, Anthropic, Meta and OpenRouter), through `ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_MODEL` and the model variables each provider's Claude Code guide sets (for Kimi, `kimi-k3[1m]` with its 1M-token context and `kimi-k2.7-code` for the background tier); for the others it keeps its own login.
   An `env` block in `~/.claude/settings.json` overrides these, so the terminal warns at start when it sets any of them.
-- `pi` uses the provider and model: the provider is written into `~/.pi/agent/models.json` as `hops-<provider>`, and `pi` starts on it unless you pass `--model`, `--provider` or `--models`.
-- `hermes` uses the provider and model, set in the managed configuration Hermes Agent reads on top of `~/.hermes/config.yaml`.
+- `pi` and `hermes`, which only the Python terminal has, take them as follows.
+  `pi` uses the provider and model: the provider is written into `~/.pi/agent/models.json` as `hops-<provider>`, and `pi` starts on it unless you pass `--model`, `--provider` or `--models`.
+  `hermes` uses the provider and model, set in the managed configuration Hermes Agent reads on top of `~/.hermes/config.yaml`.
   Every provider is there as `custom:hops-<provider>`, so `/model <model> --provider custom:hops-<provider>` switches a session to another provider whose key you export.
   While a provider is chosen, `hermes model` cannot save a different default model, because the managed configuration sets it; pick **Subscription** to choose the model in Hermes Agent instead.
 - `copilot` keeps its GitHub login.

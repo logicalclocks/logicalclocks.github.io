@@ -41,7 +41,7 @@ The session comes with tooling preinstalled:
 
 - `hops` initializes the Hopsworks CLI, already pointed at your project.
 - `git` works against your configured [Git providers][how-to-configure-a-git-provider]; upload an SSH key to `~/.ssh` or add a GitHub access token in Account Settings.
-- `claude`, `codex`, `opencode`, `copilot`, `pi` and `hermes` start a Claude Code, OpenAI Codex CLI, OpenCode, GitHub Copilot CLI, pi or Hermes Agent session.
+- `claude`, `codex`, `opencode` and `copilot` start a Claude Code, OpenAI Codex CLI, OpenCode or GitHub Copilot CLI session, and in the Python terminal `pi` and `hermes` start a pi or Hermes Agent session.
   Each one has the Hopsworks skills, reads the instructions Hopsworks writes into `AGENTS.md` in your home directory when started there, and keeps its login and sessions in HopsFS across sessions.
 - Right-click opens a menu to split the terminal horizontally or vertically (tmux).
 - Selecting text with the left mouse button copies it to your clipboard.
