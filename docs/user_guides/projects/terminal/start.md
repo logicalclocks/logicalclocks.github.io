@@ -32,7 +32,8 @@ When the terminal starts, the key is set as the provider's own variable (for exa
 - `pi` and `hermes`, which only the Python terminal has, take them as follows.
   `pi` uses the provider and model: the provider is written into `~/.pi/agent/models.json` as `hops-<provider>`, and `pi` starts on it unless you pass `--model`, `--provider` or `--models`.
   `hermes` uses the provider and model, set in the managed configuration Hermes Agent reads on top of `~/.hermes/config.yaml`.
-  Every provider is there as `custom:hops-<provider>`, so `/model <model> --provider custom:hops-<provider>` switches a session to another provider whose key you export.
+  Every provider is there as `custom:hops-<provider>`, so `/model <model> --provider custom:hops-<provider>` switches a session to another provider whose key the terminal has.
+  Hermes Agent runs its sessions in a background gateway that the first `hermes` starts, with the environment of that shell, so after exporting another provider's key run `hermes gateway stop` before the next `hermes`.
   While a provider is chosen, `hermes model` cannot save a different default model, because the managed configuration sets it; pick **Subscription** to choose the model in Hermes Agent instead.
 - `copilot` keeps its GitHub login.
 
