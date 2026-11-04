@@ -35,6 +35,11 @@
       heading_level: 2
       show_root_heading: true
 
+::: hsfs.storage_connector.GmailConnector
+    options:
+      heading_level: 2
+      show_root_heading: true
+
 ::: hsfs.storage_connector.GoogleSheetsConnector
     options:
       heading_level: 2
@@ -60,7 +65,22 @@
       heading_level: 2
       show_root_heading: true
 
+::: hsfs.storage_connector.MailAccessToken
+    options:
+      heading_level: 2
+      show_root_heading: true
+
+::: hsfs.storage_connector.MailSyncJobConfig
+    options:
+      heading_level: 2
+      show_root_heading: true
+
 ::: hsfs.storage_connector.MongoDBConnector
+    options:
+      heading_level: 2
+      show_root_heading: true
+
+::: hsfs.storage_connector.OutlookConnector
     options:
       heading_level: 2
       show_root_heading: true
