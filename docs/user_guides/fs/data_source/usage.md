@@ -124,6 +124,18 @@ For reading data streams, the Kafka Data Source supports reading a Kafka topic i
     df = connector.read_stream(topic="kafka_topic_name")
     ```
 
+Producers and consumers of your own, written with `confluent-kafka`, get their client configuration from the Kafka Data Source.
+The `kafka_connector` data source of a project is the connection the feature store clients write to Kafka with:
+
+=== "Python"
+
+    ```python
+    from confluent_kafka import Producer
+
+    connector = feature_store.get_data_source("kafka_connector").storage_connector
+    producer = Producer(connector.confluent_options())
+    ```
+
 ## Creating an External Feature Group
 
 Another important aspect of a data source is its ability to facilitate creation of external feature groups with the [Connector API](../../../concepts/fs/feature_group/external_fg.md). [External feature groups](../feature_group/create_external.md) are basically offline feature groups and essentially stored as tables on external data sources.

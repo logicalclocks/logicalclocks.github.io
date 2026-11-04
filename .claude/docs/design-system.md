@@ -1,7 +1,7 @@
 # Design System
 
 The visual language of docs.hopsworks.ai.
-Read this before changing anything visual (CSS, nav, logo, diagrams) so the site stays one coherent system.
+Read this before writing a new page or changing anything visual (CSS, nav, logo, diagrams) so the site stays one coherent system.
 
 ## Principle
 

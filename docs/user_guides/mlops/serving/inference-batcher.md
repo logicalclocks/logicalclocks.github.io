@@ -5,7 +5,8 @@
 Inference batching can be enabled to increase inference request throughput at the cost of higher latencies.
 The configuration of the inference batcher depends on the model server used in the deployment.
 
-!!! warning "Inference batching is not supported for vLLM deployments."
+!!! warning "Inference batching is not supported for vLLM and Triton deployments."
+    Triton batches requests in its own scheduler, configured with `dynamic_batching` in `config.pbtxt`, see [Dynamic batching](../registry/frameworks/triton.md#dynamic-batching).
 
 ## Web UI
 
