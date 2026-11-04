@@ -193,6 +193,7 @@ A job refuses a directory that belongs to another job or feature group, or that 
 
 The feature group needs a primary key, since it names the files.
 It must be written by one ingestion job only: a job with file columns cannot share its feature group with another ingestion job.
+A file column keeps its path and size features while it keeps its files directory; to store it under other features, choose another files directory.
 Its columns must be non-NULL and include every column of the table's primary key or of one of its unique indexes.
 A date and time key is matched to the microsecond, so two rows whose keys differ by less than a microsecond fail the run.
 A value can be at most 2147483647 bytes.
