@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Hopsworks keeps a search index of the artifacts in a deployment: feature groups, feature views, training datasets, jobs, models and deployments.
+Hopsworks keeps a search index of the artifacts in a deployment: feature groups, feature views, training datasets, data sources, datasets, jobs, models and deployments.
 The index is updated from the database, not written to directly.
 Every change to a searchable property queues a command in the same transaction that made the change, and a background executor applies the queued commands to OpenSearch.
 
@@ -54,7 +54,7 @@ Wait for the attempt to finish and retry.
 
 Each cancellation is logged with the command id, the document, the attempt count, the requesting administrator and the last error, because once the row is gone the log is the only record it existed.
 
-## Rebuilding the index
+## Rebuilding the index { #search-index-rebuild }
 
 A reindex rebuilds the search index from the database.
 It is the recovery path after the index has been lost or has diverged, not routine maintenance.

@@ -437,6 +437,21 @@ Clients keep their endpoint, Knative-mode deployments stay on Istio, and no depl
     - Every Standard-mode deployment answers through the usual endpoint, with both URL shapes.
     - The Knative-mode deployments are unchanged.
 
+### Search index rebuild { #upgrade-53-search-reindex }
+
+5.3 adds data sources to the search index.
+After the upgrade, the `post-upgrade-opensearch-reindex-job` hook requests one rebuild of the index, so that data sources created before the upgrade become searchable.
+The hook only records the request.
+Once the search command queue is idle, the backend empties the index and queues one command per artifact, which takes hours on a large cluster.
+Until the rebuild finishes, search returns only the artifacts already indexed again.
+Its progress shows under `Cluster Settings` > `Service Operations` > `OpenSearch Index Commands`.
+
+- **With `hopsworks.opensearchReindex.enabled: false`, nothing is rebuilt.**
+  A data source then enters search when it is created, edited or tagged after the upgrade.
+  To index the others, [rebuild the index by hand][search-index-rebuild] when the cluster is quiet.
+- **If a reindex run is in progress, the hook requests none.**
+  Its log says so; rebuild the index by hand once that run has finished.
+
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
 These changes ship in 5.2.2 and 5.3.0.
