@@ -4,7 +4,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793724356` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793784080` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -414,7 +414,11 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           - command:
             - /bin/sh
             - -c
-            - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -timeout 120s
+            - |
+              until dockerize -wait "tcp://$DB_HOST:$DB_PORT" -timeout 120s; do
+                echo "Waiting for the Superset database at $DB_HOST:$DB_PORT"
+                sleep 5
+              done
             envFrom:
             - secretRef:
                 name: '{{ tpl .Values.envFromSecret . }}'
@@ -973,7 +977,11 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           - command:
             - /bin/sh
             - -c
-            - dockerize -wait "tcp://$DB_HOST:$DB_PORT" -timeout 120s
+            - |
+              until dockerize -wait "tcp://$DB_HOST:$DB_PORT" -timeout 120s; do
+                echo "Waiting for the Superset database at $DB_HOST:$DB_PORT"
+                sleep 5
+              done
             envFrom:
             - secretRef:
                 name: '{{ tpl .Values.envFromSecret . }}'
@@ -1418,7 +1426,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 
 `superset.superset.initialization.timeoutSeconds` <a class="headerlink" href="#helm.superset.superset.initialization.timeoutSeconds" title="Permanent link">#</a> { #helm.superset.superset.initialization.timeoutSeconds }
 :   Type `int`, default `1800`.
-    Maximum runtime of the initialization Job and each startup gate, in seconds.
+    Timeout for runtime startup gates and initialization Lease acquisition, in seconds.
 
 `superset.superset.runAsUser` <a class="headerlink" href="#helm.superset.superset.runAsUser" title="Permanent link">#</a> { #helm.superset.superset.runAsUser }
 :   Type `int`, default `1000`.
