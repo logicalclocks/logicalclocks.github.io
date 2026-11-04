@@ -318,14 +318,14 @@ hops datasource sync-jobs support_inbox
 
     - <code class="doc-symbol doc-symbol-method"></code> [`FeatureStore.get_data_source`][hsfs.feature_store.FeatureStore.get_data_source]
     - <code class="doc-symbol doc-symbol-class"></code> [`DataSource`][hsfs.core.data_source.DataSource]
-        - <code class="doc-symbol doc-symbol-method"></code> [`sync`][hsfs.core.data_source.DataSource.sync]
-    - <code class="doc-symbol doc-symbol-class"></code> [`GmailConnector`][hsfs.storage_connector.GmailConnector]
-        - <code class="doc-symbol doc-symbol-method"></code> [`get_access_token`][hsfs.storage_connector.GmailConnector.get_access_token]
-        - <code class="doc-symbol doc-symbol-method"></code> [`sync`][hsfs.storage_connector.GmailConnector.sync]
-        - <code class="doc-symbol doc-symbol-method"></code> [`list_sync_jobs`][hsfs.storage_connector.GmailConnector.list_sync_jobs]
-        - <code class="doc-symbol doc-symbol-method"></code> [`get_sync_job`][hsfs.storage_connector.GmailConnector.get_sync_job]
-        - <code class="doc-symbol doc-symbol-method"></code> [`delete_sync_job`][hsfs.storage_connector.GmailConnector.delete_sync_job]
-    - <code class="doc-symbol doc-symbol-class"></code> [`GmailSyncJobConfig`][hsfs.storage_connector.GmailSyncJobConfig]
+        - <code class="doc-symbol doc-symbol-method"></code> <autoref identifier="hsfs.core.data_source.DataSource.sync" optional><code>sync</code></autoref>
+    - <code class="doc-symbol doc-symbol-class"></code> <autoref identifier="hsfs.storage_connector.GmailConnector" optional><code>GmailConnector</code></autoref>
+        - <code class="doc-symbol doc-symbol-method"></code> <autoref identifier="hsfs.storage_connector.GmailConnector.get_access_token" optional><code>get_access_token</code></autoref>
+        - <code class="doc-symbol doc-symbol-method"></code> <autoref identifier="hsfs.storage_connector.GmailConnector.sync" optional><code>sync</code></autoref>
+        - <code class="doc-symbol doc-symbol-method"></code> <autoref identifier="hsfs.storage_connector.GmailConnector.list_sync_jobs" optional><code>list_sync_jobs</code></autoref>
+        - <code class="doc-symbol doc-symbol-method"></code> <autoref identifier="hsfs.storage_connector.GmailConnector.get_sync_job" optional><code>get_sync_job</code></autoref>
+        - <code class="doc-symbol doc-symbol-method"></code> <autoref identifier="hsfs.storage_connector.GmailConnector.delete_sync_job" optional><code>delete_sync_job</code></autoref>
+    - <code class="doc-symbol doc-symbol-class"></code> <autoref identifier="hsfs.storage_connector.GmailSyncJobConfig" optional><code>GmailSyncJobConfig</code></autoref>
 
     <a class="hops-api-cta" href="../../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
