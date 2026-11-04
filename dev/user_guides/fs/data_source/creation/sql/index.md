@@ -143,6 +143,72 @@ Spark and the query engine use Microsoft's JDBC driver, so other JDBC connection
 The argument `encrypt=false` therefore turns off encryption for Spark and the query engine only: the Python engine and DLTHub ingestion always encrypt.
 The arguments cannot replace the host, port or database (`serverName`, `portNumber`, `databaseName`); the data source's own fields set those.
 
+### FILESTREAM and binary columns as files { #data-source-sqlserver-files }
+
+An ingestion job can copy the values of a SQL Server table's large binary columns into files in the project, instead of storing the bytes in the feature group.
+Every FILESTREAM column is stored as files.
+A `varbinary(max)` or `image` column is stored as files when you select **Store as files** for it in the ingestion wizard, or list it in `file_columns`.
+
+For each such column, the feature group holds two features:
+
+- The column's own feature, a `string` with the full path of the file, such as `/Projects/sales/Resources/erp/Sales/dbo/Documents/c-Body/3f/v-42`.
+- `<column>_size`, a `bigint` with the length of the value in bytes.
+
+A NULL value gives a NULL path and a NULL size, and an empty value gives an empty file and the size 0.
+The preview in the wizard shows the size of each value instead of its bytes.
+In the SDK, `get_data(file_columns=[...])` returns the features as an ingestion job stores them; pass `file_columns=[]` for a table whose only file columns are FILESTREAM columns.
+Without `file_columns`, `get_data` returns the source schema, which is what an external feature group uses.
+`data.column_metadata` lists each source column's type and whether it is, or can be, stored as files.
+
+A feature group created before this feature, with a `binary` feature for the column, keeps copying the bytes into the feature group.
+To store the values as files instead, create a new feature group with the path and size features.
+
+```python
+from hopsworks_common.core.sink_job_configuration import SinkJobConfiguration
+
+documents = fs.get_data_source("erp").get_tables("Sales")[0]
+data = documents.get_data(file_columns=["Body"])
+
+fg = fs.get_or_create_feature_group(
+    name="documents",
+    version=1,
+    primary_key=["id"],
+    features=data.features,
+    data_source=documents,
+    sink_enabled=True,
+    sink_job_conf=SinkJobConfiguration(
+        write_mode="MERGE",
+        file_columns=["Body"],
+        files_directory="Resources/documents",
+    ),
+)
+fg.save()
+```
+
+The files are written under the files directory, by default `Resources/<data source>/<database>/<schema>/<table>`.
+It must be a directory inside a dataset, outside `Resources/jobs` and the ingestion state under `Resources/dlthub-warehouse`, and it cannot overlap the files directory of another table or job.
+Each file is named after the row's primary key, under one directory per column and one of 256 subdirectories per column.
+The directory also holds `.hopsworks-files.json`, which names the job and feature group it belongs to, and `.hopsworks-files.lease`, which keeps two runs from writing it at the same time.
+A job refuses a directory that belongs to another job or feature group, or that holds files but no `.hopsworks-files.json`.
+
+The feature group needs a primary key, since it names the files.
+It must be written by one ingestion job only: a job with file columns cannot share its feature group with another ingestion job.
+A file column keeps its path and size features while it keeps its files directory; to store it under other features, choose another files directory.
+Its columns must be non-NULL and include every column of the table's primary key or of one of its unique indexes.
+A date and time key is matched to the microsecond, so two rows whose keys differ by less than a microsecond fail the run.
+A value can be at most 2147483647 bytes.
+
+A run writes each file before it loads the row, and replaces a file that already exists, so a row always points at a complete file.
+Incremental ingestion needs the `MERGE` write mode, and picks up a changed value only with a cursor column that changes when the row is updated, such as a `datetime2` updated-at column.
+After a run succeeds, it deletes the files that no row of the feature group references, such as the files of deleted rows on a full load and of values that became NULL.
+A failed run deletes nothing, and the next successful run deletes what it left.
+A run that fails after writing files but before loading their rows leaves files that no row references yet, so a file in the files directory is not proof that its row was loaded: read the paths from the feature group.
+Earlier versions of the feature group can point at files that a later run replaced or deleted, so reading a file column at an earlier commit is not supported.
+Write the path features only through the ingestion job: a path written by another job or by an insert can point at a file that the next run deletes.
+
+Deleting the feature group, the job or the data source leaves the files in place.
+To remove them, delete the files directory in the file browser, or with `project.get_dataset_api().remove("Resources/documents")`.
+
 ## Provided credentials for Oracle { #data-source-provided-credentials }
 
 A data source has a credentials mode.
