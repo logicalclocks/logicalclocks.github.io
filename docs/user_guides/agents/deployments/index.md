@@ -105,8 +105,7 @@ Run `hops agent list` first to confirm that authentication and serving are reach
 ### Run on your Claude Code login
 
 An agent built on the Claude Agent SDK can run on your Claude Code login instead of an `ANTHROPIC_API_KEY`.
-A Hopsworks administrator turns this on per cluster with the `agent_deployment_claude_login_enabled` variable.
-It is off by default, because Anthropic allows a product to offer claude.ai login only with its prior approval, so the variable is meant for internal clusters.
+It is on by default; a Hopsworks administrator turns it off per cluster with the `agent_deployment_claude_login_enabled` variable, because Anthropic allows a product to offer claude.ai login only with its prior approval.
 
 The login the deployment uses is a long-lived token, not the session of your terminal: Claude Code rotates a session's refresh token whenever it refreshes, so a copy of it in every pod would log the terminal and the other pods out at their next refresh.
 Mint the token once and save it as a secret:
