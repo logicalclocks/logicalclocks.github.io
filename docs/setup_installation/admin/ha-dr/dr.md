@@ -394,6 +394,28 @@ olk:
                 indices: "-myindex"
 ```
 
+#### OnlineFS offsets after the restore { #restore-onlinefs-offsets }
+
+The RonDB backup holds the Kafka offsets OnlineFS saved, in the `kafka_offsets` table of each project's online feature store, but Kafka on the new cluster starts without the topics of the backed-up cluster and creates each online topic again when it is first written to.
+OnlineFS resumes each partition of a recreated topic at its restored offset, so the records written to the new topic below that offset never reach the online feature store.
+A partition whose restored offset is past the end of the new topic when OnlineFS first reads it is read from its start, because the chart sets `auto.offset.reset=earliest`, so whether records are lost depends on how much was written to the topic by then.
+
+After the restore, and before data is written to the online feature store again, clear the offsets and restart OnlineFS, which then reads every online topic from its start:
+
+```sh
+NAMESPACE=hopsworks
+ROOT_PW=$(kubectl get secret mysql-users-secrets -n "$NAMESPACE" -o jsonpath='{.data.root}' | base64 -d)
+mysql_root() {
+  kubectl exec mysqlds-0 -n "$NAMESPACE" -c mysqld -- env MYSQL_PWD="$ROOT_PW" mysql -uroot -N -e "$1"
+}
+for db in $(mysql_root "SELECT table_schema FROM information_schema.tables WHERE table_name = 'kafka_offsets'"); do
+  mysql_root "DELETE FROM \`$db\`.kafka_offsets"
+done
+kubectl rollout restart deployment/onlinefs-deployment -n "$NAMESPACE"
+```
+
+Data written before the offsets were cleared is written to the online feature store again, from the start of each topic.
+
 ### In-Place Restore
 
 !!! Note
