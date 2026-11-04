@@ -437,6 +437,36 @@ Clients keep their endpoint, Knative-mode deployments stay on Istio, and no depl
     - Every Standard-mode deployment answers through the usual endpoint, with both URL shapes.
     - The Knative-mode deployments are unchanged.
 
+### OnlineFS offsets move to `onlinefs.kafka_offsets` { #upgrade-onlinefs-offsets }
+
+From 5.3, OnlineFS keeps its consumer offsets in one table, `onlinefs.kafka_offsets`, in the RonDB it writes to, with the ID of the Kafka topic each offset was saved for, in place of a `kafka_offsets` table in the online feature store of each project.
+With the topic ID, OnlineFS reads a topic that was deleted and created again under the same name from its start, as after a restore that rebuilt Kafka, instead of resuming at an offset of the earlier topic ([Consumer offsets][onlinefs-offsets]).
+
+- **No step before `helm upgrade`.**
+  Each OnlineFS pod runs an `offsets-schema` init container before OnlineFS starts.
+  It creates the table, copies the offsets of every project into it, and then drops the project tables.
+  For each consumer group, topic and partition it keeps the highest offset the project tables hold, with the topic's current ID, and leaves out the offsets of topics Kafka no longer has.
+  A pod that starts later finds nothing to move.
+- **It connects to the DDL SQL node of the release as `hopsworksroot`**, the `ddl-mysqld` Service of the RonDB the chart installs, or the consul name in `onlinefs.dependencies.mysql.ddlConsulServiceName` (`mysqlddl`) when RonDB is managed externally.
+  A cluster that disables the DDL SQL node (`rondb.rondb.meta.ddlMySQLd.enabled: false`) sets `onlinefs.dependencies.mysql.serviceName: mysqld`, or `onlinefs.dependencies.mysql.ddlConsulServiceName: mysql` with an external RonDB.
+  `onlinefs.dependencies.mysql.url` overrides both.
+- **A step that fails keeps the pod from starting, and leaves every project table as it is**, because it reads all of them before it writes, and drops none before the copy is committed.
+  The pod stays in `Init:Error` or `Init:CrashLoopBackOff`, and the log names the database:
+
+    ```sh
+    kubectl logs <onlinefs-pod> -c offsets-schema -n <namespace>
+    ```
+
+  The step gives up after 15 minutes.
+  Fix the cause, and the next start of the pod runs it again.
+- **Records written during the rollout can be written to the online feature store twice, never skipped.**
+  An OnlineFS pod of the earlier release that still runs while a new pod moves the offsets saves to project tables that are gone, and its partitions resume from the moved offsets.
+- **On satellite clusters**, upgraded after central as [Strimzi 1.3][upgrade-strimzi-13] requires, a project created after central's upgrade has no offsets table on a satellite that is not upgraded yet.
+  The satellite's OnlineFS logs `Failed to save offsets` for that project and keeps writing its rows, but reads the project's online topics again from their start when it restarts, and once more at the satellite's upgrade.
+- **Rolling OnlineFS back to 5.2** makes it read every online topic again from its earliest retained record, because the project tables it reads are gone.
+- **A restore needs no step for the offsets.**
+  `onlinefs.kafka_offsets` is in the RonDB backup like any other database, and after a restore that rebuilt Kafka, OnlineFS reads the recreated topics from their start.
+
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
 These changes ship in 5.2.2 and 5.3.0.
