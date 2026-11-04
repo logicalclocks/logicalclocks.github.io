@@ -102,21 +102,25 @@ hops agent delete support_agent --yes
 
 Run `hops agent list` first to confirm that authentication and serving are reachable.
 
-### Reuse your Claude Code login
+### Run on your Claude Code login
 
-An agent built on the Claude Agent SDK can run on the Claude Code login of your Hopsworks terminal instead of an `ANTHROPIC_API_KEY`, the way Claude Code agent tasks already do.
-A Hopsworks administrator turns this on per cluster with the `agent_deployment_terminal_login_enabled` variable.
+An agent built on the Claude Agent SDK can run on your Claude Code login instead of an `ANTHROPIC_API_KEY`.
+A Hopsworks administrator turns this on per cluster with the `agent_deployment_claude_login_enabled` variable.
 It is off by default, because Anthropic allows a product to offer claude.ai login only with its prior approval, so the variable is meant for internal clusters.
 
-Run `claude login` once in a [terminal][start-the-terminal].
-The terminal keeps the login in your home directory on HopsFS, and every agent deployment you start afterwards copies it into the pod before the agent starts.
-The deployment logs say which credential the agent runs on.
+The login the deployment uses is a long-lived token, not the session of your terminal: Claude Code rotates a session's refresh token whenever it refreshes, so a copy of it in every pod would log the terminal and the other pods out at their next refresh.
+Mint the token once and save it as a secret:
+
+1. In a [terminal][start-the-terminal], run `claude setup-token`, which opens the same browser login as `claude login` and prints a token that is valid for a year.
+2. [Create a secret][how-to-create-a-secret] named `claude_code_oauth_token` under your account with the printed token as its value.
+
+Every agent deployment you start afterwards gets the token as `CLAUDE_CODE_OAUTH_TOKEN`, which the Claude Code CLI bundled with the SDK reads.
 
 Keep in mind:
 
-- An `ANTHROPIC_API_KEY` set on the deployment or on your account still wins over the login, so set one to opt a deployment out.
-- The login is yours: a deployment started by another project member runs on that member's login, and a deployment whose starter has not logged in falls back to `ANTHROPIC_API_KEY` and cannot reach the model without one.
-- When the login expires or you log out, log in again in the terminal and restart the deployment, because the pod keeps the copy it started with.
+- An `ANTHROPIC_API_KEY` set on the deployment or on your account still wins over the token, so set one to opt a deployment out.
+- The token is yours: a deployment started by another project member runs on that member's token, and a deployment whose starter has no `claude_code_oauth_token` secret falls back to `ANTHROPIC_API_KEY` and cannot reach the model without one.
+- When the token expires, mint a new one, update the secret and restart the deployment, because the pod keeps the value it started with.
 
 ### Deploy from a Git repository
 
