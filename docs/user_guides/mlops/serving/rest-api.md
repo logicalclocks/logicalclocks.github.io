@@ -176,7 +176,8 @@ state = ms.get_llm_gateway()
 Two switches, both on by default, keep deployments off the LLM gateway, and only a Data Owner of the project can change them.
 The first one is for the whole project: the LLM gateway card in the project settings, or `ms.set_llm_gateway(False)`.
 The LLM gateway answers `404` while it is off.
-The second is for one deployment: the LLM gateway card in the Overview of the deployment, or `deployment.set_llm_gateway(False)`.
+The second is for one deployment: the LLM gateway switch under Advanced configuration when editing the deployment, or `deployment.set_llm_gateway(False)`.
+The Overview of a deployment the LLM gateway can serve shows whether it is exposed, and if so its traces under LLM Gateway Traces.
 Neither restarts a deployment, and the per-deployment URLs keep working.
 A switch request answers `200` when the change is applied, and `202` with the same body when the change is saved but not applied to the LLM gateway yet; the backend applies it within a minute, and the Python client logs this at INFO level.
 When a started deployment with a reserved name keeps the LLM gateway from being served, the card in the project settings names it.
