@@ -192,24 +192,24 @@ An upgrade from 5.2.0 also crosses two changes of 5.2.1, described under 5.1.x t
 
 ### Strimzi 1.3 { #upgrade-strimzi-13 }
 
-From the 5.2.x patch release that uses Strimzi 1.3, and in 5.3, the chart deploys Strimzi 1.3.0 in place of 1.2.0, and Kafka stays on 4.3.1.
+From the 5.2.x patch release that uses Strimzi 1.3, and in 5.3, the chart deploys Strimzi 1.3.1 in place of 1.2.0, and Kafka stays on 4.3.1.
 An upgrade from a release that already uses Strimzi 1.3 crosses none of this.
 
 - **Upgrade central before its satellites**, the reverse of the order from 5.1.x to 5.2.x.
-  A satellite runs on central's operator, and the 1.2.0 operator would replace the satellite's controller onto the 1.3.0 image without the configuration that image reads, which leaves the satellite's Kafka down until central is upgraded.
+  A satellite runs on central's operator, and the 1.2.0 operator would replace the satellite's controller onto the 1.3.1 image without the configuration that image reads, which leaves the satellite's Kafka down until central is upgraded.
   The satellite's upgrade therefore refuses to start while its Kafka was last reconciled by an older 1.x operator.
-  Upgrade central, wait until the satellite's Kafka reports the 1.3.0 operator, then upgrade the satellite:
+  Upgrade central, wait until the satellite's Kafka reports the 1.3.1 operator, then upgrade the satellite:
 
     ```sh
     kubectl get kafka <cluster> -n <satellite-namespace> -o jsonpath='{.status.operatorLastSuccessfulVersion}'
     ```
 
-  Until its own upgrade, the satellite keeps its pods on the old image under the 1.3.0 operator, and that upgrade replaces each of them once.
+  Until its own upgrade, the satellite keeps its pods on the old image under the 1.3.1 operator, and that upgrade replaces each of them once.
 - **No step before `helm upgrade`.**
-  The `strimzi-crd-upgrade` hook applies the Strimzi 1.3.0 CRDs before the operator is replaced.
+  The `strimzi-crd-upgrade` hook applies the Strimzi 1.3.1 CRDs before the operator is replaced.
 - **The brokers and controllers are replaced once**, by the new operator, for the new image.
   The chart stops the outgoing operator before it starts the new one, through `kafka.strimzi-kafka-operator.deploymentStrategy`, so that the 1.2.0 operator does not act on the new image.
-  A pod the 1.2.0 operator replaces onto the 1.3.0 image lacks the configuration that image reads, and restarts until the new operator takes over.
+  A pod the 1.2.0 operator replaces onto the 1.3.1 image lacks the configuration that image reads, and restarts until the new operator takes over.
   It then recovers on its own, which can take a few minutes, because Kubernetes waits up to five minutes between restarts of a failing container.
   The setting makes that unlikely rather than impossible: nothing waits for the old operator to exit.
   If your values set `kafka.strimzi-kafka-operator.deploymentStrategy.type: Recreate`, also set `rollingUpdate: null` there, or the merged strategy is rejected.
@@ -219,7 +219,7 @@ An upgrade from a release that already uses Strimzi 1.3 crosses none of this.
   Strimzi 1.3 turns its `UseBackgroundPodDeletion` feature gate on by default, so that CNI plugins which remove a pod's network endpoints when its object is deleted, such as Cilium, no longer cut a broker off before it has shut down.
   To keep the earlier foreground deletion, set `kafka.strimzi-kafka-operator.featureGates: "-UseBackgroundPodDeletion"`.
 - **Under ArgoCD, the `ignoreDifferences` entry for the Kafka CRD is no longer needed.**
-  Strimzi 1.3.0's Kafka CRD no longer has the empty map that the entry in [Under ArgoCD][kafka4-argocd] ignores, and the entry matches nothing on it, so it can stay.
+  Strimzi 1.3.1's Kafka CRD no longer has the empty map that the entry in [Under ArgoCD][kafka4-argocd] ignores, and the entry matches nothing on it, so it can stay.
 
 ### ICEBERG feature groups in Trino { #upgrade-iceberg-trino }
 
