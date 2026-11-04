@@ -1,7 +1,7 @@
 # Analytics Guides
 
-Analytics is the SQL and dashboard layer over the feature store: Trino queries the offline data, Superset charts it.
-Start with a query, then turn it into a dashboard.
+Analytics is the SQL, metrics and dashboard layer over the feature store: Trino queries the offline data, the semantic layer defines metrics over it, Superset charts it.
+Start with a query, then define metrics or turn it into a dashboard.
 
 <!-- markdownlint-disable MD030 -->
 <div class="grid cards hops-start" markdown>
@@ -38,6 +38,19 @@ Start with a query, then turn it into a dashboard.
   Expose a data source as a catalog so external tables join feature data.
 - [External BI tools](../../concepts/mlops/bi_tools.md)
   How a BI tool connects to the offline store through Trino.
+
+</div>
+
+<div class="hops-task-group" markdown>
+:material-sigma:{ .hops-role-ico } Metrics
+{ .hops-role-cap }
+
+- [Semantic layer][semantic-layer-overview]
+  Metrics defined once in YAML over feature groups, queried by name.
+- [Define metrics][semantic-define-metrics]
+  Semantic models, and simple, ratio and derived metrics.
+- [Query metrics][semantic-query-metrics]
+  From Python, the CLI, the UI or an agent, as SQL or rows.
 
 </div>
 
