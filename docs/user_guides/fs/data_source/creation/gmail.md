@@ -155,7 +155,7 @@ It can run on demand, hourly at the top of every hour, or daily at 00:00 UTC, an
 The job upserts one row per email into a Delta feature group, version 1, that its first run creates.
 
 - **Name:** by default, the mailbox's local part and the first label of its domain, lower case, with every run of other characters replaced by `_`, followed by `s`.
-    `dowling.jim@gmail.com` becomes `dowling_jim_gmails` and `support@example.com` becomes `support_examples`.
+    `jane.doe@gmail.com` becomes `jane_doe_gmails` and `support@example.com` becomes `support_examples`.
     A name that would start with a digit is prefixed with `mail_`.
     You can set another name of lower case letters, digits and `_` that starts with a letter, at most 63 characters long.
 - **Primary key:** `message_id`.
