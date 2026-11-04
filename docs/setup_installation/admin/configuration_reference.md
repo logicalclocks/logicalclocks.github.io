@@ -189,6 +189,8 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `enable_feature_monitoring` | Boolean | `false` | Settings.java |
 | `enable_gcs_storage_connectors` | Boolean | `false` | Settings.java |
 | `enable_glue_storage_connectors` | Boolean | `true` | Settings.java |
+| `enable_gmail_storage_connectors` | Boolean | `true` | Settings.java |
+| `enable_outlook_storage_connectors` | Boolean | `true` | Settings.java |
 | `enable_google_sheets_storage_connectors` | Boolean | `true` | Settings.java |
 | `enable_hopsfsmount_page_cache_in_jobs` | Boolean | `true` | Settings.java |
 | `enable_hopsfsmount_page_cache_in_jupyter` | Boolean | `false` | Settings.java |
