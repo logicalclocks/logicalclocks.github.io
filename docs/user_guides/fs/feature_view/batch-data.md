@@ -21,6 +21,12 @@ The resultant DataFrame (or batch-scoring DataFrame) can then be fed to models t
     Dataset<Row> ds = featureView.getBatchData("20220620", "20220627")
     ```
 
+## Batch data for timestamps in the future
+
+A time range can only return rows the root feature group has already observed, so it returns nothing for the future.
+To score timestamps that have not happened yet, pass the entities and the prediction times instead of a range.
+See [Batch data for future timestamps][batch-data-for-future-timestamps].
+
 ## Retrieve batch data with primary keys and event time
 
 For certain use cases, e.g., time series models, the input data needs to be sorted according to the primary key(s) and event time combination.
