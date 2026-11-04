@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2441,6 +2441,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         anaconda_enabled: 'true'
         anaconda_env: ''
         anaconda_user: anaconda
+        api_key_auth_cache_ttl_seconds: '0'
         application_certificate_validity_period: 3650d
         apply_hopsfsmount_apparmor_profile_kube: 'false'
         async_services_timer_batch_size: '1000'
@@ -2837,6 +2838,18 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         remote_auth_need_consent: 'true'
         requests_verify: 'true'
         reserved_project_names: hopsworks,information_schema,airflow,glassfish_timers,grafana,hops,metastore,mysql,ndbinfo,performance_schema,sqoop,sys,base,python37,python38,python39,python310,filebeat,airflow,git,onlinefs,sklearnserver,rondb_replication,default,kube-system,kube-public,kube-node-lease,kube_system,kube_public,kube_node_lease
+        rest_api_rate_limit_enabled: 'false'
+        rest_api_rate_limit_exempt_roles: AGENT
+        rest_api_rate_limit_fast_probe_ms: '50'
+        rest_api_rate_limit_max_burst: '100'
+        rest_api_rate_limit_probe_interval_seconds: '5'
+        rest_api_rate_limit_probes_to_shared: '6'
+        rest_api_rate_limit_slow_sync_ms: '100'
+        rest_api_rate_limit_stale_seconds: '3'
+        rest_api_rate_limit_steady_state: '20'
+        rest_api_rate_limit_sync_deadline_ms: '250'
+        rest_api_rate_limit_user_cache_minutes: '10'
+        rest_api_rate_limit_user_cache_size: '10000'
         rmyarn_user: rmyarn
         rondb_default_max_online_tables: '-1'
         rondb_quotas: ''
@@ -2986,6 +2999,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.anaconda_user` <a class="headerlink" href="#helm.hopsworks.variables.anaconda_user" title="Permanent link">#</a> { #helm.hopsworks.variables.anaconda_user }
 :   Type `string`, default `"anaconda"`.
+
+`hopsworks.variables.api_key_auth_cache_ttl_seconds` <a class="headerlink" href="#helm.hopsworks.variables.api_key_auth_cache_ttl_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.api_key_auth_cache_ttl_seconds }
+:   Type `string`, default `"0"`.
+    Seconds an authenticated API key is cached before it is checked against the database again. 0 disables the cache.
 
 `hopsworks.variables.application_certificate_validity_period` <a class="headerlink" href="#helm.hopsworks.variables.application_certificate_validity_period" title="Permanent link">#</a> { #helm.hopsworks.variables.application_certificate_validity_period }
 :   Type `string`, default `"3650d"`.
@@ -4266,6 +4283,54 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         ```yaml
         hopsworks,information_schema,airflow,glassfish_timers,grafana,hops,metastore,mysql,ndbinfo,performance_schema,sqoop,sys,base,python37,python38,python39,python310,filebeat,airflow,git,onlinefs,sklearnserver,rondb_replication,default,kube-system,kube-public,kube-node-lease,kube_system,kube_public,kube_node_lease
         ```
+
+`hopsworks.variables.rest_api_rate_limit_enabled` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_enabled }
+:   Type `string`, default `"false"`.
+    Turns per-user REST API rate limiting on.
+
+`hopsworks.variables.rest_api_rate_limit_exempt_roles` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_exempt_roles" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_exempt_roles }
+:   Type `string`, default `"AGENT"`.
+    Comma-separated roles whose users are not rate limited, from HOPS_ADMIN, HOPS_USER, AGENT and HOPS_SERVICE_USER.
+
+`hopsworks.variables.rest_api_rate_limit_fast_probe_ms` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_fast_probe_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_fast_probe_ms }
+:   Type `string`, default `"50"`.
+    A probe faster than this many milliseconds counts as good (1 to 900). At most rest_api_rate_limit_slow_sync_ms.
+
+`hopsworks.variables.rest_api_rate_limit_max_burst` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_max_burst" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_max_burst }
+:   Type `string`, default `"100"`.
+    Requests a user may send in a burst before the steady-state rate applies (the token bucket's capacity).
+
+`hopsworks.variables.rest_api_rate_limit_probe_interval_seconds` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_probe_interval_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_probe_interval_seconds }
+:   Type `string`, default `"5"`.
+    Seconds between the probes of an instance that limits on its own (1 to 60).
+
+`hopsworks.variables.rest_api_rate_limit_probes_to_shared` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_probes_to_shared" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_probes_to_shared }
+:   Type `string`, default `"6"`.
+    Good probes in a row after which an instance limits cluster-wide again (1 to 100).
+
+`hopsworks.variables.rest_api_rate_limit_slow_sync_ms` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_slow_sync_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_slow_sync_ms }
+:   Type `string`, default `"100"`.
+    A sync slower than this many milliseconds counts as bad; two bad syncs in a row make the instance limit on its own (1 to 900).
+
+`hopsworks.variables.rest_api_rate_limit_stale_seconds` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_stale_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_stale_seconds }
+:   Type `string`, default `"3"`.
+    Seconds without a successful sync after which an instance limits on its own (2 to 9).
+
+`hopsworks.variables.rest_api_rate_limit_steady_state` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_steady_state" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_steady_state }
+:   Type `string`, default `"20"`.
+    Sustained requests per second allowed per user.
+
+`hopsworks.variables.rest_api_rate_limit_sync_deadline_ms` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_sync_deadline_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_sync_deadline_ms }
+:   Type `string`, default `"250"`.
+    Milliseconds the once-a-second count sync may take before it counts as failed (10 to 900). Must be above rest_api_rate_limit_slow_sync_ms, and rest_api_rate_limit_fast_probe_ms at most rest_api_rate_limit_slow_sync_ms, or the six sync and probe thresholds use their defaults; the user cache values are kept.
+
+`hopsworks.variables.rest_api_rate_limit_user_cache_minutes` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_user_cache_minutes" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_user_cache_minutes }
+:   Type `string`, default `"10"`.
+    Minutes after which an instance reloads a user's own limit in the background (1 to 1440). Changes made in Hopsworks reach every instance at once.
+
+`hopsworks.variables.rest_api_rate_limit_user_cache_size` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_user_cache_size" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_user_cache_size }
+:   Type `string`, default `"10000"`.
+    Users whose own limit each instance keeps in memory (100 to 1000000).
 
 `hopsworks.variables.rmyarn_user` <a class="headerlink" href="#helm.hopsworks.variables.rmyarn_user" title="Permanent link">#</a> { #helm.hopsworks.variables.rmyarn_user }
 :   Type `string`, default `"rmyarn"`.

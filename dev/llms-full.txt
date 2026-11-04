@@ -43130,7 +43130,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -43163,7 +43163,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.
 | [`hive`][helm-values-hive] |  | 79 |
 | [`hopsfs`][helm-values-hopsfs] |  | 222 |
 | [`hopsfs-csi`][helm-values-hopsfs-csi] |  | 29 |
-| [`hopsworks`][helm-values-hopsworks] |  | 986 |
+| [`hopsworks`][helm-values-hopsworks] |  | 999 |
 | [`hw-envoy-gateway`][helm-values-hw-envoy-gateway] |  | 40 |
 | [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) | 24 |
 | [`hw-kueue`][helm-values-hw-kueue] |  | 63 |
@@ -43210,7 +43210,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -44438,7 +44438,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -45304,7 +45304,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -45586,7 +45586,7 @@ Values under `certs-operator` configure the operator that issues the TLS certifi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -45774,7 +45774,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -46107,7 +46107,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -46558,7 +46558,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -47056,7 +47056,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -47474,7 +47474,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -48618,7 +48618,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 
@@ -48888,7 +48888,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -51325,6 +51325,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         anaconda_enabled: 'true'
         anaconda_env: ''
         anaconda_user: anaconda
+        api_key_auth_cache_ttl_seconds: '0'
         application_certificate_validity_period: 3650d
         apply_hopsfsmount_apparmor_profile_kube: 'false'
         async_services_timer_batch_size: '1000'
@@ -51721,6 +51722,18 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         remote_auth_need_consent: 'true'
         requests_verify: 'true'
         reserved_project_names: hopsworks,information_schema,airflow,glassfish_timers,grafana,hops,metastore,mysql,ndbinfo,performance_schema,sqoop,sys,base,python37,python38,python39,python310,filebeat,airflow,git,onlinefs,sklearnserver,rondb_replication,default,kube-system,kube-public,kube-node-lease,kube_system,kube_public,kube_node_lease
+        rest_api_rate_limit_enabled: 'false'
+        rest_api_rate_limit_exempt_roles: AGENT
+        rest_api_rate_limit_fast_probe_ms: '50'
+        rest_api_rate_limit_max_burst: '100'
+        rest_api_rate_limit_probe_interval_seconds: '5'
+        rest_api_rate_limit_probes_to_shared: '6'
+        rest_api_rate_limit_slow_sync_ms: '100'
+        rest_api_rate_limit_stale_seconds: '3'
+        rest_api_rate_limit_steady_state: '20'
+        rest_api_rate_limit_sync_deadline_ms: '250'
+        rest_api_rate_limit_user_cache_minutes: '10'
+        rest_api_rate_limit_user_cache_size: '10000'
         rmyarn_user: rmyarn
         rondb_default_max_online_tables: '-1'
         rondb_quotas: ''
@@ -51870,6 +51883,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.anaconda_user` <a class="headerlink" href="#helm.hopsworks.variables.anaconda_user" title="Permanent link">#</a> { #helm.hopsworks.variables.anaconda_user }
 :   Type `string`, default `"anaconda"`.
+
+`hopsworks.variables.api_key_auth_cache_ttl_seconds` <a class="headerlink" href="#helm.hopsworks.variables.api_key_auth_cache_ttl_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.api_key_auth_cache_ttl_seconds }
+:   Type `string`, default `"0"`.
+    Seconds an authenticated API key is cached before it is checked against the database again. 0 disables the cache.
 
 `hopsworks.variables.application_certificate_validity_period` <a class="headerlink" href="#helm.hopsworks.variables.application_certificate_validity_period" title="Permanent link">#</a> { #helm.hopsworks.variables.application_certificate_validity_period }
 :   Type `string`, default `"3650d"`.
@@ -53151,6 +53168,54 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         hopsworks,information_schema,airflow,glassfish_timers,grafana,hops,metastore,mysql,ndbinfo,performance_schema,sqoop,sys,base,python37,python38,python39,python310,filebeat,airflow,git,onlinefs,sklearnserver,rondb_replication,default,kube-system,kube-public,kube-node-lease,kube_system,kube_public,kube_node_lease
         ```
 
+`hopsworks.variables.rest_api_rate_limit_enabled` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_enabled }
+:   Type `string`, default `"false"`.
+    Turns per-user REST API rate limiting on.
+
+`hopsworks.variables.rest_api_rate_limit_exempt_roles` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_exempt_roles" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_exempt_roles }
+:   Type `string`, default `"AGENT"`.
+    Comma-separated roles whose users are not rate limited, from HOPS_ADMIN, HOPS_USER, AGENT and HOPS_SERVICE_USER.
+
+`hopsworks.variables.rest_api_rate_limit_fast_probe_ms` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_fast_probe_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_fast_probe_ms }
+:   Type `string`, default `"50"`.
+    A probe faster than this many milliseconds counts as good (1 to 900). At most rest_api_rate_limit_slow_sync_ms.
+
+`hopsworks.variables.rest_api_rate_limit_max_burst` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_max_burst" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_max_burst }
+:   Type `string`, default `"100"`.
+    Requests a user may send in a burst before the steady-state rate applies (the token bucket's capacity).
+
+`hopsworks.variables.rest_api_rate_limit_probe_interval_seconds` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_probe_interval_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_probe_interval_seconds }
+:   Type `string`, default `"5"`.
+    Seconds between the probes of an instance that limits on its own (1 to 60).
+
+`hopsworks.variables.rest_api_rate_limit_probes_to_shared` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_probes_to_shared" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_probes_to_shared }
+:   Type `string`, default `"6"`.
+    Good probes in a row after which an instance limits cluster-wide again (1 to 100).
+
+`hopsworks.variables.rest_api_rate_limit_slow_sync_ms` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_slow_sync_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_slow_sync_ms }
+:   Type `string`, default `"100"`.
+    A sync slower than this many milliseconds counts as bad; two bad syncs in a row make the instance limit on its own (1 to 900).
+
+`hopsworks.variables.rest_api_rate_limit_stale_seconds` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_stale_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_stale_seconds }
+:   Type `string`, default `"3"`.
+    Seconds without a successful sync after which an instance limits on its own (2 to 9).
+
+`hopsworks.variables.rest_api_rate_limit_steady_state` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_steady_state" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_steady_state }
+:   Type `string`, default `"20"`.
+    Sustained requests per second allowed per user.
+
+`hopsworks.variables.rest_api_rate_limit_sync_deadline_ms` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_sync_deadline_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_sync_deadline_ms }
+:   Type `string`, default `"250"`.
+    Milliseconds the once-a-second count sync may take before it counts as failed (10 to 900). Must be above rest_api_rate_limit_slow_sync_ms, and rest_api_rate_limit_fast_probe_ms at most rest_api_rate_limit_slow_sync_ms, or the six sync and probe thresholds use their defaults; the user cache values are kept.
+
+`hopsworks.variables.rest_api_rate_limit_user_cache_minutes` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_user_cache_minutes" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_user_cache_minutes }
+:   Type `string`, default `"10"`.
+    Minutes after which an instance reloads a user's own limit in the background (1 to 1440). Changes made in Hopsworks reach every instance at once.
+
+`hopsworks.variables.rest_api_rate_limit_user_cache_size` <a class="headerlink" href="#helm.hopsworks.variables.rest_api_rate_limit_user_cache_size" title="Permanent link">#</a> { #helm.hopsworks.variables.rest_api_rate_limit_user_cache_size }
+:   Type `string`, default `"10000"`.
+    Users whose own limit each instance keeps in memory (100 to 1000000).
+
 `hopsworks.variables.rmyarn_user` <a class="headerlink" href="#helm.hopsworks.variables.rmyarn_user" title="Permanent link">#</a> { #helm.hopsworks.variables.rmyarn_user }
 :   Type `string`, default `"rmyarn"`.
 
@@ -53850,7 +53915,7 @@ See [Envoy Gateway][envoy-gateway] for what the chart installs and what the clus
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: `global._hopsworks.envoyGateway.enabled`, [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -54289,7 +54354,7 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -54696,7 +54761,7 @@ With `kueue.enabled=false` Hopsworks uses a Kueue installed outside its release;
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -55082,7 +55147,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -55577,7 +55642,7 @@ Values under `judge` configure Judge, the active cluster arbitrator service.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -55712,7 +55777,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -56592,7 +56657,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -58352,7 +58417,7 @@ Values under `minio` configure MinIO, an S3-compatible object store deployed ins
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) is `true`.
 
@@ -58607,7 +58672,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -59583,7 +59648,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -60093,7 +60158,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -60253,7 +60318,7 @@ Values under `ray` configure the KubeRay operator, which runs the Ray clusters b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.ray.enabled`](global.md#helm.global._hopsworks.ray.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -60400,7 +60465,7 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -63318,7 +63383,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -64903,7 +64968,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -66349,7 +66414,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -66657,7 +66722,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793792299` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793802155` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
