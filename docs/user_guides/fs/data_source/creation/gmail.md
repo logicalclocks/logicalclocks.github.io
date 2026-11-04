@@ -223,7 +223,7 @@ The feature group is an archive of the mailbox:
 - An incremental run refuses a feature group that was filled for a different mailbox, query or labels.
     After changing the query or the labels, run a full load, or sync into a new feature group.
 
-Two sync jobs cannot write the same feature group, nor attachment directories that overlap, since their runs would overwrite each other's rows and files.
+Two sync jobs, of Gmail or [Outlook][data-source-outlook] data sources, cannot write the same feature group, nor attachment directories that overlap, since their runs would overwrite each other's rows and files.
 A sync job also refuses an attachments directory that holds another feature group's attachments, or attachments it cannot tell are its own, since a full load would delete them; choose a new directory, or delete the old one. The directory's `_sync_owner.json` names the data source and feature group it belongs to.
 
 ### Configure a sync job in the UI
@@ -325,7 +325,7 @@ hops datasource sync-jobs support_inbox
         - <code class="doc-symbol doc-symbol-method"></code> <autoref identifier="hsfs.storage_connector.GmailConnector.list_sync_jobs" optional><code>list_sync_jobs</code></autoref>
         - <code class="doc-symbol doc-symbol-method"></code> <autoref identifier="hsfs.storage_connector.GmailConnector.get_sync_job" optional><code>get_sync_job</code></autoref>
         - <code class="doc-symbol doc-symbol-method"></code> <autoref identifier="hsfs.storage_connector.GmailConnector.delete_sync_job" optional><code>delete_sync_job</code></autoref>
-    - <code class="doc-symbol doc-symbol-class"></code> <autoref identifier="hsfs.storage_connector.GmailSyncJobConfig" optional><code>GmailSyncJobConfig</code></autoref>
+    - <code class="doc-symbol doc-symbol-class"></code> <autoref identifier="hsfs.storage_connector.MailSyncJobConfig" optional><code>MailSyncJobConfig</code></autoref>
 
     <a class="hops-api-cta" href="../../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
