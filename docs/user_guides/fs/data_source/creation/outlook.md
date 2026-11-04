@@ -171,6 +171,7 @@ inbox = requests.get(
 Sync jobs of an Outlook data source behave as those of a [Gmail data source][data-source-gmail]: the feature group's name, schema and `day` partitions, the attachments directory, the loading strategies, the backfill that upserts as it goes, the hourly runs that wait for it, and the retries while throttled.
 A sync job writes only into a feature group that a sync job of the same data source created; it fails on any other feature group of that name.
 Two sync jobs cannot write the same feature group or overlapping attachment directories, whether they copy Gmail or Outlook.
+A sync job also refuses an attachments directory that holds another feature group's attachments, or attachments it cannot tell are its own, since a full load would delete them; choose a new directory, or delete the old one. The directory's `_sync_owner.json` names the data source and feature group it belongs to.
 The differences:
 
 - **Feature group name:** `jim@outlook.com` becomes `jim_outlooks`, and `support@contoso.com` becomes `support_contosos`.
