@@ -17,7 +17,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793821531` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793826876` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -56,7 +56,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793821531` (Hopsworks `5.
 | [`hw-kueue`][helm-values-hw-kueue] |  | 63 |
 | [`hw-kyverno`][helm-values-hw-kyverno] |  | 60 |
 | [`judge`][helm-values-judge] |  | 23 |
-| [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 1.3.0](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/1.3.0) | 102 |
+| [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 1.3.1](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/1.3.1) | 102 |
 | [`kserve`][helm-values-kserve] |  | 281 |
 | [`minio`][helm-values-minio] |  | 42 |
 | [`olk`][helm-values-olk] | [`prometheus-elasticsearch-exporter` 5.8.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-elasticsearch-exporter/5.8.0) | 165 |

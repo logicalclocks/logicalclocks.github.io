@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793821531` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793826876` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
