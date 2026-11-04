@@ -116,7 +116,7 @@ Limits are admin-only, because they cap what a project can spend on shared GPUs 
 There are two places to set them:
 
 - The cluster default of each scope and kind is a Hopsworks variable holding `VALUE/UNIT`, for example `1000000/HOUR`.
-  When it is empty or unset, that scope and kind has no limit.
+  The value is from 1 to 4294967295, like an override below, and an empty, unset or `-1` value means no limit for that scope and kind.
 
     | Variable | Limits |
     | --- | --- |
@@ -129,7 +129,7 @@ There are two places to set them:
 
   The variables are seeded empty, and an upgrade keeps the values an administrator set.
   Saving a value that does not parse is refused with `422`.
-  An administrator edits it in the admin UI under Settings, Quotas & rate limits, in the LLM gateway section.
+  An administrator edits them in the cluster settings, on the Quotas and Rate Limits page, in the LLM gateway section.
   A change reaches the existing projects at the backend's next full pass, about 10 minutes later.
 - An override per project is set on the admin page that edits the project, under LLM gateway limits, with the same scopes, kinds and units, and applies immediately.
   A value is from 1 to 4294967295, because Envoy Gateway holds a rate-limit value as an unsigned 32-bit integer and cannot express a larger one, and `-1` makes the scope unlimited for that project.
