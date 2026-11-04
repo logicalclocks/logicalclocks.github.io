@@ -160,7 +160,7 @@ Two values control it:
 
 Two audiences read the table:
 
-- Administrators, in Cluster Settings, Agent Router traces, which lists the traces of every project, filtered by project and deployment, with the project, deployment, user, session, status and timing of each.
+- Administrators, in Cluster Settings, LLM Gateway Traces, which lists the traces of every project, filtered by project and deployment, with the project, deployment, user, session, status and timing of each.
   The backend never returns prompt or answer content on this page: it does not read the `messages` column, it keeps only an allowlist of span attributes (model, token counts, session, user, project, operation and HTTP status), it keeps events without their attributes, and of a span's status it returns only `Error code: <status>`, without the upstream error response.
 - Project members with the role Data Owner or Data Scientist, in Project settings, LLM Gateway Traces, which shows only their project's traces, with a filter on the deployment, and in the Overview of each exposed deployment, which shows that deployment's traces.
   The backend returns only the project's own spans.
