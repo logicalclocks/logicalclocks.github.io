@@ -151,7 +151,8 @@ A published suite is frozen, and that includes a check's code where the code has
 A project file is not copied: the job reads it off the project on every run, published or not, and each result records the hash of every file the import read (the entry and the helpers beside it, as `source.files`), so the file stays the project's to edit and a run still says which text graded it.
 A git check is pinned by the job on the first run of the published version and read from that copy afterwards; a repository too large to copy is pinned by its commit, which later runs clone at.
 `git="deployment"` is deliberately not pinned, and a module's version is its environment.
-Every result's assertions carry the `source` the check was graded with (`origin`, `sha256`, `commit`, `pinned`), so a run can always say which code decided it.
+Every result's assertions carry the `source` the check was graded with (`origin`, `sha256`, `files`, `commit`, `pinned`), so a run can always say which code decided it.
+The keys `source`, `row`, `check` and `skipped` belong to the runner; a check that sets them keeps its values under `check_reserved`.
 
 A check that does not read the task's expectation can grade live traffic in a monitor, like any other expectation-free check.
 One declared with `reads_expectation=True` is refused there for a project file, since production traffic carries no task; for a git or module source, which Hopsworks cannot scan, such a check is ungradable on each live trial instead.
