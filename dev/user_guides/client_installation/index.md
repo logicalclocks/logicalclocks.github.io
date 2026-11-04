@@ -53,7 +53,7 @@ uv pip install "hopsworks[python,great-expectations,polars]"
 
 ## Skills and instructions for coding agents
 
-The Hopsworks Python library ships a set of skills for coding agents: Claude Code, Codex, GitHub Copilot and OpenCode.
+The Hopsworks Python library ships a set of skills for coding agents: Claude Code, Codex, GitHub Copilot, OpenCode, pi and Hermes Agent.
 Inside a Hopsworks terminal they are available to every agent automatically.
 On your own machine, two commands make them available in the repository you are working in.
 
@@ -82,7 +82,7 @@ It then writes the following files into the current directory:
 | `.claude/agents/hops-infer-agent.md` | The Claude Code sub-agent `/hops-build` runs to build inference until it meets its SLA. |
 | `.claude/settings.local.json` | Allows `Bash(hops *)`, so Claude Code can run the CLI without asking before each command. |
 
-`AGENTS.md` is read by Claude Code, Codex, GitHub Copilot and OpenCode.
+`AGENTS.md` is read by Claude Code, Codex, GitHub Copilot, OpenCode, pi and Hermes Agent.
 The files under `.claude/` are read by Claude Code only.
 Running `hops setup` again in a directory that already has these files updates the files you have not edited and leaves the ones you have edited unchanged.
 A file an earlier version wrote and this one no longer ships, such as `.claude/agents/hops-fti.md`, is removed when you have not edited it and reported otherwise.
@@ -101,9 +101,13 @@ For another agent, pass `--agent`, which can be repeated:
 hops skills install --agent codex
 hops skills install --agent copilot
 hops skills install --agent opencode
+hops skills install --agent pi
+hops skills install --agent hermes
 ```
 
-The skills are written to `.codex/skills/`, `.agents/skills/` and `.opencode/skills/` respectively, and for OpenCode the path is also registered in `opencode.json`.
+The skills are written to `.codex/skills/` for Codex, `.opencode/skills/` for OpenCode, where the path is also registered in `opencode.json`, and `.agents/skills/` for GitHub Copilot, pi and Hermes Agent, which share that directory.
+pi asks whether to trust the repository the first time it starts there, and loads the skills once you do.
+Hermes Agent loads a repository's skills only in a git repository you have trusted, so run `hermes skills trust <your-repository>` once after installing them.
 An agent loads only the name and description of each skill when it starts and reads a skill in full when a task calls for it, so adding all of them costs a few kilobytes of context rather than the size of the skills themselves.
 
 Running `hops skills install` again after upgrading the `hopsworks` library updates the skills you have not edited, keeps the skills you have edited, and removes skills that the new version no longer ships.

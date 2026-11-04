@@ -1862,7 +1862,7 @@ uv pip install "hopsworks[python,great-expectations,polars]"
 
 ## Skills and instructions for coding agents
 
-The Hopsworks Python library ships a set of skills for coding agents: Claude Code, Codex, GitHub Copilot and OpenCode.
+The Hopsworks Python library ships a set of skills for coding agents: Claude Code, Codex, GitHub Copilot, OpenCode, pi and Hermes Agent.
 Inside a Hopsworks terminal they are available to every agent automatically.
 On your own machine, two commands make them available in the repository you are working in.
 
@@ -1891,7 +1891,7 @@ It then writes the following files into the current directory:
 | `.claude/agents/hops-infer-agent.md` | The Claude Code sub-agent `/hops-build` runs to build inference until it meets its SLA. |
 | `.claude/settings.local.json` | Allows `Bash(hops *)`, so Claude Code can run the CLI without asking before each command. |
 
-`AGENTS.md` is read by Claude Code, Codex, GitHub Copilot and OpenCode.
+`AGENTS.md` is read by Claude Code, Codex, GitHub Copilot, OpenCode, pi and Hermes Agent.
 The files under `.claude/` are read by Claude Code only.
 Running `hops setup` again in a directory that already has these files updates the files you have not edited and leaves the ones you have edited unchanged.
 A file an earlier version wrote and this one no longer ships, such as `.claude/agents/hops-fti.md`, is removed when you have not edited it and reported otherwise.
@@ -1910,9 +1910,13 @@ For another agent, pass `--agent`, which can be repeated:
 hops skills install --agent codex
 hops skills install --agent copilot
 hops skills install --agent opencode
+hops skills install --agent pi
+hops skills install --agent hermes
 ```
 
-The skills are written to `.codex/skills/`, `.agents/skills/` and `.opencode/skills/` respectively, and for OpenCode the path is also registered in `opencode.json`.
+The skills are written to `.codex/skills/` for Codex, `.opencode/skills/` for OpenCode, where the path is also registered in `opencode.json`, and `.agents/skills/` for GitHub Copilot, pi and Hermes Agent, which share that directory.
+pi asks whether to trust the repository the first time it starts there, and loads the skills once you do.
+Hermes Agent loads a repository's skills only in a git repository you have trusted, so run `hermes skills trust <your-repository>` once after installing them.
 An agent loads only the name and description of each skill when it starts and reads a skill in full when a task calls for it, so adding all of them costs a few kilobytes of context rather than the size of the skills themselves.
 
 Running `hops skills install` again after upgrading the `hopsworks` library updates the skills you have not edited, keeps the skills you have edited, and removes skills that the new version no longer ships.
@@ -19139,7 +19143,7 @@ The `INFERENCE / AGENTS / APPS` environments can be used in a deployment using a
 - `tensorflow-inference-pipeline` to load and serve TensorFlow models
 - `torch-inference-pipeline` to load and serve PyTorch models
 - `pandas-inference-pipeline` to load and serve XGBoost, Catboost and Sklearn models
-- `python-agent-pipeline` to build Python agents, bundling FastAPI, LlamaIndex and OpenTelemetry
+- `python-agent-pipeline` to build Python agents, bundling FastAPI, LangChain and LangGraph, Deep Agents, LlamaIndex, the OpenAI Agents SDK, the Claude Agent SDK and its predecessor the Claude Code SDK, the Tavily search client and OpenTelemetry
 - `python-app-pipeline` to build interactive applications with Streamlit
 - `vllm-inference-pipeline` to load and serve LLMs with vLLM inference engine
 - `minimal-inference-pipeline` to install your own custom framework, contains a minimal set of dependencies
@@ -20275,7 +20279,8 @@ The session comes with tooling preinstalled:
 
 - `hops` initializes the Hopsworks CLI, already pointed at your project.
 - `git` works against your configured [Git providers][how-to-configure-a-git-provider]; upload an SSH key to `~/.ssh` or add a GitHub access token in Account Settings.
-- `claude` starts a Claude Code session and `codex` starts an OpenAI Codex CLI session; their logins persist in HopsFS across sessions.
+- `claude`, `codex`, `opencode` and `copilot` start a Claude Code, OpenAI Codex CLI, OpenCode or GitHub Copilot CLI session, and in the Python terminal `pi` and `hermes` start a pi or Hermes Agent session.
+  Each one has the Hopsworks skills, reads the instructions Hopsworks writes into `AGENTS.md` in your home directory when started there, and keeps its login and sessions in HopsFS across sessions.
 - Right-click opens a menu to split the terminal horizontally or vertically (tmux).
 - Selecting text with the left mouse button copies it to your clipboard.
 
@@ -20306,7 +20311,7 @@ A Spark terminal has no GPUs.
 
 ## LLM Provider
 
-**LLM Provider**, under **Start**, shows the provider the terminal's coding agents use; **Subscription**, the default, leaves `claude`, `codex`, `copilot` and `opencode` on their own logins.
+**LLM Provider**, under **Start**, shows the provider the terminal's coding agents use; **Subscription**, the default, leaves `claude`, `codex`, `copilot`, `opencode`, `pi` and `hermes` on their own logins.
 Clicking it shows the providers as cards, each saying whether its key is saved: Kimi, DeepMind, Berget, Mistral, GLM, Anthropic, OpenAI, Meta and OpenRouter.
 For a provider, pick a model or type a model id, enter its API key and press **Save key**, then **Test**, which checks the key against the provider's model list without spending tokens and says whether the model is listed.
 
@@ -20316,6 +20321,12 @@ When the terminal starts, the key is set as the provider's own variable (for exa
 - `codex` and `opencode` use the provider and model: every provider is written into `~/.codex/config.toml` as `model_providers.hops-<provider>`, so switching needs only that provider's key, and codex gets the model settings the provider's guide gives, such as Meta's and Kimi's 1M-token context window.
 - `claude` uses them for providers with an Anthropic-compatible API (Kimi, GLM, Anthropic, Meta and OpenRouter), through `ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_MODEL` and the model variables each provider's Claude Code guide sets (for Kimi, `kimi-k3[1m]` with its 1M-token context and `kimi-k2.7-code` for the background tier); for the others it keeps its own login.
   An `env` block in `~/.claude/settings.json` overrides these, so the terminal warns at start when it sets any of them.
+- `pi` and `hermes`, which only the Python terminal has, take them as follows.
+  `pi` uses the provider and model: the provider is written into `~/.pi/agent/models.json` as `hops-<provider>`, and `pi` starts on it unless you pass `--model`, `--provider` or `--models`.
+  `hermes` uses the provider and model, set in the managed configuration Hermes Agent reads on top of `~/.hermes/config.yaml`.
+  Every provider is there as `custom:hops-<provider>`, so `/model <model> --provider custom:hops-<provider>` switches a session to another provider whose key the terminal has.
+  Hermes Agent runs its sessions in a background gateway that the first `hermes` starts, with the environment of that shell, so after exporting another provider's key run `hermes gateway stop` before the next `hermes`.
+  While a provider is chosen, `hermes model` cannot save a different default model, because the managed configuration sets it; pick **Subscription** to choose the model in Hermes Agent instead.
 - `copilot` keeps its GitHub login.
 
 A provider with no saved key disables **Start** until you save one or pick **Subscription**.
