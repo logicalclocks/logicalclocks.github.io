@@ -4,7 +4,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793826876` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793869419` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -633,6 +633,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
               enabled: true
               minAvailable: 1
             replicaCount: 1
+            serviceType: ''
             statusPort: 32021
           jobName: gateway-operator-job
           operatorConfigFileName: istiooperator.yaml
@@ -749,6 +750,10 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 
 `kserve.istio.gateways.ingress.replicaCount` <a class="headerlink" href="#helm.kserve.istio.gateways.ingress.replicaCount" title="Permanent link">#</a> { #helm.kserve.istio.gateways.ingress.replicaCount }
 :   Type `int`, default `1`.
+
+`kserve.istio.gateways.ingress.serviceType` <a class="headerlink" href="#helm.kserve.istio.gateways.ingress.serviceType" title="Permanent link">#</a> { #helm.kserve.istio.gateways.ingress.serviceType }
+:   Type `string`, default `""`.
+    Service type of the ingress gateway. Empty keeps the default: NodePort with unmanaged load balancers, LoadBalancer otherwise. ClusterIP sets no node ports, for namespaces whose quota allows no NodePort or LoadBalancer Services; such a namespace also needs a managed registry (global._hopsworks.managedDockerRegistery), since the bundled docker-registry Service is NodePort. ClusterIP is refused with unmanaged load balancers on AWS, whose istio target groups reach the gateway through its node ports.
 
 `kserve.istio.gateways.ingress.statusPort` <a class="headerlink" href="#helm.kserve.istio.gateways.ingress.statusPort" title="Permanent link">#</a> { #helm.kserve.istio.gateways.ingress.statusPort }
 :   Type `int`, default `32021`.
