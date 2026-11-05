@@ -116,7 +116,8 @@ Limits are admin-only, because they cap what a project can spend on shared GPUs 
 There are two places to set them:
 
 - The cluster default of each scope and kind is a Hopsworks variable holding `VALUE/UNIT`, for example `1000000/HOUR`.
-  The value is from 1 to 4294967295, like an override below, and an empty, unset or `-1` value means no limit for that scope and kind.
+  The value is from 1 to 4294967295, like an override below, and an empty or unset variable, or `-1` with a unit such as `-1/HOUR`, means no limit for that scope and kind.
+  A value without a unit, such as `-1` alone, is refused.
 
     | Variable | Limits |
     | --- | --- |
