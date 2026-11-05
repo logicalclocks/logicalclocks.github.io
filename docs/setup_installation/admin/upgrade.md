@@ -444,7 +444,9 @@ After the upgrade, the `post-upgrade-opensearch-reindex-job` hook requests one r
 The hook only records the request.
 Once the search command queue is idle, the backend empties the index and queues commands for each artifact, which takes hours on a large cluster.
 Until the rebuild finishes, search returns only the artifacts already indexed again.
-Its progress shows under `Cluster Settings` > `Service Operations` > `OpenSearch Index Commands`.
+Its progress shows on the `Featurestore search index` card under `Cluster Settings` > `Service Operations` > `OpenSearch Index Commands`, which reads `rebuilt` once every command of the run has been applied.
+The list of failed commands below that card is no measure of the rebuild: it is empty whenever nothing has failed.
+The same status is available through the [REST API][search-index-rebuild], for the run id the hook's log reports.
 
 - **With `hopsworks.opensearchReindex.enabled: false`, nothing is rebuilt.**
   A data source then enters search when it is created, edited or tagged after the upgrade.

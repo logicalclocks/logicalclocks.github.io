@@ -8,7 +8,7 @@ For what search is and how its scope relates to project membership, see the [sea
 
 ## What you can search
 
-Search returns twelve classes of artifact, each on its own tab:
+Search has a tab for each of eleven classes of artifact, and an `All` tab that combines them:
 
 | Tab | What it contains |
 | --- | --- |
