@@ -450,22 +450,25 @@ With the topic ID, OnlineFS reads a topic that was deleted and created again und
 - **It connects to the DDL SQL node of the release as `hopsworksroot`**, the `ddl-mysqld` Service of the RonDB the chart installs, or the consul name in `onlinefs.dependencies.mysql.ddlConsulServiceName` (`mysqlddl`) when RonDB is managed externally.
   A cluster that disables the DDL SQL node (`rondb.rondb.meta.ddlMySQLd.enabled: false`) sets `onlinefs.dependencies.mysql.serviceName: mysqld`, or `onlinefs.dependencies.mysql.ddlConsulServiceName: mysql` with an external RonDB.
   `onlinefs.dependencies.mysql.url` overrides both.
-- **A step that fails keeps the pod from starting, and leaves every project table as it is**, because it reads all of them before it writes, and drops none before the copy is committed.
+- **A step that fails keeps the pod from starting.**
+  It reads every project table before it writes, and drops none before the copy is committed, so a step that fails while it copies leaves every project table as it is.
+  One that fails while it drops the tables has copied every offset already, and the next start drops the rest.
   The pod stays in `Init:Error` or `Init:CrashLoopBackOff`, and the log names the database:
 
     ```sh
     kubectl logs <onlinefs-pod> -c offsets-schema -n <namespace>
     ```
 
-  The step gives up after 15 minutes.
+  The step gives up after 15 minutes, its wait for Hopsworks to answer with the OnlineFS settings included, and Kubernetes starts it again.
   Fix the cause, and the next start of the pod runs it again.
 - **Records written during the rollout can be written to the online feature store twice, never skipped.**
   An OnlineFS pod of the earlier release that still runs while a new pod moves the offsets saves to project tables that are gone, and its partitions resume from the moved offsets.
 - **On satellite clusters**, upgraded after central as [Strimzi 1.3][upgrade-strimzi-13] requires, a project created after central's upgrade has no offsets table on a satellite that is not upgraded yet.
   The satellite's OnlineFS logs `Failed to save offsets` for that project and keeps writing its rows, but reads the project's online topics again from their start when it restarts, and once more at the satellite's upgrade.
 - **Rolling OnlineFS back to 5.2** makes it read every online topic again from its earliest retained record, because the project tables it reads are gone.
-- **A restore needs no step for the offsets.**
+- **A restore needs no step for the offsets on a Kafka that gives its topics IDs**, as the Kafka the chart installs does.
   `onlinefs.kafka_offsets` is in the RonDB backup like any other database, and after a restore that rebuilt Kafka, OnlineFS reads the recreated topics from their start.
+  An offset saved without a topic ID, by a consumer group of an earlier Kafka connection or on a Kafka that gives no IDs, has nothing to check against, and OnlineFS resumes from it.
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 

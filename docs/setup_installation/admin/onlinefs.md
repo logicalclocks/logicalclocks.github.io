@@ -292,13 +292,13 @@ The topics are the project's online topic and every topic an online feature grou
 
 | Status | Meaning |
 | --- | --- |
-| `Current topic` | The offset was saved for the topic Kafka has under this name now, or Kafka gives its topics no ID. |
+| `Current topic` | The offset was saved for the topic Kafka has under this name now. |
 | `Earlier topic` | The offset was saved for an earlier topic of the same name. OnlineFS reads the partition from its start. |
-| `No topic ID` | The offset was saved without a topic ID. |
+| `No topic ID` | The offset was saved without a topic ID, or Kafka gives its topics none, so which topic it belongs to is not known. |
 | `Topic missing` | Kafka has no topic of this name. |
 | `Kafka unavailable` | Hopsworks could not ask Kafka, so the end offset and the lag are unknown. |
 
-The lag is the number of records OnlineFS has still to write, and shows only for the current topic in a consumer group OnlineFS reads.
+The lag is the number of records OnlineFS has still to process, written or not, and shows only for the current topic in a consumer group OnlineFS reads.
 Where it is unknown, the card shows `-`, never 0.
 A consumer group marked `Not read` belongs to an earlier Kafka connection, and OnlineFS no longer reads its offsets.
 When OnlineFS has not created `onlinefs.kafka_offsets` yet, the card says so.
