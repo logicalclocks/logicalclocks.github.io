@@ -264,8 +264,12 @@ Administrators also see the revision of the saved settings, the revision the las
 
 ## Consumer offsets { #onlinefs-offsets }
 
-OnlineFS stores its consumer offsets in the online feature store of each project, per consumer group, topic and partition.
-It keeps the offsets of a saved connection apart from those of the Helm connection, and starts new ones whenever the saved `bootstrap.servers` changes:
+OnlineFS stores its consumer offsets in the `onlinefs.kafka_offsets` table of the RonDB it writes to, per consumer group, topic and partition, with the ID Kafka gives the topic the offset was saved for.
+When a topic is deleted and created again under the same name, after a restore that rebuilt Kafka or by hand, Kafka gives it a new ID, and OnlineFS reads each partition of the new topic from its start instead of resuming at an offset of the earlier topic.
+A running OnlineFS sees the new topic at its next Kafka metadata refresh, every 60 seconds with the chart's `metadata.max.age.ms`.
+If a topic is deleted and created again between two refreshes, OnlineFS may keep its position on the new topic until it restarts, and then reads the new topic from its start.
+
+OnlineFS keeps the offsets of a saved connection apart from those of the Helm connection, and starts new ones whenever the saved `bootstrap.servers` changes:
 
 - With the Helm connection, OnlineFS uses the offsets it has always used, so an upgraded cluster resumes where it was.
 - A saved connection whose `bootstrap.servers` differs from the previous one, or a connection saved where there was none, starts a new set of offsets.
@@ -278,6 +282,8 @@ Hopsworks tells Kafka clusters apart by `bootstrap.servers` alone.
 A new broker list for the same cluster, or moving a connection from the Helm values into Cluster Settings, also makes OnlineFS read the retained records again and write them to the online feature store again.
 Plan such a change for a time when that load is acceptable.
 A change of the Helm connection itself, in the Helm values, keeps the offsets of the Helm connection, as in earlier releases.
+
+Users see the offsets of their project's topics on the project's metrics page, as the [ingestion topic][onlinefs-project-offsets] guide describes.
 
 ## Startup { #onlinefs-startup }
 
