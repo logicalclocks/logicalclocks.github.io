@@ -170,6 +170,10 @@ response = openai_client.chat.completions.create(
 state = ms.get_llm_gateway()
 ```
 
+The LLM gateway also serves the Anthropic Messages API at `<inference endpoint>/v1/<project>/v1/anthropic/`, for example `.../v1/anthropic/v1/messages`, which `ms.get_anthropic_url()` returns and Claude Code uses as `ANTHROPIC_BASE_URL`.
+A vLLM deployment serves it on its own path too, `<inference endpoint>/v1/<project>/<deployment>/v1/messages`, from vLLM v0.28.0.
+See [Use coding agents with Hopsworks LLMs][serving-coding-agents].
+
 `Deployment.get_openai_client()` returns a client for one deployment's own path instead.
 `Deployment.llm_gateway` is the deployment's switch as stored, and it does not tell whether the LLM gateway serves the deployment.
 

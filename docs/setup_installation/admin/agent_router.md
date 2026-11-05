@@ -20,6 +20,9 @@ The request's `model` field selects the project's Standard-mode vLLM deployment 
 The list can trail the routes by up to about a minute after a deployment starts or stops, since the Agent Router reads it from a mounted Secret that the kubelet refreshes on its own schedule.
 The Hopsworks backend creates and removes the AIGatewayRoutes, AIServiceBackends and Backends with the deployment lifecycle.
 The per-deployment paths, `/v1/<project>/<deployment>/v1/...`, keep working.
+The Anthropic Messages API is served under `/v1/<project>/v1/anthropic/`, for example `/v1/<project>/v1/anthropic/v1/messages` and `/v1/<project>/v1/anthropic/v1/models`, and the Agent Router translates it to the OpenAI API of the vLLM backend.
+Its `count_tokens` operation answers `422`.
+See [Use coding agents with Hopsworks LLMs][serving-coding-agents].
 
 The feature is new in 5.3 and off by default, and one value on top of the Envoy Gateway ones turns it on:
 
@@ -77,6 +80,10 @@ A deployment's External access groups, described in [External access][serving-ex
 External users can call these operations only: chat completions (`/v1/chat/completions`), completions (`/v1/completions`), embeddings (`/v1/embeddings`), responses (`/v1/responses`) and Anthropic messages (`/anthropic/v1/messages`).
 Every listing, `GET .../v1/models` under any prefix, and every other path are refused for them with `403`.
 The check is made by `model-serving-authenticator` on the request body, which the AI Gateway sends to it up to the AI Gateway's 50Mi buffer limit (`kserve.envoyGateway.aiGateway.bufferLimit`).
+
+Requests authenticate with `Authorization: Bearer <api key>` or `ApiKey <api key>`, or with `x-api-key: <api key>` when no `Authorization` header is sent.
+A request with both headers is accepted when they carry the same key and refused with `401` when they differ.
+On the LLM gateway route the `authorization` and `x-api-key` headers are removed from the request after the check, so they do not reach the model server.
 
 ## Reserved deployment names { #agent-router-reserved-names }
 
