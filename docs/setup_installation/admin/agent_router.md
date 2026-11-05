@@ -158,16 +158,21 @@ The columns `messages`, `attributes` and `events` are `MEDIUMTEXT`.
 The collector caps each of them at `OTEL_MAX_TEXT_BYTES` of UTF-8, 262144 by default, by dropping or shortening JSON elements so the value stays valid JSON, and adds the attribute `hopsworks.truncated: true` to `attributes` when it clipped anything.
 Both trace pages mark such a span as truncated, and also a span whose column does not parse.
 
-The table is in the online feature store's disk tablespace, `featurestore_online_tablespace` or else the cluster's NDB tablespace, which feature groups with disk columns and the traces of model deployments share.
-Every span stays for the whole TTL, so on disk it does not take RonDB DataMemory, which every online feature group needs.
-The keys, the indexed columns, `created_at` and the columns the trace pages filter on (`deployment`, `username`, `session_id` and `parent_span_id`) stay in memory: RonDB keeps keys and indexed columns there, requires the TTL column there, and the trace list then ranks a time window without reading the disk.
-The other columns, `messages`, `attributes` and `events` included, are on disk.
+The table is in the online feature store's disk tablespace, `featurestore_online_tablespace` or else the cluster's NDB tablespace, `ts_1`, which feature groups with disk columns and the traces of model deployments share.
+Every span stays for the whole TTL, so keeping most of it on disk keeps the table's share of RonDB DataMemory, which every online feature group needs, small.
+The keys, the indexed columns, `created_at` and the columns the trace pages filter on (`deployment`, `username`, `session_id` and `parent_span_id`) stay in memory, because RonDB keeps keys and indexed columns there and requires the TTL column there.
+The other columns, `messages`, `attributes` and `events` included, are on disk, apart from the first 256 bytes of each text column and a small key for each part of the text beyond them, which RonDB keeps in memory.
 On a cluster without a tablespace, the Job creates the table in memory and logs a warning.
+The Job fails when `featurestore_online_tablespace` names a tablespace that does not exist, or a name with characters other than letters, digits and underscores.
+The Job never drops or moves an existing table: changing the tablespace, or adding one after the table was created in memory, leaves the table where it is, with a warning in the Job's log, until it is dropped by hand.
 
-Size the disk-column volume, `rondb.rondb.resources.requests.storage.diskColumnGiB` (2 GiB by default), for the spans one TTL keeps, next to what feature groups and deployment traces store there.
-When the tablespace is full, the collector cannot insert spans and logs the failure, and traces are missing until space is added; tables in memory are not affected.
-Expired spans free space for later spans in the same table, not in the tablespace.
-The `LowDiskDataFileExtents` alert fires when less than 20% of the tablespace is free.
+The chart creates `ts_1` at install with the size of the disk-column volume, `rondb.rondb.resources.requests.storage.diskColumnGiB` (2 GiB by default), or `InitialTablespaceSizeGiB` when that is set.
+Size it for the spans one TTL keeps, next to what feature groups and deployment traces store there.
+On an installed cluster, a larger volume does not grow the tablespace: add a data file with `ALTER TABLESPACE ... ADD DATAFILE`.
+When the tablespace has no free extent left, inserts that need new space fail, and the collector logs the failure and drops those spans, which adding space later does not bring back.
+Spans the TTL purge has deleted free space for later spans in the same table, not in the tablespace.
+The purge runs in the RonDB REST API servers, and `rondb.rondb.rdrs.ttlPurge` controls it.
+The `LowDiskDataFileExtents` alert fires when less than 20% of `ts_1` is free for 5 minutes; it does not watch another tablespace named in `featurestore_online_tablespace`.
 
 Two values control it:
 
@@ -217,7 +222,8 @@ The access logs carry the same user, model and token counts per request, for aud
   An explicit minimum of 0 is allowed, and a deployment with it is not served by the LLM gateway.
 - Any member of the project can reach every one of its deployments through the LLM gateway, unless a Data Owner turns it off for the project or for a deployment, as described under [Access to the LLM gateway][agent-router-access].
 - External providers, MCP and `InferencePool` backends are not part of it.
-- The span table relies on RonDB's native TTL, which deletes rows by the age of `created_at`, and its `messages`, `attributes` and `events` columns hold up to `OTEL_MAX_TEXT_BYTES` each, so the rows of one span can be large when `captureContent` is on, and a shorter `ttlSeconds` bounds the space the table takes in the tablespace.
+- The span table relies on RonDB's native TTL, which deletes rows by the age of `created_at`, and its `messages`, `attributes` and `events` columns hold up to `OTEL_MAX_TEXT_BYTES` each, so the rows of one span can be large when `captureContent` is on.
+  A shorter `ttlSeconds` keeps fewer spans for the same traffic, once the TTL purge has deleted the expired ones, but does not give back space the table already holds in the tablespace.
 - Enabling the feature, or changing `captureContent` or the tracing endpoint, changes the GatewayConfig environment, which rolls the AI Gateway's Envoy pods once, for the reason given under [What the chart installs][agent-router-components].
 - OpenShift: `values.openshift.yaml` leaves both values off, like Envoy Gateway itself.
 - The controller logs `Failed to add finalizer to object` once per ReferenceGrant it sees, the per-project grants of the Hopsworks Gateway included.
