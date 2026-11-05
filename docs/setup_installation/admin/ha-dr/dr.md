@@ -342,7 +342,8 @@ A partition whose restored offset is past the end of the new topic when OnlineFS
 
 After the restore, and before data is written to the online feature store again, stop OnlineFS, clear the offsets and start OnlineFS again, which then reads every online topic from its start.
 OnlineFS is stopped first because a running OnlineFS pod saves the offsets it holds again until it stops.
-Run the commands as a script with `bash`, which stops at the first command that fails and leaves OnlineFS stopped, so that ingestion does not resume with the restored offsets:
+Run the commands as a script with `bash`, which stops at the first command that fails and leaves OnlineFS stopped, so that ingestion does not resume with the restored offsets.
+The script prints the replica count of OnlineFS before it stops it; to run it again after a failure, set `REPLICAS` to that count, since OnlineFS then has none:
 
 ```sh
 set -euo pipefail
@@ -351,7 +352,12 @@ ROOT_PW=$(kubectl get secret mysql-users-secrets -n "$NAMESPACE" -o jsonpath='{.
 mysql_root() {
   kubectl exec mysqlds-0 -n "$NAMESPACE" -c mysqld -- env MYSQL_PWD="$ROOT_PW" mysql -uroot -N -e "$1"
 }
-REPLICAS=$(kubectl get deployment/onlinefs-deployment -n "$NAMESPACE" -o jsonpath='{.spec.replicas}')
+REPLICAS=${REPLICAS:-$(kubectl get deployment/onlinefs-deployment -n "$NAMESPACE" -o jsonpath='{.spec.replicas}')}
+if [ "$REPLICAS" -lt 1 ]; then
+  echo "OnlineFS has no replicas: set REPLICAS to its replica count before the earlier run" >&2
+  exit 1
+fi
+echo "OnlineFS replicas: $REPLICAS"
 kubectl scale deployment/onlinefs-deployment -n "$NAMESPACE" --replicas=0
 kubectl wait --for=delete pod -l app=onlinefs -n "$NAMESPACE" --timeout=600s
 DATABASES=$(mysql_root "SELECT table_schema FROM information_schema.tables WHERE table_name = 'kafka_offsets'")
