@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -59,7 +59,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
       objectStorageEnvInformation: null
       opensearchReindex:
         enabled: true
-      payaraVersion: 6.2025.11-jdk21.2
+      payaraVersion: 6.2025.11-jdk21.4
       payaraconfigmapName: post-boot-commands
       podAnnotations: {}
       podDisruptionBudget:
@@ -114,8 +114,8 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
       variables:
         kube_keda_installed: true
         kube_kserve_installed: true
-        kube_serving_vllm_omni_versions: v0.28.0
-        kube_serving_vllm_versions: v0.28.0
+        kube_serving_vllm_omni_versions: v0.32.0
+        kube_serving_vllm_versions: v0.32.0
       volumeMounts:
         admin: []
         migrate: []
@@ -169,8 +169,8 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         variables:
           kube_keda_installed: true
           kube_kserve_installed: true
-          kube_serving_vllm_omni_versions: v0.28.0
-          kube_serving_vllm_versions: v0.28.0
+          kube_serving_vllm_omni_versions: v0.32.0
+          kube_serving_vllm_versions: v0.32.0
         ```
 
 `hopsworks.agent_email` <a class="headerlink" href="#helm.hopsworks.agent_email" title="Permanent link">#</a> { #helm.hopsworks.agent_email }
@@ -289,7 +289,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     Rebuild the featurestore search index after an upgrade, when what the index holds has changed since its last rebuild. The hook keys its request with the index generation, featurestore-index-5.1, which the chart bumps only with a change to what the backend indexes: a generation already rebuilt is answered with that run, so patch upgrades and ArgoCD syncs do not rebuild again, and a cluster that missed the rebuild gets it on its next upgrade. Runs requested by earlier charts carry no key, so the first upgrade with this chart rebuilds once. The rebuild runs in the backend after the upgrade and takes hours on a large cluster, with search incomplete until it finishes; its progress shows under Cluster Settings > Service Operations > OpenSearch Index Commands. A failed hook Job is removed after global._hopsworks.jobs.ttlSecondsAfterFinished in the default mode, or when the hook next renders; with global._hopsworks.mode set, as under ArgoCD, delete post-upgrade-opensearch-reindex-job by hand if you turn this off after a failed attempt.
 
 `hopsworks.payaraVersion` <a class="headerlink" href="#helm.hopsworks.payaraVersion" title="Permanent link">#</a> { #helm.hopsworks.payaraVersion }
-:   Type `string`, default `"6.2025.11-jdk21.2"`.
+:   Type `string`, default `"6.2025.11-jdk21.4"`.
 
 `hopsworks.payaraconfigmapName` <a class="headerlink" href="#helm.hopsworks.payaraconfigmapName" title="Permanent link">#</a> { #helm.hopsworks.payaraconfigmapName }
 :   Type `string`, default `"post-boot-commands"`.
@@ -1340,11 +1340,11 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           tag: null
         postInstall:
           pullPolicy: IfNotPresent
-          tag: 6.2025.11-jdk21.2
+          tag: 6.2025.11-jdk21.4
         registry: null
         worker:
           pullPolicy: IfNotPresent
-          tag: 6.2025.11-jdk21.2
+          tag: 6.2025.11-jdk21.4
     ```
 
 <div class="hops-values" markdown>
@@ -1383,7 +1383,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     pull policy for the admin sidecar's payara-node image. admindeployment.yaml already read this key before it was declared here, and its fallback cannot reach global._hopsworks.imagePullPolicy, so the sidecar was pinned to IfNotPresent with no way to override it.
 
 `hopsworks.image.postInstall.tag` <a class="headerlink" href="#helm.hopsworks.image.postInstall.tag" title="Permanent link">#</a> { #helm.hopsworks.image.postInstall.tag }
-:   Type `string`, default `"6.2025.11-jdk21.2"`.
+:   Type `string`, default `"6.2025.11-jdk21.4"`.
 
 `hopsworks.image.registry` <a class="headerlink" href="#helm.hopsworks.image.registry" title="Permanent link">#</a> { #helm.hopsworks.image.registry }
 :   Type `string`, default `nil`.
@@ -1393,7 +1393,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"IfNotPresent"`.
 
 `hopsworks.image.worker.tag` <a class="headerlink" href="#helm.hopsworks.image.worker.tag" title="Permanent link">#</a> { #helm.hopsworks.image.worker.tag }
-:   Type `string`, default `"6.2025.11-jdk21.2"`.
+:   Type `string`, default `"6.2025.11-jdk21.4"`.
 
 </div>
 
@@ -2443,7 +2443,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         audit_log_size_limit: '256000000'
         base_buildkit_image: docker.hops.works/hopsworks/moby/buildkit:v0.34.1-rootless
         base_image_name: hopsworks-base
-        base_image_version: 5.2.3
+        base_image_version: 5.2.4
         cert_mater_delay: 3m
         certs_dir: /srv/hops/certs-dir
         check_nodemanagers_status: ''
@@ -2542,11 +2542,13 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         enable_feature_monitoring: 'true'
         enable_fix_receivers_timer: 'true'
         enable_gcs_storage_connectors: 'true'
+        enable_gmail_storage_connectors: 'true'
         enable_hopsworks_storage_connectors: 'true'
         enable_jupyter_python_kernel_non_kubernetes: 'false'
         enable_kafka_storage_connectors: 'true'
         enable_metadata_designer: ''
         enable_opensearch_storage_connectors: 'true'
+        enable_outlook_storage_connectors: 'true'
         enable_public_apps: false
         enable_read_only_git_repositories: 'false'
         enable_redshift_storage_connectors: 'true'
@@ -2667,8 +2669,8 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         kube_scheduling_jobinit_memory_requests_mb: 256
         kube_serving_max_num_instances: '10'
         kube_serving_min_num_instances: '-1'
-        kube_serving_vllm_omni_versions: v0.28.0
-        kube_serving_vllm_versions: v0.28.0
+        kube_serving_vllm_omni_versions: v0.32.0
+        kube_serving_vllm_versions: v0.32.0
         kube_skip_namespace_creation: false
         kube_tainted_nodes: ''
         kube_type: kube_cluster
@@ -3008,7 +3010,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"hopsworks-base"`.
 
 `hopsworks.variables.base_image_version` <a class="headerlink" href="#helm.hopsworks.variables.base_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.base_image_version }
-:   Type `string`, default `"5.2.3"`.
+:   Type `string`, default `"5.2.4"`.
 
 `hopsworks.variables.cert_mater_delay` <a class="headerlink" href="#helm.hopsworks.variables.cert_mater_delay" title="Permanent link">#</a> { #helm.hopsworks.variables.cert_mater_delay }
 :   Type `string`, default `"3m"`.
@@ -3331,6 +3333,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.enable_gcs_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_gcs_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_gcs_storage_connectors }
 :   Type `string`, default `"true"`.
 
+`hopsworks.variables.enable_gmail_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_gmail_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_gmail_storage_connectors }
+:   Type `string`, default `"true"`.
+    Enables Gmail data sources and their sync jobs into Delta feature groups.
+
 `hopsworks.variables.enable_hopsworks_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_hopsworks_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_hopsworks_storage_connectors }
 :   Type `string`, default `"true"`.
 
@@ -3345,6 +3351,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.enable_opensearch_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_opensearch_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_opensearch_storage_connectors }
 :   Type `string`, default `"true"`.
+
+`hopsworks.variables.enable_outlook_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_outlook_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_outlook_storage_connectors }
+:   Type `string`, default `"true"`.
+    Enables Outlook data sources and their sync jobs into Delta feature groups.
 
 `hopsworks.variables.enable_public_apps` <a class="headerlink" href="#helm.hopsworks.variables.enable_public_apps" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_public_apps }
 :   Type `bool`, default `false`.
@@ -3729,10 +3739,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"-1"`.
 
 `hopsworks.variables.kube_serving_vllm_omni_versions` <a class="headerlink" href="#helm.hopsworks.variables.kube_serving_vllm_omni_versions" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_serving_vllm_omni_versions }
-:   Type `string`, default `"v0.28.0"`.
+:   Type `string`, default `"v0.32.0"`.
 
 `hopsworks.variables.kube_serving_vllm_versions` <a class="headerlink" href="#helm.hopsworks.variables.kube_serving_vllm_versions" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_serving_vllm_versions }
-:   Type `string`, default `"v0.28.0"`.
+:   Type `string`, default `"v0.32.0"`.
 
 `hopsworks.variables.kube_skip_namespace_creation` <a class="headerlink" href="#helm.hopsworks.variables.kube_skip_namespace_creation" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_skip_namespace_creation }
 :   Type `bool`, default `false`.

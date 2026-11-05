@@ -4,7 +4,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -49,7 +49,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works/superset
           repository: mysql
-          tag: 8.4.13-ubuntu24.04-h0
+          tag: 8.4.13-ubuntu24.04-h1
         metrics:
           enabled: true
           image:
@@ -169,7 +169,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/hopsworks/superset
-          tag: 6.0.0p4.6
+          tag: 6.0.0p4.7
         init:
           adminUser:
             email: admin@superset.com
@@ -526,7 +526,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works/superset
           repository: mysql
-          tag: 8.4.13-ubuntu24.04-h0
+          tag: 8.4.13-ubuntu24.04-h1
         metrics:
           enabled: true
           image:
@@ -654,7 +654,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/hopsworks/superset
-          tag: 6.0.0p4.6
+          tag: 6.0.0p4.7
         init:
           adminUser:
             email: admin@superset.com

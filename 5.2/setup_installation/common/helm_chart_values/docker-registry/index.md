@@ -4,7 +4,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 

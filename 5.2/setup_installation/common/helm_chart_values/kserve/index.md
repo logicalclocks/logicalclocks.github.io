@@ -4,7 +4,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -35,10 +35,10 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
         servingruntime:
           vllmomni:
             imageRegistry: ''
-            tag: v0.28.0
+            tag: v0.32.0
           vllmopenai:
             imageRegistry: ''
-            tag: v0.28.0
+            tag: v0.32.0
       kserveUtilsImage:
         name: hopsworks/kserve-utils
         tag: 0.1.12
@@ -71,10 +71,10 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
           servingruntime:
             vllmomni:
               imageRegistry: ''
-              tag: v0.28.0
+              tag: v0.32.0
             vllmopenai:
               imageRegistry: ''
-              tag: v0.28.0
+              tag: v0.32.0
         ```
 
 `kserve.activator.minReplicas` <a class="headerlink" href="#helm.kserve.activator.minReplicas" title="Permanent link">#</a> { #helm.kserve.activator.minReplicas }
@@ -447,6 +447,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
               enabled: true
               minAvailable: 1
             replicaCount: 1
+            serviceType: ''
             statusPort: 32021
           jobName: gateway-operator-job
           operatorConfigFileName: istiooperator.yaml
@@ -563,6 +564,10 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 
 `kserve.istio.gateways.ingress.replicaCount` <a class="headerlink" href="#helm.kserve.istio.gateways.ingress.replicaCount" title="Permanent link">#</a> { #helm.kserve.istio.gateways.ingress.replicaCount }
 :   Type `int`, default `1`.
+
+`kserve.istio.gateways.ingress.serviceType` <a class="headerlink" href="#helm.kserve.istio.gateways.ingress.serviceType" title="Permanent link">#</a> { #helm.kserve.istio.gateways.ingress.serviceType }
+:   Type `string`, default `""`.
+    Service type of the ingress gateway. Empty keeps the default: NodePort with unmanaged load balancers, LoadBalancer otherwise. ClusterIP sets no node ports, for namespaces whose quota allows no NodePort or LoadBalancer Services; such a namespace also needs a managed registry (global._hopsworks.managedDockerRegistery), since the bundled docker-registry Service is NodePort. ClusterIP is refused with unmanaged load balancers on AWS, whose istio target groups reach the gateway through its node ports.
 
 `kserve.istio.gateways.ingress.statusPort` <a class="headerlink" href="#helm.kserve.istio.gateways.ingress.statusPort" title="Permanent link">#</a> { #helm.kserve.istio.gateways.ingress.statusPort }
 :   Type `int`, default `32021`.
@@ -974,12 +979,12 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
             env: []
             image: vllm/vllm-omni
             imageRegistry: ''
-            tag: v0.28.0
+            tag: v0.32.0
           vllmopenai:
             env: []
             image: vllm/vllm-openai
             imageRegistry: ''
-            tag: v0.28.0
+            tag: v0.32.0
         storage:
           caBundleConfigMapName: ''
           caBundleVolumeMountPath: /etc/ssl/custom-certs
@@ -1281,7 +1286,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 :   Type `string`, default `"2.20.0"`.
 
 `kserve.kserve.servingruntime.vllmomni` <a class="headerlink" href="#helm.kserve.kserve.servingruntime.vllmomni" title="Permanent link">#</a> { #helm.kserve.kserve.servingruntime.vllmomni }
-:   Type `object`, default `{"env":[],"image":"vllm/vllm-omni","imageRegistry":"","tag":"v0.28.0"}`.
+:   Type `object`, default `{"env":[],"image":"vllm/vllm-omni","imageRegistry":"","tag":"v0.32.0"}`.
     backs the `vllm-omni` ClusterServingRuntime (vLLM-Omni)
 
 `kserve.kserve.servingruntime.vllmomni.env` <a class="headerlink" href="#helm.kserve.kserve.servingruntime.vllmomni.env" title="Permanent link">#</a> { #helm.kserve.kserve.servingruntime.vllmomni.env }
@@ -1293,7 +1298,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     Registry override for the vllm-omni image. Empty falls back to `global._hopsworks.imageRegistry`.
 
 `kserve.kserve.servingruntime.vllmopenai` <a class="headerlink" href="#helm.kserve.kserve.servingruntime.vllmopenai" title="Permanent link">#</a> { #helm.kserve.kserve.servingruntime.vllmopenai }
-:   Type `object`, default `{"env":[],"image":"vllm/vllm-openai","imageRegistry":"","tag":"v0.28.0"}`.
+:   Type `object`, default `{"env":[],"image":"vllm/vllm-openai","imageRegistry":"","tag":"v0.32.0"}`.
     backs the `vllm-openai` ClusterServingRuntime (standard vLLM)
 
 `kserve.kserve.servingruntime.vllmopenai.env` <a class="headerlink" href="#helm.kserve.kserve.servingruntime.vllmopenai.env" title="Permanent link">#</a> { #helm.kserve.kserve.servingruntime.vllmopenai.env }

@@ -4,13 +4,13 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.3` (Hopsworks `5.2.2`)._
+_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
 !!! info "Upstream charts"
 
-    - Values under `kafka.strimzi-kafka-operator` go to [`strimzi-kafka-operator` 1.2.0](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/1.2.0) from `https://strimzi.io/charts/`.
+    - Values under `kafka.strimzi-kafka-operator` go to [`strimzi-kafka-operator` 1.3.1](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/1.3.1) from `https://strimzi.io/charts/`.
 
     Only the values Hopsworks sets under `kafka.strimzi-kafka-operator` are listed on this page.
     Any other value of the chart can be set there too; the link opens its documentation for the version Hopsworks pins.
@@ -41,7 +41,12 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
         createGlobalResources: true
         defaultImageRegistry: docker.hops.works
         defaultImageRepository: strimzi
-        defaultImageTag: 1.2.0
+        defaultImageTag: 1.3.1
+        deploymentStrategy:
+          rollingUpdate:
+            maxSurge: 0
+            maxUnavailable: 1
+          type: RollingUpdate
         enabled: true
         extraEnvs:
         - name: HOPSWORKS_FIRST_STRIMZICA_CA_CERT
@@ -138,7 +143,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
 :   Type `string`, default `"jmxPrometheusExporter"`.
 
 `kafka.strimzi-kafka-operator` <a class="headerlink" href="#helm.kafka.strimzi-kafka-operator" title="Permanent link">#</a> { #helm.kafka.strimzi-kafka-operator }
-:   Type `object`, passed to the [`strimzi-kafka-operator` 1.2.0](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/1.2.0) chart, whose other values are documented there.
+:   Type `object`, passed to the [`strimzi-kafka-operator` 1.3.1](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/1.3.1) chart, whose other values are documented there.
     override values for strimzi operator
 
     ??? note "Default"
@@ -147,7 +152,12 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
         createGlobalResources: true
         defaultImageRegistry: docker.hops.works
         defaultImageRepository: strimzi
-        defaultImageTag: 1.2.0
+        defaultImageTag: 1.3.1
+        deploymentStrategy:
+          rollingUpdate:
+            maxSurge: 0
+            maxUnavailable: 1
+          type: RollingUpdate
         enabled: true
         extraEnvs:
         - name: HOPSWORKS_FIRST_STRIMZICA_CA_CERT
@@ -252,7 +262,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
             startingNodePort: null
           image:
             name: kafka
-            tag: 1.2.0-kafka-4.3.1-h2
+            tag: 1.3.1-kafka-4.3.1-h1
           jvmOptions: {}
           nodeSelector: {}
           podAntiAffinity:
@@ -463,7 +473,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
     Explicit nodePort for broker 0 when the load balancer is unmanaged (managed: false); broker N gets startingNodePort + N, as with startingAdvertisedPort. Null lets Kubernetes allocate them from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `kafka.cluster.kafka.image` <a class="headerlink" href="#helm.kafka.cluster.kafka.image" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.image }
-:   Type `object`, default `{"name":"kafka","tag":"1.2.0-kafka-4.3.1-h2"}`.
+:   Type `object`, default `{"name":"kafka","tag":"1.3.1-kafka-4.3.1-h1"}`.
     a tag docker.hops.works does not carry, because only the `-h<N>` builds are published there. So clearing it also means pointing `strimzi-kafka-operator.defaultImageRegistry` at `quay.io` (or mirroring the plain upstream tags), and the same applies to the operator's Kafka Exporter and Cruise Control defaults if those are ever turned on.
 
 `kafka.cluster.kafka.jvmOptions` <a class="headerlink" href="#helm.kafka.cluster.kafka.jvmOptions" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.jvmOptions }
@@ -732,7 +742,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
         enabled: true
         image:
           name: crds
-          tag: 1.2.0-h1
+          tag: 1.3.1-h1
         name: strimzi-crd-upgrade
         nodeSelector: {}
         resources:
@@ -752,10 +762,10 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
 
 `kafka.crdUpgradeJob.enabled` <a class="headerlink" href="#helm.kafka.crdUpgradeJob.enabled" title="Permanent link">#</a> { #helm.kafka.crdUpgradeJob.enabled }
 :   Type `bool`, default `true`.
-    Run the Job that keeps the Strimzi CRDs in step with the operator this chart deploys, and preflights the KRaft migration. It runs pre-install and pre-upgrade: Helm applies the operator subchart's `crds/` on install only, where Helm 3 skips any CRD that already exists and Helm 4 applies the `v1`-only bundle over it, so every other path goes through here. A cluster whose objects are still stored as `v1beta2` is converted first (through the 0.51.0 bundle in `image`), and under Helm `v1beta2` stays served on that cluster from then on, next to the 1.2.0 bundle: a Helm release rendered at `v1beta2`, such as a satellite upgraded before central, can only be upgraded while it is served. On that cluster a failed apply, or a failed write of the marker that keeps `v1beta2` served after a Helm 4 install, stops the upgrade. Anywhere else a failed *refresh* is not fatal by itself - it repairs rather than gates, so it warns and lets the upgrade continue - but the Job then refuses the upgrade when the live CRDs are too old for the Kafka resource this chart renders. The preflight checks are fatal: they only fire on states that would corrupt or roll back a cluster.
+    Run the Job that keeps the Strimzi CRDs in step with the operator this chart deploys, and preflights the KRaft migration. It runs pre-install and pre-upgrade: Helm applies the operator subchart's `crds/` on install only, where Helm 3 skips any CRD that already exists and Helm 4 applies the `v1`-only bundle over it, so every other path goes through here. A cluster whose objects are still stored as `v1beta2` is converted first (through the 0.51.0 bundle in `image`), and under Helm `v1beta2` stays served on that cluster from then on, next to the operator's bundle: a Helm release rendered at `v1beta2`, such as a satellite upgraded before central, can only be upgraded while it is served. On that cluster a failed apply, or a failed write of the marker that keeps `v1beta2` served after a Helm 4 install, stops the upgrade. Anywhere else a failed *refresh* is not fatal by itself - it repairs rather than gates, so it warns and lets the upgrade continue - but the Job then refuses the upgrade when the live CRDs are too old for the Kafka resource this chart renders. The preflight checks are fatal: they only fire on states that would corrupt or roll back a cluster.
 
 `kafka.crdUpgradeJob.image` <a class="headerlink" href="#helm.kafka.crdUpgradeJob.image" title="Permanent link">#</a> { #helm.kafka.crdUpgradeJob.image }
-:   Type `object`, default `{"name":"crds","tag":"1.2.0-h1"}`.
+:   Type `object`, default `{"name":"crds","tag":"1.3.1-h1"}`.
     Image carrying the CRD bundles the Job applies: `strimzi-crds-<version>.yaml` for the Strimzi version this chart depends on, and the 0.51.0 bundle a cluster still storing `v1beta2` is converted through (Kubernetes refuses to drop a version still listed in a CRD's `status.storedVersions`, and 0.51.0 is the last Strimzi release to serve both). The 0.51.0 bundle is also where the `v1beta2` schema the Job keeps served comes from, so every later upgrade of a converted cluster reads it too, and it has to stay in the image. Built by `strimzi-crds` in the docker-images repo and pulled from the operator's `defaultImageRegistry`/`defaultImageRepository` like the broker image, so an airgapped install mirrors it with the rest (`vendor_images.sh` includes it). The tag's Strimzi part must match the dependency version: the Job refuses the upgrade when the bundle it needs is not in the image.
 
 `kafka.crdUpgradeJob.name` <a class="headerlink" href="#helm.kafka.crdUpgradeJob.name" title="Permanent link">#</a> { #helm.kafka.crdUpgradeJob.name }
