@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Hopsworks feature store enables users to attach tags to artifacts, such as feature groups, feature views, training datasets, data sources, datasets, jobs, apps, models or deployments.
+Hopsworks Feature Store enables users to attach tags to artifacts, such as feature groups, feature views, training datasets, data sources, datasets, jobs, apps, models or deployments.
 
 A tag is a `{key: value}` pair which provides additional information about the data managed by Hopsworks.
 Tags allow you to design custom metadata for your artifacts.
@@ -211,7 +211,7 @@ They are not restored by creating a new job under the same name, because the tag
 
 #### Data sources
 
-Data sources carry tags through the same methods, on the data source the feature store returns:
+Data sources carry tags through the same methods, on the data source the Feature Store returns:
 
 === "Python"
 
@@ -224,9 +224,9 @@ Data sources carry tags through the same methods, on the data source the feature
     ```
 
 The tags belong to the data source's connection, so every data source read through the same connection, whatever table or query it names, shows the same tags.
-Only a data owner of the project that owns the feature store can attach or remove them.
-Data scientists, and projects the feature store is shared with, can read them.
-The online feature store data sources that Hopsworks creates for each project and its members cannot be tagged, because Hopsworks creates and removes them itself.
+Only a data owner of the project that owns the Feature Store can attach or remove them.
+Data scientists, and projects the Feature Store is shared with, can read them.
+The online Feature Store data sources that Hopsworks creates for each project and its members cannot be tagged, because Hopsworks creates and removes them itself.
 
 Tags on a data source are also editable in the UI, in the `Tags` section of the data source page.
 Deleting a data source deletes its tags with it.

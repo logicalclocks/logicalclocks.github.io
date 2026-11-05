@@ -17,7 +17,7 @@ Search has a tab for each of eleven classes of artifact, and an `All` tab that c
 | Feature Views | Feature views. |
 | Training Datasets | Training datasets. |
 | Features | Individual features, matched by feature name. |
-| Data Sources | Data sources of the project's feature store. |
+| Data Sources | Data sources of the project's Feature Store. |
 | Datasets | Datasets, including those shared with the project. |
 | Jobs | Jobs, excluding those that are apps. |
 | Apps | Jobs of type PythonApp. |
@@ -30,7 +30,7 @@ An app is a job, and an agent is a deployment.
 They appear as their own tabs because the question "which agents are tagged for production" is worth asking on its own, and each tab excludes the other: a job that is an app is reported under Apps and not under Jobs.
 
 A data source is found from the project that owns it, the same way the data source list shows it.
-Sharing a feature store with another project lets that project read a data source by name, but does not list it or make it searchable there.
+Sharing a Feature Store with another project lets that project read a data source by name, but does not list it or make it searchable there.
 
 Each tab shows the number of matches next to its name, so you can see where the results are without visiting every tab.
 
