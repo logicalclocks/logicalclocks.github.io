@@ -200,6 +200,8 @@ A storage limit that is too small can cause Kubernetes to evict a Pod; persisten
   Lightweight controllers generally request `50Mi` with a `1Gi` limit; larger services and workload scratch space have separate defaults.
   The compatibility defaults used by shared helpers are `global._hopsworks.ephemeralStorage.requests: 100Mi` and `global._hopsworks.ephemeralStorage.limits: 10Gi`.
   Init containers have their own waiter, tool and runtime tiers under `global._hopsworks.initContainerResources`.
+  The model-serving authenticator and webhook have separate resource maps under `kserve.servingAuthenticator.resources` and `kserve.servingWebhook.resources`.
+  Registry node-configuration init containers accept partial resource overrides under `docker-registry.tamperContainerEngine.initContainerResources`.
 - For generated workload containers, the six `hopsworks.variables.kube_container_*` settings supply missing resource fields.
   Their CPU defaults are a `100m` request and a `1` limit, memory defaults are `128Mi` and `2Gi`, and ephemeral-storage defaults are `100Mi` and `10Gi`.
   Positive per-workload resource settings take priority.
