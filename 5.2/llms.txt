@@ -84,6 +84,8 @@
 - [Unity Catalog](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/unity_catalog/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/unity_catalog/index.md))
 - [SAP HANA](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sap_hana/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sap_hana/index.md))
 - [Hopsworks](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/hopsworks/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/hopsworks/index.md))
+- [Gmail](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/gmail/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/gmail/index.md))
+- [Outlook](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/outlook/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/outlook/index.md))
 - [SharePoint](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sharepoint/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sharepoint/index.md))
 - [Usage](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/usage/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/usage/index.md))
 
@@ -332,6 +334,7 @@
 - [HopsFS CSI Driver](https://docs.hopsworks.ai/latest/setup_installation/admin/hopsfs_csi/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/hopsfs_csi/index.md))
 - [Dedicated Node Pools](https://docs.hopsworks.ai/latest/setup_installation/admin/node_pools/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/node_pools/index.md))
 - [KEDA Autoscaling](https://docs.hopsworks.ai/latest/setup_installation/admin/keda/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/keda/index.md))
+- [Model Serving Ingress Gateway](https://docs.hopsworks.ai/latest/setup_installation/admin/model_serving_gateway/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/model_serving_gateway/index.md))
 - [Kafka Quotas](https://docs.hopsworks.ai/latest/setup_installation/admin/kafka_quotas/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/kafka_quotas/index.md))
 - [Uninstalling Hopsworks](https://docs.hopsworks.ai/latest/setup_installation/admin/uninstall/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/uninstall/index.md))
 
