@@ -2,6 +2,80 @@
 
 The releases of Hopsworks 5.2, newest first.
 
+## 5.2.4 { #hopsworks-5-2-4 }
+
+Helm chart 5.2.4 · Released on 2026-11-05 · Changes since [5.2.3][hopsworks-5-2-3] · Python client [5.2.3](https://github.com/logicalclocks/hopsworks-api/releases/tag/5.2.3)
+
+### What's changed
+
+- [API] [FRONTEND] Addressed vulnerabilities in projects, data sources, secrets, training datasets and Jupyter.
+- [API] [FRONTEND] Fixed a scheduled job that was run by hand twice in one schedule interval while its scheduled run waited to start, such as for an earlier run to finish, never running on its schedule again, which could also keep the schedules of other jobs from running.
+- [API] [FRONTEND] Fixed an incremental ingestion job on a cluster with more than one SQL node sometimes resuming from an earlier run's cursor, or from the beginning, and appending rows it had already ingested a second time.
+- [API] [FRONTEND] Fixed ingestion jobs of CRM data sources dropping, in every table but the data source's first, the values whose type differs from the first values of the run, such as `0.75` after `2` in a `double` feature.
+- [API] [FRONTEND] Fixed a read from a SQL Server data source through ArrowFlight hanging when its login got no answer, after which every later read through that ArrowFlight server timed out; such a login now fails after its timeout.
+- [API] Fixed the Python client writing the rows it meant only for the offline feature store into the online feature store of a 5.0 satellite cluster, and its filtered kNN searches failing on a 5.0 satellite's OpenSearch.
+- [API] [FRONTEND] [HELM] Fixed model deployments never becoming ready, with an x509 error, when the image registry has an organisation path or a port.
+- [API] [FRONTEND] Fixed ingestion jobs and schema fetches of Shopify data sources failing with `ModuleNotFoundError`.
+- [API] [FRONTEND] [HELM] Added Gmail data sources, whose sync jobs copy a Gmail or Google Workspace mailbox into a Delta feature group on demand, hourly or daily, with its attachments as files, for search with DuckDB in web terminals, also with `GmailConnector.sync` in the Python client and `hops datasource sync`; `hopsworks.variables.enable_gmail_storage_connectors` turns them off ([Gmail][docs-ds-gmail]).
+- [API] [FRONTEND] [HELM] Added Outlook data sources, for Microsoft 365 and Outlook.com mailboxes read through Microsoft Graph, whose sync jobs copy a mailbox into a Delta feature group as those of Gmail data sources do, also with `OutlookConnector.sync` in the Python client and `hops datasource sync`; `hopsworks.variables.enable_outlook_storage_connectors` turns them off ([Outlook][docs-ds-outlook]).
+- [API] [FRONTEND] Added storing the FILESTREAM columns of a SQL Server table, and the `varbinary(max)` and `image` columns you select, as files in the project when an ingestion job loads it, with each file's path and size in the feature group instead of its bytes, also with `file_columns` of `SinkJobConfiguration` and of `DataSource.get_data` in the Python client ([FILESTREAM and binary columns][docs-ds-sqlserver-files]).
+- [API] [FRONTEND] [HELM] Changed new LLM deployments to vLLM and vLLM-Omni v0.32.0 (`hopsworks.variables.kube_serving_vllm_versions` and `kube_serving_vllm_omni_versions`), which serves GLM-5.3-Flash models; existing deployments keep the version they were created with.
+- [API] [FRONTEND] Added the pi and Hermes Agent coding agents to the Python web terminal, which use the terminal's LLM provider and the Hopsworks skills, and `--agent pi` and `--agent hermes` to `hops skills install` ([LLM provider][docs-terminal-llm]).
+- [API] [FRONTEND] Added connecting a Shopify data source with an app's client ID and secret instead of a private app password, which needs the shop URL `https://<shop>.myshopify.com`, also with `--client-id` and `--client-secret` of `hops datasource create crm`.
+- [API] [FRONTEND] Added Deep Agents, the Tavily search client, the Claude Agent SDK and the Claude Code SDK to the `python-agent-pipeline` environment.
+- [API] Changed `hops datasource info --json`, and the JSON output of `hops datasource credentials set`, `validate` and `show`, to leave out the passwords, tokens, keys and other secrets of the data source, and to show only the scheme, host, port and database of a connection string or URL, or hide it when it holds a login.
+- [FRONTEND] Fixed **Make a copy** of a job overwriting the job whose name the copy was given.
+- [FRONTEND] Fixed the OpenCode and GitHub Copilot sessions of web terminals not being saved every 5 minutes, only when the agent exited or the terminal stopped, so a terminal that was killed, such as for running out of memory, lost what changed since.
+- [FRONTEND] Added **File**, **Main class** and **Default arguments** to **Make a copy** of a job, prefilled from the job, so that a copy can run another program.
+- [FRONTEND] Changed DuckDB in the Python web terminal from 1.5.5 to 2.0.0, both the `duckdb` command and the Python package, with the fts extension besides delta, and added DuckDB 2.0.0 with both extensions to the GPU and Spark terminals.
+- [FRONTEND] Fixed **Make a copy** of a job with environment variables failing with HTTP 400, and **Export** of such a job writing its environment variables in a form the job API does not accept.
+- [FRONTEND] Fixed **Extract** and **Zip folder** in the file browser showing as finished while their job was still waiting in the Kueue queue.
+- [FRONTEND] Fixed saving **Job and Jupyter default configuration** in the project settings failing on clusters with Ray enabled.
+- [HELM] Fixed installing with model serving into a namespace whose ResourceQuota allows no NodePort or LoadBalancer Services failing in the `istioctl-install-job` hook: set `kserve.istio.gateways.ingress.serviceType: ClusterIP` ([ClusterIP gateway][docs-serving-gateway-clusterip]).
+- [HELM] Changed the Strimzi operator to delete Kafka pods with background propagation during a rolling update, so that CNI plugins such as Cilium no longer cut a broker off before it has shut down; `kafka.strimzi-kafka-operator.featureGates: "-UseBackgroundPodDeletion"` keeps the earlier foreground deletion ([Strimzi 1.3][docs-upgrade-strimzi-13]).
+- [HELM] Fixed the Kafka CRD staying `OutOfSync` under ArgoCD; the `ignoreDifferences` entry for it is no longer needed and can stay ([Under ArgoCD][docs-kafka4-argocd]).
+- [HELM] Fixed every `helm upgrade` restarting filebeat on every node.
+- Addressed vulnerabilities in the Hopsworks server, Superset, Superset MySQL, Grafana, Alertmanager, kube-state-metrics, OpenSearch, OpenSearch Dashboards and Logstash images.
+- Fixed REST API audit events not reaching OpenSearch: with the default `audit_log_date_format` it rejected every event, so the `.rest_api_audit-*` indices stayed empty, and with any other format it rejected the events of failed calls; the upgrade deletes the empty audit indices so that today's is created again.
+- Fixed Trino pods staying in `Init` when the HopsFS CSI node plugin restarted or was replaced while they started.
+- Fixed the log files of the HopsFS NameNodes and DataNodes, audit log included, being lost when their container restarts; they now last as long as the pod.
+
+### Breaking changes
+
+- [API] [FRONTEND] Because of a security fix, give the Data scientist role to project members whose use of a data source or of a secret shared with the project fails after the upgrade, with error 380006 or 160047 (HTTP 403) or on the data source's own authentication, or, on the S3 data sources they read that use an IAM role, set a read-only role.
+- [HELM] When you upgrade from 5.2.0, 5.2.1, 5.2.2 or 5.2.3, upgrade a central cluster before its satellites, which needed no order before: a satellite's upgrade refuses to start until its Kafka reports the Strimzi 1.3.1 operator, which central's upgrade installs ([Strimzi 1.3][docs-upgrade-strimzi-13]).
+- [HELM] If your values set `kafka.strimzi-kafka-operator.deploymentStrategy.type: Recreate`, also set `kafka.strimzi-kafka-operator.deploymentStrategy.rollingUpdate: null`, or Kubernetes rejects the Strimzi operator Deployment: the chart now sets `rollingUpdate`, which it left unset before ([Strimzi 1.3][docs-upgrade-strimzi-13]).
+
+### Upgrade steps
+
+Follow [Changes from 5.2.4][docs-upgrade-changes-from-524] in the upgrade guide.
+
+### Upgraded components
+
+| Component | 5.2.3 | 5.2.4 |
+| --------- | ----- | ----- |
+| Alertmanager | 0.34.0-alpine-h2.1 | 0.34.2-alpine-h2.0 |
+| ArrowFlight server | 5.2.1 | 5.2.2 |
+| Base environment images | 5.2.3 | 5.2.4 |
+| Grafana | 12.4.13-h0 | 12.4.14-h0 |
+| HopsFS CSI driver | 0.1.0 | 0.1.1 |
+| Kafka | 1.2.0-kafka-4.3.1-h2 | 1.3.1-kafka-4.3.1-h1 |
+| kube-state-metrics | 2.20.0-alpine-h2.0 | 2.20.0-alpine-h2.1 |
+| Logstash | 7.17.29.7 | 7.17.29.8 |
+| OpenSearch | 3.8.0.0 | 3.8.0.1 |
+| OpenSearch Dashboards | 3.8.0.1 | 3.8.0.2 |
+| Payara | 6.2025.11-jdk21.2 | 6.2025.11-jdk21.4 |
+| Strimzi | 1.2.0 | 1.3.1 |
+| Superset | 6.0.0p4.6 | 6.0.0p4.7 |
+| Superset MySQL | 8.4.13-ubuntu24.04-h0 | 8.4.13-ubuntu24.04-h1 |
+| vLLM | v0.28.0 | v0.32.0 |
+| vLLM-Omni | v0.28.0 | v0.32.0 |
+
+### Configuration changes
+
+- [HELM] Changed the default of `kafka.strimzi-kafka-operator.deploymentStrategy` from the Kubernetes default to `RollingUpdate` with `maxSurge: 0` and `maxUnavailable: 1`, which stops the outgoing Strimzi operator before the new one starts ([Strimzi 1.3][docs-upgrade-strimzi-13]).
+- [HELM] Added `kserve.istio.gateways.ingress.serviceType` (default empty, which keeps a NodePort gateway Service with unmanaged load balancers and a LoadBalancer one otherwise), the Service type of the model serving ingress gateway ([ClusterIP gateway][docs-serving-gateway-clusterip]).
+
 ## 5.2.3 { #hopsworks-5-2-3 }
 
 Helm chart 5.2.3 · Released on 2026-10-29 · Changes since [5.2.2][hopsworks-5-2-2] · Python client [5.2.2](https://github.com/logicalclocks/hopsworks-api/releases/tag/5.2.2), unchanged
@@ -527,3 +601,10 @@ Follow [Before every upgrade][docs-upgrade-before] and [5.1.x to 5.2.x][docs-upg
 [docs-kafka4-argocd]: https://docs.hopsworks.ai/5.2/setup_installation/admin/kafka4/#kafka4-argocd
 [docs-csi-driver-name]: https://docs.hopsworks.ai/5.2/setup_installation/admin/hopsfs_csi/#hopsfs-csi-driver-name
 [docs-csi-admin-scc]: https://docs.hopsworks.ai/5.2/setup_installation/admin/hopsfs_csi/#hopsfs-csi-admin-scc
+[docs-ds-gmail]: https://docs.hopsworks.ai/5.2/user_guides/fs/data_source/creation/gmail/
+[docs-ds-outlook]: https://docs.hopsworks.ai/5.2/user_guides/fs/data_source/creation/outlook/
+[docs-ds-sqlserver-files]: https://docs.hopsworks.ai/5.2/user_guides/fs/data_source/creation/sql/#data-source-sqlserver-files
+[docs-terminal-llm]: https://docs.hopsworks.ai/5.2/user_guides/projects/terminal/start/#llm-provider
+[docs-serving-gateway-clusterip]: https://docs.hopsworks.ai/5.2/setup_installation/admin/model_serving_gateway/#model-serving-gateway-clusterip
+[docs-upgrade-changes-from-524]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-changes-from-524
+[docs-upgrade-strimzi-13]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-strimzi-13
