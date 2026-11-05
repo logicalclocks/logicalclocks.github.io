@@ -88,7 +88,7 @@ US,62.875,27.875
 | `-o` | `table` (default), `json` or `csv`. |
 | `--explain` | Print the SQL instead of running it. |
 
-`hops semantic sql` takes the same options and prints the SQL without running it.
+`hops semantic sql` takes the same options except `-o` and `--explain`, and prints the SQL without running it.
 A monthly query with `--end-time 2026-02-01` includes all of February, since the bound is truncated to the month.
 NULLs sort last.
 

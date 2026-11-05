@@ -119,7 +119,8 @@ A feature group without a timestamp or date event time gets no measures, since e
 The metrics are written commented out, one per measure: uncomment the ones to serve, add labels, descriptions, ratios and derived metrics, and compile.
 Edit the files in the [project terminal][terminal] under `/hopsfs/Resources/semantic/sales`, in Jupyter, or in the file browser.
 
-Without `--from-fg`, `init` writes an empty `models/semantic.yml` and does not compile, since a project with no semantic model does not compile.
+A new scaffold without `--from-fg` writes an empty `models/semantic.yml` and does not wait for a compile, since a project with no semantic model does not compile: the compile that registration starts in the background ends `INVALID` until you add one.
+With `--repo <url>`, `init` registers the repository's definitions as they are and waits for their compile.
 
 | Option | Meaning |
 | --- | --- |
