@@ -341,6 +341,7 @@ What changes for users and operators ([details](kueue_external.md#what-changes))
 - A workload whose pods are not all ready 30 minutes after admission is evicted and queued again (Kueue 0.19 `waitForPodsReady`).
 - The Ray autoscaler and job-submitter sidecars count against quota (Kueue 0.19).
 - A workload without a priority class gets the WorkloadPriorityClass named `default`, when one exists (Kueue 0.20).
+- Disk requests require a consistent [queue policy](kueue_external.md#disk-limits). The upgrade script stops before cluster changes if disk quota discovery fails or disk is budgeted while some ClusterQueues lack coverage; configure coverage or explicitly choose `IgnoreUndeclared` before rerunning it.
 
 ### Bring your own Kafka: Hopsworks creates and deletes topics { #upgrade-byok-topics }
 

@@ -54,8 +54,13 @@ The Hopsworks queues do not cover that resource, so Kueue has to exclude it from
 `upgrade-kueue.sh` adds the exclusion on install and upgrade; with Argo CD, the `resources` block above does.
 Leave the exclusion out in two cases:
 
-- **Your ClusterQueues or Cohorts budget `ephemeral-storage`.** Kueue then admits disk limits against that quota, and an exclusion would bypass it. The script detects this and leaves the exclusion out.
-- **The manager config sets `resources.quotaCheckStrategy: IgnoreUndeclared`.** That strategy already ignores resources no queue covers, and Kueue refuses to start with both.
+- **Your ClusterQueues or Cohorts budget `ephemeral-storage`.** An exclusion would bypass that quota. Every ClusterQueue that receives disk requests must also cover the resource; a Cohort's quota does not add coverage to its ClusterQueues.
+- **The manager config sets `resources.quotaCheckStrategy: IgnoreUndeclared`.** That strategy checks each ClusterQueue's declared resources and ignores the others. Kueue refuses to start with both this strategy and `excludeResourcePrefixes`.
+
+The script reads all ClusterQueues and Cohorts before choosing the disk policy. A permission, API or response parsing error stops it; only a confirmed absent CRD counts as no objects.
+If disk is budgeted but some ClusterQueues do not cover it, the script lists those queues and stops before changing the cluster, unless the manager config already sets `IgnoreUndeclared`.
+Add disk coverage and the intended quota to those queues, or explicitly set `resources.quotaCheckStrategy: IgnoreUndeclared` in release `kueue`'s `managerConfig.controllerManagerConfigYaml` and remove `excludeResourcePrefixes`, then rerun the script.
+Choose that strategy only if ignoring **all** resources undeclared by each ClusterQueue is the intended policy; the script never selects it automatically.
 
 A cluster that already runs Kueue 0.20.3 gets the exclusion by running `bash hopsworks/charts/hw-kueue/files/upgrade-kueue.sh upgrade` from the new chart after upgrading Hopsworks, or by adding the `resources` block to its Argo CD values.
 
