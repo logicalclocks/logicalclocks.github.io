@@ -205,6 +205,7 @@ Include it in `hopsworks.variables.project_namespace_labels` so Hopsworks also l
 The `hopsworks.ai/project` label also controls namespace ownership during [uninstallation][uninstalling-hopsworks]; do not add it to a namespace you intend to manage yourself.
 
 For multiple releases on the same Kubernetes cluster, set `global._hopsworks.projectPodSecurity.namespaceMatchLabels` to each release's tenant labels.
+Leaving `namespaceMatchLabels` empty selects every namespace carrying `namespaceLabel`, including projects belonging to other releases.
 Every release must select a distinct set of project namespaces.
 Add these labels to existing and pre-created project namespaces and include them in `hopsworks.variables.project_namespace_labels` before upgrading.
 
