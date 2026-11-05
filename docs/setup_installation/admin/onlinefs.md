@@ -283,27 +283,7 @@ A new broker list for the same cluster, or moving a connection from the Helm val
 Plan such a change for a time when that load is acceptable.
 A change of the Helm connection itself, in the Helm values, keeps the offsets of the Helm connection, as in earlier releases.
 
-### Offsets of a project { #onlinefs-project-offsets }
-
-Data owners and data scientists see the offsets of their project's online topics on the project's metrics page, under the OnlineFS status, in the `OnlineFS offsets` card.
-The card lists, per topic, consumer group and partition, the offset OnlineFS resumes from, the end offset of the partition in Kafka, and the lag between them.
-The topics are the project's online topic and every topic an online feature group of the project names itself.
-`Refresh` reads them again.
-
-| Status | Meaning |
-| --- | --- |
-| `Current topic` | The offset was saved for the topic Kafka has under this name now. |
-| `Earlier topic` | The offset was saved for an earlier topic of the same name, so OnlineFS reads the partition from its start. |
-| `No topic ID` | The offset was saved without a topic ID, or Kafka gives its topics none, so which topic it belongs to is not known. |
-| `Topic missing` | Kafka has no topic of this name. |
-| `Kafka unavailable` | Hopsworks could not ask Kafka, so the end offset and the lag are unknown. |
-
-The lag is the number of records OnlineFS has still to process, written or not, and shows only for the current topic in a consumer group OnlineFS reads.
-Where it is unknown, the card shows `-`, never 0.
-A consumer group marked `Not read` belongs to an earlier Kafka connection, and OnlineFS no longer reads its offsets.
-When OnlineFS has not created `onlinefs.kafka_offsets` yet, the card says so.
-
-The same offsets are served at `GET /hopsworks-api/api/project/{projectId}/onlinefs/offsets`.
+Users see the offsets of their project's topics on the project's metrics page, as the [ingestion topic][onlinefs-project-offsets] guide describes.
 
 ## Startup { #onlinefs-startup }
 

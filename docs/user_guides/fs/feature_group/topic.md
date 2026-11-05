@@ -103,6 +103,28 @@ Topics count against the project's Kafka topic quota, which an administrator can
 When the cluster is configured to use an [external Kafka cluster][external-kafka-cluster], Hopsworks creates the topic there too, unless it already exists, in which case it is used as it is.
 The `kafka_connector` data source of the project needs permission to create topics for that, as described in that guide.
 
+## OnlineFS offsets of the topics { #onlinefs-project-offsets }
+
+The project's metrics page shows, under the OnlineFS status, the `OnlineFS offsets` card with the offsets OnlineFS saved for the project's online topics.
+The card lists, per topic, consumer group and partition, the offset OnlineFS resumes from, the end offset of the partition in Kafka, and the lag between them.
+The topics are the project's online topic and every topic an online feature group of the project names itself.
+`Refresh` reads them again.
+
+| Status | Meaning |
+| --- | --- |
+| `Current topic` | The offset was saved for the topic Kafka has under this name now. |
+| `Earlier topic` | The offset was saved for an earlier topic of the same name, so OnlineFS reads the partition from its start. |
+| `No topic ID` | The offset was saved without a topic ID, or Kafka gives its topics none, so which topic it belongs to is not known. |
+| `Topic missing` | Kafka has no topic of this name. |
+| `Kafka unavailable` | Hopsworks could not ask Kafka, so the end offset and the lag are unknown. |
+
+The lag is the number of records OnlineFS has still to process, written or not, and shows only for the current topic in a consumer group OnlineFS reads.
+Where it is unknown, the card shows `-`, never 0.
+A consumer group marked `Not read` belongs to an earlier Kafka connection, and OnlineFS no longer reads its offsets.
+When OnlineFS has not created `onlinefs.kafka_offsets` yet, the card says so.
+
+The same offsets are served at `GET /hopsworks-api/api/project/{projectId}/onlinefs/offsets`.
+
 ## API Reference
 
 [`FeatureGroup`][hsfs.feature_group.FeatureGroup]
