@@ -305,6 +305,7 @@ nav:
           - HopsFS CSI Driver: setup_installation/admin/hopsfs_csi.md
           - Dedicated Node Pools: setup_installation/admin/node_pools.md
           - KEDA Autoscaling: setup_installation/admin/keda.md
+          - Model Serving Ingress Gateway: setup_installation/admin/model_serving_gateway.md
           - Kafka Quotas: setup_installation/admin/kafka_quotas.md
           - Uninstalling Hopsworks: setup_installation/admin/uninstall.md
           - Upgrades:
