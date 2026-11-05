@@ -231,6 +231,9 @@ The online Feature Store data sources that Hopsworks creates for each project an
 Tags on a data source are also editable in the UI, in the `Tags` section of the data source page.
 Deleting a data source deletes its tags with it.
 
+A tag schema can be made mandatory for data sources, as described in [Mandatory tags](mandatory_tags.md).
+When a schema has [Archive tag history][archive-tag-history] turned on, the changes to its tags on a data source are recorded as they are for a feature group.
+
 ### Using the UI
 
 You can attach tags to feature groups and feature views directly from the UI.
@@ -279,8 +282,8 @@ record every change to that tag's values, so you can ask how long an artifact sp
 The flag is set per schema, in `Cluster settings` > `Tag schemas`, when the schema is created. To
 turn it on or off for a schema that already exists, a cluster administrator calls
 `PUT /hopsworks-api/api/tags/{name}/archive?value=true`. It applies to every artifact the tag is
-attached to: feature groups, feature views, training datasets, jobs, models and deployments.
-Tags on datasets and data sources keep no history.
+attached to: feature groups, feature views, training datasets, data sources, jobs, models and deployments.
+Tags on datasets keep no history.
 
 Turning it off ends every interval the tag still has open, at the moment you turn it off, and keeps
 everything already recorded. The recorded rows stay because they are still true; the open intervals
@@ -344,6 +347,8 @@ table directly, and
 dashboard over it: time spent in each state, whether that is increasing, what is in each state now,
 and what has been in one state longest.
 
+`artifact_type` is one of `FEATURE_GROUP`, `FEATURE_VIEW`, `TRAINING_DATASET`, `DATA_SOURCE`, `JOB`, `MODEL` or `DEPLOYMENT`, and `artifact_id` is the id of that artifact.
+
 The table stores events rather than intervals. To get `added_on` and `removed_at`, take the next
 event's time for the same artifact, tag and key:
 
@@ -386,6 +391,7 @@ left empty rather than filled with a guess.
 The history outlives what it describes. Deleting the artifact, the tag schema or the project closes
 the open intervals and keeps the rows, so a report over a past quarter still returns what was true
 then.
+Deleting a dataset does the same for the HopsFS data sources that point into it, since they are deleted with it.
 
 ## Step 3: Search
 
