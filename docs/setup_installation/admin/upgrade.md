@@ -197,11 +197,13 @@ Review the component resource values and the scratch-space needs of your workloa
 A storage limit that is too small can cause Kubernetes to evict a Pod; persistent-volume capacity is configured separately from [local ephemeral storage](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#local-ephemeral-storage).
 
 - Set component-specific storage quantities in its `resources.requests.ephemeral-storage` and `resources.limits.ephemeral-storage` values.
+  Lightweight controllers generally request `50Mi` with a `1Gi` limit; larger services and workload scratch space have separate defaults.
   The compatibility defaults used by shared helpers are `global._hopsworks.ephemeralStorage.requests: 100Mi` and `global._hopsworks.ephemeralStorage.limits: 10Gi`.
   Init containers have their own waiter, tool and runtime tiers under `global._hopsworks.initContainerResources`.
 - For generated workload containers, the six `hopsworks.variables.kube_container_*` settings supply missing resource fields.
-  Their CPU defaults are a `100m` request and a `1` limit, memory defaults are `128Mi` and `512Mi`, and ephemeral-storage defaults are `100Mi` and `10Gi`.
+  Their CPU defaults are a `100m` request and a `1` limit, memory defaults are `128Mi` and `2Gi`, and ephemeral-storage defaults are `100Mi` and `10Gi`.
   Positive per-workload resource settings take priority.
+  A missing memory limit is raised to at least twice an existing memory request to leave headroom for containers that were previously unlimited.
   For CPU and memory, an existing limit supplies a missing request, matching standard Kubernetes defaulting.
 - The HopsFS mount CPU limit defaults to `hopsworks.variables.kube_scheduling_hopsfsmount_cpu_limits: 4`, and the job-init CPU limit to `hopsworks.variables.kube_scheduling_jobinit_cpu_limits: 1`.
   Legacy negative values now use the configured container defaults, so set positive per-workload values for workloads that need different limits.
