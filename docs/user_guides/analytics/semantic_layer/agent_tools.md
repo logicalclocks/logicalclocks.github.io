@@ -40,7 +40,7 @@ Group-bys and filters take the forms of [Query metrics][semantic-query-metrics]:
 The CSV of `query_metrics` is capped in length, so a large result needs a `limit` or a filter.
 
 `validate_semantic_project` and `compile_semantic_project` both compile the definitions and report the build.
-A compile of files that have not changed returns their existing build, so a validate of unchanged files changes nothing.
+Validating compiles, as compiling does: files that have not changed return their existing build. In `FOLLOW` mode the resulting `VALID` build answers queries, which undoes a promote of an older build; in `PINNED` mode only promoted builds are served.
 In `FOLLOW` mode a new valid build answers queries at once, see [Serving modes][semantic-overview-serving-modes].
 
 ## Coding agents { #semantic-agent-tools-skill }
