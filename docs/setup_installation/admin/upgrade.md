@@ -192,27 +192,32 @@ An upgrade from 5.2.0 also crosses two changes of 5.2.1, described under 5.1.x t
 
 ### Container resource requests and limits { #upgrade-container-resources }
 
-5.3 adds CPU, memory and local ephemeral-storage resource defaults for platform helpers and workloads created by Hopsworks.
+5.3 adds CPU and memory resource defaults for platform helpers and workloads created by Hopsworks.
 Resource values apply to the containers exposed by each component chart.
-The pinned upstream charts still omit some fields on Consul init and hook containers, Grafana and Trino test Pods, and the Spark operator CRD-upgrade hook.
-Review the component resource values and the scratch-space needs of your workloads before upgrading.
-A storage limit that is too small can cause Kubernetes to evict a Pod; persistent-volume capacity is configured separately from [local ephemeral storage](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#local-ephemeral-storage).
+The pinned upstream charts still omit CPU and memory fields on the Consul locality init and test containers, and Grafana and Trino test Pods.
+Review the component CPU and memory values before upgrading.
 
-- Set component-specific storage quantities in its `resources.requests.ephemeral-storage` and `resources.limits.ephemeral-storage` values.
-  Lightweight controllers generally request `50Mi` with a `1Gi` limit; larger services and workload scratch space have separate defaults.
-  The compatibility defaults used by shared helpers are `global._hopsworks.ephemeralStorage.requests: 100Mi` and `global._hopsworks.ephemeralStorage.limits: 10Gi`.
-  Init containers have their own waiter, tool and runtime tiers under `global._hopsworks.initContainerResources`.
+- Init containers have their own waiter, tool and runtime tiers under `global._hopsworks.initContainerResources`.
   The model-serving authenticator and webhook have separate resource maps under `kserve.servingAuthenticator.resources` and `kserve.servingWebhook.resources`.
   Registry node-configuration init containers accept partial resource overrides under `docker-registry.tamperContainerEngine.initContainerResources`.
-- For generated workload containers, the six `hopsworks.variables.kube_container_*` settings supply missing resource fields.
-  Their CPU defaults are a `100m` request and a `1` limit, memory defaults are `128Mi` and `2Gi`, and ephemeral-storage defaults are `100Mi` and `10Gi`.
+  The backup namespace-filter Job accepts partial resource overrides under `hopsworks.velero.backup.dynamicNamespaceFilter.resources`, with a `256Mi` memory request and a `1Gi` memory limit.
+- Review existing JVM heap customizations before accepting the new memory limits.
+  Trino defaults to an `8G` heap with a `12Gi` container limit; Kafka brokers default to a `6Gi` limit and Strimzi sizes the heap automatically when `jvmOptions` does not specify it.
+  Helm checks Trino's `jvm.maxHeapSize` and heap flags in `additionalJVMConfig`, and Kafka's `jvmOptions.-Xmx` and `jvmOptions.-Xms`, refusing a heap at or above its container memory limit.
+  Passing this check still requires enough additional memory for native/direct allocations, metaspace and thread stacks.
+  Keep your existing heaps and set matching limits explicitly: for example, a `16G` Trino heap with a `24Gi` limit, or an `8g` Kafka heap with a `16Gi` limit, are starting points to validate under representative load.
+  For Trino, set `trino.trino.coordinator.resources.limits.memory` and `trino.trino.worker.resources.limits.memory`, and size `trino.trinotest.coordinator.resources.limits.memory` separately if its heap is customized.
+  For Kafka, set both `kafka.cluster.kafka.resources.limits.memory` and `kafka.cluster.zookeeper.resources.limits.memory`: the controller pool uses the latter resource map and inherits `kafka.cluster.kafka.jvmOptions`.
+  JVM `G` and `m` heap suffixes are binary units; Kubernetes memory `G` is decimal, so use `Gi` or `Mi` when matching them.
+- For generated workload containers, the four `hopsworks.variables.kube_container_*` settings supply missing CPU and memory fields.
+  Their CPU defaults are a `100m` request and a `1` limit, and memory defaults are `128Mi` and `2Gi`.
   Positive per-workload resource settings take priority.
   A missing memory limit is raised to at least twice an existing memory request to leave headroom for containers that were previously unlimited.
   For CPU and memory, an existing limit supplies a missing request, matching standard Kubernetes defaulting.
 - The HopsFS mount CPU limit defaults to `hopsworks.variables.kube_scheduling_hopsfsmount_cpu_limits: 4`, and the job-init CPU limit to `hopsworks.variables.kube_scheduling_jobinit_cpu_limits: 1`.
   Legacy negative values now use the configured container defaults, so set positive per-workload values for workloads that need different limits.
 - Supply your usual values files with `helm upgrade` so Helm merges the new chart defaults.
-  With `--reuse-values`, explicitly add the new storage fields to retained component resource maps; shared init-container and JVM helpers supply compatibility defaults, but custom container lists and dependency resource maps still need complete settings.
+  With `--reuse-values`, explicitly add missing CPU and memory fields to retained component resource maps; shared init-container and JVM helpers supply compatibility defaults, but custom container lists and dependency resource maps still need complete settings.
 
 ### Strimzi 1.3 { #upgrade-strimzi-13 }
 
