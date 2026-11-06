@@ -17,7 +17,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
 | [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], and from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Container resource defaults][upgrade-container-resources], [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -189,6 +189,30 @@ Delete that Job and run the upgrade again.
 OpenSearch stays on 3.8.0.
 An upgrade from 5.2.0 or 5.2.1 also gets the [changes from 5.2.2][upgrade-changes-from-522].
 An upgrade from 5.2.0 also crosses two changes of 5.2.1, described under 5.1.x to 5.2.x: [Feature groups shared with a subset of their features][upgrade-trino-subset-shares], and the OpenSearch [Security configuration][opensearch-security-configuration], which addresses a vulnerability.
+
+### Container resource requests and limits { #upgrade-container-resources }
+
+5.3 adds CPU, memory and local ephemeral-storage resource defaults for platform helpers and workloads created by Hopsworks.
+Resource values apply to the containers exposed by each component chart.
+The pinned upstream charts still omit some fields on Consul init and hook containers, Grafana and Trino test Pods, and the Spark operator CRD-upgrade hook.
+Review the component resource values and the scratch-space needs of your workloads before upgrading.
+A storage limit that is too small can cause Kubernetes to evict a Pod; persistent-volume capacity is configured separately from [local ephemeral storage](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#local-ephemeral-storage).
+
+- Set component-specific storage quantities in its `resources.requests.ephemeral-storage` and `resources.limits.ephemeral-storage` values.
+  Lightweight controllers generally request `50Mi` with a `1Gi` limit; larger services and workload scratch space have separate defaults.
+  The compatibility defaults used by shared helpers are `global._hopsworks.ephemeralStorage.requests: 100Mi` and `global._hopsworks.ephemeralStorage.limits: 10Gi`.
+  Init containers have their own waiter, tool and runtime tiers under `global._hopsworks.initContainerResources`.
+  The model-serving authenticator and webhook have separate resource maps under `kserve.servingAuthenticator.resources` and `kserve.servingWebhook.resources`.
+  Registry node-configuration init containers accept partial resource overrides under `docker-registry.tamperContainerEngine.initContainerResources`.
+- For generated workload containers, the six `hopsworks.variables.kube_container_*` settings supply missing resource fields.
+  Their CPU defaults are a `100m` request and a `1` limit, memory defaults are `128Mi` and `2Gi`, and ephemeral-storage defaults are `100Mi` and `10Gi`.
+  Positive per-workload resource settings take priority.
+  A missing memory limit is raised to at least twice an existing memory request to leave headroom for containers that were previously unlimited.
+  For CPU and memory, an existing limit supplies a missing request, matching standard Kubernetes defaulting.
+- The HopsFS mount CPU limit defaults to `hopsworks.variables.kube_scheduling_hopsfsmount_cpu_limits: 4`, and the job-init CPU limit to `hopsworks.variables.kube_scheduling_jobinit_cpu_limits: 1`.
+  Legacy negative values now use the configured container defaults, so set positive per-workload values for workloads that need different limits.
+- Supply your usual values files with `helm upgrade` so Helm merges the new chart defaults.
+  With `--reuse-values`, explicitly add the new storage fields to retained component resource maps; shared init-container and JVM helpers supply compatibility defaults, but custom container lists and dependency resource maps still need complete settings.
 
 ### Strimzi 1.3 { #upgrade-strimzi-13 }
 
