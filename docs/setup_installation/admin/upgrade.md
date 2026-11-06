@@ -458,6 +458,23 @@ Clients keep their endpoint, Knative-mode deployments stay on Istio, and no depl
     - Every Standard-mode deployment answers through the usual endpoint, with both URL shapes.
     - The Knative-mode deployments are unchanged.
 
+### Search index rebuild { #upgrade-53-search-reindex }
+
+5.3 adds data sources to the search index.
+After the upgrade, the `post-upgrade-opensearch-reindex-job` hook requests one rebuild of the index, so that data sources created before the upgrade become searchable.
+The hook only records the request.
+Once the search command queue is idle, the backend empties the index and queues commands for each artifact, which takes hours on a large cluster.
+Until the rebuild finishes, search returns only the artifacts already indexed again.
+Its progress shows on the `Featurestore search index` card under `Cluster Settings` > `Service Operations` > `OpenSearch Index Commands`, which reads `rebuilt` once every command of the run has been applied.
+The list of failed commands below that card is no measure of the rebuild: it is empty whenever nothing has failed.
+The same status is available through the [REST API][search-index-rebuild], for the run id the hook's log reports.
+
+- **With `hopsworks.opensearchReindex.enabled: false`, nothing is rebuilt.**
+  A data source then enters search when it is created, edited or tagged after the upgrade.
+  To index the others, [rebuild the index by hand][search-index-rebuild] when the cluster is quiet.
+- **If a reindex run is in progress, the hook requests none.**
+  Its log says so; rebuild the index by hand once that run has finished.
+
 ### LLM Gateway { #upgrade-llm-gateway }
 
 The [LLM Gateway][llm-gateway] is new in 5.3 and off by default.
