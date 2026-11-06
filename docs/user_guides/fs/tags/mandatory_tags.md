@@ -1,9 +1,9 @@
-# Mandatory Tags
+# Mandatory Tags { #mandatory-tags-guide }
 
 ## Introduction
 
 Mandatory tags let a Hopsworks administrator require that specific tag schemas are populated on artifacts.
-They build on top of [tags](tags.md) and are used to enforce governance rules, such as requiring every model to declare a data owner.
+They build on top of [tags][tags-guide] and are used to enforce governance rules, such as requiring every model to declare a data owner.
 
 A mandatory tag is a tag schema that has been marked as required for one or more artifact types.
 The supported artifact types are feature groups, feature views, training datasets, data sources, models and deployments.
@@ -11,7 +11,7 @@ The supported artifact types are feature groups, feature views, training dataset
 ## Prerequisites
 
 A mandatory tag references an existing tag schema.
-Define the tag schema first, as described in the [Tags](tags.md) guide, before marking it mandatory.
+Define the tag schema first, as described in the [Tags][tags-guide] guide, before marking it mandatory.
 
 Only administrators can configure mandatory tags.
 Attaching the tag values afterwards is done by any project member with write access to the artifact.
@@ -224,9 +224,7 @@ Adding a tag does not update the property on the object in hand, so fetch the ar
     # the fetch emits: UserWarning: Missing mandatory tags: ['data_owner']
     data_source = fs.get_data_source("raw_events")
 
-    missing = [
-        tag["name"] for tag in data_source.storage_connector.missing_mandatory_tags
-    ]
+    missing = [tag["name"] for tag in data_source.missing_mandatory_tags]
 
     # Set the missing tag
     if "data_owner" in missing:
@@ -234,7 +232,7 @@ Adding a tag does not update the property on the object in hand, so fetch the ar
 
     # Fetch the data source again to see the updated list (no warning now)
     data_source = fs.get_data_source("raw_events")
-    print(data_source.storage_connector.missing_mandatory_tags)  # []
+    print(data_source.missing_mandatory_tags)  # []
     ```
 
 After the tag is set, it no longer appears in `missing_mandatory_tags` on the next fetch, and the fetch no longer warns.

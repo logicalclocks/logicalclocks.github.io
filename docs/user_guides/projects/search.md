@@ -29,8 +29,9 @@ Apps and agents are not separate kinds of artifact, which is why they are not se
 An app is a job, and an agent is a deployment.
 They appear as their own tabs because the question "which agents are tagged for production" is worth asking on its own, and each tab excludes the other: a job that is an app is reported under Apps and not under Jobs.
 
-A data source is found from the project that owns it, the same way the data source list shows it.
-Sharing a Feature Store with another project lets that project read a data source by name, but does not list it or make it searchable there.
+In a project's search, a data source is found from the project that owns it, the same way the data source list shows it.
+Sharing a Feature Store with another project lets that project read a data source by name, but does not list it or make it searchable in that project's search.
+A search across all projects returns data sources like the other classes, with the limited details the [search concept page][search-concept] describes for a project you are not a member of.
 
 Each tab shows the number of matches next to its name, so you can see where the results are without visiting every tab.
 

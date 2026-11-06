@@ -231,7 +231,7 @@ The online Feature Store data sources that Hopsworks creates for each project an
 Tags on a data source are also editable in the UI, in the `Tags` section of the data source page.
 Deleting a data source deletes its tags with it.
 
-A tag schema can be made mandatory for data sources, as described in [Mandatory tags](mandatory_tags.md).
+A tag schema can be made mandatory for data sources, as described in [Mandatory tags][mandatory-tags-guide].
 When a schema has [Archive tag history][archive-tag-history] turned on, the changes to its tags on a data source are recorded as they are for a feature group.
 
 ### Using the UI
