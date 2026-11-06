@@ -4,7 +4,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793985847` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -251,7 +251,9 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
               consulServiceName: onlinefs
           externalLoadBalancer:
             annotations: {}
+            bootstrapAnnotations: {}
             bootstrapNodePort: null
+            brokerAnnotations: {}
             class: null
             dns: ''
             enabled: null
@@ -436,9 +438,17 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
 :   Type `object`, default `{}`.
     load balancer annotations
 
+`kafka.cluster.kafka.externalLoadBalancer.bootstrapAnnotations` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.bootstrapAnnotations" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.bootstrapAnnotations }
+:   Type `object`, default `{}`.
+    Annotations for the bootstrap Service only, merged over annotations; a key set here wins. Pins the bootstrap address with MetalLB, for example metallb.io/loadBalancerIPs: 10.0.0.10.
+
 `kafka.cluster.kafka.externalLoadBalancer.bootstrapNodePort` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.bootstrapNodePort" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.bootstrapNodePort }
 :   Type `string`, default `nil`.
     Explicit nodePort for the bootstrap service when the load balancer is unmanaged (managed: false). Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
+
+`kafka.cluster.kafka.externalLoadBalancer.brokerAnnotations` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.brokerAnnotations" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.brokerAnnotations }
+:   Type `object`, default `{}`.
+    Annotations for one broker's Service, keyed by broker id (0 to replicas - 1) and merged over annotations; a key set here wins. Pins each broker to its own MetalLB address, for example "0": {metallb.io/loadBalancerIPs: 10.0.0.11}. When replicas grows, a new broker without an entry gets only the shared annotations. When it shrinks, delete the entries of the removed brokers in the values file that sets them, or the render fails: a null in a later values file does not remove an entry. Setting an address on a running cluster moves that Service to it. External clients that took their Kafka config from Hopsworks before the move still hold the old broker addresses: restart long-running ones about a minute after the move, once Hopsworks serves the new ones.
 
 `kafka.cluster.kafka.externalLoadBalancer.class` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.class" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.class }
 :   Type `string`, default `nil`.

@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793985847` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -85,6 +85,10 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.
           enabled: true
         openshift:
           enabled: false
+        projectPodSecurity:
+          enabled: true
+          namespaceLabel: hopsworks.ai/project
+          namespaceMatchLabels: {}
         ray:
           enabled: false
         security:
@@ -305,6 +309,18 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.
 `global._hopsworks.openshift.enabled` <a class="headerlink" href="#helm.global._hopsworks.openshift.enabled" title="Permanent link">#</a> { #helm.global._hopsworks.openshift.enabled }
 :   Type `bool`, default `false`.
     Enable when installing on Openshift platform
+
+`global._hopsworks.projectPodSecurity.enabled` <a class="headerlink" href="#helm.global._hopsworks.projectPodSecurity.enabled" title="Permanent link">#</a> { #helm.global._hopsworks.projectPodSecurity.enabled }
+:   Type `bool`, default `true`.
+    Enforce project pod admission. Requires permission to manage ValidatingAdmissionPolicies and their bindings.
+
+`global._hopsworks.projectPodSecurity.namespaceLabel` <a class="headerlink" href="#helm.global._hopsworks.projectPodSecurity.namespaceLabel" title="Permanent link">#</a> { #helm.global._hopsworks.projectPodSecurity.namespaceLabel }
+:   Type `string`, default `"hopsworks.ai/project"`.
+    Administrator-managed namespace label selecting project namespaces, including any pre-created namespaces.
+
+`global._hopsworks.projectPodSecurity.namespaceMatchLabels` <a class="headerlink" href="#helm.global._hopsworks.projectPodSecurity.namespaceMatchLabels" title="Permanent link">#</a> { #helm.global._hopsworks.projectPodSecurity.namespaceMatchLabels }
+:   Type `object`, default `{}`.
+    Additional administrator-managed labels selecting this release's project namespaces. For multiple releases on one cluster, configure disjoint tenant labels on every release and its project namespaces, including pre-created namespaces, before enabling admission.
 
 `global._hopsworks.ray.enabled` <a class="headerlink" href="#helm.global._hopsworks.ray.enabled" title="Permanent link">#</a> { #helm.global._hopsworks.ray.enabled }
 :   Type `bool`, default `false`.
