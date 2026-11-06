@@ -2,9 +2,8 @@
 
 Values under `hw-envoy-gateway` configure the Envoy Gateway controller, the Gateway API front door of Standard-mode model deployments, and the hook that applies its CustomResourceDefinitions.
 The subchart is installed when `global._hopsworks.envoyGateway.enabled` is true (off by default); the Gateway itself, its policies and its Service are configured under `kserve.envoyGateway` in [KServe values][helm-values-kserve].
-Values under `hw-envoy-gateway.aiGateway` configure the Agent Router controller and its CRD hook, installed when `global._hopsworks.envoyGateway.aiGateway.enabled` is also true; its AI Gateway is configured under `kserve.envoyGateway.aiGateway`.
 See [Envoy Gateway][envoy-gateway] for what the chart installs and what the cluster needs.
-See [Agent Router][agent-router] for the LLM gateway it adds on top.
+The LLM Gateway's controller ships in the same subchart, and its values, under `hw-envoy-gateway.aiGateway`, are listed in [LLM Gateway values][helm-values-hw-envoy-ai-gateway].
 
 <!-- BEGIN GENERATED VALUES -->
 

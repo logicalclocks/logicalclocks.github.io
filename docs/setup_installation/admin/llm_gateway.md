@@ -1,10 +1,10 @@
 ---
-description: Give every project one OpenAI-compatible endpoint for its LLM deployments with Agent Router on Envoy Gateway, with rate limits, traces, access logs and usage per user, and how to turn it on and off
+description: Give every project one OpenAI-compatible endpoint for its LLM deployments with the LLM Gateway on Envoy Gateway, with rate limits, traces, access logs and usage per user, and how to turn it on and off
 ---
 
-# Agent Router { #agent-router }
+# LLM Gateway { #llm-gateway }
 
-From 5.3, Hopsworks can give every project one OpenAI-compatible endpoint for all its LLM deployments, the LLM gateway.
+The LLM Gateway gives every project one OpenAI-compatible endpoint for all its LLM deployments.
 A client sends every request to the same URL and picks the deployment with the request's `model`, the deployment name:
 
 ```text
@@ -16,18 +16,24 @@ A client sends every request to the same URL and picks the deployment with the r
 
 `<project>` is the project's namespace, and the project name works wherever it works for deployments.
 `GET .../v1/models` lists the project's started LLM deployments.
-The LLM gateway runs on Agent Router, the renamed Envoy AI Gateway, on top of [Envoy Gateway][envoy-gateway], and the Hopsworks backend adds and removes its routes as deployments start and stop.
+It runs on top of [Envoy Gateway][envoy-gateway], and the Hopsworks backend adds and removes its routes as deployments start and stop.
 
---8<-- "setup_installation/admin/agent_router/request-flow.html"
+--8<-- "setup_installation/admin/llm_gateway/request-flow.html"
 
 !!! info "Off by default"
 
-    An upgrade to 5.3 that does not turn the feature on routes nothing differently.
-    Once it is on, the per-deployment paths, `/v1/<project>/<deployment>/v1/...`, keep working next to the LLM gateway.
+    An upgrade that does not turn the feature on routes nothing differently.
+    Once it is on, the per-deployment paths, `/v1/<project>/<deployment>/v1/...`, keep working next to the LLM Gateway.
 
-The model list can trail the routes by up to about a minute after a deployment starts or stops, since Agent Router reads it from a mounted Secret that the kubelet refreshes on its own schedule.
+!!! note "Built on Agent Router"
 
-## Turn it on { #agent-router-enable }
+    The LLM Gateway is built on [Agent Router](https://theagentrouter.ai), previously known as Envoy AI Gateway, an open source project on top of Envoy and Envoy Gateway.
+    Hopsworks calls it the LLM Gateway so that it is not confused with agent deployments.
+    The Kubernetes objects, images and Helm values keep their upstream names, such as `ai-gateway-controller`, `AIGatewayRoute` and `aiGateway`.
+
+The model list can trail the routes by up to about a minute after a deployment starts or stops, since the LLM Gateway reads it from a mounted Secret that the kubelet refreshes on its own schedule.
+
+## Turn it on { #llm-gateway-enable }
 
 One value on top of the Envoy Gateway ones turns the feature on:
 
@@ -40,13 +46,13 @@ global:
         enabled: true
 ```
 
-`aiGateway.enabled` installs the CRDs, the controller and the AI Gateway, and publishes the LLM gateway.
+`aiGateway.enabled` installs the CRDs, the controller and the AI Gateway, and publishes the LLM Gateway.
 Rendering fails when it is on without `envoyGateway.enabled`.
 All values are listed in [Envoy Gateway values][helm-values-hw-envoy-gateway] and under `kserve.envoyGateway.aiGateway` in [KServe values][helm-values-kserve].
 
 Before enabling:
 
-1. Stop the started deployments with a [reserved name][agent-router-reserved-names], or recreate them under another name.
+1. Stop the started deployments with a [reserved name][llm-gateway-reserved-names], or recreate them under another name.
    A started deployment has an InferenceService and a stopped one has none, and only started ones count: `kubectl get isvc -A --field-selector metadata.name=v1`.
    This query on the Hopsworks database lists the projects with a deployment named `v1`, started or not:
 
@@ -54,13 +60,13 @@ Before enabling:
    SELECT p.projectname FROM serving s JOIN project p ON s.project_id = p.id WHERE s.name = 'v1';
    ```
 
-2. Check the [cluster requirements][agent-router-requirements]: Envoy Gateway, cert-manager, the backend role.
-3. On an airgapped cluster, mirror the four [images][agent-router-images].
+2. Check the [cluster requirements][llm-gateway-requirements]: Envoy Gateway, cert-manager, the backend role.
+3. On an airgapped cluster, mirror the four [images][llm-gateway-images].
 
 Then enable with one `helm upgrade`.
 Two hook Jobs run before the templates, a few seconds each: `envoy-ai-gateway-crd-install`, which applies the six CRDs, and the existing `kserve-ingress-gateway-apply`, which now also applies the AI Gateway.
 The controller and the AI Gateway come up, the Envoy Gateway controller restarts once for its new configuration, and the Istio Lua filter and the forward rule change without a pod restart.
-The backend's next pass then creates the routes of the started Standard-mode vLLM deployments that the LLM gateway serves.
+The backend's next pass then creates the routes of the started Standard-mode vLLM deployments that the LLM Gateway serves.
 No predictive pod, Knative pod or `kserve-ingress-gateway` pod restarts.
 The AI Gateway's Envoy pods roll once when the first route attaches, and again whenever the last LLM deployment of the cluster stops and another one starts later.
 
@@ -69,32 +75,32 @@ To check the result:
 - `kubectl get gateways.gateway.networking.k8s.io -n <namespace> kserve-ai-gateway` reports `Programmed` (the name is `aiGateway.gatewayName`).
 - `kubectl get aigatewayroutes.aigateway.envoyproxy.io,aiservicebackends.aigateway.envoyproxy.io,backends.gateway.envoyproxy.io -n <namespace> -l serving.hops.works/gateway-route` lists one AIGatewayRoute per served LLM deployment, named `<project namespace>-<deployment>-llmroute`, with its AIServiceBackend and Backend.
 
-??? note "When the Agent Router controller is down"
+??? note "When the LLM Gateway controller is down"
 
     While Envoy Gateway runs, `extensionManager.failOpen: true` keeps the predictive routes translating when the controller is down: Envoy Gateway ignores the failed hook and builds its configuration without the controller's changes.
     The AI routes depend on those changes, so they can stop answering until the controller is back.
 
-    A freshly started Envoy Gateway controller is different: until it has reached the Agent Router controller once, it sends the Envoys no configuration updates at all.
+    A freshly started Envoy Gateway controller is different: until it has reached the LLM Gateway controller once, it sends the Envoys no configuration updates at all.
     The proxies keep their last configuration, and endpoint changes behind the Gateway, such as a rolled pod or a scaled deployment, do not reach them.
     In a cluster test where `model-serving-authenticator` rolled in that window, the Envoys kept checking requests against the old pod and refused Standard-mode requests for about two minutes, until the controller was back and Envoy Gateway's reconnect backoff had passed.
-    Avoid restarting Envoy Gateway while the Agent Router controller is down.
+    Avoid restarting Envoy Gateway while the LLM Gateway controller is down.
 
     The controller's webhook refuses to create new Envoy pods for the AI Gateway only, so a restart of those pods waits for the controller, and nothing else does.
 
-## What gets installed { #agent-router-components }
+## What gets installed { #llm-gateway-components }
 
-- The Agent Router controller, in the `hw-envoy-gateway` subchart, with templates vendored from the upstream `ai-gateway-helm` chart 1.2, its mutating webhook with a cert-manager Certificate, and the Envoy Gateway configuration that lets Envoy Gateway call it (`extensionManager` with `failOpen: true`, and `extensionApis.enableBackend`).
+- The LLM Gateway controller, in the `hw-envoy-gateway` subchart, with templates vendored from the upstream `ai-gateway-helm` chart 1.2, its mutating webhook with a cert-manager Certificate, and the Envoy Gateway configuration that lets Envoy Gateway call it (`extensionManager` with `failOpen: true`, and `extensionApis.enableBackend`).
 - A dedicated AI Gateway, `kserve-ai-gateway` (`aiGateway.gatewayName`), in the `kserve` subchart: its own Gateway on the same GatewayClass, an EnvoyProxy with a `ClusterIP` Service, a GatewayConfig that sizes the ext_proc sidecar, a SecurityPolicy that checks every request with `model-serving-authenticator`, a BackendTrafficPolicy with no request timeout and a ClientTrafficPolicy with a 50Mi connection buffer (`kserve.envoyGateway.aiGateway.bufferLimit`).
-- The ConfigMap `envoy-ai-gateway-config`, which tells the backend and `model-serving-authenticator` which Gateway to use, whether the LLM gateway is published and whether [tracing][agent-router-tracing] is on.
+- The ConfigMap `envoy-ai-gateway-config`, which tells the backend and `model-serving-authenticator` which Gateway to use, whether the LLM Gateway is published and whether [tracing][llm-gateway-tracing] is on.
   While `aiGateway.enabled` is false the ConfigMap is absent, and both do nothing.
-- A Redis and Envoy Gateway's rate-limit service (`envoyproxy/ratelimit`) for the [rate limits][agent-router-rate-limits], in the `hw-envoy-gateway` subchart.
+- A Redis and Envoy Gateway's rate-limit service (`envoyproxy/ratelimit`) for the [rate limits][llm-gateway-rate-limits], in the `hw-envoy-gateway` subchart.
   Redis runs Superset's Redis image and keeps no data on disk, and only the rate-limit service may connect to it.
-- With tracing on, the trace collector `agent-router-otlp` and a Job that creates its table, in the `hopsworks` chart, as described under [Tracing][agent-router-tracing].
+- With tracing on, the trace collector `agent-router-otlp` and a Job that creates its table, in the `hopsworks` chart, as described under [Tracing][llm-gateway-tracing].
   Only the AI Gateway's Envoy pods may send to the collector.
-- Prometheus scraping of the controller (port 8080) and of the ext_proc sidecar (port 1064, through the Service `kserve-ai-gateway-extproc-metrics`), and Grafana dashboards, as described under [Usage attribution][agent-router-usage].
+- Prometheus scraping of the controller (port 8080) and of the ext_proc sidecar (port 1064, through the Service `kserve-ai-gateway-extproc-metrics`), and Grafana dashboards, as described under [Usage attribution][llm-gateway-usage].
 - A branch in the Istio Lua filter that rewrites `/v1/<project>/v1/<rest>` to the host `v1.<namespace>.<domain>` and the path `/v1/<rest>`, and a first route in the Istio forward VirtualService that sends that host to the AI Gateway.
   With the feature off, the Lua filter is the one of a chart without it, so an existing deployment named `v1` keeps its path.
-- The six CustomResourceDefinitions (CRDs) of Agent Router, 2 MB together, shipped in the `envoy-ai-gateway-crds` image and applied by the `envoy-ai-gateway-crd-install` hook Job, for the reason given under [CustomResourceDefinitions][envoy-gateway-crds].
+- The six CustomResourceDefinitions (CRDs) of the LLM Gateway, 2 MB together, shipped in the `envoy-ai-gateway-crds` image and applied by the `envoy-ai-gateway-crd-install` hook Job, for the reason given under [CustomResourceDefinitions][envoy-gateway-crds].
 
 The AI Gateway is separate from `kserve-ingress-gateway` on purpose.
 The controller injects the ext_proc sidecar into the Envoy pods of the Gateway that carries AI routes, and rolls them when the first route attaches, when the last one goes and whenever the sidecar's image, resources or GatewayConfig change.
@@ -105,19 +111,19 @@ The controller's webhook (`failurePolicy: Fail`) selects the AI Gateway's pods i
 The AI Gateway admits routes from the release namespace only, and every AI object lives there.
 Its filter chain checks the API key before anything else, so `GET /v1/models` needs a valid key too.
 
-## Access to the LLM gateway { #agent-router-access }
+## Access to the LLM Gateway { #llm-gateway-access }
 
-Project members with an allowed role can use their project's LLM gateway.
+Project members with an allowed role can use their project's LLM Gateway.
 Two switches, both on by default, narrow what it serves:
 
-- The project switch turns the LLM gateway off for a whole project, which then answers `404`.
-- The deployment switch keeps one LLM deployment off the LLM gateway while the others stay on it.
+- The project switch turns the LLM Gateway off for a whole project, which then answers `404`.
+- The deployment switch keeps one LLM deployment off the LLM Gateway while the others stay on it.
   The deployment is still reachable on its per-deployment path.
 
 Only the project's Data Owners change either switch.
 A change takes effect without restarting a deployment: the backend adds or removes the project's routes.
 
-External users reach a deployment through its External access groups, described in [External access][serving-external-access], and those groups also grant its use through the LLM gateway.
+External users reach a deployment through its External access groups, described in [External access][serving-external-access], and those groups also grant its use through the LLM Gateway.
 An external user whose groups are listed for a deployment can send requests with that deployment as the `model`, and no others, to these operations only:
 
 - Chat completions, `/v1/chat/completions`
@@ -129,23 +135,23 @@ An external user whose groups are listed for a deployment can send requests with
 Every listing, `GET .../v1/models` under any prefix, and every other path are refused for them with `403`.
 `model-serving-authenticator` makes the check on the request body, which the AI Gateway sends to it up to its 50Mi buffer limit (`kserve.envoyGateway.aiGateway.bufferLimit`).
 
-## Reserved deployment names { #agent-router-reserved-names }
+## Reserved deployment names { #llm-gateway-reserved-names }
 
-From 5.3, `v1` is a reserved deployment name, whether or not the LLM gateway is on, because the LLM gateway takes `/v1/<project>/v1/` and `v1.<namespace>.<domain>` in every project.
+`v1` is a reserved deployment name, whether or not the LLM Gateway is on, because the LLM Gateway takes `/v1/<project>/v1/` and `v1.<namespace>.<domain>` in every project.
 The backend refuses to create a deployment named `v1`.
 An existing one stays editable and restartable, and works as before while `aiGateway.enabled` is off.
 
-Once the LLM gateway is on, only a started deployment named `v1` matters; a stopped one blocks nothing.
+Once the LLM Gateway is on, only a started deployment named `v1` matters; a stopped one blocks nothing.
 While one is started:
 
-- The backend leaves the LLM gateway out of that project, and says so in its deployments' status notes and in the LLM gateway card of the project settings.
-- The deployment itself is not served by the LLM gateway, and answers `404` through the Istio ingress on both its path and its host.
+- The backend leaves the LLM Gateway out of that project, and says so in its deployments' status notes and in the LLM Gateway card of the project settings.
+- The deployment itself is not served by the LLM Gateway, and answers `404` through the Istio ingress on both its path and its host.
   It keeps its routes on the Envoy Gateway, and answers there.
 
-Stop the deployment, or recreate it under another name, to get the LLM gateway in that project.
+Stop the deployment, or recreate it under another name, to get the LLM Gateway in that project.
 Starting it again later has the same effect again.
 
-## Identity headers { #agent-router-identity }
+## Identity headers { #llm-gateway-identity }
 
 For a request that passes the check, `model-serving-authenticator` returns three headers that Envoy adds to the request, for members and external users alike:
 
@@ -161,9 +167,9 @@ When the label is missing, the id header is empty, the authenticator logs a warn
 The request is still rate limited, because the per-user rule keys on `x-hopsworks-user`, the per-deployment rule on the model and the project rule is per project.
 What is lost until the next rebuild writes the label is that request's span, which the collector drops without a project id, and its access-log line, which Logstash routes only for a numeric id.
 
-## Rate limits and token quotas { #agent-router-rate-limits }
+## Rate limits and token quotas { #llm-gateway-rate-limits }
 
-Administrators can cap what a project spends through the LLM gateway, in tokens or in requests.
+Administrators can cap what a project spends through the LLM Gateway, in tokens or in requests.
 Limits are admin-only, because they cap what a project can spend on shared GPUs and a project owner could otherwise lift their own cap.
 
 Each limit has a scope:
@@ -180,7 +186,7 @@ A rule is shared by every route of a project, so a project with several routes s
 ### Cluster defaults
 
 The cluster default of each scope and kind is a Hopsworks variable holding `VALUE/UNIT`, for example `1000000/HOUR`.
-An administrator edits them in the cluster settings, on the Quotas and Rate Limits page, in the LLM gateway section.
+An administrator edits them in the cluster settings, on the Quotas and Rate Limits page, in the LLM Gateway section.
 
 | Variable | Limits |
 | -------- | ------ |
@@ -199,13 +205,13 @@ An administrator edits them in the cluster settings, on the Quotas and Rate Limi
 
 ### Per-project overrides
 
-An override per project is set on the admin page that edits the project, under LLM gateway limits, with the same scopes, kinds and units, and applies immediately.
+An override per project is set on the admin page that edits the project, under LLM Gateway limits, with the same scopes, kinds and units, and applies immediately.
 The value range is the same, and `-1` makes the scope unlimited for that project.
 Removing the override makes the cluster default apply again.
 The same limits are available as `llmGatewayLimits` of `projectQuotas` in `PUT /admin/projects/{id}`, and `GET /admin/projects/{id}?expand=quotas` returns the effective ones with a `source` of `DEFAULT` or `PROJECT`.
 
 The backend turns the effective limits into one BackendTrafficPolicy per project, `<namespace>-llmratelimit`, in the release namespace, and updates it with no restart when a limit or a deployment changes.
-Project members see their project's limits, read-only, in the quotas of the project settings and on the LLM gateway card.
+Project members see their project's limits, read-only, in the quotas of the project settings and on the LLM Gateway card.
 
 ### When a request is over a limit
 
@@ -219,13 +225,13 @@ For the same reason, a request is refused only once the bucket is already empty,
     When Redis or the rate-limit service is down, requests are let through, because a rate limiter that is down must not take down model serving.
     The counters live in Redis memory only, so they reset when the Redis pod restarts, and the limits are not exact across that restart.
 
-## Tracing { #agent-router-tracing }
+## Tracing { #llm-gateway-tracing }
 
-With tracing on, Agent Router records an OpenTelemetry span for every request, and administrators and project members browse them on the trace pages.
+With tracing on, the LLM Gateway records an OpenTelemetry span for every request, and administrators and project members browse them on the trace pages.
 
 !!! warning "Off by default, and keep it off on RonDB 26.02"
 
-    On RonDB 26.02 the queries behind the trace pages can stop a RonDB data node, as described under [Limitations][agent-router-limitations].
+    On RonDB 26.02 the queries behind the trace pages can stop a RonDB data node, as described under [Limitations][llm-gateway-limitations].
     That is why tracing is off by default.
 
 Tracing has its own switch next to `aiGateway.enabled`:
@@ -251,7 +257,7 @@ Turning tracing off stops new spans and empties the trace pages, and the table a
 
 ### What a span holds
 
-Agent Router adds `hopsworks.user`, `hopsworks.project.id` and `session.id` to every span, from the headers `x-hopsworks-user`, `x-hopsworks-project-id` and `agent-session-id`, with the controller arguments under `hw-envoy-gateway.aiGateway.requestHeaderAttributes.span` and `.metrics`.
+The LLM Gateway adds `hopsworks.user`, `hopsworks.project.id` and `session.id` to every span, from the headers `x-hopsworks-user`, `x-hopsworks-project-id` and `agent-session-id`, with the controller arguments under `hw-envoy-gateway.aiGateway.requestHeaderAttributes.span` and `.metrics`.
 The sidecar sends the spans over OTLP/HTTP to the collector `agent-router-otlp`, which writes them to the RonDB table `agent__router.spans` with the `hopsworksroot` credential from the Secret `mysql-users-secrets`.
 The collector drops a span that has no `hopsworks.project.id`, and counts the drops in its log, because a span of no project cannot be shown to anyone.
 
@@ -315,7 +321,7 @@ Drop the table by hand when it is no longer wanted.
     The purge runs in the RonDB REST API servers, and `rondb.rondb.rdrs.ttlPurge` controls it.
     The `LowDiskDataFileExtents` alert fires when less than 20% of `ts_1` is free for 5 minutes; it does not watch another tablespace named in `featurestore_online_tablespace`.
 
-## Access logs { #agent-router-access-logs }
+## Access logs { #llm-gateway-access-logs }
 
 The AI Gateway's Envoy writes one JSON line per request to its standard output, without bodies and without the `authorization` header.
 The fields are `log_type` (`agent_router_access`), `start_time`, `method`, `path`, `status`, `duration_ms`, `response_flags`, `request_id`, `traceparent`, `project_id`, `project`, `user`, `model`, `backend`, `input_tokens`, `output_tokens`, `total_tokens` and `upstream_host`.
@@ -325,7 +331,7 @@ Project members with the role Data Owner or Data Scientist read their project's 
 The service log viewer role reads all of them.
 The `OpenSearchCleaner` deletes an index older than `elastic_logs_index_expiration`, the setting that applies to the project's other logs.
 
-## Usage attribution { #agent-router-usage }
+## Usage attribution { #llm-gateway-usage }
 
 The ext_proc sidecar's metrics follow the OpenTelemetry generative AI conventions, for example `gen_ai_client_token_usage` and `gen_ai_server_request_duration_seconds`.
 They are labelled with the model, the backend, `<Hopsworks namespace>/<project namespace>-<deployment>-aibackend`, and `hopsworks_user`, taken from `x-hopsworks-user`.
@@ -335,34 +341,34 @@ The number of `hopsworks_user` values is bounded by the number of project member
 Grafana shows them in the ModelServing folder:
 
 - The LLM Gateway (Agent Router) dashboard has tokens, requests, errors and latency per project and deployment, for one project at a time, a `user` variable with panels for tokens and requests per user, and a table of usage by project, user and model over the dashboard's time range.
-- The vLLM Deployment Metrics dashboard has an LLM gateway row for each deployment.
+- The vLLM Deployment Metrics dashboard has an LLM Gateway row for each deployment.
 
 The access logs carry the same user, model and token counts per request, for audits.
 
-## Limitations { #agent-router-limitations }
+## Limitations { #llm-gateway-limitations }
 
-- Knative-mode LLM deployments and Standard-mode ones behind the KEDA HTTP interceptor are not served by the LLM gateway, because the interceptor does not wake a deployment reached this way.
+- Knative-mode LLM deployments and Standard-mode ones behind the KEDA HTTP interceptor are not served by the LLM Gateway, because the interceptor does not wake a deployment reached this way.
   A Standard-mode deployment is behind the interceptor when it scales to zero when idle, which is the case for a minimum of 0, or when it autoscales on a request metric, concurrency or requests per second.
   They stay on their per-deployment path, and the backend says so in the deployment's status note.
-- While the LLM gateway is published, a vLLM deployment created without a minimum number of instances gets a minimum of 1, so it does not scale to zero when idle and the LLM gateway serves it.
-  An explicit minimum of 0 is allowed, and a deployment with it is not served by the LLM gateway.
-- Any member of the project can reach every one of its deployments through the LLM gateway, unless a Data Owner turns it off for the project or for a deployment, as described under [Access to the LLM gateway][agent-router-access].
+- While the LLM Gateway is published, a vLLM deployment created without a minimum number of instances gets a minimum of 1, so it does not scale to zero when idle and the LLM Gateway serves it.
+  An explicit minimum of 0 is allowed, and a deployment with it is not served by the LLM Gateway.
+- Any member of the project can reach every one of its deployments through the LLM Gateway, unless a Data Owner turns it off for the project or for a deployment, as described under [Access to the LLM Gateway][llm-gateway-access].
 - External providers, MCP and `InferencePool` backends are not part of it.
 - On RonDB 26.02 (26.02.11 and 26.02.13 tested), the queries behind the trace pages can stop a RonDB data node with error 2341, `DBQACC (Line: 2154) Check m_curr_acc->oprec_pool.getValidPtr(loopPtr) failed`.
   It happens when one statement reads the `messages` column and looks up parent spans by primary key, which the project trace list, the session view and the message search do, with the table in memory or on disk alike.
-  That is why [tracing][agent-router-tracing] is off by default.
+  That is why [tracing][llm-gateway-tracing] is off by default.
 - The rows of one span can be large when `captureContent` is on, since `messages`, `attributes` and `events` hold up to `OTEL_MAX_TEXT_BYTES` each.
   A shorter `ttlSeconds` keeps fewer spans for the same traffic, once the TTL purge has deleted the expired ones, but does not give back space the table already holds in the tablespace.
-- Enabling the feature, or changing `tracing.enabled`, `captureContent` or the tracing endpoint, changes the GatewayConfig environment, which rolls the AI Gateway's Envoy pods once, for the reason given under [What gets installed][agent-router-components].
+- Enabling the feature, or changing `tracing.enabled`, `captureContent` or the tracing endpoint, changes the GatewayConfig environment, which rolls the AI Gateway's Envoy pods once, for the reason given under [What gets installed][llm-gateway-components].
 - On OpenShift, `values.openshift.yaml` leaves both `envoyGateway.enabled` and `aiGateway.enabled` off.
 - The controller logs `Failed to add finalizer to object` once per ReferenceGrant it sees, the per-project grants of the Hopsworks Gateway included.
   The chart's Role refuses that write on purpose: a finalizer of the controller on those grants would block their deletion once the controller is gone, and the AI routes and backends never cross a namespace, so the controller needs nothing from the grants.
 
-## Images { #agent-router-images }
+## Images { #llm-gateway-images }
 
 | Image | Used for |
 | ----- | -------- |
-| `docker.hops.works/envoyproxy/ai-gateway-controller` | The Agent Router controller |
+| `docker.hops.works/envoyproxy/ai-gateway-controller` | The LLM Gateway controller |
 | `docker.hops.works/envoyproxy/ai-gateway-extproc` | The ext_proc sidecar, named by the controller's `--extProcImage` |
 | `docker.hops.works/envoyproxy/ratelimit` | Envoy Gateway's rate-limit service |
 | `docker.hops.works/hopsworks/envoy-ai-gateway-crds` | The CRDs, read by the hook Job |
@@ -372,7 +378,7 @@ Like the Envoy Gateway images, the three `envoyproxy` images are mirrors of the 
 An airgapped install overrides these four images, as the chart's `values.airgap.yaml` shows.
 The Redis of the rate limiter uses Superset's Redis image, and the trace collector the `otlp-sidecar` image of agent deployments, so an airgapped cluster that mirrors those already has them.
 
-## Cluster requirements { #agent-router-requirements }
+## Cluster requirements { #llm-gateway-requirements }
 
 - Envoy Gateway, enabled already or in the same upgrade, as described in [Envoy Gateway][envoy-gateway].
 - cert-manager, because the controller's webhook certificate is a cert-manager Certificate.
@@ -385,13 +391,13 @@ The Redis of the rate limiter uses Superset's Redis image, and the trace collect
     Grant the backend's service account, in the release namespace, `get, list, watch, create, update, patch, delete` on `aigatewayroutes` and `aiservicebackends` of `aigateway.envoyproxy.io` and on `backends` and `backendtrafficpolicies` of `gateway.envoyproxy.io`, on top of the Envoy Gateway permissions listed under [Cluster requirements][envoy-gateway-requirements].
     The chart grants them with a namespaced Role in the release namespace, the only namespace where the backend writes these objects.
 
-## Turn it off { #agent-router-disable }
+## Turn it off { #llm-gateway-disable }
 
 Disable in one upgrade with `aiGateway.enabled: false`.
 The `kserve-ingress-gateway-apply` hook then:
 
-1. Deletes the ConfigMap `envoy-ai-gateway-config`, so the backend stops publishing routes and `model-serving-authenticator` reads the LLM gateway as off.
-2. Removes the LLM gateway's forward routes from the Hopsworks Gateway.
+1. Deletes the ConfigMap `envoy-ai-gateway-config`, so the backend stops publishing routes and `model-serving-authenticator` reads the LLM Gateway as off.
+2. Removes the LLM Gateway's forward routes from the Hopsworks Gateway.
 3. Deletes the AI routes and backends, waits for the controller to remove them, and clears a finalizer that is still there after two minutes.
 4. Deletes the Gateway and waits for its proxies to go.
 
@@ -435,7 +441,7 @@ An upgrade that fails part way is run again as it was, because every hook step i
     for o in $(kubectl get aigatewayroutes.aigateway.envoyproxy.io,aiservicebackends.aigateway.envoyproxy.io,backends.gateway.envoyproxy.io -n "$NS" -l serving.hops.works/gateway-route -o name); do
       kubectl patch -n "$NS" "$o" --type=merge -p '{"metadata":{"finalizers":null}}'
     done
-    # the forward routes of the LLM gateway on the Hopsworks Gateway, and the rate limits of the projects
+    # the forward routes of the LLM Gateway on the Hopsworks Gateway, and the rate limits of the projects
     kubectl delete -n "$NS" httproutes.gateway.networking.k8s.io -l 'serving.hops.works/gateway-route in (ai-path,ai-host)'
     kubectl delete -n "$NS" securitypolicies.gateway.envoyproxy.io -l serving.hops.works/gateway-route=ai-path
     kubectl delete -n "$NS" backendtrafficpolicies.gateway.envoyproxy.io -l serving.hops.works/gateway-route=ai-ratelimit

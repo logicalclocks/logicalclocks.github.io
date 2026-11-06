@@ -1,5 +1,5 @@
 <figure class="hops-diagram hops-viz hops-viz-static">
-<svg viewBox="0 0 800 300" role="img" aria-label="How a request reaches an LLM deployment through the LLM gateway. A client calls the project's endpoint on the Istio ingress gateway, which forwards it to the Agent Router. The Agent Router checks the API key and the rate limits and sends the request to the project's vLLM deployment whose name is the request's model. With tracing turned on, it also sends a span of every request to a trace collector." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 800 300" role="img" aria-label="How a request reaches an LLM deployment through the LLM Gateway. A client calls the project's endpoint on the Istio ingress gateway, which forwards it to the LLM Gateway. The LLM Gateway checks the API key and the rate limits and sends the request to the project's vLLM deployment whose name is the request's model. With tracing turned on, it also sends a span of every request to a trace collector." xmlns="http://www.w3.org/2000/svg">
   <defs>
     <marker id="ar-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
     <marker id="ar-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
@@ -29,7 +29,7 @@
   </g>
   <g data-tone="data">
     <rect class="viz-node" x="392" y="124" width="160" height="52" rx="4"/>
-    <text class="viz-node-title" x="472" y="146" text-anchor="middle">Agent Router</text>
+    <text class="viz-node-title" x="472" y="146" text-anchor="middle">LLM Gateway</text>
     <text class="viz-node-subtitle" x="472" y="164" text-anchor="middle">key, limits</text>
   </g>
   <g data-tone="data">
