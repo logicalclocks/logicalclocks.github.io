@@ -48,7 +48,7 @@ The values are listed in [Envoy Gateway values][helm-values-hw-envoy-gateway] an
 - In the `hw-envoy-gateway` subchart, a Redis for the rate limiter, which runs Superset's Redis image, and Envoy Gateway's rate-limit service (`envoyproxy/ratelimit`), which Envoy Gateway deploys from its own configuration and which keeps its counters in that Redis.
   Redis keeps no data on disk, and every counter key expires, as described under [Rate limits and token quotas][agent-router-rate-limits].
   A NetworkPolicy lets only the rate-limit service connect to Redis.
-- In the `hopsworks` chart, the trace collector `agent-router-otlp`, a Deployment and Service on port 4318 that stores the spans of the ext_proc sidecar in the table `agent__router.spans`, and a Job that creates that table, as described under [Tracing][agent-router-tracing].
+- In the `hopsworks` chart, with tracing on, the trace collector `agent-router-otlp`, a Deployment and Service on port 4318 that stores the spans of the ext_proc sidecar in the table `agent__router.spans`, and a Job that creates that table, as described under [Tracing][agent-router-tracing].
   A NetworkPolicy lets only the AI Gateway's Envoy pods send to it.
 - A branch in the Istio Lua filter that rewrites `/v1/<project>/v1/<rest>` to the host `v1.<namespace>.<domain>` and the path `/v1/<rest>`, and a first route in the Istio forward VirtualService that sends that host to the AI Gateway.
   With `enabled` off, the Lua filter is the one of a chart without the feature, so an existing deployment named `v1` keeps its path.
@@ -151,7 +151,12 @@ The counters live in Redis memory only, so they reset when the Redis pod restart
 
 ## Tracing { #agent-router-tracing }
 
-The ext_proc sidecar writes an OpenTelemetry span for every request.
+Tracing is off by default, and `global._hopsworks.envoyGateway.aiGateway.tracing.enabled` turns it on, together with `aiGateway.enabled`.
+While it is off, the ext_proc sidecar gets `OTEL_TRACES_EXPORTER=none` and exports no spans, the chart renders neither the collector nor the table Job, and the `envoy-ai-gateway-config` ConfigMap carries `tracing: "false"`, so the backend answers both trace pages with no traces and never queries the table.
+The sidecar's Prometheus metrics, the access logs and the rate limits do not depend on it.
+Keep it off on RonDB 26.02, as described under [Limitations][agent-router-limitations].
+
+With tracing on, the ext_proc sidecar writes an OpenTelemetry span for every request.
 The Agent Router controller, with the arguments under `hw-envoy-gateway.aiGateway.requestHeaderAttributes.span` and `.metrics`, adds `hopsworks.user`, `hopsworks.project.id` and `session.id`, from `x-hopsworks-user`, `x-hopsworks-project-id` and `agent-session-id`, to every span, and the sidecar sends them over OTLP/HTTP to the collector `agent-router-otlp`.
 The collector writes them to the table `agent__router.spans` in RonDB, through the `hopsworksroot` credential from the Secret `mysql-users-secrets`.
 It drops a span that has no `hopsworks.project.id`, and counts the drops in its log, because a span of no project cannot be shown to anyone.
@@ -175,10 +180,12 @@ Spans the TTL purge has deleted free space for later spans in the same table, no
 The purge runs in the RonDB REST API servers, and `rondb.rondb.rdrs.ttlPurge` controls it.
 The `LowDiskDataFileExtents` alert fires when less than 20% of `ts_1` is free for 5 minutes; it does not watch another tablespace named in `featurestore_online_tablespace`.
 
-Two values control it:
+Three values control it:
 
+- `global._hopsworks.envoyGateway.aiGateway.tracing.enabled`, `false` by default, turns tracing on and off.
+  Turning it off stops new spans and empties the trace pages; the table and its rows stay until the TTL deletes them.
 - `hopsworks.agentRouter.tracing.ttlSeconds`, 604800 (seven days) by default, is the age after which RonDB's native TTL deletes a span row, from the column `created_at`.
-  The table is created by a Job when `aiGateway.enabled` is on, and the Job runs again when the value changes, with `ALTER TABLE ... ALGORITHM=INPLACE`.
+  The table is created by a Job when `aiGateway.enabled` and `aiGateway.tracing.enabled` are on, and the Job runs again when the value changes, with `ALTER TABLE ... ALGORITHM=INPLACE`.
   The collector and the table Job are sized under `hopsworks.agentRouter.tracing.collector` and `.tableJob`.
 - `kserve.envoyGateway.aiGateway.tracing.captureContent`, `false` by default, decides whether prompts and responses are stored.
   While it is false, the sidecar gets `OPENINFERENCE_HIDE_INPUTS`, `OPENINFERENCE_HIDE_OUTPUTS` and `OPENINFERENCE_HIDE_EMBEDDINGS_TEXT` set to `true`, so the message contents, the output text and the embedding inputs are left out of the spans, and the `messages` column keeps the role of each message with its content replaced by `__REDACTED__`.
@@ -195,7 +202,7 @@ Two audiences read the table:
 
 No Grafana datasource is provisioned for the traces table.
 
-Turning the feature off leaves the table `agent__router.spans` and its rows in RonDB, where the TTL keeps deleting them.
+Turning the feature or its tracing off leaves the table `agent__router.spans` and its rows in RonDB, where the TTL keeps deleting them.
 Drop `agent__router.spans` by hand when it is no longer wanted.
 
 ## Access logs { #agent-router-access-logs }
@@ -223,9 +230,12 @@ The access logs carry the same user, model and token counts per request, for aud
   An explicit minimum of 0 is allowed, and a deployment with it is not served by the LLM gateway.
 - Any member of the project can reach every one of its deployments through the LLM gateway, unless a Data Owner turns it off for the project or for a deployment, as described under [Access to the LLM gateway][agent-router-access].
 - External providers, MCP and `InferencePool` backends are not part of it.
+- On RonDB 26.02 (26.02.11 and 26.02.13 tested), the queries behind the trace pages can stop a RonDB data node with error 2341, `DBQACC (Line: 2154) Check m_curr_acc->oprec_pool.getValidPtr(loopPtr) failed`.
+  It happens when one statement reads the `messages` column and looks up parent spans by primary key, which the project trace list, the session view and the message search do, with the table in memory or on disk alike.
+  That is why [tracing][agent-router-tracing] is off by default.
 - The span table relies on RonDB's native TTL, which deletes rows by the age of `created_at`, and its `messages`, `attributes` and `events` columns hold up to `OTEL_MAX_TEXT_BYTES` each, so the rows of one span can be large when `captureContent` is on.
   A shorter `ttlSeconds` keeps fewer spans for the same traffic, once the TTL purge has deleted the expired ones, but does not give back space the table already holds in the tablespace.
-- Enabling the feature, or changing `captureContent` or the tracing endpoint, changes the GatewayConfig environment, which rolls the AI Gateway's Envoy pods once, for the reason given under [What the chart installs][agent-router-components].
+- Enabling the feature, or changing `tracing.enabled`, `captureContent` or the tracing endpoint, changes the GatewayConfig environment, which rolls the AI Gateway's Envoy pods once, for the reason given under [What the chart installs][agent-router-components].
 - OpenShift: `values.openshift.yaml` leaves both values off, like Envoy Gateway itself.
 - The controller logs `Failed to add finalizer to object` once per ReferenceGrant it sees, the per-project grants of the Hopsworks Gateway included.
   The chart's Role refuses that write on purpose: a finalizer of the controller on those grants would block their deletion once the controller is gone, and the AI routes and backends never cross a namespace, so the controller needs nothing from the grants.
