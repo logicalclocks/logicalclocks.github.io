@@ -20,20 +20,13 @@ It runs on top of [Envoy Gateway][envoy-gateway], and the Hopsworks backend adds
 
 --8<-- "setup_installation/admin/llm_gateway/request-flow.html"
 
-!!! info "Off by default"
-
-    An upgrade that does not turn the feature on routes nothing differently.
-    Once it is on, the per-deployment paths, `/v1/<project>/<deployment>/v1/...`, keep working next to the LLM Gateway.
-
 !!! note "Built on Agent Router"
 
     The LLM Gateway is built on [Agent Router](https://theagentrouter.ai), previously known as Envoy AI Gateway, an open source project on top of Envoy and Envoy Gateway.
-    Hopsworks calls it the LLM Gateway so that it is not confused with agent deployments.
-    The Kubernetes objects, images and Helm values keep their upstream names, such as `ai-gateway-controller`, `AIGatewayRoute` and `aiGateway`.
 
 The model list can trail the routes by up to about a minute after a deployment starts or stops, since the LLM Gateway reads it from a mounted Secret that the kubelet refreshes on its own schedule.
 
-## Turn it on { #llm-gateway-enable }
+## How to enable it { #llm-gateway-enable }
 
 One value on top of the Envoy Gateway ones turns the feature on:
 
@@ -174,10 +167,10 @@ Limits are admin-only, because they cap what a project can spend on shared GPUs 
 
 Each limit has a scope:
 
-| Scope | Bucket |
-| ----- | ------ |
-| `PROJECT` | One bucket for all requests to the project's endpoint |
-| `USER` | One bucket per user, keyed on `x-hopsworks-user` |
+| Scope        | Bucket                                                    |
+| ------------ | --------------------------------------------------------- |
+| `PROJECT`    | One bucket for all requests to the project's endpoint     |
+| `USER`       | One bucket per user, keyed on `x-hopsworks-user`          |
 | `DEPLOYMENT` | One bucket per deployment, keyed on the request's `model` |
 
 It also has a kind, `TOKENS` (the input and output tokens of a request together) or `REQUESTS`, and a unit, `MINUTE`, `HOUR` or `DAY`.
@@ -188,13 +181,13 @@ A rule is shared by every route of a project, so a project with several routes s
 The cluster default of each scope and kind is a Hopsworks variable holding `VALUE/UNIT`, for example `1000000/HOUR`.
 An administrator edits them in the cluster settings, on the Quotas and Rate Limits page, in the LLM Gateway section.
 
-| Variable | Limits |
-| -------- | ------ |
-| `llm_gateway_project_token_limit` | `PROJECT` `TOKENS` |
-| `llm_gateway_project_request_limit` | `PROJECT` `REQUESTS` |
-| `llm_gateway_user_token_limit` | `USER` `TOKENS` |
-| `llm_gateway_user_request_limit` | `USER` `REQUESTS` |
-| `llm_gateway_deployment_token_limit` | `DEPLOYMENT` `TOKENS` |
+| Variable                               | Limits                  |
+| -------------------------------------- | ----------------------- |
+| `llm_gateway_project_token_limit`      | `PROJECT` `TOKENS`      |
+| `llm_gateway_project_request_limit`    | `PROJECT` `REQUESTS`    |
+| `llm_gateway_user_token_limit`         | `USER` `TOKENS`         |
+| `llm_gateway_user_request_limit`       | `USER` `REQUESTS`       |
+| `llm_gateway_deployment_token_limit`   | `DEPLOYMENT` `TOKENS`   |
 | `llm_gateway_deployment_request_limit` | `DEPLOYMENT` `REQUESTS` |
 
 - The value is from 1 to 4294967295, because Envoy Gateway holds a rate-limit value as an unsigned 32-bit integer and cannot express a larger one.
@@ -366,12 +359,12 @@ The access logs carry the same user, model and token counts per request, for aud
 
 ## Images { #llm-gateway-images }
 
-| Image | Used for |
-| ----- | -------- |
-| `docker.hops.works/envoyproxy/ai-gateway-controller` | The LLM Gateway controller |
-| `docker.hops.works/envoyproxy/ai-gateway-extproc` | The ext_proc sidecar, named by the controller's `--extProcImage` |
-| `docker.hops.works/envoyproxy/ratelimit` | Envoy Gateway's rate-limit service |
-| `docker.hops.works/hopsworks/envoy-ai-gateway-crds` | The CRDs, read by the hook Job |
+| Image                                                | Used for                                                         |
+| ---------------------------------------------------- | ---------------------------------------------------------------- |
+| `docker.hops.works/envoyproxy/ai-gateway-controller` | The LLM Gateway controller                                       |
+| `docker.hops.works/envoyproxy/ai-gateway-extproc`    | The ext_proc sidecar, named by the controller's `--extProcImage` |
+| `docker.hops.works/envoyproxy/ratelimit`             | Envoy Gateway's rate-limit service                               |
+| `docker.hops.works/hopsworks/envoy-ai-gateway-crds`  | The CRDs, read by the hook Job                                   |
 
 The ext_proc sidecar runs in no pod until the first route exists.
 Like the Envoy Gateway images, the three `envoyproxy` images are mirrors of the Docker Hub images at the same path, and the CRD image is a Hopsworks image.

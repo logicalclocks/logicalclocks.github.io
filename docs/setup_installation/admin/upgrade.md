@@ -372,7 +372,7 @@ Before, it created no topics there, so every topic had to exist before ingestion
 
 New in 5.3 and off by default: [Envoy Gateway][envoy-gateway] routes Standard-mode model deployments through the Kubernetes Gateway API, with Istio still the front door.
 
-- **Nothing moves unless you turn it on.**
+- **Nothing moves unless you enable it.**
   An upgrade that leaves `global._hopsworks.envoyGateway` alone routes every request as before.
 - **Two components restart during the upgrade.**
   The KServe controller restarts, and the running deployments keep serving meanwhile.
@@ -380,7 +380,7 @@ New in 5.3 and off by default: [Envoy Gateway][envoy-gateway] routes Standard-mo
   `model-serving-authenticator` restarts with a new listener for the Gateway.
   While its old pod is replaced, a few requests can get a 403, because the 5.2 pod stops without waiting for the new one; from 5.3 its restarts wait, so later ones lose no request.
 
-To turn it on in a cluster with running deployments, upgrade twice, so that the Gateway is up before any deployment moves.
+To enable it in a cluster with running deployments, upgrade twice, so that the Gateway is up before any deployment moves.
 Clients keep their endpoint, Knative-mode deployments stay on Istio, and no deployment restarts.
 
 1. **Prepare.**
@@ -447,7 +447,7 @@ It brings the LLM Gateway controller, its six CRDs and a dedicated AI Gateway, a
 An upgrade that leaves `aiGateway` alone changes nothing: the Istio Lua filter is the same, no object is added, and the backend finds no `envoy-ai-gateway-config` ConfigMap and does nothing.
 Rendering fails when `aiGateway.enabled` is on and `envoyGateway.enabled` is off.
 
-Before enabling, as listed under [Turn it on][llm-gateway-enable]:
+Before enabling, as listed under [How to enable it][llm-gateway-enable]:
 
 - Stop the started deployments named `v1`, or recreate them under another name.
   Once the feature is on, such a deployment answers `404` through the Istio ingress and is not served by the LLM Gateway; it keeps answering through the Envoy Gateway.
