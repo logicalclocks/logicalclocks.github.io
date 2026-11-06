@@ -234,6 +234,15 @@ nav:
               - Query Engine: user_guides/projects/trino/query_engine.md
               - Trino Catalogs: user_guides/projects/trino/catalogs.md
               - Sharing: user_guides/projects/trino/sharing.md
+          - Semantic Layer:
+              - user_guides/analytics/semantic_layer/index.md
+              - Overview: user_guides/analytics/semantic_layer/overview.md
+              - Get Started: user_guides/analytics/semantic_layer/get_started.md
+              - Define Metrics: user_guides/analytics/semantic_layer/define_metrics.md
+              - Compile and Builds: user_guides/analytics/semantic_layer/builds.md
+              - Query Metrics: user_guides/analytics/semantic_layer/query.md
+              - Tags: user_guides/analytics/semantic_layer/tags.md
+              - Agent Tools: user_guides/analytics/semantic_layer/agent_tools.md
           - Superset: user_guides/projects/superset/superset.md
       - MLOps:
           - user_guides/mlops/index.md
