@@ -267,6 +267,7 @@ nav:
                   - Scheduling: user_guides/mlops/serving/scheduling.md
                   - API Protocol: user_guides/mlops/serving/api-protocol.md
               - REST API: user_guides/mlops/serving/rest-api.md
+              - Coding Agents: user_guides/mlops/serving/coding-agents.md
               - Troubleshooting: user_guides/mlops/serving/troubleshooting.md
               - External Access: user_guides/mlops/serving/external-access.md
           - Model Monitoring:
@@ -314,6 +315,7 @@ nav:
           - Dedicated Node Pools: setup_installation/admin/node_pools.md
           - KEDA Autoscaling: setup_installation/admin/keda.md
           - Envoy Gateway: setup_installation/admin/envoy_gateway.md
+          - Agent Router: setup_installation/admin/agent_router.md
           - Model Serving Ingress Gateway: setup_installation/admin/model_serving_gateway.md
           - Kafka Quotas: setup_installation/admin/kafka_quotas.md
           - OnlineFS Configuration: setup_installation/admin/onlinefs.md
