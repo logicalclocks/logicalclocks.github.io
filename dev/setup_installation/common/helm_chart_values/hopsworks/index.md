@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793907932` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2427,6 +2427,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
       variables:
         admin_email: admin@hopsworks.ai
         admin_password: admin
+        agent_deployment_claude_login_enabled: 'true'
         agent_deployment_otel_cpu: '0.5'
         agent_deployment_otel_enabled: 'true'
         agent_deployment_otel_image: otlp-sidecar
@@ -2961,6 +2962,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.admin_password` <a class="headerlink" href="#helm.hopsworks.variables.admin_password" title="Permanent link">#</a> { #helm.hopsworks.variables.admin_password }
 :   Type `string`, default `"admin"`.
+
+`hopsworks.variables.agent_deployment_claude_login_enabled` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_claude_login_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_claude_login_enabled }
+:   Type `string`, default `"true"`.
+    Let an agent deployment run on the Claude Code login of the user who started it: a `claude setup-token` token kept in the user's private secret claude_code_oauth_token, handed to the pod as CLAUDE_CODE_OAUTH_TOKEN, instead of needing an ANTHROPIC_API_KEY. A user opts in by creating the secret. Anthropic allows a third-party product to offer claude.ai login only with prior approval; set "false" to turn it off.
 
 `hopsworks.variables.agent_deployment_otel_cpu` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_otel_cpu" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_otel_cpu }
 :   Type `string`, default `"0.5"`.
