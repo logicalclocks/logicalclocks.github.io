@@ -132,7 +132,7 @@ With `--repo <url>`, `init` registers the repository's definitions as they are a
 | `--tag NAME=VALUE` | A tag to attach to the semantic project, the value JSON or a plain string; repeatable. |
 | `--yes` | With `--repo new`, skip the two confirmations. |
 
-`init` exits 1 when the first build is not `VALID`.
+When `init` waits for the first build, with `--from-fg` or `--repo <url>`, it exits 1 if that build is not `VALID`. A new scaffold without `--from-fg` does not wait, so its exit status says nothing about the build.
 
 ## Scaffold into a new GitHub repository { #semantic-init-repo-new }
 
