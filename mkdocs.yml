@@ -314,6 +314,7 @@ nav:
           - Dedicated Node Pools: setup_installation/admin/node_pools.md
           - KEDA Autoscaling: setup_installation/admin/keda.md
           - Envoy Gateway: setup_installation/admin/envoy_gateway.md
+          - LLM Gateway: setup_installation/admin/llm_gateway.md
           - Model Serving Ingress Gateway: setup_installation/admin/model_serving_gateway.md
           - Kafka Quotas: setup_installation/admin/kafka_quotas.md
           - OnlineFS Configuration: setup_installation/admin/onlinefs.md
@@ -368,6 +369,7 @@ nav:
           - hopsfs-csi: setup_installation/common/helm_chart_values/hopsfs-csi.md
           - hopsworks: setup_installation/common/helm_chart_values/hopsworks.md
           - hw-envoy-gateway: setup_installation/common/helm_chart_values/hw-envoy-gateway.md
+          - hw-envoy-ai-gateway: setup_installation/common/helm_chart_values/hw-envoy-ai-gateway.md
           - hw-keda: setup_installation/common/helm_chart_values/hw-keda.md
           - hw-kueue: setup_installation/common/helm_chart_values/hw-kueue.md
           - hw-kyverno: setup_installation/common/helm_chart_values/hw-kyverno.md

@@ -146,6 +146,67 @@ Refer to the official [vLLM OpenAI-compatible server documentation](https://docs
     openai_url = deployment.get_openai_url()
     ```
 
+### LLM Gateway { #rest-api-llm-gateway }
+
+On a cluster where the [LLM Gateway][llm-gateway] is enabled, all the vLLM deployments of a project are also served by one OpenAI-compatible endpoint, `<inference endpoint>/v1/<project>/v1/`.
+The `model` of each request is the name of the deployment it goes to.
+Every deployment also stays on its own path.
+
+!!! info "Deployments the LLM Gateway does not serve"
+
+    - A deployment in Knative mode.
+    - A deployment that scales to zero when idle (a minimum of 0 instances), or that autoscales on concurrency or requests per second.
+    - Every deployment of a project with a started deployment named `v1`.
+
+    On a cluster with the LLM Gateway, a vLLM deployment created without a minimum number of instances gets a minimum of 1, so the LLM Gateway serves it.
+
+!!! tip "Hopsworks Python API"
+
+    The project's `ModelServing` gives the URL of the LLM Gateway, an OpenAI client for it, and its state.
+
+    ```python
+    ms = project.get_model_serving()
+
+    # The URL of the LLM Gateway, to use with any HTTP client
+    project_url = ms.get_openai_url()
+
+    # An OpenAI client for the LLM Gateway: choose the deployment by `model`
+    openai_client = ms.get_openai_client()
+    response = openai_client.chat.completions.create(
+        model="my_llm_deployment",
+        messages=[{"role": "user", "content": "Hello"}],
+    )
+
+    # The state of the LLM Gateway: enabled, available and url
+    state = ms.get_llm_gateway()
+    ```
+
+    `Deployment.get_openai_client()` returns a client for one deployment's own path instead.
+
+#### Turning the LLM Gateway off
+
+The LLM Gateway is on for every project and deployment by default, and a Data Owner can take deployments off it:
+
+- For the whole project, with the LLM Gateway card in the project settings, or `ms.set_llm_gateway(False)`.
+  The project's endpoint then answers `404`.
+- For one deployment, with the LLM Gateway switch under Advanced configuration when editing the deployment, or `deployment.set_llm_gateway(False)`.
+
+No deployment restarts, every deployment keeps its own URL, and the change takes effect within a minute.
+A deployment's Overview shows whether the LLM Gateway serves it.
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-class"></code> [`ModelServing`][hsml.model_serving.ModelServing]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_openai_url`][hsml.model_serving.ModelServing.get_openai_url]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_openai_client`][hsml.model_serving.ModelServing.get_openai_client]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_llm_gateway`][hsml.model_serving.ModelServing.get_llm_gateway]
+        - <code class="doc-symbol doc-symbol-method"></code> [`set_llm_gateway`][hsml.model_serving.ModelServing.set_llm_gateway]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Deployment`][hsml.deployment.Deployment]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_openai_client`][hsml.deployment.Deployment.get_openai_client]
+        - <code class="doc-symbol doc-symbol-method"></code> [`set_llm_gateway`][hsml.deployment.Deployment.set_llm_gateway]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+
 ## Request Format
 
 The request format depends on the model server being used.
