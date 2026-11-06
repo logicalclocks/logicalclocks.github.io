@@ -9,7 +9,7 @@ description: Documentation on how to use coding agents such as opencode, Codex, 
 A vLLM deployment in Hopsworks serves the three APIs that coding agents use: Chat Completions, Responses and Anthropic Messages.
 A coding agent only needs a base URL, an API key and the name of the deployment as the model.
 This guide lists what the deployment needs, the two routes an agent can take, and the configuration of each agent.
-Use the [Terminal](../../projects/terminal/start.md) with the provider **This project** to have the agents configured for you.
+Use the [Terminal][terminal] with the provider **This project** to have the agents configured for you.
 
 ## Requirements for the deployment
 
@@ -34,7 +34,7 @@ Use the [Terminal](../../projects/terminal/start.md) with the provider **This pr
     Agents send the system prompt, the tool schemas and the history on every turn, and a short task can reach tens of thousands of input tokens.
     Set `max_model_len` accordingly (65536 fits Qwen3-Coder-30B-A3B in FP8 on one 48 GB GPU), and tell the agent the window as shown in the recipes below.
 
-See [Server configuration file](predictor.md#server-configuration-file) for the configuration file.
+See [Server configuration file][server-configuration-file] for the configuration file.
 
 ## The two routes { #serving-coding-agents-routes }
 
@@ -66,7 +66,7 @@ Both URLs can be read from the Python client, see [Python client][serving-coding
 
 ## Credentials { #serving-coding-agents-credentials }
 
-Create an [API key](../../projects/api_key/create_api_key.md) with the **serving** scope, and send it in one of two headers:
+Create an [API key][how-to-create-an-api-key] with the **serving** scope, and send it in one of two headers:
 
 - `Authorization: Bearer <api key>`, which every OpenAI-compatible client and `ANTHROPIC_AUTH_TOKEN` use.
 - `x-api-key: <api key>`, which the Anthropic SDK and `ANTHROPIC_API_KEY` use.
@@ -155,7 +155,7 @@ Without `CLAUDE_CODE_MAX_CONTEXT_TOKENS`, Claude Code warns that it does not rec
 The `env` block of `~/.claude/settings.json` overrides the environment, so a provider or model set there wins over the variables above.
 Remove those entries from the file to use the variables.
 
-The agent run with Claude Code was done with `ANTHROPIC_AUTH_TOKEN`; `ANTHROPIC_API_KEY`, which sends `x-api-key`, was not run with the agent.
+Claude Code 2.1.318 was run on both routes with `ANTHROPIC_AUTH_TOKEN` and with `ANTHROPIC_API_KEY`.
 
 ### Copilot CLI
 
@@ -193,8 +193,8 @@ Cursor is understood to send the requests of a custom endpoint through its own s
 
 ### pi and Hermes
 
-pi and Hermes are not verified against a Hopsworks deployment.
-The Terminal configures them when you choose **This project**.
+The Terminal configures pi and Hermes when you choose **This project**: pi through a provider in `~/.pi/agent/models.json`, Hermes through a managed provider configuration.
+Outside the Terminal, configure an OpenAI-compatible provider with the base URL of the route and the deployment name as the model, on the Responses API (pi `openai-responses`, Hermes `codex_responses` transport), or on Chat Completions where the Responses API is not available.
 
 ## External users { #serving-coding-agents-external }
 
@@ -204,7 +204,7 @@ Claude Code, for example, needs `ANTHROPIC_MODEL` and the tier variables above.
 
 ## The Terminal { #serving-coding-agents-terminal }
 
-When you start a [Terminal](../../projects/terminal/start.md), the LLM provider selector lists **This project**, next to the external providers.
+When you start a [Terminal][terminal], the LLM provider selector lists **This project**, next to the external providers.
 It needs no API key: the Terminal already holds one for the project, and uses it.
 Pick a running vLLM deployment of the project from the model list.
 
@@ -220,6 +220,19 @@ The Terminal sets `HOPS_LLM_ROUTE` to `llm-gateway` or `direct`.
 The provider configures Codex, opencode, Copilot CLI and Claude Code, and pi and Hermes, with the base URLs of the route, the deployment as the model and the context window of the deployment when it is known.
 On the direct route, Claude Code is configured only when the deployment runs vLLM v0.28.0 or later.
 Otherwise the selector says why, and the other agents still work.
+
+On the direct route, the agents use the Responses API only when the deployment runs vLLM v0.10.0 or later, and Chat Completions otherwise, which Codex does not support.
+
+The agents in the table below completed a two-step coding task with no configuration of their own, on both routes, with Qwen3-Coder-30B-A3B-Instruct-FP8 on vLLM v0.32.0:
+
+| Agent | Version |
+| --- | --- |
+| Claude Code | 2.1.318 |
+| Codex | 0.166.0 |
+| opencode | 1.19.5 |
+| Copilot CLI | 1.0.105 |
+| pi | 1.5.0 |
+| Hermes | 0.22.7 |
 
 If `~/.claude/settings.json` sets `ANTHROPIC_` or `CLAUDE_CODE_` variables in its `env` block, they override the provider, and the Terminal prints a warning when it starts.
 

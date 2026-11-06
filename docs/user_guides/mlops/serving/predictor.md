@@ -428,6 +428,7 @@ A file that already exists is not changed, and a model of an unknown family need
 See [Use coding agents with Hopsworks LLMs][serving-coding-agents].
 
 vLLM pods get a memory-backed `/dev/shm`, which the model server uses to pass data between processes, for example with tensor parallelism.
+The predictor's `shmSize` resource setting does not size it.
 It counts against the memory limit of the pod, so size the memory resources with it in mind.
 
 !!! warning "Configuration file format"
