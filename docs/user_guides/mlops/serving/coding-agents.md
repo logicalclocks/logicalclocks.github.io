@@ -135,6 +135,12 @@ wire_api = "responses"
 env_key = "HOPSWORKS_SERVING_KEY"
 ```
 
+Codex reads the key from the variable that `env_key` names:
+
+```bash
+export HOPSWORKS_SERVING_KEY="<KEY>"
+```
+
 ### Claude Code
 
 Claude Code uses the Anthropic Messages API.
