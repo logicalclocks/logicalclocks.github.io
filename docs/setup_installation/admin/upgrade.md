@@ -193,6 +193,8 @@ An upgrade from 5.2.0 also crosses two changes of 5.2.1, described under 5.1.x t
 ### Container resource requests and limits { #upgrade-container-resources }
 
 5.3 adds CPU, memory and local ephemeral-storage resource defaults for platform helpers and workloads created by Hopsworks.
+Resource values apply to the containers exposed by each component chart.
+The pinned upstream charts still omit some fields on Consul init and hook containers, Grafana and Trino test Pods, and the Spark operator CRD-upgrade hook.
 Review the component resource values and the scratch-space needs of your workloads before upgrading.
 A storage limit that is too small can cause Kubernetes to evict a Pod; persistent-volume capacity is configured separately from [local ephemeral storage](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#local-ephemeral-storage).
 
