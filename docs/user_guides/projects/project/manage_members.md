@@ -38,8 +38,11 @@ They can:
 - Manage project settings and members
 - Create, read, update, and delete all feature store resources (feature groups, feature views, training datasets, etc.)
 
-!!! note "Project author"
-    The project creator is a special type of Data owner. Only the creator can delete the project, and their role cannot be changed.
+!!! note "Project owner"
+    The project owner is a special type of Data owner, the user who created the project unless it has been transferred since.
+    Only the owner can delete the project from its settings.
+    A platform administrator deletes it from the Project management page instead, see [Force deleting a project][force-deleting-a-project].
+    The owner's role cannot be changed and the owner cannot be removed, but they can hand the project to another Data owner, see [Transfer ownership][transfer-ownership].
 
 ### Data scientist
 
@@ -115,6 +118,28 @@ Two cases where nothing is transferred, and one where the removal is refused:
 | The member being removed has no home directory | Nothing to transfer |
 | Removing the member would leave the project with no data owner | The removal is refused. Give another member the data owner role first |
 
+## Transfer ownership
+
+The project owner can hand the project to another Data owner of the project.
+In the project settings, click `Transfer ownership` in the `Project ownership` section, choose the new owner, type `confirm` and click `Transfer ownership`.
+The new owner takes over what is special about the owner: they can delete the project, and they cannot be removed or have their role changed.
+The previous owner stays a Data owner, so the new owner can afterwards change their role or remove them like any other member.
+
+If the transfer reports that not every follow-up step completed, the project already belongs to the new owner.
+The new owner finishes the transfer by handing the project to themselves with the Python SDK below, or a platform administrator finishes it.
+
+To hand the project to a member who is not a Data owner, give them the Data owner role first.
+If the owner has left and cannot hand the project over, a platform administrator can transfer it, see [Transferring a project to a new owner][transferring-a-project-to-a-new-owner].
+
+### Ownership and group mapping
+
+When members are added to the project by an LDAP, OAuth or Hopsworks group mapping, the owner is the exception: losing the mapped group neither changes their role nor removes them.
+The hand-over is available in such a project even though member management is not, since it changes no membership.
+
+After a transfer the new owner is the exception instead, and the previous owner is an ordinary member again.
+Group synchronization may then change their role or remove them, depending on their groups.
+If their groups still map them to the project, removing them by hand is undone the next time the groups are synchronized.
+
 ## Python SDK
 
 ```python
@@ -141,7 +166,11 @@ project.remove_member("alice@example.com", new_file_owner="carol@example.com")
 
 # Delete their files instead of handing them over
 project.remove_member("alice@example.com", delete_home_dir=True)
+
+# Hand the project to another data owner. Only the owner can do this
+project.transfer_ownership("carol@example.com")
 ```
 
 Roles are the same as in the UI: `Data owner`, `Data scientist`, `Observer`, and `Feature store restricted`.
-A data scientist removing a member can only remove themselves; the project owner's role cannot be changed or removed.
+A data scientist removing a member can only remove themselves.
+The project owner's role cannot be changed and the owner cannot be removed until they have transferred the project.

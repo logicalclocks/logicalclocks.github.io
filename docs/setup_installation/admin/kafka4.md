@@ -184,7 +184,7 @@ The `strimzi-crd-upgrade` hook therefore stops the sync after the conversion, an
     Upstream's 1.2.0 Kafka CRD declares an empty `properties: {}` map under `status.clusterSecurity`, and the apiserver drops an empty map when it stores a CRD, so the live object never matches the render.
     Not every Application compares the two in a way that notices; one that does never reaches Synced without the entry, and selfHeal re-applies that one CRD every five minutes.
     The entry matches nothing on 5.1.x, so you can add it before the upgrade.
-    Strimzi 1.3.0's Kafka CRD has no such map, so a release with Strimzi 1.3 does not need the entry, and it can stay because it matches nothing there either.
+    Strimzi 1.3.1's Kafka CRD has no such map, so a release with Strimzi 1.3 does not need the entry, and it can stay because it matches nothing there either.
     `helm upgrade` is not affected.
 
     ```yaml

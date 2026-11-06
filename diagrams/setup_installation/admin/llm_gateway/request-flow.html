@@ -1,0 +1,50 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 800 300" role="img" aria-label="How a request reaches an LLM deployment through the LLM Gateway. A client calls the project's endpoint on the Istio ingress gateway, which forwards it to the LLM Gateway. The LLM Gateway checks the API key and the rate limits and sends the request to the project's vLLM deployment whose name is the request's model. With tracing turned on, it also sends a span of every request to a trace collector." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="ar-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
+    <marker id="ar-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
+  </defs>
+
+  <!-- the Hopsworks cluster -->
+  <rect class="viz-zone" data-tone="accent" x="168" y="16" width="616" height="268" rx="6"/>
+  <path class="viz-kv-header" d="M168 22 a6 6 0 0 1 6 -6 h604 a6 6 0 0 1 6 6 v20 h-616 z"/>
+  <text class="viz-kv-title" x="184" y="35">Hopsworks cluster</text>
+
+  <!-- edges -->
+  <path class="viz-edge" d="M136 150 L200 150" marker-start="url(#ar-knob)" marker-end="url(#ar-arrow)"/>
+  <path class="viz-edge" d="M328 150 L392 150" marker-start="url(#ar-knob)" marker-end="url(#ar-arrow)"/>
+  <path class="viz-edge" d="M552 140 Q568 140 568 124 L568 106 Q568 90 584 90 L600 90" marker-start="url(#ar-knob)" marker-end="url(#ar-arrow)"/>
+  <path class="viz-edge" d="M552 160 Q568 160 568 176 L568 194 Q568 210 584 210 L600 210" marker-start="url(#ar-knob)" marker-end="url(#ar-arrow)"/>
+  <path class="viz-edge" d="M472 176 L472 216" marker-start="url(#ar-knob)" marker-end="url(#ar-arrow)"/>
+
+  <g>
+    <rect class="viz-node" x="16" y="124" width="120" height="52" rx="4"/>
+    <text class="viz-node-title" x="76" y="146" text-anchor="middle">Client</text>
+    <text class="viz-node-subtitle" x="76" y="164" text-anchor="middle">model=llama</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="200" y="124" width="128" height="52" rx="4"/>
+    <text class="viz-node-title" x="264" y="146" text-anchor="middle">Istio</text>
+    <text class="viz-node-subtitle" x="264" y="164" text-anchor="middle">front door</text>
+  </g>
+  <g data-tone="data">
+    <rect class="viz-node" x="392" y="124" width="160" height="52" rx="4"/>
+    <text class="viz-node-title" x="472" y="146" text-anchor="middle">LLM Gateway</text>
+    <text class="viz-node-subtitle" x="472" y="164" text-anchor="middle">key, limits</text>
+  </g>
+  <g data-tone="data">
+    <rect class="viz-node" x="600" y="64" width="168" height="52" rx="4"/>
+    <text class="viz-node-title" x="684" y="86" text-anchor="middle">llama</text>
+    <text class="viz-node-subtitle" x="684" y="104" text-anchor="middle">vLLM deployment</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="600" y="184" width="168" height="52" rx="4"/>
+    <text class="viz-node-title" x="684" y="206" text-anchor="middle">qwen</text>
+    <text class="viz-node-subtitle" x="684" y="224" text-anchor="middle">vLLM deployment</text>
+  </g>
+  <g>
+    <rect class="viz-node viz-ghost" x="384" y="216" width="176" height="40" rx="4"/>
+    <text class="viz-node-title" x="472" y="240" text-anchor="middle">Traces, opt-in</text>
+  </g>
+</svg>
+</figure>
