@@ -2,11 +2,13 @@
 
 ## Namespace scope
 
-For a shared Kubernetes cluster, list the Hopsworks namespace and every project namespace in the Helm values used for installation and upgrades:
+For a shared Kubernetes cluster, enable the scoped server ConfigMap and list the Hopsworks namespace and every project namespace in the Helm values used for installation and upgrades:
 
 ```yaml
 prometheus:
   prometheus:
+    server:
+      configMapOverrideName: hopsworks-scoped-prometheus
     kube-state-metrics:
       namespaces:
         - hopsworks
@@ -18,6 +20,13 @@ Use namespace names, not label selectors or regular expressions.
 Update this list when adding project namespaces, otherwise their pod and service metrics will be missing from dashboards.
 An empty list, `[]`, preserves cluster-wide collection.
 
+Both settings are required to scope Prometheus collection.
+Without `server.configMapOverrideName: hopsworks-scoped-prometheus`, the namespace list only limits kube-state-metrics.
+The scoped ConfigMap is named `<release-name>-hopsworks-scoped-prometheus`.
+Enabling it changes the mounted ConfigMap and rolls the Prometheus pods on upgrade; it preserves the data volume.
+Leaving `server.configMapOverrideName` empty preserves the upstream ConfigMap and its existing name.
+Other override names continue to reference an externally managed ConfigMap.
+
 The list limits Kubernetes pod and service discovery in `serverFiles.prometheus.yml.scrape_configs` and `extraScrapeConfigs`, and sets kube-state-metrics' `--namespaces` argument.
 Existing job namespace selections are intersected with this list, including `own_namespace` selections.
 A discovery entry with no matching namespaces is omitted; other discovery entries and static targets in the same job remain configured.
@@ -27,8 +36,8 @@ The Kueue metrics job continues to discover only the configured Kueue namespace.
 Static scrape targets and federation jobs retain their configured scope.
 Jobs supplied through additional scrape files or an external server ConfigMap need their own namespace restrictions.
 
-Keep this setting in your installation's values file so Helm upgrades preserve it.
-The setting controls metrics collection; it does not replace Kubernetes RBAC or provide namespace access isolation.
+Keep both settings in your installation's values file so Helm upgrades preserve them.
+These settings control metrics collection; they do not replace Kubernetes RBAC or provide namespace access isolation.
 
 ## Memory sizing
 
@@ -39,8 +48,8 @@ The chart defaults are starting points, not capacity guarantees:
 | Prometheus server | `512Mi` | `3072Mi` |
 | kube-state-metrics | `400Mi` | `600Mi` |
 
-With a nonempty namespace list, size for the selected namespaces' pods, containers, exported labels and scrape frequency, plus cluster-wide node metrics.
-With an empty list, size for workloads and label cardinality across the entire Kubernetes cluster, including workloads outside Hopsworks.
+With the scoped ConfigMap and a nonempty namespace list, size for the selected namespaces' pods, containers, exported labels and scrape frequency, plus cluster-wide node metrics.
+Without scoped Prometheus collection, size for workloads and label cardinality across the entire Kubernetes cluster, including workloads outside Hopsworks.
 A fixed memory limit can be insufficient on a large shared cluster even when Hopsworks itself is small.
 
 Measure Prometheus `process_resident_memory_bytes`, `prometheus_tsdb_head_series` and `prometheus_tsdb_head_chunks` through normal load and restart recovery.
