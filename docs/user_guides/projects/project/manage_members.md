@@ -72,6 +72,14 @@ They can:
 - Access and use feature groups that have been explicitly shared with them
 - Create feature views and training datasets using only the features they have been granted access to
 
+### Custom roles
+
+A cluster administrator can define custom roles, each a Data owner or a Data scientist with some permissions removed, as described in [Custom Project Roles][custom-project-roles].
+They are listed under _Custom roles_ in the role picker, and the members list shows a member's custom role by name, with its base role in the tooltip.
+A member holding a custom role is refused what the role removed, with a message naming the permission.
+
+You can give only roles that fit inside your own role, and change only members whose role fits inside your own.
+
 ## Step 3: Confirm member invitation
 
 The invited user will now appear in the members list and will have immediate access to the project based on their assigned role.
@@ -121,6 +129,7 @@ Two cases where nothing is transferred, and one where the removal is refused:
 ## Transfer ownership
 
 The project owner can hand the project to another Data owner of the project.
+A member holding a custom role based on Data owner is not eligible until they are given the built-in Data owner role.
 In the project settings, click `Transfer ownership` in the `Project ownership` section, choose the new owner, type `confirm` and click `Transfer ownership`.
 The new owner takes over what is special about the owner: they can delete the project, and they cannot be removed or have their role changed.
 The previous owner stays a Data owner, so the new owner can afterwards change their role or remove them like any other member.
@@ -151,9 +160,12 @@ project = hopsworks.login()
 # Add a member
 project.add_member("alice@example.com", "Data scientist")
 
-# List members
+# Give a custom role
+project.add_member("bob@example.com", "ML engineer")
+
+# List members; custom_role is None for a built-in role
 for member in project.get_members():
-    print(member.email, member.role)
+    print(member.email, member.role, member.custom_role)
 
 # Change a member's role
 project.get_members_api().update_role("alice@example.com", "Observer")
@@ -171,6 +183,7 @@ project.remove_member("alice@example.com", delete_home_dir=True)
 project.transfer_ownership("carol@example.com")
 ```
 
-Roles are the same as in the UI: `Data owner`, `Data scientist`, `Observer`, and `Feature store restricted`.
+Roles are the same as in the UI: `Data owner`, `Data scientist`, `Observer`, `Feature store restricted`, and the custom roles of the cluster.
+For a member holding a custom role, `role` is the base role and `custom_role` the custom role's name.
 A data scientist removing a member can only remove themselves.
 The project owner's role cannot be changed and the owner cannot be removed until they have transferred the project.
