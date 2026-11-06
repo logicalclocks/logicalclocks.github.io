@@ -1,4 +1,4 @@
-# How To Configure External Access To A Model Deployment
+# How To Configure External Access To A Model Deployment { #serving-external-access }
 
 ## Introduction
 
@@ -127,6 +127,29 @@ For detailed instructions on constructing requests and handling authentication, 
     <figcaption>Deployment endpoint</figcaption>
   </figure>
 </p>
+
+## LLM deployments and the LLM Gateway
+
+On a cluster where the [LLM Gateway][llm-gateway] is enabled, the groups granted on an LLM deployment also let external users call it through the project's LLM Gateway, `<inference endpoint>/v1/<project>/v1/`, with the deployment name as the request's `model`.
+An external user can use only the deployments granted to them there, with these operations only:
+
+- Chat completions, `/v1/chat/completions`
+- Completions, `/v1/completions`
+- Embeddings, `/v1/embeddings`
+- Responses, `/v1/responses`
+- Anthropic messages, `/anthropic/v1/messages`
+
+Listing the project's models, and every other path, is refused with `403`.
+The LLM Gateway serves only the deployments described under [LLM Gateway][rest-api-llm-gateway]; the others stay on their own path.
+A Data Owner can turn the LLM Gateway off for the project or for one deployment, which leaves the deployment's own path as it is.
+
+### Limits and traces of the LLM Gateway
+
+An administrator can set token and request limits on the LLM Gateway, per project, per user and per deployment, as described under [Rate limits and token quotas][llm-gateway-rate-limits].
+The limits that apply to a project are shown, read-only, in the project settings, and a request over a limit gets `429`.
+
+When an administrator has turned [tracing][llm-gateway-tracing] on, members with the role Data Owner or Data Scientist see the project's request traces under LLM Gateway Traces in the project settings, with a filter on the deployment, and one deployment's traces in its Overview.
+Prompts and responses are not stored in them unless an administrator turned that on too.
 
 ## Refreshing External User Groups
 

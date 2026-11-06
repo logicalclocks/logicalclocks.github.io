@@ -51,6 +51,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.
 | [`hopsfs`][helm-values-hopsfs] |  | 222 |
 | [`hopsfs-csi`][helm-values-hopsfs-csi] |  | 29 |
 | [`hopsworks`][helm-values-hopsworks] |  | 1004 |
+| [`hw-envoy-ai-gateway`][helm-values-hw-envoy-ai-gateway] |  | 0 |
 | [`hw-envoy-gateway`][helm-values-hw-envoy-gateway] |  | 40 |
 | [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) | 24 |
 | [`hw-kueue`][helm-values-hw-kueue] |  | 63 |

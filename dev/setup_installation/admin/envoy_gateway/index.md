@@ -14,7 +14,7 @@ Knative-mode deployments keep running through Istio as before.
     An upgrade to 5.3 that does not turn the feature on routes nothing differently.
     API keys are checked by `model-serving-authenticator` on both paths, so access rules stay the same.
 
-## Turn it on { #envoy-gateway-enable }
+## How to enable it { #envoy-gateway-enable }
 
 Two values in `global._hopsworks.envoyGateway` control the feature:
 
@@ -35,7 +35,7 @@ Two values in `global._hopsworks.envoyGateway` control the feature:
 
 === "Cluster with running deployments"
 
-    Turn it on in two upgrades, so that you can check the Gateway before any deployment moves:
+    Enable it in two upgrades, so that you can check the Gateway before any deployment moves:
 
     ```yaml
     global:
@@ -61,11 +61,11 @@ The deployments themselves are never restarted.
 
 ## Images { #envoy-gateway-images }
 
-| Image | Used for |
-| ----- | -------- |
-| `docker.hops.works/envoyproxy/gateway` | The controller, the certificate setup and a sidecar of each proxy |
-| `docker.hops.works/envoyproxy/envoy` | The Envoy proxies |
-| `docker.hops.works/hopsworks/envoy-gateway-crds` | Installing the CRDs |
+| Image                                            | Used for                                                          |
+| ------------------------------------------------ | ----------------------------------------------------------------- |
+| `docker.hops.works/envoyproxy/gateway`           | The controller, the certificate setup and a sidecar of each proxy |
+| `docker.hops.works/envoyproxy/envoy`             | The Envoy proxies                                                 |
+| `docker.hops.works/hopsworks/envoy-gateway-crds` | Installing the CRDs                                               |
 
 On an airgapped cluster, mirror the three images and point the chart at your registry, as the chart's `values.airgap.yaml` shows:
 
@@ -146,12 +146,12 @@ kubectl get crd gateways.gateway.networking.k8s.io -o jsonpath='{.metadata.annot
 To turn the feature off, upgrade twice in the reverse order.
 
 1. Set `kserveStandardMode: false`, which moves the deployments back to Istio without restarting them.
-    Hopsworks keeps each deployment's Gateway routes until its Istio route has been in place for 30 seconds.
+   Hopsworks keeps each deployment's Gateway routes until its Istio route has been in place for 30 seconds.
 2. Wait until Hopsworks has moved every deployment back, which is when no Gateway route of Hopsworks is left:
 
-    ```bash
-    kubectl get httproutes.gateway.networking.k8s.io -n <namespace> -l serving.hops.works/gateway-route
-    ```
+   ```bash
+   kubectl get httproutes.gateway.networking.k8s.io -n <namespace> -l serving.hops.works/gateway-route
+   ```
 
 3. Set `enabled: false`, which removes Envoy Gateway.
 
