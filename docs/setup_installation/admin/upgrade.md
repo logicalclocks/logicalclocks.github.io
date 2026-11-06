@@ -209,6 +209,8 @@ Leaving `namespaceMatchLabels` empty selects every namespace carrying `namespace
 Every release must select a distinct set of project namespaces.
 Add these labels to existing and pre-created project namespaces and include them in `hopsworks.variables.project_namespace_labels` before upgrading.
 
+Project pod admission can be turned off with `global._hopsworks.projectPodSecurity.enabled: false`, which skips these prerequisites, but we recommend keeping it on.
+
 ### Strimzi 1.3 { #upgrade-strimzi-13 }
 
 From the 5.2.x patch release that uses Strimzi 1.3, and in 5.3, the chart deploys Strimzi 1.3.1 in place of 1.2.0, and Kafka stays on 4.3.1.
