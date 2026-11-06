@@ -6,6 +6,10 @@ A group-to-project mapping lets you automatically add all members of a Hopsworks
 
 Once a mapping is created, project membership is controlled through Hopsworks group membership. Any updates made to the Hopsworks group, such as adding or removing users, will automatically be reflected in the project membership. For example, if a user is removed from the Hopsworks group, they will also be removed from the corresponding project.
 
+!!! note "Project owner"
+    The project owner is never removed or given another role by a mapping.
+    To release an owner who should no longer have access, transfer the project first, see [Ownership and group mapping][ownership-and-group-mapping].
+
 ## Prerequisites
 
 1. Hopsworks group mapping sync enabled. This can be done by setting the variable ```hw_group_mapping_sync_enabled=true```.
