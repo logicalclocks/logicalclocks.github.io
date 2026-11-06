@@ -64,7 +64,7 @@ hops semantic dashboard sales --metrics revenue,orders --group-by customer__coun
 ```
 
 ```text
-Created dashboard 12 "Sales overview": https://<hopsworks host>/hopsworks-api/superset/superset/dashboard/12/?projectId=119
+Created dashboard 12 "Sales overview": https://<hopsworks host>/hopsworks-api/superset/dashboard/12/?projectId=119
 ```
 
 ```bash
@@ -75,7 +75,7 @@ hops semantic dashboard sales --metrics revenue,revenue_per_order --json
 {
   "id": 13,
   "title": "sales: Revenue, Average order value",
-  "url": "https://<hopsworks host>/hopsworks-api/superset/superset/dashboard/13/?projectId=119"
+  "url": "https://<hopsworks host>/hopsworks-api/superset/dashboard/13/?projectId=119"
 }
 ```
 
@@ -103,7 +103,7 @@ print(dashboard["id"], dashboard["url"])
 ```
 
 ```text
-12 https://<hopsworks host>/hopsworks-api/superset/superset/dashboard/12/?projectId=119
+12 https://<hopsworks host>/hopsworks-api/superset/dashboard/12/?projectId=119
 ```
 
 `create_dashboard` returns a dict with the dashboard's Superset `id`, its `title`, and the `url` that opens it through Hopsworks.
@@ -119,7 +119,7 @@ The Hopsworks MCP server has the tool `create_dashboard_from_metrics`, tagged WR
 ```
 
 ```json
-{"id": 12, "title": "Sales overview", "url": "https://<hopsworks host>/hopsworks-api/superset/superset/dashboard/12/?projectId=119"}
+{"id": 12, "title": "Sales overview", "url": "https://<hopsworks host>/hopsworks-api/superset/dashboard/12/?projectId=119"}
 ```
 
 The dashboard belongs to the user the server is logged in as.
@@ -189,7 +189,8 @@ The dashboard is published with no viewers set, so Superset lists it to every us
 | Group-bys are the semantic project's dimensions and entities, and `metric_time`. | The semantic layer generates the SQL from metric and group-by names, so a view takes no custom SQL column, custom SQL metric, or SQL `WHERE` or `HAVING` clause. |
 | A generated dashboard holds at most 8 metrics and 3 filters. | A dashboard request with more metrics is refused; build a second dashboard for the others. |
 | Superset never aggregates a ratio or another non-additive metric again. | Summing ratios or distinct counts across groups gives a wrong number, so the view reports them with the aggregation `OTHER` and every chart asks the semantic layer at its own grain. |
-| Filter operators are `=`, `!=`, `<`, `<=`, `>`, `>=`, `IN`, `NOT IN`, `LIKE`, `IS NULL` and `IS NOT NULL`. | These are the operators of a metric query; `NOT LIKE`, `ILIKE` and `NOT ILIKE` are refused. |
+| `ILIKE`, `NOT LIKE` and `NOT ILIKE` match case-insensitively through `LOWER(...) LIKE LOWER(...)`, and a pattern cannot contain `{{`. | Trino has no `ILIKE`, and the semantic layer reads `{{` as the start of a dimension reference. |
+| A filter lists the values that have rows for one metric of the semantic project, chosen to cover the filter's dimension and the dashboard's other filters. | A semantic view answers metric queries only, so a value with no rows for that metric, such as a country with no orders, is not offered. |
 | A filter offers at most 10,000 values of a dimension. | Superset asks a view for at most 10,000 values of a column. |
 | A series limit cannot group the other series, or rank them over another time range than the chart's. | The semantic layer ranks the groups under the query's own filters and returns the top groups only, with no group for the rest. |
 | The rows and the query time of a chart follow the [query limits][semantic-query-limits]. | Each chart is a metric query on the gateway. The line charts of a generated dashboard read up to 10,000 rows, and its table up to 1,000. |
