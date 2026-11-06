@@ -70,6 +70,8 @@ agent = agents.deploy_agent(
     name="support_agent",
     requirements="requirements.txt",
     environment="support_agent",
+    framework="langgraph",
+    chat_config="hopsworks",
     tracing={"enabled": True},
 )
 agent.start()
@@ -88,7 +90,8 @@ The same lifecycle from the terminal:
 ```bash
 hops agent list                      # what agents exist
 hops agent create support_agent.py --name support_agent \
-  --requirements requirements.txt --environment support_agent
+  --requirements requirements.txt --environment support_agent \
+  --framework langgraph --chat-contract hopsworks
 hops agent start support_agent       # waits until it is running
 hops agent info support_agent        # status, endpoint, source and commit
 hops agent logs support_agent        # startup and request errors
@@ -97,6 +100,26 @@ hops agent delete support_agent --yes
 ```
 
 Run `hops agent list` first to confirm that authentication and serving are reachable.
+
+### Framework and chat contract
+
+Every agent deployment records two settings, the **Agent framework** and the **Chat contract** of the deployment form.
+
+- `framework` is one of `langgraph`, `llamaindex`, `openai_agents`, `claude_agents` or `custom`.
+  When the code's `AgentApp` names no framework, Hopsworks passes this one as `AGENT_FRAMEWORK`, and with tracing on `AgentApp` instruments it.
+  When the code names one, that one runs, so pass the same value.
+  It also chooses the model provider of the agent's failure analysis, and only an agent that may run the Claude Agent SDK receives your Claude Code login token, the `claude_code_oauth_token` secret under your account.
+  An agent without one shows as **Custom**.
+- `chat_config` tells the chat panel and chat clients how to talk to the agent.
+  It is `"hopsworks"` for an `AgentApp` agent, which speaks [the chat contract][the-chat-contract], `"openai"` for an OpenAI-compatible server, or a dict such as `{"protocol": "simple", "path": "/chat", "message_field_in": "body", "message_field_name": "message"}` for a custom endpoint, where `protocol` is `simple` or `generic`.
+  Without one, the chat panel detects the contract from the running agent.
+
+When the entry is a local file or package and you pass neither, `deploy_agent` reads them from the code.
+The framework is the string passed as `AgentApp(framework="...")`, and a new agent that builds an `AgentApp` gets the `"hopsworks"` contract.
+A framework name Hopsworks does not know is recorded as `custom`, and a package whose `AgentApp` calls name different frameworks records none.
+On a redeploy that passes neither, the framework follows the code when it names one and is otherwise kept, and the chat contract is kept.
+So a framework changed in the UI is replaced on the next such redeploy when the code names a different one: to change the framework, change it in the code or pass `framework=`.
+`hops agent info` shows both.
 
 ### Deploy from a Git repository
 
@@ -114,10 +137,13 @@ agent = agents.deploy_agent(
     git_provider="GitHub",
     git_branch="main",
     environment="support_agent",
+    framework="langgraph",
+    chat_config="hopsworks",
 )
 ```
 
 The entry is relative to the repository root rather than a HopsFS path.
+Pass `framework` and `chat_config` for a Git-backed agent: its code is cloned by the deployment, not read by `deploy_agent`, so neither is detected and the agent would deploy as **Custom**.
 Without `git_branch` the clone follows the repository's default branch.
 
 ### Auto-redeploy on new commits
