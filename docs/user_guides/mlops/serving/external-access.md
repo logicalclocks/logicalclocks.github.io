@@ -134,9 +134,16 @@ For detailed instructions on constructing requests and handling authentication, 
 
 ## LLM deployments and the LLM gateway
 
-On a cluster where the [Agent Router][agent-router] is enabled, the groups granted on an LLM deployment also let external users call it through the LLM gateway, `<inference endpoint>/v1/<project>/v1/chat/completions`, by setting the deployment name as the `model` of the request.
-Users granted on a deployment can use only that model there, with these operations only: chat completions (`/v1/chat/completions`), completions (`/v1/completions`), embeddings (`/v1/embeddings`), responses (`/v1/responses`) and Anthropic messages (`/anthropic/v1/messages`).
-Listing the project's models and every other path are refused with `403`.
+On a cluster where the [Agent Router][agent-router] is enabled, the groups granted on an LLM deployment also let external users call it through the project's LLM gateway, `<inference endpoint>/v1/<project>/v1/`, with the deployment name as the request's `model`.
+An external user can use only the deployments granted to them there, with these operations only:
+
+- Chat completions, `/v1/chat/completions`
+- Completions, `/v1/completions`
+- Embeddings, `/v1/embeddings`
+- Responses, `/v1/responses`
+- Anthropic messages, `/anthropic/v1/messages`
+
+Listing the project's models, and every other path, is refused with `403`.
 The LLM gateway serves only the deployments described under [LLM gateway][rest-api-llm-gateway]; the others stay on their own path.
 A Data Owner can turn the LLM gateway off for the project or for one deployment, which leaves the deployment's own path as it is.
 
@@ -144,8 +151,9 @@ A Data Owner can turn the LLM gateway off for the project or for one deployment,
 
 An administrator can set token and request limits on the LLM gateway, per project, per user and per deployment, as described under [Rate limits and token quotas][agent-router-rate-limits].
 The limits that apply to a project are shown, read-only, in the project settings, and a request over a limit gets `429`.
-Members with the role Data Owner or Data Scientist see the project's request traces under LLM Gateway Traces in the project settings, with a filter on the deployment, and one deployment's traces in its Overview.
-Prompts and responses are not stored in them unless an administrator turned that on, as described under [Tracing][agent-router-tracing].
+
+When an administrator has turned [tracing][agent-router-tracing] on, members with the role Data Owner or Data Scientist see the project's request traces under LLM Gateway Traces in the project settings, with a filter on the deployment, and one deployment's traces in its Overview.
+Prompts and responses are not stored in them unless an administrator turned that on too.
 
 ## Refreshing External User Groups
 

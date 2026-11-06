@@ -439,17 +439,24 @@ Clients keep their endpoint, Knative-mode deployments stay on Istio, and no depl
 
 ### Agent Router { #upgrade-agent-router }
 
-New in 5.3 and off by default, on top of Envoy Gateway: `global._hopsworks.envoyGateway.aiGateway.enabled` installs the Agent Router controller, its six CRDs and a dedicated AI Gateway, and publishes `<inference endpoint>/v1/<project>/v1/...` for the project's Standard-mode vLLM deployments, as described in [Agent Router][agent-router].
-Data Owners can turn the LLM gateway off per project and per deployment, both on by default.
-Rendering fails when `aiGateway.enabled` is on and `envoyGateway.enabled` is off.
+[Agent Router][agent-router] is new in 5.3 and off by default.
+On top of Envoy Gateway, `global._hopsworks.envoyGateway.aiGateway.enabled` gives every project one OpenAI-compatible endpoint, `<inference endpoint>/v1/<project>/v1/...`, for its Standard-mode vLLM deployments.
+It brings the Agent Router controller, its six CRDs and a dedicated AI Gateway, a Redis and Envoy Gateway's rate-limit service for the [rate limits][agent-router-rate-limits], an access log on the AI Gateway's Envoy, and Grafana dashboards.
+[Tracing][agent-router-tracing] has a switch of its own, `aiGateway.tracing.enabled`, also off by default.
+
 An upgrade that leaves `aiGateway` alone changes nothing: the Istio Lua filter is the same, no object is added, and the backend finds no `envoy-ai-gateway-config` ConfigMap and does nothing.
+Rendering fails when `aiGateway.enabled` is on and `envoyGateway.enabled` is off.
 
-The feature also brings a Redis and Envoy Gateway's rate-limit service for the LLM gateway's [rate limits][agent-router-rate-limits], a trace collector and a table Job for [tracing][agent-router-tracing], and an access log on the AI Gateway's Envoy, and Grafana dashboards; with the feature off none of them is rendered.
+Before enabling, as listed under [Turn it on][agent-router-enable]:
 
-Before enabling, stop the started deployments named `v1` or recreate them under another name, check cert-manager, a network plugin that enforces NetworkPolicies and the backend's grants in the release namespace, and on an airgapped cluster mirror the four images, as listed under [Turning it on][agent-router-enable].
-A started deployment named `v1` answers `404` through the Istio ingress once the feature is on and is not served by the LLM gateway; it keeps answering through the Envoy Gateway. Find them with `SELECT p.projectname FROM serving s JOIN project p ON s.project_id = p.id WHERE s.name = 'v1'`.
+- Stop the started deployments named `v1`, or recreate them under another name.
+  Once the feature is on, such a deployment answers `404` through the Istio ingress and is not served by the LLM gateway; it keeps answering through the Envoy Gateway.
+- Check cert-manager, a network plugin that enforces NetworkPolicies, and the backend's grants in the release namespace.
+- On an airgapped cluster, mirror the four images.
+
 Enable with one `helm upgrade`: no predictive pod, Knative pod or `kserve-ingress-gateway` pod restarts, and the AI Gateway's Envoy pods roll once when the first route attaches.
-Disable in one upgrade with `aiGateway.enabled: false`, as described under [Turning it off][agent-router-disable], which also lists what a `helm rollback` leaves behind and how to remove it.
+Data Owners can then turn the LLM gateway off per project and per deployment, both on by default.
+Disable with one upgrade with `aiGateway.enabled: false`, as described under [Turn it off][agent-router-disable], which also lists what a `helm rollback` leaves behind and how to remove it.
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
