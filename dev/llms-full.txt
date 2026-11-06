@@ -44326,7 +44326,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -44349,7 +44349,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.
 
 | Values | Upstream charts | Keys |
 | --- | --- | --- |
-| [`global`][helm-values-global] |  | 157 |
+| [`global`][helm-values-global] |  | 160 |
 | [`airflow`][helm-values-airflow] |  | 151 |
 | [`arrowflight`][helm-values-arrowflight] |  | 46 |
 | [`certs-operator`][helm-values-certs-operator] |  | 29 |
@@ -44359,15 +44359,15 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.
 | [`hive`][helm-values-hive] |  | 79 |
 | [`hopsfs`][helm-values-hopsfs] |  | 222 |
 | [`hopsfs-csi`][helm-values-hopsfs-csi] |  | 29 |
-| [`hopsworks`][helm-values-hopsworks] |  | 1004 |
-| [`hw-envoy-ai-gateway`][helm-values-hw-envoy-ai-gateway] |  | 0 |
+| [`hopsworks`][helm-values-hopsworks] |  | 1024 |
+| [`hw-envoy-ai-gateway`][helm-values-hw-envoy-ai-gateway] |  | 43 |
 | [`hw-envoy-gateway`][helm-values-hw-envoy-gateway] |  | 40 |
 | [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) | 24 |
 | [`hw-kueue`][helm-values-hw-kueue] |  | 63 |
 | [`hw-kyverno`][helm-values-hw-kyverno] |  | 60 |
 | [`judge`][helm-values-judge] |  | 23 |
 | [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 1.3.1](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/1.3.1) | 102 |
-| [`kserve`][helm-values-kserve] |  | 282 |
+| [`kserve`][helm-values-kserve] |  | 290 |
 | [`minio`][helm-values-minio] |  | 42 |
 | [`olk`][helm-values-olk] | [`prometheus-elasticsearch-exporter` 5.8.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-elasticsearch-exporter/5.8.0) | 165 |
 | [`onlinefs`][helm-values-onlinefs] |  | 94 |
@@ -44407,7 +44407,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -44433,10 +44433,6 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.
             pullPolicy: IfNotPresent
             repository: hopsworks/hopsfs-csi
             tag: 0.2.0-SNAPSHOT
-        envoyGateway:
-          enabled: false
-          gatewayName: kserve-ingress-gateway
-          kserveStandardMode: true
         executor_uid: 1235
         full_platform: true
         grafana:
@@ -44594,22 +44590,6 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.
 `global._hopsworks.csi.driverName` <a class="headerlink" href="#helm.global._hopsworks.csi.driverName" title="Permanent link">#</a> { #helm.global._hopsworks.csi.driverName }
 :   Type `string`, default `""`.
     The CSI driver name of this release. Empty (the default) derives `<namespace>.hopsfs.csi.logicalclocks.com` from the release namespace, one name per release, which is what lets two Hopsworks installs share a cluster: kubelet routes CSI calls by driver name alone, so each release gets its own node plugin, socket, registration and CSIDriver object, also on nodes both installs use, and uninstalling one never touches the other's mounts (HWORKS-3297). Kubernetes caps a CSI driver name at 63 characters, so a namespace longer than 34 characters must set a shorter name here. Any name set here must be unique in the cluster: two releases on one name share one socket directory and one kubelet registration on every node they share, so neither is isolated from the other, which is the fault the per-release name removes; that is not a supported setup. Whatever the name, it is computed once (`hopsworkslib.csiDriverName`) for the plugin, the Airflow and Trino volumes and the backend `csi_driver_name` variable, so nothing can drift.
-
-`global._hopsworks.envoyGateway` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway }
-:   Type `object`.
-    Envoy Gateway: Standard-mode model deployments routed through the Kubernetes Gateway API on Envoy Gateway, installed next to Istio and Knative, which keep working as they are and stay the external front door. Two flags stage the rollout. `enabled` installs the hw-envoy-gateway subchart, the Hopsworks Gateway with its policies, and a lowest-precedence forward rule from the Istio ingress to the Gateway; with `kserveStandardMode: false` that routes nothing. `kserveStandardMode` (with `enabled`, and true by default, so `enabled` alone does both stages) switches KServe's Standard-mode InferenceServices from Istio-class Ingresses to HTTPRoutes on that Gateway, and the backend then moves each running deployment over once its new routes are accepted, with no downtime; set it to false first when rolling back, and roll back with helm upgrade, not helm rollback. See the Envoy Gateway page and the upgrade guide on docs.hopsworks.ai.
-
-    ??? note "Default"
-
-        ```yaml
-        enabled: false
-        gatewayName: kserve-ingress-gateway
-        kserveStandardMode: true
-        ```
-
-`global._hopsworks.envoyGateway.gatewayName` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway.gatewayName" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway.gatewayName }
-:   Type `string`, default `"kserve-ingress-gateway"`.
-    name of the Gateway, EnvoyProxy and Envoy Service in the release namespace; KServe's inferenceservice-config and the backend refer to it
 
 `global._hopsworks.executor_uid` <a class="headerlink" href="#helm.global._hopsworks.executor_uid" title="Permanent link">#</a> { #helm.global._hopsworks.executor_uid }
 :   Type `int`, default `1235`.
@@ -44913,6 +44893,70 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.
 `global._hopsworks.backups.ttl` <a class="headerlink" href="#helm.global._hopsworks.backups.ttl" title="Permanent link">#</a> { #helm.global._hopsworks.backups.ttl }
 :   Type `string`, default `nil`.
     time to live to control when to clean up backups. It is a number followed by either d (days) or h (hours) suffix.
+
+</div>
+
+## envoyGateway { #helm-values-global-envoygateway }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    global:
+      _hopsworks:
+        envoyGateway:
+          aiGateway:
+            enabled: false
+            gatewayName: kserve-ai-gateway
+            tracing:
+              enabled: false
+          enabled: false
+          gatewayName: kserve-ingress-gateway
+          kserveStandardMode: true
+    ```
+
+<div class="hops-values" markdown>
+
+`global._hopsworks.envoyGateway` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway }
+:   Type `object`.
+    Envoy Gateway: Standard-mode model deployments routed through the Kubernetes Gateway API on Envoy Gateway, installed next to Istio and Knative, which keep working as they are and stay the external front door. Two flags stage the rollout. `enabled` installs the hw-envoy-gateway subchart, the Hopsworks Gateway with its policies, and a lowest-precedence forward rule from the Istio ingress to the Gateway; with `kserveStandardMode: false` that routes nothing. `kserveStandardMode` (with `enabled`, and true by default, so `enabled` alone does both stages) switches KServe's Standard-mode InferenceServices from Istio-class Ingresses to HTTPRoutes on that Gateway, and the backend then moves each running deployment over once its new routes are accepted, with no downtime; set it to false first when rolling back, and roll back with helm upgrade, not helm rollback. See the Envoy Gateway page and the upgrade guide on docs.hopsworks.ai.
+
+    ??? note "Default"
+
+        ```yaml
+        aiGateway:
+          enabled: false
+          gatewayName: kserve-ai-gateway
+          tracing:
+            enabled: false
+        enabled: false
+        gatewayName: kserve-ingress-gateway
+        kserveStandardMode: true
+        ```
+
+`global._hopsworks.envoyGateway.aiGateway` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway.aiGateway" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway.aiGateway }
+:   Type `object`.
+    the LLM Gateway, built on Agent Router (previously Envoy AI Gateway) on top of Envoy Gateway: one OpenAI-compatible endpoint per project, `<inference endpoint>/v1/<project>/v1/{chat/completions,completions,embeddings,models}`, where the request's `model` selects the project's Standard-mode vLLM deployment with that served name. Needs `envoyGateway.enabled` (rendering fails without it). `enabled` installs the six CRDs, the controller, the Envoy Gateway extension wiring and a dedicated AI Gateway. `enabled` also turns on the Istio rewrite for `/v1/<project>/v1/...` and the forward rule, and tells the backend to publish the routes. Turning it off in one helm upgrade removes the routes and the AI Gateway. A deployment named `v1` must get another name before enabling. See the LLM Gateway page on docs.hopsworks.ai.
+
+    ??? note "Default"
+
+        ```yaml
+        enabled: false
+        gatewayName: kserve-ai-gateway
+        tracing:
+          enabled: false
+        ```
+
+`global._hopsworks.envoyGateway.aiGateway.gatewayName` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway.aiGateway.gatewayName" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway.aiGateway.gatewayName }
+:   Type `string`, default `"kserve-ai-gateway"`.
+    name of the AI Gateway, its EnvoyProxy, GatewayConfig and Envoy Service in the release namespace; the backend attaches the AIGatewayRoutes to it
+
+`global._hopsworks.envoyGateway.aiGateway.tracing.enabled` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway.aiGateway.tracing.enabled" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway.aiGateway.tracing.enabled }
+:   Type `bool`, default `false`.
+    trace the LLM Gateway's requests: the ext_proc sidecar exports spans to the agent-router-otlp collector, a Job creates the agent__router.spans table they are stored in, and the backend serves them on the project and admin Traces pages. Off by default because on RonDB 26.02 the trace pages' queries can stop a data node (DBQACC, DbaccMain.cpp:2154). Turning it off stops new spans and empties the Traces pages; the table and its rows stay until their TTL.
+
+`global._hopsworks.envoyGateway.gatewayName` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway.gatewayName" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway.gatewayName }
+:   Type `string`, default `"kserve-ingress-gateway"`.
+    name of the Gateway, EnvoyProxy and Envoy Service in the release namespace; KServe's inferenceservice-config and the backend refer to it
 
 </div>
 
@@ -45635,7 +45679,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -46501,7 +46545,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -46783,7 +46827,7 @@ Values under `certs-operator` configure the operator that issues the TLS certifi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -46971,7 +47015,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -47304,7 +47348,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -47755,7 +47799,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -47966,7 +48010,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             verify_email_enabled: false
             viewers_can_edit: false
         image:
-          tag: 12.4.14-h0
+          tag: 12.4.14-h2
         nodeSelector: {}
         rbac:
           create: false
@@ -48205,7 +48249,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             verify_email_enabled: false
             viewers_can_edit: false
         image:
-          tag: 12.4.14-h0
+          tag: 12.4.14-h2
         nodeSelector: {}
         rbac:
           create: false
@@ -48253,7 +48297,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -48671,7 +48715,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -49815,7 +49859,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 
@@ -50085,7 +50129,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -50484,6 +50528,186 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.volumes.worker` <a class="headerlink" href="#helm.hopsworks.volumes.worker" title="Permanent link">#</a> { #helm.hopsworks.volumes.worker }
 :   Type `list`, default `[]`.
+
+</div>
+
+## agentRouter { #helm-values-hopsworks-agentrouter }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    hopsworks:
+      agentRouter:
+        tracing:
+          collector:
+            imagePullPolicy: IfNotPresent
+            nodeSelector: {}
+            replicas: 1
+            resources:
+              limits:
+                cpu: '1'
+                memory: 512Mi
+              requests:
+                cpu: 100m
+                memory: 256Mi
+            tolerations: []
+          tableJob:
+            backoffLimit: 10
+            nodeSelector: {}
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 50m
+                memory: 64Mi
+            tolerations: []
+            ttlSecondsAfterFinished: null
+          ttlSeconds: 604800
+    ```
+
+<div class="hops-values" markdown>
+
+`hopsworks.agentRouter` <a class="headerlink" href="#helm.hopsworks.agentRouter" title="Permanent link">#</a> { #helm.hopsworks.agentRouter }
+:   Type `object`.
+    the storage side of the LLM Gateway's tracing, rendered with global._hopsworks.envoyGateway.aiGateway.enabled and global._hopsworks.envoyGateway.aiGateway.tracing.enabled. The AI Gateway's ext_proc sidecar exports OpenTelemetry spans (kserve.envoyGateway.aiGateway.tracing) to a collector, which writes them into one RonDB table, agent__router.spans, shared by every project. A Job creates that table, with its large columns on disk in the online feature store's tablespace (variables.featurestore_online_tablespace, else the cluster's NDB tablespace), so most of each span counts against the disk-column volume; keys, indexes and the filtered columns stay in DataMemory. Turning the AI Gateway or its tracing off leaves the table and its rows in place.
+
+    ??? note "Default"
+
+        ```yaml
+        tracing:
+          collector:
+            imagePullPolicy: IfNotPresent
+            nodeSelector: {}
+            replicas: 1
+            resources:
+              limits:
+                cpu: '1'
+                memory: 512Mi
+              requests:
+                cpu: 100m
+                memory: 256Mi
+            tolerations: []
+          tableJob:
+            backoffLimit: 10
+            nodeSelector: {}
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 50m
+                memory: 64Mi
+            tolerations: []
+            ttlSecondsAfterFinished: null
+          ttlSeconds: 604800
+        ```
+
+`hopsworks.agentRouter.tracing.collector` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.collector" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.collector }
+:   Type `object`.
+    the OTLP collector (the agent-router-otlp Deployment and Service, port 4318), which runs the hopsworks-otlp-gateway entry point of the otlp-sidecar image, the one the agent deployments use. It connects to the database as the Hopsworks root user, with its password from the users Secret.
+
+    ??? note "Default"
+
+        ```yaml
+        imagePullPolicy: IfNotPresent
+        nodeSelector: {}
+        replicas: 1
+        resources:
+          limits:
+            cpu: '1'
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        tolerations: []
+        ```
+
+`hopsworks.agentRouter.tracing.collector.imagePullPolicy` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.collector.imagePullPolicy" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.collector.imagePullPolicy }
+:   Type `string`, default `"IfNotPresent"`.
+    pull policy of the collector image; global._hopsworks.imagePullPolicy takes precedence when set
+
+`hopsworks.agentRouter.tracing.collector.nodeSelector` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.collector.nodeSelector" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.collector.nodeSelector }
+:   Type `object`, default `{}`.
+    nodeSelector of the collector; falls back to global._hopsworks.nodeSelector
+
+`hopsworks.agentRouter.tracing.collector.replicas` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.collector.replicas" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.collector.replicas }
+:   Type `int`, default `1`.
+    replicas of the collector. Spans are queued in memory and written in batches, so a restart loses what was queued; more replicas are safe.
+
+`hopsworks.agentRouter.tracing.collector.resources` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.collector.resources" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.collector.resources }
+:   Type `object`.
+    resources of the collector container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: '1'
+          memory: 512Mi
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        ```
+
+`hopsworks.agentRouter.tracing.collector.tolerations` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.collector.tolerations" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.collector.tolerations }
+:   Type `list`, default `[]`.
+    tolerations of the collector; fall back to global._hopsworks.tolerations
+
+`hopsworks.agentRouter.tracing.tableJob` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.tableJob" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.tableJob }
+:   Type `object`.
+    the Job that creates the database and the table, and alters the table's TTL when ttlSeconds changes. A plain Job named after a hash of its content, so a changed TTL runs it again.
+
+    ??? note "Default"
+
+        ```yaml
+        backoffLimit: 10
+        nodeSelector: {}
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        tolerations: []
+        ttlSecondsAfterFinished: null
+        ```
+
+`hopsworks.agentRouter.tracing.tableJob.backoffLimit` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.tableJob.backoffLimit" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.tableJob.backoffLimit }
+:   Type `int`, default `10`.
+    backoff limit of the Job
+
+`hopsworks.agentRouter.tracing.tableJob.nodeSelector` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.tableJob.nodeSelector" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.tableJob.nodeSelector }
+:   Type `object`, default `{}`.
+    nodeSelector of the Job; falls back to global._hopsworks.nodeSelector
+
+`hopsworks.agentRouter.tracing.tableJob.resources` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.tableJob.resources" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.tableJob.resources }
+:   Type `object`.
+    resources of the Job container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: 500m
+          memory: 256Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        ```
+
+`hopsworks.agentRouter.tracing.tableJob.tolerations` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.tableJob.tolerations" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.tableJob.tolerations }
+:   Type `list`, default `[]`.
+    tolerations of the Job; fall back to global._hopsworks.tolerations
+
+`hopsworks.agentRouter.tracing.tableJob.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.tableJob.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.tableJob.ttlSecondsAfterFinished }
+:   Type `string`, default `nil`.
+    TTL in seconds for the Job. Overrides the global default.
+
+`hopsworks.agentRouter.tracing.ttlSeconds` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.ttlSeconds" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.ttlSeconds }
+:   Type `int`, default `604800`.
+    how long a span stays in agent__router.spans, in seconds, by RonDB's native row TTL on created_at. The Job alters the table when this changes. The default is seven days.
 
 </div>
 
@@ -52802,6 +53026,12 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         lifecycle_webhook_url: ''
         livy_startup_timeout: '240'
         livy_version: 0.8.4-incubating-SNAPSHOT-bin
+        llm_gateway_deployment_request_limit: ''
+        llm_gateway_deployment_token_limit: ''
+        llm_gateway_project_request_limit: ''
+        llm_gateway_project_token_limit: ''
+        llm_gateway_user_request_limit: ''
+        llm_gateway_user_token_limit: ''
         loadbalancer_external_domain_datanode: null
         loadbalancer_external_domain_feature_query: null
         loadbalancer_external_domain_mysqld: null
@@ -53987,6 +54217,30 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.livy_version` <a class="headerlink" href="#helm.hopsworks.variables.livy_version" title="Permanent link">#</a> { #helm.hopsworks.variables.livy_version }
 :   Type `string`, default `"0.8.4-incubating-SNAPSHOT-bin"`.
 
+`hopsworks.variables.llm_gateway_deployment_request_limit` <a class="headerlink" href="#helm.hopsworks.variables.llm_gateway_deployment_request_limit" title="Permanent link">#</a> { #helm.hopsworks.variables.llm_gateway_deployment_request_limit }
+:   Type `string`, default `""`.
+    LLM gateway rate limit: Requests each LLM deployment can receive per period. Same format and seeding as llm_gateway_project_token_limit.
+
+`hopsworks.variables.llm_gateway_deployment_token_limit` <a class="headerlink" href="#helm.hopsworks.variables.llm_gateway_deployment_token_limit" title="Permanent link">#</a> { #helm.hopsworks.variables.llm_gateway_deployment_token_limit }
+:   Type `string`, default `""`.
+    LLM gateway rate limit: Input and output tokens each LLM deployment can serve per period. Same format and seeding as llm_gateway_project_token_limit.
+
+`hopsworks.variables.llm_gateway_project_request_limit` <a class="headerlink" href="#helm.hopsworks.variables.llm_gateway_project_request_limit" title="Permanent link">#</a> { #helm.hopsworks.variables.llm_gateway_project_request_limit }
+:   Type `string`, default `""`.
+    LLM gateway rate limit: Requests the whole project can send per period, all users and deployments together. Same format and seeding as llm_gateway_project_token_limit.
+
+`hopsworks.variables.llm_gateway_project_token_limit` <a class="headerlink" href="#helm.hopsworks.variables.llm_gateway_project_token_limit" title="Permanent link">#</a> { #helm.hopsworks.variables.llm_gateway_project_token_limit }
+:   Type `string`, default `""`.
+    LLM gateway rate limit: Input and output tokens the whole project can use per period, all users and deployments together. Cluster default for every project, `VALUE/UNIT` with UNIT MINUTE, HOUR or DAY, e.g. `1000000/HOUR`, with VALUE from 1 to 4294967295; `-1/HOUR` (-1 with any unit) or empty means no limit, and a bare -1 is refused. A project can override it. Seeded once (insert if absent): the Admin UI owns the value afterwards, and an upgrade keeps it.
+
+`hopsworks.variables.llm_gateway_user_request_limit` <a class="headerlink" href="#helm.hopsworks.variables.llm_gateway_user_request_limit" title="Permanent link">#</a> { #helm.hopsworks.variables.llm_gateway_user_request_limit }
+:   Type `string`, default `""`.
+    LLM gateway rate limit: Requests each user can send per period in a project. Same format and seeding as llm_gateway_project_token_limit.
+
+`hopsworks.variables.llm_gateway_user_token_limit` <a class="headerlink" href="#helm.hopsworks.variables.llm_gateway_user_token_limit" title="Permanent link">#</a> { #helm.hopsworks.variables.llm_gateway_user_token_limit }
+:   Type `string`, default `""`.
+    LLM gateway rate limit: Input and output tokens each user can use per period in a project. Same format and seeding as llm_gateway_project_token_limit.
+
 `hopsworks.variables.loadbalancer_external_domain_datanode` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_datanode" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_datanode }
 :   Type `string`, default `nil`.
     The domain name of the external load balancer for the HopsFS datanodes. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
@@ -55138,7 +55392,7 @@ The LLM Gateway's controller ships in the same subchart, and its values, under `
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: `global._hopsworks.envoyGateway.enabled`, [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -55578,9 +55832,488 @@ See [LLM Gateway][llm-gateway] for what the feature installs and what the cluste
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
-Chart `5.3.0-alpha-1793956779` has no `hw-envoy-ai-gateway` values.
+## aiGateway { #helm-values-hw-envoy-ai-gateway-aigateway }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    hw-envoy-gateway:
+      aiGateway:
+        controller:
+          image:
+            registry: ''
+            repository: envoyproxy/ai-gateway-controller
+            tag: v1.2.0
+          imagePullPolicy: IfNotPresent
+          logLevel: info
+          nodeSelector: {}
+          replicas: 1
+          resources:
+            limits:
+              cpu: '1'
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          runAsGroup: 1000
+          runAsUser: 1000
+          serviceAccount:
+            annotations: {}
+          tolerations: []
+        crdImage:
+          name: envoy-ai-gateway-crds
+          registry: ''
+          tag: v1.2.0-h1
+        extProc:
+          image:
+            registry: ''
+            repository: envoyproxy/ai-gateway-extproc
+            tag: v1.2.0
+          imagePullPolicy: IfNotPresent
+          logLevel: info
+        rateLimit:
+          image:
+            registry: ''
+            repository: envoyproxy/ratelimit
+            tag: 0482748e
+          imagePullPolicy: IfNotPresent
+          nodeSelector: {}
+          platformAssignedIds: false
+          redis:
+            image:
+              registry: ''
+              repository: superset/redis
+              tag: 7.4.11-alpine-h4
+            imagePullPolicy: IfNotPresent
+            maxMemory: 128mb
+            nodeSelector: {}
+            podDisruptionBudget:
+              minAvailable: 0
+            resources:
+              limits:
+                cpu: 500m
+                memory: 192Mi
+              requests:
+                cpu: 50m
+                memory: 192Mi
+            runAsGroup: 1001
+            runAsUser: 1001
+            tolerations: []
+          replicas: 1
+          resources:
+            limits:
+              cpu: '1'
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          tolerations: []
+        requestHeaderAttributes:
+          metrics: x-hopsworks-user:hopsworks.user
+          span: agent-session-id:session.id,x-hopsworks-user:hopsworks.user,x-hopsworks-project-id:hopsworks.project.id
+    ```
+
+<div class="hops-values" markdown>
+
+`hw-envoy-gateway.aiGateway` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway }
+:   Type `object`.
+    the LLM Gateway controller, Agent Router (previously Envoy AI Gateway): it turns AIGatewayRoutes into the routes and the ext_proc sidecar of the AI Gateway in the kserve subchart. Rendered only with global._hopsworks.envoyGateway.aiGateway.enabled, which also wires it into the Envoy Gateway configuration. The templates are vendored from the upstream ai-gateway-helm chart (see UPSTREAM.md); its CRDs are applied by a hook Job from crdImage.
+
+    ??? note "Default"
+
+        ```yaml
+        controller:
+          image:
+            registry: ''
+            repository: envoyproxy/ai-gateway-controller
+            tag: v1.2.0
+          imagePullPolicy: IfNotPresent
+          logLevel: info
+          nodeSelector: {}
+          replicas: 1
+          resources:
+            limits:
+              cpu: '1'
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          runAsGroup: 1000
+          runAsUser: 1000
+          serviceAccount:
+            annotations: {}
+          tolerations: []
+        crdImage:
+          name: envoy-ai-gateway-crds
+          registry: ''
+          tag: v1.2.0-h1
+        extProc:
+          image:
+            registry: ''
+            repository: envoyproxy/ai-gateway-extproc
+            tag: v1.2.0
+          imagePullPolicy: IfNotPresent
+          logLevel: info
+        rateLimit:
+          image:
+            registry: ''
+            repository: envoyproxy/ratelimit
+            tag: 0482748e
+          imagePullPolicy: IfNotPresent
+          nodeSelector: {}
+          platformAssignedIds: false
+          redis:
+            image:
+              registry: ''
+              repository: superset/redis
+              tag: 7.4.11-alpine-h4
+            imagePullPolicy: IfNotPresent
+            maxMemory: 128mb
+            nodeSelector: {}
+            podDisruptionBudget:
+              minAvailable: 0
+            resources:
+              limits:
+                cpu: 500m
+                memory: 192Mi
+              requests:
+                cpu: 50m
+                memory: 192Mi
+            runAsGroup: 1001
+            runAsUser: 1001
+            tolerations: []
+          replicas: 1
+          resources:
+            limits:
+              cpu: '1'
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          tolerations: []
+        requestHeaderAttributes:
+          metrics: x-hopsworks-user:hopsworks.user
+          span: agent-session-id:session.id,x-hopsworks-user:hopsworks.user,x-hopsworks-project-id:hopsworks.project.id
+        ```
+
+`hw-envoy-gateway.aiGateway.controller` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.controller" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.controller }
+:   Type `object`.
+    the controller (the ai-gateway-controller Deployment). It reconciles the AIGatewayRoutes the backend writes, answers Envoy Gateway's extension-manager calls on port 1063 and injects the ext_proc sidecar into the AI Gateway's Envoy pods through a mutating webhook.
+
+    ??? note "Default"
+
+        ```yaml
+        image:
+          registry: ''
+          repository: envoyproxy/ai-gateway-controller
+          tag: v1.2.0
+        imagePullPolicy: IfNotPresent
+        logLevel: info
+        nodeSelector: {}
+        replicas: 1
+        resources:
+          limits:
+            cpu: '1'
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        runAsGroup: 1000
+        runAsUser: 1000
+        serviceAccount:
+          annotations: {}
+        tolerations: []
+        ```
+
+`hw-envoy-gateway.aiGateway.controller.image` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.controller.image" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.controller.image }
+:   Type `object`, default `{"registry":"","repository":"envoyproxy/ai-gateway-controller","tag":"v1.2.0"}`.
+    the controller image, a mirror of the Docker Hub image envoyproxy/ai-gateway-controller under the Hopsworks registry at the same path. The tag is the upstream Agent Router release (Chart.yaml annotation hopsworks.ai/agent-router-version) and equals extProc.image.tag.
+
+`hw-envoy-gateway.aiGateway.controller.image.registry` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.controller.image.registry" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.controller.image.registry }
+:   Type `string`, default `""`.
+    registry prefix; empty means global._hopsworks.imageRegistry
+
+`hw-envoy-gateway.aiGateway.controller.imagePullPolicy` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.controller.imagePullPolicy" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.controller.imagePullPolicy }
+:   Type `string`, default `"IfNotPresent"`.
+    pull policy of the controller image; global._hopsworks.imagePullPolicy takes precedence when set
+
+`hw-envoy-gateway.aiGateway.controller.logLevel` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.controller.logLevel" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.controller.logLevel }
+:   Type `string`, default `"info"`.
+    log level of the controller
+
+`hw-envoy-gateway.aiGateway.controller.nodeSelector` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.controller.nodeSelector" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.controller.nodeSelector }
+:   Type `object`, default `{}`.
+    nodeSelector of the controller; falls back to global._hopsworks.nodeSelector
+
+`hw-envoy-gateway.aiGateway.controller.replicas` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.controller.replicas" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.controller.replicas }
+:   Type `int`, default `1`.
+    replicas of the controller. Leader election is on, so more than one is safe.
+
+`hw-envoy-gateway.aiGateway.controller.resources` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.controller.resources" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.controller.resources }
+:   Type `object`.
+    resources of the controller container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: '1'
+          memory: 512Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        ```
+
+`hw-envoy-gateway.aiGateway.controller.runAsGroup` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.controller.runAsGroup" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.controller.runAsGroup }
+:   Type `int`, default `1000`.
+    group id (and fsGroup) of the controller pod, as runAsUser
+
+`hw-envoy-gateway.aiGateway.controller.runAsUser` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.controller.runAsUser" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.controller.runAsUser }
+:   Type `int`, default `1000`.
+    user id of the controller pod when global._hopsworks.securityContextEnabled is on. Upstream pins 65532, the image's own user; the default here is the chart-wide 1000, as for the Envoy Gateway controller.
+
+`hw-envoy-gateway.aiGateway.controller.serviceAccount.annotations` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.controller.serviceAccount.annotations" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.controller.serviceAccount.annotations }
+:   Type `object`, default `{}`.
+    annotations of the controller's service account, merged over global._hopsworks.serviceAccountAnnotations
+
+`hw-envoy-gateway.aiGateway.controller.tolerations` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.controller.tolerations" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.controller.tolerations }
+:   Type `list`, default `[]`.
+    tolerations of the controller; fall back to global._hopsworks.tolerations
+
+`hw-envoy-gateway.aiGateway.crdImage` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.crdImage" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.crdImage }
+:   Type `object`, default `{"name":"envoy-ai-gateway-crds","registry":"","tag":"v1.2.0-h1"}`.
+    the image that carries the six LLM Gateway CRDs (docker-images envoy-ai-gateway-crds, on the hwutils toolbox image). They are 2 MB and cannot ship in the chart (the release Secret cap, see crdImage above), so a second install and upgrade hook applies them server-side. The tag starts with the upstream Agent Router release followed by an image revision.
+
+`hw-envoy-gateway.aiGateway.crdImage.registry` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.crdImage.registry" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.crdImage.registry }
+:   Type `string`, default `""`.
+    registry prefix; empty means global._hopsworks.imageRegistry plus the hopsworks project
+
+`hw-envoy-gateway.aiGateway.extProc` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.extProc" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.extProc }
+:   Type `object`.
+    the ext_proc sidecar the controller injects into the AI Gateway's Envoy pods. Only its image and log level are set here, as controller arguments; its resources and, on OpenShift, its security context come from the GatewayConfig the kserve subchart applies (kserve.envoyGateway.aiGateway.extProc).
+
+    ??? note "Default"
+
+        ```yaml
+        image:
+          registry: ''
+          repository: envoyproxy/ai-gateway-extproc
+          tag: v1.2.0
+        imagePullPolicy: IfNotPresent
+        logLevel: info
+        ```
+
+`hw-envoy-gateway.aiGateway.extProc.image` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.extProc.image" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.extProc.image }
+:   Type `object`, default `{"registry":"","repository":"envoyproxy/ai-gateway-extproc","tag":"v1.2.0"}`.
+    the ext_proc image, a mirror of the Docker Hub image envoyproxy/ai-gateway-extproc under the Hopsworks registry at the same path. No pod of the release runs it before the first AIGatewayRoute exists, so the image-list action reads it from the controller's arguments.
+
+`hw-envoy-gateway.aiGateway.extProc.image.registry` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.extProc.image.registry" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.extProc.image.registry }
+:   Type `string`, default `""`.
+    registry prefix; empty means global._hopsworks.imageRegistry
+
+`hw-envoy-gateway.aiGateway.extProc.imagePullPolicy` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.extProc.imagePullPolicy" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.extProc.imagePullPolicy }
+:   Type `string`, default `"IfNotPresent"`.
+    pull policy of the ext_proc image
+
+`hw-envoy-gateway.aiGateway.extProc.logLevel` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.extProc.logLevel" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.extProc.logLevel }
+:   Type `string`, default `"info"`.
+    log level of the ext_proc sidecar
+
+`hw-envoy-gateway.aiGateway.rateLimit` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit }
+:   Type `object`.
+    the global rate limit of the AI Gateway: the rate limit service Envoy Gateway deploys on demand (rateLimit and rateLimitDeployment in its configuration) and the Redis it counts in. Limits are written per project by the Hopsworks backend as BackendTrafficPolicies. Without Redis or the service, requests pass unlimited (fail open, Envoy Gateway's default): a limit is a guard against runaway use, not a security boundary.
+
+    ??? note "Default"
+
+        ```yaml
+        image:
+          registry: ''
+          repository: envoyproxy/ratelimit
+          tag: 0482748e
+        imagePullPolicy: IfNotPresent
+        nodeSelector: {}
+        platformAssignedIds: false
+        redis:
+          image:
+            registry: ''
+            repository: superset/redis
+            tag: 7.4.11-alpine-h4
+          imagePullPolicy: IfNotPresent
+          maxMemory: 128mb
+          nodeSelector: {}
+          podDisruptionBudget:
+            minAvailable: 0
+          resources:
+            limits:
+              cpu: 500m
+              memory: 192Mi
+            requests:
+              cpu: 50m
+              memory: 192Mi
+          runAsGroup: 1001
+          runAsUser: 1001
+          tolerations: []
+        replicas: 1
+        resources:
+          limits:
+            cpu: '1'
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        tolerations: []
+        ```
+
+`hw-envoy-gateway.aiGateway.rateLimit.image` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.image" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.image }
+:   Type `object`, default `{"registry":"","repository":"envoyproxy/ratelimit","tag":"0482748e"}`.
+    the rate limit service image, a mirror of the Docker Hub image envoyproxy/ratelimit under the Hopsworks registry at the same path. The tag is the one Envoy Gateway v1.9.2 defaults to. Envoy Gateway creates the Deployment and Service (envoy-ratelimit) itself, from this and the settings below, once the first policy refers to it.
+
+`hw-envoy-gateway.aiGateway.rateLimit.image.registry` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.image.registry" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.image.registry }
+:   Type `string`, default `""`.
+    registry prefix; empty means global._hopsworks.imageRegistry
+
+`hw-envoy-gateway.aiGateway.rateLimit.imagePullPolicy` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.imagePullPolicy" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.imagePullPolicy }
+:   Type `string`, default `"IfNotPresent"`.
+    pull policy of the rate limit image; global._hopsworks.imagePullPolicy takes precedence when set
+
+`hw-envoy-gateway.aiGateway.rateLimit.nodeSelector` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.nodeSelector" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.nodeSelector }
+:   Type `object`, default `{}`.
+    nodeSelector of the rate limit pod; falls back to global._hopsworks.nodeSelector
+
+`hw-envoy-gateway.aiGateway.rateLimit.platformAssignedIds` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.platformAssignedIds" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.platformAssignedIds }
+:   Type `bool`, default `false`.
+    leave the user and group ids of the rate limit pod to the platform. Envoy Gateway runs it as 65534, which OpenShift's restricted-v2 refuses unless the namespace range holds it; values.openshift.yaml turns this on.
+
+`hw-envoy-gateway.aiGateway.rateLimit.redis` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.redis" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.redis }
+:   Type `object`.
+    the Redis the rate limit service counts in: a Deployment and a Service in the release namespace, with no persistence. Every counter key carries an expiry, so a restart only resets the current windows.
+
+    ??? note "Default"
+
+        ```yaml
+        image:
+          registry: ''
+          repository: superset/redis
+          tag: 7.4.11-alpine-h4
+        imagePullPolicy: IfNotPresent
+        maxMemory: 128mb
+        nodeSelector: {}
+        podDisruptionBudget:
+          minAvailable: 0
+        resources:
+          limits:
+            cpu: 500m
+            memory: 192Mi
+          requests:
+            cpu: 50m
+            memory: 192Mi
+        runAsGroup: 1001
+        runAsUser: 1001
+        tolerations: []
+        ```
+
+`hw-envoy-gateway.aiGateway.rateLimit.redis.image` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.redis.image" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.redis.image }
+:   Type `object`, default `{"registry":"","repository":"superset/redis","tag":"7.4.11-alpine-h4"}`.
+    the Redis image, the one Superset runs (docker-images superset/redis, upstream alpine Redis) under the Hopsworks registry. The entrypoint is upstream's; only its arguments are set.
+
+`hw-envoy-gateway.aiGateway.rateLimit.redis.image.registry` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.redis.image.registry" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.redis.image.registry }
+:   Type `string`, default `""`.
+    registry prefix; empty means global._hopsworks.imageRegistry
+
+`hw-envoy-gateway.aiGateway.rateLimit.redis.imagePullPolicy` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.redis.imagePullPolicy" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.redis.imagePullPolicy }
+:   Type `string`, default `"IfNotPresent"`.
+    pull policy of the Redis image; global._hopsworks.imagePullPolicy takes precedence when set
+
+`hw-envoy-gateway.aiGateway.rateLimit.redis.maxMemory` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.redis.maxMemory" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.redis.maxMemory }
+:   Type `string`, default `"128mb"`.
+    `maxmemory` of Redis. Keep it below the memory limit: the policy evicts keys that have an expiry, soonest first, and writes fail once only keys without one are left.
+
+`hw-envoy-gateway.aiGateway.rateLimit.redis.nodeSelector` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.redis.nodeSelector" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.redis.nodeSelector }
+:   Type `object`, default `{}`.
+    nodeSelector of the Redis pod; falls back to global._hopsworks.nodeSelector
+
+`hw-envoy-gateway.aiGateway.rateLimit.redis.podDisruptionBudget` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.redis.podDisruptionBudget" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.redis.podDisruptionBudget }
+:   Type `object`, default `{"minAvailable":0}`.
+    PodDisruptionBudget of the Redis pod; minAvailable 0 renders none
+
+`hw-envoy-gateway.aiGateway.rateLimit.redis.resources` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.redis.resources" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.redis.resources }
+:   Type `object`.
+    resources of the Redis container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: 500m
+          memory: 192Mi
+        requests:
+          cpu: 50m
+          memory: 192Mi
+        ```
+
+`hw-envoy-gateway.aiGateway.rateLimit.redis.runAsGroup` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.redis.runAsGroup" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.redis.runAsGroup }
+:   Type `int`, default `1001`.
+    group id (and fsGroup) of the Redis pod, as runAsUser
+
+`hw-envoy-gateway.aiGateway.rateLimit.redis.runAsUser` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.redis.runAsUser" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.redis.runAsUser }
+:   Type `int`, default `1001`.
+    user id of the Redis pod when global._hopsworks.securityContextEnabled is on; the image's own redis user is 999, the Superset Redis runs as 1001
+
+`hw-envoy-gateway.aiGateway.rateLimit.redis.tolerations` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.redis.tolerations" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.redis.tolerations }
+:   Type `list`, default `[]`.
+    tolerations of the Redis pod; fall back to global._hopsworks.tolerations
+
+`hw-envoy-gateway.aiGateway.rateLimit.replicas` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.replicas" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.replicas }
+:   Type `int`, default `1`.
+    replicas of the rate limit service. The counters live in Redis, so more than one is safe.
+
+`hw-envoy-gateway.aiGateway.rateLimit.resources` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.resources" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.resources }
+:   Type `object`.
+    resources of the rate limit container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: '1'
+          memory: 512Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        ```
+
+`hw-envoy-gateway.aiGateway.rateLimit.tolerations` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.rateLimit.tolerations" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.rateLimit.tolerations }
+:   Type `list`, default `[]`.
+    tolerations of the rate limit pod; fall back to global._hopsworks.tolerations
+
+`hw-envoy-gateway.aiGateway.requestHeaderAttributes` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.requestHeaderAttributes" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.requestHeaderAttributes }
+:   Type `object`.
+    the arguments of the controller that attribute traces and metrics to the caller. Each entry is `<request header>:<attribute>`; the ext_proc sidecar copies the header's value onto the span (spanRequestHeaderAttributes) or onto the gen_ai metrics as a label (metricsRequestHeaderAttributes). The headers are set by model-serving-authenticator. Metric labels multiply the series, so the metrics list holds only the user, whose values are bounded by the project members.
+
+    ??? note "Default"
+
+        ```yaml
+        metrics: x-hopsworks-user:hopsworks.user
+        span: agent-session-id:session.id,x-hopsworks-user:hopsworks.user,x-hopsworks-project-id:hopsworks.project.id
+        ```
+
+`hw-envoy-gateway.aiGateway.requestHeaderAttributes.metrics` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.requestHeaderAttributes.metrics" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.requestHeaderAttributes.metrics }
+:   Type `string`, default `"x-hopsworks-user:hopsworks.user"`.
+    metric labels, comma-separated; empty drops the flag
+
+`hw-envoy-gateway.aiGateway.requestHeaderAttributes.span` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.requestHeaderAttributes.span" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.requestHeaderAttributes.span }
+:   Type `string`.
+    span attributes, comma-separated
+
+    ??? note "Default"
+
+        ```yaml
+        agent-session-id:session.id,x-hopsworks-user:hopsworks.user,x-hopsworks-project-id:hopsworks.project.id
+        ```
+
+</div>
 
 <!-- END GENERATED VALUES -->
 
@@ -55596,7 +56329,7 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -56003,7 +56736,7 @@ With `kueue.enabled=false` Hopsworks uses a Kueue installed outside its release;
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -56389,7 +57122,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -56884,7 +57617,7 @@ Values under `judge` configure Judge, the active cluster arbitrator service.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -57019,7 +57752,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -57899,7 +58632,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -58197,6 +58930,29 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     ```yaml
     kserve:
       envoyGateway:
+        aiGateway:
+          bufferLimit: 50Mi
+          extProc:
+            resources:
+              limits:
+                cpu: '1'
+                memory: 512Mi
+              requests:
+                cpu: 50m
+                memory: 128Mi
+          podDisruptionBudget:
+            enabled: true
+            minAvailable: 1
+          replicas: 1
+          resources:
+            limits:
+              cpu: '2'
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          tracing:
+            captureContent: false
         applyJob:
           resources:
             limits:
@@ -58245,6 +59001,29 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     ??? note "Default"
 
         ```yaml
+        aiGateway:
+          bufferLimit: 50Mi
+          extProc:
+            resources:
+              limits:
+                cpu: '1'
+                memory: 512Mi
+              requests:
+                cpu: 50m
+                memory: 128Mi
+          podDisruptionBudget:
+            enabled: true
+            minAvailable: 1
+          replicas: 1
+          resources:
+            limits:
+              cpu: '2'
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          tracing:
+            captureContent: false
         applyJob:
           resources:
             limits:
@@ -58283,6 +59062,83 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
               cpu: 10m
               memory: 32Mi
         ```
+
+`kserve.envoyGateway.aiGateway` <a class="headerlink" href="#helm.kserve.envoyGateway.aiGateway" title="Permanent link">#</a> { #helm.kserve.envoyGateway.aiGateway }
+:   Type `object`.
+    the AI Gateway, rendered when global._hopsworks.envoyGateway.aiGateway.enabled: a second Gateway on the same GatewayClass and controller, ClusterIP only, that carries the AIGatewayRoutes (one OpenAI-compatible endpoint per project) so that the sidecar the LLM Gateway controller injects into its Envoy pods never touches the Hopsworks Gateway's. The Gateway, its EnvoyProxy, GatewayConfig and policies are applied by the same hook Job as the Hopsworks Gateway's. Its pod placement, ids, shutdown settings and shutdown-manager resources are the Hopsworks Gateway's.
+
+    ??? note "Default"
+
+        ```yaml
+        bufferLimit: 50Mi
+        extProc:
+          resources:
+            limits:
+              cpu: '1'
+              memory: 512Mi
+            requests:
+              cpu: 50m
+              memory: 128Mi
+        podDisruptionBudget:
+          enabled: true
+          minAvailable: 1
+        replicas: 1
+        resources:
+          limits:
+            cpu: '2'
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        tracing:
+          captureContent: false
+        ```
+
+`kserve.envoyGateway.aiGateway.bufferLimit` <a class="headerlink" href="#helm.kserve.envoyGateway.aiGateway.bufferLimit" title="Permanent link">#</a> { #helm.kserve.envoyGateway.aiGateway.bufferLimit }
+:   Type `string`, default `"50Mi"`.
+    the AI Gateway's downstream connection buffer limit (ClientTrafficPolicy connection.bufferLimit): a request body larger than this is refused, and the ext_proc reads the whole body of a chat request to find the model
+
+`kserve.envoyGateway.aiGateway.extProc.resources` <a class="headerlink" href="#helm.kserve.envoyGateway.aiGateway.extProc.resources" title="Permanent link">#</a> { #helm.kserve.envoyGateway.aiGateway.extProc.resources }
+:   Type `object`.
+    resources of the ext_proc sidecar the LLM Gateway controller injects into every pod of the AI Gateway, set through the GatewayConfig (the controller's image, set in hw-envoy-gateway.aiGateway.extProc.image, is not overridden there, so it has one source)
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: '1'
+          memory: 512Mi
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        ```
+
+`kserve.envoyGateway.aiGateway.replicas` <a class="headerlink" href="#helm.kserve.envoyGateway.aiGateway.replicas" title="Permanent link">#</a> { #helm.kserve.envoyGateway.aiGateway.replicas }
+:   Type `int`, default `1`.
+    Envoy proxy replicas of the AI Gateway
+
+`kserve.envoyGateway.aiGateway.resources` <a class="headerlink" href="#helm.kserve.envoyGateway.aiGateway.resources" title="Permanent link">#</a> { #helm.kserve.envoyGateway.aiGateway.resources }
+:   Type `object`.
+    resources of the AI Gateway's Envoy container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: '2'
+          memory: 1Gi
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        ```
+
+`kserve.envoyGateway.aiGateway.tracing` <a class="headerlink" href="#helm.kserve.envoyGateway.aiGateway.tracing" title="Permanent link">#</a> { #helm.kserve.envoyGateway.aiGateway.tracing }
+:   Type `object`, default `{"captureContent":false}`.
+    tracing of the AI Gateway, on with global._hopsworks.envoyGateway.aiGateway.tracing.enabled: the ext_proc sidecar exports OpenTelemetry spans to the agent-router-otlp collector (charts/hopsworks, agentRouter.tracing), which stores them in the agent__router.spans RonDB table. Changing this rolls the AI Gateway's Envoy pods once.
+
+`kserve.envoyGateway.aiGateway.tracing.captureContent` <a class="headerlink" href="#helm.kserve.envoyGateway.aiGateway.tracing.captureContent" title="Permanent link">#</a> { #helm.kserve.envoyGateway.aiGateway.tracing.captureContent }
+:   Type `bool`, default `false`.
+    put the prompts and responses (chat messages, completions, embedding inputs) into the spans. Off by default: the traces then hold timing, model, caller and token counts only.
 
 `kserve.envoyGateway.applyJob` <a class="headerlink" href="#helm.kserve.envoyGateway.applyJob" title="Permanent link">#</a> { #helm.kserve.envoyGateway.applyJob }
 :   Type `object`.
@@ -59530,8 +60386,15 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
         podDisruptionBudget:
           enabled: true
           minAvailable: 1
-        replicaCount: 1
+        replicaCount: 2
         requireExternalUserLoginAfterHours: 720
+        resources:
+          limits:
+            cpu: '1'
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 128Mi
         serviceAccount:
           annotations: {}
         tag: 5.3.0-SNAPSHOT
@@ -59552,11 +60415,27 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 :   Type `int`, default `1`.
 
 `kserve.servingAuthenticator.replicaCount` <a class="headerlink" href="#helm.kserve.servingAuthenticator.replicaCount" title="Permanent link">#</a> { #helm.kserve.servingAuthenticator.replicaCount }
-:   Type `int`, default `1`.
+:   Type `int`, default `2`.
+    replicas of the authenticator. Istio and Envoy Gateway fail closed without it, so two replicas keep inference requests answered while one restarts; the PodDisruptionBudget renders from two on.
 
 `kserve.servingAuthenticator.requireExternalUserLoginAfterHours` <a class="headerlink" href="#helm.kserve.servingAuthenticator.requireExternalUserLoginAfterHours" title="Permanent link">#</a> { #helm.kserve.servingAuthenticator.requireExternalUserLoginAfterHours }
 :   Type `int`, default `720`.
     Number of hours after which external users are required to sign in to Hopsworks to refresh their external user groups. Allowed values are -1, 0 and greater than 0, where -1 skips the periodic sign-in requirement and 0 disables external access completely.
+
+`kserve.servingAuthenticator.resources` <a class="headerlink" href="#helm.kserve.servingAuthenticator.resources" title="Permanent link">#</a> { #helm.kserve.servingAuthenticator.resources }
+:   Type `object`.
+    resources of the authenticator container. The final LLM gateway check reads request bodies up to the AI Gateway buffer limit, so the memory limit covers a few of those at once.
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: '1'
+          memory: 1Gi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        ```
 
 `kserve.servingAuthenticator.serviceAccount.annotations` <a class="headerlink" href="#helm.kserve.servingAuthenticator.serviceAccount.annotations" title="Permanent link">#</a> { #helm.kserve.servingAuthenticator.serviceAccount.annotations }
 :   Type `object`, default `{}`.
@@ -59664,7 +60543,7 @@ Values under `minio` configure MinIO, an S3-compatible object store deployed ins
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) is `true`.
 
@@ -59919,7 +60798,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -60895,7 +61774,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -61405,7 +62284,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -61565,7 +62444,7 @@ Values under `ray` configure the KubeRay operator, which runs the Ray clusters b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.ray.enabled`](global.md#helm.global._hopsworks.ray.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -61712,7 +62591,7 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -64630,7 +65509,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -66215,7 +67094,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -67661,7 +68540,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -67969,7 +68848,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 

@@ -4,7 +4,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -302,6 +302,29 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     ```yaml
     kserve:
       envoyGateway:
+        aiGateway:
+          bufferLimit: 50Mi
+          extProc:
+            resources:
+              limits:
+                cpu: '1'
+                memory: 512Mi
+              requests:
+                cpu: 50m
+                memory: 128Mi
+          podDisruptionBudget:
+            enabled: true
+            minAvailable: 1
+          replicas: 1
+          resources:
+            limits:
+              cpu: '2'
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          tracing:
+            captureContent: false
         applyJob:
           resources:
             limits:
@@ -350,6 +373,29 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     ??? note "Default"
 
         ```yaml
+        aiGateway:
+          bufferLimit: 50Mi
+          extProc:
+            resources:
+              limits:
+                cpu: '1'
+                memory: 512Mi
+              requests:
+                cpu: 50m
+                memory: 128Mi
+          podDisruptionBudget:
+            enabled: true
+            minAvailable: 1
+          replicas: 1
+          resources:
+            limits:
+              cpu: '2'
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          tracing:
+            captureContent: false
         applyJob:
           resources:
             limits:
@@ -388,6 +434,83 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
               cpu: 10m
               memory: 32Mi
         ```
+
+`kserve.envoyGateway.aiGateway` <a class="headerlink" href="#helm.kserve.envoyGateway.aiGateway" title="Permanent link">#</a> { #helm.kserve.envoyGateway.aiGateway }
+:   Type `object`.
+    the AI Gateway, rendered when global._hopsworks.envoyGateway.aiGateway.enabled: a second Gateway on the same GatewayClass and controller, ClusterIP only, that carries the AIGatewayRoutes (one OpenAI-compatible endpoint per project) so that the sidecar the LLM Gateway controller injects into its Envoy pods never touches the Hopsworks Gateway's. The Gateway, its EnvoyProxy, GatewayConfig and policies are applied by the same hook Job as the Hopsworks Gateway's. Its pod placement, ids, shutdown settings and shutdown-manager resources are the Hopsworks Gateway's.
+
+    ??? note "Default"
+
+        ```yaml
+        bufferLimit: 50Mi
+        extProc:
+          resources:
+            limits:
+              cpu: '1'
+              memory: 512Mi
+            requests:
+              cpu: 50m
+              memory: 128Mi
+        podDisruptionBudget:
+          enabled: true
+          minAvailable: 1
+        replicas: 1
+        resources:
+          limits:
+            cpu: '2'
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        tracing:
+          captureContent: false
+        ```
+
+`kserve.envoyGateway.aiGateway.bufferLimit` <a class="headerlink" href="#helm.kserve.envoyGateway.aiGateway.bufferLimit" title="Permanent link">#</a> { #helm.kserve.envoyGateway.aiGateway.bufferLimit }
+:   Type `string`, default `"50Mi"`.
+    the AI Gateway's downstream connection buffer limit (ClientTrafficPolicy connection.bufferLimit): a request body larger than this is refused, and the ext_proc reads the whole body of a chat request to find the model
+
+`kserve.envoyGateway.aiGateway.extProc.resources` <a class="headerlink" href="#helm.kserve.envoyGateway.aiGateway.extProc.resources" title="Permanent link">#</a> { #helm.kserve.envoyGateway.aiGateway.extProc.resources }
+:   Type `object`.
+    resources of the ext_proc sidecar the LLM Gateway controller injects into every pod of the AI Gateway, set through the GatewayConfig (the controller's image, set in hw-envoy-gateway.aiGateway.extProc.image, is not overridden there, so it has one source)
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: '1'
+          memory: 512Mi
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        ```
+
+`kserve.envoyGateway.aiGateway.replicas` <a class="headerlink" href="#helm.kserve.envoyGateway.aiGateway.replicas" title="Permanent link">#</a> { #helm.kserve.envoyGateway.aiGateway.replicas }
+:   Type `int`, default `1`.
+    Envoy proxy replicas of the AI Gateway
+
+`kserve.envoyGateway.aiGateway.resources` <a class="headerlink" href="#helm.kserve.envoyGateway.aiGateway.resources" title="Permanent link">#</a> { #helm.kserve.envoyGateway.aiGateway.resources }
+:   Type `object`.
+    resources of the AI Gateway's Envoy container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: '2'
+          memory: 1Gi
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        ```
+
+`kserve.envoyGateway.aiGateway.tracing` <a class="headerlink" href="#helm.kserve.envoyGateway.aiGateway.tracing" title="Permanent link">#</a> { #helm.kserve.envoyGateway.aiGateway.tracing }
+:   Type `object`, default `{"captureContent":false}`.
+    tracing of the AI Gateway, on with global._hopsworks.envoyGateway.aiGateway.tracing.enabled: the ext_proc sidecar exports OpenTelemetry spans to the agent-router-otlp collector (charts/hopsworks, agentRouter.tracing), which stores them in the agent__router.spans RonDB table. Changing this rolls the AI Gateway's Envoy pods once.
+
+`kserve.envoyGateway.aiGateway.tracing.captureContent` <a class="headerlink" href="#helm.kserve.envoyGateway.aiGateway.tracing.captureContent" title="Permanent link">#</a> { #helm.kserve.envoyGateway.aiGateway.tracing.captureContent }
+:   Type `bool`, default `false`.
+    put the prompts and responses (chat messages, completions, embedding inputs) into the spans. Off by default: the traces then hold timing, model, caller and token counts only.
 
 `kserve.envoyGateway.applyJob` <a class="headerlink" href="#helm.kserve.envoyGateway.applyJob" title="Permanent link">#</a> { #helm.kserve.envoyGateway.applyJob }
 :   Type `object`.
@@ -1635,8 +1758,15 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
         podDisruptionBudget:
           enabled: true
           minAvailable: 1
-        replicaCount: 1
+        replicaCount: 2
         requireExternalUserLoginAfterHours: 720
+        resources:
+          limits:
+            cpu: '1'
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 128Mi
         serviceAccount:
           annotations: {}
         tag: 5.3.0-SNAPSHOT
@@ -1657,11 +1787,27 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 :   Type `int`, default `1`.
 
 `kserve.servingAuthenticator.replicaCount` <a class="headerlink" href="#helm.kserve.servingAuthenticator.replicaCount" title="Permanent link">#</a> { #helm.kserve.servingAuthenticator.replicaCount }
-:   Type `int`, default `1`.
+:   Type `int`, default `2`.
+    replicas of the authenticator. Istio and Envoy Gateway fail closed without it, so two replicas keep inference requests answered while one restarts; the PodDisruptionBudget renders from two on.
 
 `kserve.servingAuthenticator.requireExternalUserLoginAfterHours` <a class="headerlink" href="#helm.kserve.servingAuthenticator.requireExternalUserLoginAfterHours" title="Permanent link">#</a> { #helm.kserve.servingAuthenticator.requireExternalUserLoginAfterHours }
 :   Type `int`, default `720`.
     Number of hours after which external users are required to sign in to Hopsworks to refresh their external user groups. Allowed values are -1, 0 and greater than 0, where -1 skips the periodic sign-in requirement and 0 disables external access completely.
+
+`kserve.servingAuthenticator.resources` <a class="headerlink" href="#helm.kserve.servingAuthenticator.resources" title="Permanent link">#</a> { #helm.kserve.servingAuthenticator.resources }
+:   Type `object`.
+    resources of the authenticator container. The final LLM gateway check reads request bodies up to the AI Gateway buffer limit, so the memory limit covers a few of those at once.
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: '1'
+          memory: 1Gi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+        ```
 
 `kserve.servingAuthenticator.serviceAccount.annotations` <a class="headerlink" href="#helm.kserve.servingAuthenticator.serviceAccount.annotations" title="Permanent link">#</a> { #helm.kserve.servingAuthenticator.serviceAccount.annotations }
 :   Type `object`, default `{}`.

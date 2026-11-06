@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -30,10 +30,6 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.
             pullPolicy: IfNotPresent
             repository: hopsworks/hopsfs-csi
             tag: 0.2.0-SNAPSHOT
-        envoyGateway:
-          enabled: false
-          gatewayName: kserve-ingress-gateway
-          kserveStandardMode: true
         executor_uid: 1235
         full_platform: true
         grafana:
@@ -191,22 +187,6 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.
 `global._hopsworks.csi.driverName` <a class="headerlink" href="#helm.global._hopsworks.csi.driverName" title="Permanent link">#</a> { #helm.global._hopsworks.csi.driverName }
 :   Type `string`, default `""`.
     The CSI driver name of this release. Empty (the default) derives `<namespace>.hopsfs.csi.logicalclocks.com` from the release namespace, one name per release, which is what lets two Hopsworks installs share a cluster: kubelet routes CSI calls by driver name alone, so each release gets its own node plugin, socket, registration and CSIDriver object, also on nodes both installs use, and uninstalling one never touches the other's mounts (HWORKS-3297). Kubernetes caps a CSI driver name at 63 characters, so a namespace longer than 34 characters must set a shorter name here. Any name set here must be unique in the cluster: two releases on one name share one socket directory and one kubelet registration on every node they share, so neither is isolated from the other, which is the fault the per-release name removes; that is not a supported setup. Whatever the name, it is computed once (`hopsworkslib.csiDriverName`) for the plugin, the Airflow and Trino volumes and the backend `csi_driver_name` variable, so nothing can drift.
-
-`global._hopsworks.envoyGateway` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway }
-:   Type `object`.
-    Envoy Gateway: Standard-mode model deployments routed through the Kubernetes Gateway API on Envoy Gateway, installed next to Istio and Knative, which keep working as they are and stay the external front door. Two flags stage the rollout. `enabled` installs the hw-envoy-gateway subchart, the Hopsworks Gateway with its policies, and a lowest-precedence forward rule from the Istio ingress to the Gateway; with `kserveStandardMode: false` that routes nothing. `kserveStandardMode` (with `enabled`, and true by default, so `enabled` alone does both stages) switches KServe's Standard-mode InferenceServices from Istio-class Ingresses to HTTPRoutes on that Gateway, and the backend then moves each running deployment over once its new routes are accepted, with no downtime; set it to false first when rolling back, and roll back with helm upgrade, not helm rollback. See the Envoy Gateway page and the upgrade guide on docs.hopsworks.ai.
-
-    ??? note "Default"
-
-        ```yaml
-        enabled: false
-        gatewayName: kserve-ingress-gateway
-        kserveStandardMode: true
-        ```
-
-`global._hopsworks.envoyGateway.gatewayName` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway.gatewayName" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway.gatewayName }
-:   Type `string`, default `"kserve-ingress-gateway"`.
-    name of the Gateway, EnvoyProxy and Envoy Service in the release namespace; KServe's inferenceservice-config and the backend refer to it
 
 `global._hopsworks.executor_uid` <a class="headerlink" href="#helm.global._hopsworks.executor_uid" title="Permanent link">#</a> { #helm.global._hopsworks.executor_uid }
 :   Type `int`, default `1235`.
@@ -510,6 +490,70 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.
 `global._hopsworks.backups.ttl` <a class="headerlink" href="#helm.global._hopsworks.backups.ttl" title="Permanent link">#</a> { #helm.global._hopsworks.backups.ttl }
 :   Type `string`, default `nil`.
     time to live to control when to clean up backups. It is a number followed by either d (days) or h (hours) suffix.
+
+</div>
+
+## envoyGateway { #helm-values-global-envoygateway }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    global:
+      _hopsworks:
+        envoyGateway:
+          aiGateway:
+            enabled: false
+            gatewayName: kserve-ai-gateway
+            tracing:
+              enabled: false
+          enabled: false
+          gatewayName: kserve-ingress-gateway
+          kserveStandardMode: true
+    ```
+
+<div class="hops-values" markdown>
+
+`global._hopsworks.envoyGateway` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway }
+:   Type `object`.
+    Envoy Gateway: Standard-mode model deployments routed through the Kubernetes Gateway API on Envoy Gateway, installed next to Istio and Knative, which keep working as they are and stay the external front door. Two flags stage the rollout. `enabled` installs the hw-envoy-gateway subchart, the Hopsworks Gateway with its policies, and a lowest-precedence forward rule from the Istio ingress to the Gateway; with `kserveStandardMode: false` that routes nothing. `kserveStandardMode` (with `enabled`, and true by default, so `enabled` alone does both stages) switches KServe's Standard-mode InferenceServices from Istio-class Ingresses to HTTPRoutes on that Gateway, and the backend then moves each running deployment over once its new routes are accepted, with no downtime; set it to false first when rolling back, and roll back with helm upgrade, not helm rollback. See the Envoy Gateway page and the upgrade guide on docs.hopsworks.ai.
+
+    ??? note "Default"
+
+        ```yaml
+        aiGateway:
+          enabled: false
+          gatewayName: kserve-ai-gateway
+          tracing:
+            enabled: false
+        enabled: false
+        gatewayName: kserve-ingress-gateway
+        kserveStandardMode: true
+        ```
+
+`global._hopsworks.envoyGateway.aiGateway` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway.aiGateway" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway.aiGateway }
+:   Type `object`.
+    the LLM Gateway, built on Agent Router (previously Envoy AI Gateway) on top of Envoy Gateway: one OpenAI-compatible endpoint per project, `<inference endpoint>/v1/<project>/v1/{chat/completions,completions,embeddings,models}`, where the request's `model` selects the project's Standard-mode vLLM deployment with that served name. Needs `envoyGateway.enabled` (rendering fails without it). `enabled` installs the six CRDs, the controller, the Envoy Gateway extension wiring and a dedicated AI Gateway. `enabled` also turns on the Istio rewrite for `/v1/<project>/v1/...` and the forward rule, and tells the backend to publish the routes. Turning it off in one helm upgrade removes the routes and the AI Gateway. A deployment named `v1` must get another name before enabling. See the LLM Gateway page on docs.hopsworks.ai.
+
+    ??? note "Default"
+
+        ```yaml
+        enabled: false
+        gatewayName: kserve-ai-gateway
+        tracing:
+          enabled: false
+        ```
+
+`global._hopsworks.envoyGateway.aiGateway.gatewayName` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway.aiGateway.gatewayName" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway.aiGateway.gatewayName }
+:   Type `string`, default `"kserve-ai-gateway"`.
+    name of the AI Gateway, its EnvoyProxy, GatewayConfig and Envoy Service in the release namespace; the backend attaches the AIGatewayRoutes to it
+
+`global._hopsworks.envoyGateway.aiGateway.tracing.enabled` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway.aiGateway.tracing.enabled" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway.aiGateway.tracing.enabled }
+:   Type `bool`, default `false`.
+    trace the LLM Gateway's requests: the ext_proc sidecar exports spans to the agent-router-otlp collector, a Job creates the agent__router.spans table they are stored in, and the backend serves them on the project and admin Traces pages. Off by default because on RonDB 26.02 the trace pages' queries can stop a data node (DBQACC, DbaccMain.cpp:2154). Turning it off stops new spans and empties the Traces pages; the table and its rows stay until their TTL.
+
+`global._hopsworks.envoyGateway.gatewayName` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway.gatewayName" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway.gatewayName }
+:   Type `string`, default `"kserve-ingress-gateway"`.
+    name of the Gateway, EnvoyProxy and Envoy Service in the release namespace; KServe's inferenceservice-config and the backend refer to it
 
 </div>
 

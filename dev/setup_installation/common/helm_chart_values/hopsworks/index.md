@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793956779` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793970834` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -403,6 +403,186 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.volumes.worker` <a class="headerlink" href="#helm.hopsworks.volumes.worker" title="Permanent link">#</a> { #helm.hopsworks.volumes.worker }
 :   Type `list`, default `[]`.
+
+</div>
+
+## agentRouter { #helm-values-hopsworks-agentrouter }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    hopsworks:
+      agentRouter:
+        tracing:
+          collector:
+            imagePullPolicy: IfNotPresent
+            nodeSelector: {}
+            replicas: 1
+            resources:
+              limits:
+                cpu: '1'
+                memory: 512Mi
+              requests:
+                cpu: 100m
+                memory: 256Mi
+            tolerations: []
+          tableJob:
+            backoffLimit: 10
+            nodeSelector: {}
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 50m
+                memory: 64Mi
+            tolerations: []
+            ttlSecondsAfterFinished: null
+          ttlSeconds: 604800
+    ```
+
+<div class="hops-values" markdown>
+
+`hopsworks.agentRouter` <a class="headerlink" href="#helm.hopsworks.agentRouter" title="Permanent link">#</a> { #helm.hopsworks.agentRouter }
+:   Type `object`.
+    the storage side of the LLM Gateway's tracing, rendered with global._hopsworks.envoyGateway.aiGateway.enabled and global._hopsworks.envoyGateway.aiGateway.tracing.enabled. The AI Gateway's ext_proc sidecar exports OpenTelemetry spans (kserve.envoyGateway.aiGateway.tracing) to a collector, which writes them into one RonDB table, agent__router.spans, shared by every project. A Job creates that table, with its large columns on disk in the online feature store's tablespace (variables.featurestore_online_tablespace, else the cluster's NDB tablespace), so most of each span counts against the disk-column volume; keys, indexes and the filtered columns stay in DataMemory. Turning the AI Gateway or its tracing off leaves the table and its rows in place.
+
+    ??? note "Default"
+
+        ```yaml
+        tracing:
+          collector:
+            imagePullPolicy: IfNotPresent
+            nodeSelector: {}
+            replicas: 1
+            resources:
+              limits:
+                cpu: '1'
+                memory: 512Mi
+              requests:
+                cpu: 100m
+                memory: 256Mi
+            tolerations: []
+          tableJob:
+            backoffLimit: 10
+            nodeSelector: {}
+            resources:
+              limits:
+                cpu: 500m
+                memory: 256Mi
+              requests:
+                cpu: 50m
+                memory: 64Mi
+            tolerations: []
+            ttlSecondsAfterFinished: null
+          ttlSeconds: 604800
+        ```
+
+`hopsworks.agentRouter.tracing.collector` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.collector" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.collector }
+:   Type `object`.
+    the OTLP collector (the agent-router-otlp Deployment and Service, port 4318), which runs the hopsworks-otlp-gateway entry point of the otlp-sidecar image, the one the agent deployments use. It connects to the database as the Hopsworks root user, with its password from the users Secret.
+
+    ??? note "Default"
+
+        ```yaml
+        imagePullPolicy: IfNotPresent
+        nodeSelector: {}
+        replicas: 1
+        resources:
+          limits:
+            cpu: '1'
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        tolerations: []
+        ```
+
+`hopsworks.agentRouter.tracing.collector.imagePullPolicy` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.collector.imagePullPolicy" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.collector.imagePullPolicy }
+:   Type `string`, default `"IfNotPresent"`.
+    pull policy of the collector image; global._hopsworks.imagePullPolicy takes precedence when set
+
+`hopsworks.agentRouter.tracing.collector.nodeSelector` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.collector.nodeSelector" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.collector.nodeSelector }
+:   Type `object`, default `{}`.
+    nodeSelector of the collector; falls back to global._hopsworks.nodeSelector
+
+`hopsworks.agentRouter.tracing.collector.replicas` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.collector.replicas" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.collector.replicas }
+:   Type `int`, default `1`.
+    replicas of the collector. Spans are queued in memory and written in batches, so a restart loses what was queued; more replicas are safe.
+
+`hopsworks.agentRouter.tracing.collector.resources` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.collector.resources" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.collector.resources }
+:   Type `object`.
+    resources of the collector container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: '1'
+          memory: 512Mi
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        ```
+
+`hopsworks.agentRouter.tracing.collector.tolerations` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.collector.tolerations" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.collector.tolerations }
+:   Type `list`, default `[]`.
+    tolerations of the collector; fall back to global._hopsworks.tolerations
+
+`hopsworks.agentRouter.tracing.tableJob` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.tableJob" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.tableJob }
+:   Type `object`.
+    the Job that creates the database and the table, and alters the table's TTL when ttlSeconds changes. A plain Job named after a hash of its content, so a changed TTL runs it again.
+
+    ??? note "Default"
+
+        ```yaml
+        backoffLimit: 10
+        nodeSelector: {}
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        tolerations: []
+        ttlSecondsAfterFinished: null
+        ```
+
+`hopsworks.agentRouter.tracing.tableJob.backoffLimit` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.tableJob.backoffLimit" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.tableJob.backoffLimit }
+:   Type `int`, default `10`.
+    backoff limit of the Job
+
+`hopsworks.agentRouter.tracing.tableJob.nodeSelector` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.tableJob.nodeSelector" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.tableJob.nodeSelector }
+:   Type `object`, default `{}`.
+    nodeSelector of the Job; falls back to global._hopsworks.nodeSelector
+
+`hopsworks.agentRouter.tracing.tableJob.resources` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.tableJob.resources" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.tableJob.resources }
+:   Type `object`.
+    resources of the Job container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: 500m
+          memory: 256Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        ```
+
+`hopsworks.agentRouter.tracing.tableJob.tolerations` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.tableJob.tolerations" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.tableJob.tolerations }
+:   Type `list`, default `[]`.
+    tolerations of the Job; fall back to global._hopsworks.tolerations
+
+`hopsworks.agentRouter.tracing.tableJob.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.tableJob.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.tableJob.ttlSecondsAfterFinished }
+:   Type `string`, default `nil`.
+    TTL in seconds for the Job. Overrides the global default.
+
+`hopsworks.agentRouter.tracing.ttlSeconds` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.ttlSeconds" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.ttlSeconds }
+:   Type `int`, default `604800`.
+    how long a span stays in agent__router.spans, in seconds, by RonDB's native row TTL on created_at. The Job alters the table when this changes. The default is seven days.
 
 </div>
 
@@ -2721,6 +2901,12 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         lifecycle_webhook_url: ''
         livy_startup_timeout: '240'
         livy_version: 0.8.4-incubating-SNAPSHOT-bin
+        llm_gateway_deployment_request_limit: ''
+        llm_gateway_deployment_token_limit: ''
+        llm_gateway_project_request_limit: ''
+        llm_gateway_project_token_limit: ''
+        llm_gateway_user_request_limit: ''
+        llm_gateway_user_token_limit: ''
         loadbalancer_external_domain_datanode: null
         loadbalancer_external_domain_feature_query: null
         loadbalancer_external_domain_mysqld: null
@@ -3905,6 +4091,30 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.livy_version` <a class="headerlink" href="#helm.hopsworks.variables.livy_version" title="Permanent link">#</a> { #helm.hopsworks.variables.livy_version }
 :   Type `string`, default `"0.8.4-incubating-SNAPSHOT-bin"`.
+
+`hopsworks.variables.llm_gateway_deployment_request_limit` <a class="headerlink" href="#helm.hopsworks.variables.llm_gateway_deployment_request_limit" title="Permanent link">#</a> { #helm.hopsworks.variables.llm_gateway_deployment_request_limit }
+:   Type `string`, default `""`.
+    LLM gateway rate limit: Requests each LLM deployment can receive per period. Same format and seeding as llm_gateway_project_token_limit.
+
+`hopsworks.variables.llm_gateway_deployment_token_limit` <a class="headerlink" href="#helm.hopsworks.variables.llm_gateway_deployment_token_limit" title="Permanent link">#</a> { #helm.hopsworks.variables.llm_gateway_deployment_token_limit }
+:   Type `string`, default `""`.
+    LLM gateway rate limit: Input and output tokens each LLM deployment can serve per period. Same format and seeding as llm_gateway_project_token_limit.
+
+`hopsworks.variables.llm_gateway_project_request_limit` <a class="headerlink" href="#helm.hopsworks.variables.llm_gateway_project_request_limit" title="Permanent link">#</a> { #helm.hopsworks.variables.llm_gateway_project_request_limit }
+:   Type `string`, default `""`.
+    LLM gateway rate limit: Requests the whole project can send per period, all users and deployments together. Same format and seeding as llm_gateway_project_token_limit.
+
+`hopsworks.variables.llm_gateway_project_token_limit` <a class="headerlink" href="#helm.hopsworks.variables.llm_gateway_project_token_limit" title="Permanent link">#</a> { #helm.hopsworks.variables.llm_gateway_project_token_limit }
+:   Type `string`, default `""`.
+    LLM gateway rate limit: Input and output tokens the whole project can use per period, all users and deployments together. Cluster default for every project, `VALUE/UNIT` with UNIT MINUTE, HOUR or DAY, e.g. `1000000/HOUR`, with VALUE from 1 to 4294967295; `-1/HOUR` (-1 with any unit) or empty means no limit, and a bare -1 is refused. A project can override it. Seeded once (insert if absent): the Admin UI owns the value afterwards, and an upgrade keeps it.
+
+`hopsworks.variables.llm_gateway_user_request_limit` <a class="headerlink" href="#helm.hopsworks.variables.llm_gateway_user_request_limit" title="Permanent link">#</a> { #helm.hopsworks.variables.llm_gateway_user_request_limit }
+:   Type `string`, default `""`.
+    LLM gateway rate limit: Requests each user can send per period in a project. Same format and seeding as llm_gateway_project_token_limit.
+
+`hopsworks.variables.llm_gateway_user_token_limit` <a class="headerlink" href="#helm.hopsworks.variables.llm_gateway_user_token_limit" title="Permanent link">#</a> { #helm.hopsworks.variables.llm_gateway_user_token_limit }
+:   Type `string`, default `""`.
+    LLM gateway rate limit: Input and output tokens each user can use per period in a project. Same format and seeding as llm_gateway_project_token_limit.
 
 `hopsworks.variables.loadbalancer_external_domain_datanode` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_datanode" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_datanode }
 :   Type `string`, default `nil`.
