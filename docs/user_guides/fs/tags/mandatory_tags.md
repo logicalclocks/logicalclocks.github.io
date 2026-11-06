@@ -113,8 +113,11 @@ The `tags` argument takes the same shape as feature group tags: a `{"name": ...,
 
     # data_owner is mandatory for data sources; pass it at creation
     sc.save(tags=[{"name": "data_owner", "value": "email@hopsworks.ai"}])
+    ```
 
-    # or, equivalently
+    `create_data_source` takes the same `tags`, in place of `save()`:
+
+    ```python
     data_source = fs.create_data_source(
         sc,
         tags=[{"name": "data_owner", "value": "email@hopsworks.ai"}],
