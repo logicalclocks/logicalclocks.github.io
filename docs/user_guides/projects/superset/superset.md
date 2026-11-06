@@ -148,6 +148,8 @@ Charts are individual visualization components that can be added to dashboards.
 4. Choose a visualization type (e.g., Bar Chart, Line Chart, Pie Chart, Table)
 5. Click **Create new chart**
 
+On Superset 7.0, the datasets include a semantic view of each semantic project in the project, tagged **Semantic View**, whose charts read metrics by name; see [Dashboards in Superset][semantic-superset-charts].
+
 ### Configuring Charts
 
 The chart editor provides:

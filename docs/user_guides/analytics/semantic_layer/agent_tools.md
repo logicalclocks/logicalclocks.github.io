@@ -4,7 +4,7 @@ description: The semantic layer tools of the Hopsworks MCP server, and the hops-
 
 # Semantic Layer Agent Tools { #semantic-agent-tools }
 
-The Hopsworks MCP server gives an agent tools to discover the metrics of a project's semantic projects, query them, and compile their definitions.
+The Hopsworks MCP server gives an agent tools to discover the metrics of a project's semantic projects, query them, compile their definitions, and build Superset dashboards of them.
 The discovery and query tools have the names of the semantic layer tools of the dbt MCP server.
 
 ## Run the MCP server { #semantic-agent-tools-server }
@@ -35,6 +35,7 @@ The API key needs the `FEATURESTORE` and `TRINO` scopes for the semantic layer t
 | `get_semantic_project_tags` | READ | `semantic_project` | The semantic project's tags, name and value. |
 | `validate_semantic_project` | WRITE | `semantic_project` | The build's status and its issues. |
 | `compile_semantic_project` | WRITE | `semantic_project` | The build id, its status and its issues. |
+| `create_dashboard_from_metrics` | WRITE | `semantic_project`, `metrics`, then `group_by` and `title` (optional) | The id, title and URL of a Superset dashboard of the metrics, see [Dashboards in Superset][semantic-superset-create-agent]. |
 
 Group-bys and filters take the forms of [Query metrics][semantic-query-metrics]: `customer__country`, `metric_time__month` and `{{ Dimension('order__status') }} = 'completed'`.
 The CSV of `query_metrics` is capped in length, so a large result needs a `limit` or a filter.

@@ -90,6 +90,8 @@ Superset in Hopsworks includes several pre-configured roles:
 Each Hopsworks project user has a dedicated Superset role with the naming pattern `HW_role_<project_name>__<username>_superset` that controls access to that project's data sources.
 These roles are automatically created and managed by Hopsworks to maintain proper access control and data isolation.
 
+On Superset 7.0, each project with a semantic project also has the role `HW_semantic_<project_name>`, which reads the project's semantic layer `HopsworksSemantic__<project_name>`, as described in [Dashboards in Superset][semantic-superset-access].
+
 ## Database Connections
 
 Superset uses database connections to access data from the Hopsworks Feature Store.
@@ -193,6 +195,13 @@ In **Cluster Settings**, choose **Configuration** under _Infrastructure_ in the 
 - **Default**: `180000`
 - **Format**: Integer
 - Raise this if long running SQL Lab queries are cut off by the proxy.
+
+#### superset_semantic_enabled
+
+- **Description**: Enable or disable the Superset semantic layers of projects and dashboards from metrics, on Superset 7.0
+- **Default**: `true`
+- **Values**: `true` or `false`
+- Takes effect only while the semantic layer and Superset are enabled; see [Dashboards in Superset][semantic-superset-admin].
 
 #### superset_user_roles
 

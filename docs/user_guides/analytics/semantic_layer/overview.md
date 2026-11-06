@@ -77,6 +77,7 @@ In `FOLLOW` mode a promote of an older valid build rolls back until the next val
 4. The rows come back as an Arrow stream or as JSON.
 
 The Python client, the `hops` CLI, the UI and the agent tools all query through the gateway, from inside and outside the cluster.
+Superset charts query through the gateway too, with an API key of the project owner, see [Who can see what][semantic-superset-access].
 The semantic layer reads the offline feature store.
 
 ## Prerequisites { #semantic-overview-prerequisites }

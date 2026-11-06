@@ -241,6 +241,7 @@ nav:
               - Define Metrics: user_guides/analytics/semantic_layer/define_metrics.md
               - Compile and Builds: user_guides/analytics/semantic_layer/builds.md
               - Query Metrics: user_guides/analytics/semantic_layer/query.md
+              - Dashboards in Superset: user_guides/analytics/semantic_layer/dashboards.md
               - Tags: user_guides/analytics/semantic_layer/tags.md
               - Agent Tools: user_guides/analytics/semantic_layer/agent_tools.md
           - Superset: user_guides/projects/superset/superset.md

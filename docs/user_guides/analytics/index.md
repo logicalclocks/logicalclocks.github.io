@@ -60,6 +60,8 @@ Start with a query, then define metrics or turn it into a dashboard.
 
 - [Superset](../projects/superset/superset.md)
   SQL Lab, datasets, charts and dashboards inside the project.
+- [Dashboards from metrics][semantic-superset-dashboards]
+  Superset dashboards built from a semantic project's metrics.
 - [Share a dashboard](../projects/superset/superset.md#sharing-and-collaboration)
   Give project members access to a dashboard.
 - [Enable Superset](../../setup_installation/admin/superset.md)
