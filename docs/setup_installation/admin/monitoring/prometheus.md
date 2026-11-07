@@ -39,7 +39,7 @@ kube-state-metrics keeps collecting the whole cluster, and Prometheus stores its
 Container resource requests and limits are kept for every namespace, together with node allocatable and capacity, so cluster utilisation counts the resources other workloads hold.
 Series without a namespace, such as those of nodes, are kept.
 The Kueue metrics job keeps discovering in its configured Kueue namespace, and its series are scoped like those of kube-state-metrics.
-The kube-state-metrics and container series of the Kueue namespace are kept, so the alerts on pods and workloads keep covering Kueue, which Hopsworks jobs depend on.
+When Kueue is enabled (`global._hopsworks.kueue.enabled`), the kube-state-metrics and container series of its namespace are kept, so the alerts on pods and workloads keep covering Kueue, which Hopsworks jobs depend on.
 Platform dependencies that run outside the selected namespaces are discovered cluster-wide by label through `namespaceScope.dependencies`.
 The defaults find the NVIDIA GPU operator's DCGM exporter, labelled `app.kubernetes.io/component=nvidia-dcgm-exporter`, and OpenCost, labelled `app.kubernetes.io/name=opencost`, in any namespace, so GPU metrics and the cost metrics the admin Costs page reads back remain available.
 Each entry gets a scrape job of its own, a copy of the scrape job it names that discovers only the entry's label selection outside the selected namespaces; if you replace the scrape jobs, adjust or empty the list.
