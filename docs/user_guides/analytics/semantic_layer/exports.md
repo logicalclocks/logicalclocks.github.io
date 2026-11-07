@@ -47,7 +47,7 @@ saved_queries:
 | `exports[].config.schema` | Not used: the feature group is created in the project's feature store. |
 | `schedule` | A Quartz cron expression with `0` seconds, such as `0 0 2 * * ?` for 02:00 every day. Without it, the export runs only when a Data Owner runs it. |
 | `version` | The feature group's version, 1 by default. |
-| `lookback` | `<count> <granularity>`, such as `7 days`, `3 months` or `1 year`: each run replaces only the rows of that window, see [Refreshes][semantic-exports-refresh]. Without it, each run replaces every row. |
+| `lookback` | `<count> <granularity>` with a granularity from `second` to `year`, such as `7 days`, `3 months` or `1 year`: each run replaces only the rows of that window, see [Refreshes][semantic-exports-refresh]. Without it, each run replaces every row. |
 | `enabled` | `false` takes the schedule off the export's job and refuses runs; `true` by default. |
 
 Exports compile with the build, and take effect when that build answers queries: at once in `FOLLOW` mode, on a promote in `PINNED` mode, see [Serving modes][semantic-overview-serving-modes].
@@ -214,13 +214,13 @@ A run that started under an earlier definition of the export reports into the me
 This run started at 10:15 on 2026-11-07, and replaced the window of the 02:00 run that day, see [Refreshes][semantic-exports-refresh].
 Without `--wait`, the CLI prints `Started export revenue_by_country_daily (execution #42).` and returns.
 In the UI, **Run now** on the **Exports** card starts the run; it shows to Data Owners, and is disabled with the reason for an export that cannot run.
-A run started while another run of the export goes on waits for it.
+Starting a run while another run of the export goes on is refused with `SEMANTIC_LAYER_EXPORT_NOT_RUNNABLE`, naming the execution in progress.
 
 | Error | Code | Status | Meaning |
 | --- | --- | --- | --- |
 | `SEMANTIC_LAYER_FORBIDDEN` | 590003 | 403 | The caller is not a Data Owner of the project. |
 | `SEMANTIC_LAYER_EXPORT_NOT_FOUND` | 590020 | 404 | The build that answers queries defines no export of that name. |
-| `SEMANTIC_LAYER_EXPORT_NOT_RUNNABLE` | 590021 | 409 | The export is disabled, its owner is not a Data Owner, or Hopsworks has not created its job yet; the message says which. |
+| `SEMANTIC_LAYER_EXPORT_NOT_RUNNABLE` | 590021 | 409 | The export is disabled, its owner is not a Data Owner, Hopsworks has not created its job yet, or a run is in progress; the message says which. |
 
 A run that wrote nothing fails its job execution: with `--wait`, the CLI exits with `The run of export <export> failed: ...` and points to `hops semantic export list`, and `run_export(..., wait=True)` raises `JobExecutionException`.
 
@@ -231,6 +231,8 @@ An export writes only a feature group it created, so a feature group of the same
 ```text
 Feature group revenue_by_country_daily version 1 exists and export 'revenue_by_country_daily' did not create it, so nothing was written. Delete it, or give the export another alias or version.
 ```
+
+The feature group an export creates has `[semantic export <semantic project id>/<export>]` at the end of its description. A run takes over a feature group with its export's mark when the export has none recorded, as after a first run that wrote it but could not report.
 
 - Delete that feature group when nothing needs it, then run the export again.
 - Or change the export's `alias` or `version` in the YAML and compile; the next run creates the new feature group.

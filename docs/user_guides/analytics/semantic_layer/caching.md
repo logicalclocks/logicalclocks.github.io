@@ -63,6 +63,16 @@ A query that runs on Trino reads the data and the access of that moment, as with
 - A query while Hopsworks cannot answer for commits and access: it runs on Trino.
 - The runs of [metric exports][semantic-exports], which always read the data as it is.
 
+A JSON answer of the REST `query` endpoint says in its `X-Semantic-Cache` header whether the cache answered it:
+
+| Value | Meaning |
+| --- | --- |
+| `hit` | The gateway pod answered from its cache. |
+| `miss` | The query ran on Trino, and the pod keeps its result when it fits in the cache. |
+| `bypass` | The query ran on Trino without the cache: `"cache": false`, or a feature group whose version Hopsworks could not tell. |
+
+Each gateway pod has its own cache, so with several pods a repeated query can be a `miss` on a pod that has not run it yet.
+
 ## Skip the cache { #semantic-result-cache-skip }
 
 Each surface takes an option that runs the query on Trino and leaves the cache as it is:
