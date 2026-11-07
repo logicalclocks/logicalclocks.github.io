@@ -51,15 +51,16 @@ Node discovery and node metrics remain cluster-wide.
 kube-state-metrics keeps collecting the whole cluster, and Prometheus stores its series only for the selected namespaces.
 Container resource requests and limits are kept for every namespace, together with node allocatable and capacity, so cluster utilisation counts the resources other workloads hold.
 Series without a namespace, such as those of nodes, are kept.
-The Kueue metrics job retains its configured Kueue namespace.
+The Kueue metrics job keeps discovering in its configured Kueue namespace, and its series are scoped like those of kube-state-metrics.
 Platform dependencies that run outside the selected namespaces are discovered cluster-wide by label through `namespaceScope.dependencies`.
 The default finds the NVIDIA GPU operator's DCGM exporter, labelled `app.kubernetes.io/component=nvidia-dcgm-exporter`, in any namespace, so GPU metrics remain available.
 Each entry adds a Kubernetes service discovery configuration with label selectors to an existing scrape job; if you replace the scrape jobs, adjust or empty the list.
 Static scrape targets and federation jobs retain their configured scope.
 Jobs supplied through additional scrape files or an external server ConfigMap need their own namespace restrictions.
+Only node metrics and the kube-state-metrics and Kueue series are filtered by the namespace they describe; an exporter that watches the whole cluster, such as KEDA, cert-manager or Knative, reports on every namespace it serves.
 The namespace selector controls metrics collection; it does not replace Kubernetes RBAC or provide namespace access isolation.
 
-The preset requires the Prometheus ConfigMap reloader and the default Prometheus config-file flags.
+The preset requires the Prometheus ConfigMap reloader and the default Prometheus config-file flags, and cannot be combined with `server.configFromSecret`.
 The Prometheus service account must have permission to watch the selected namespaces; the preset preserves its existing RBAC.
 
 To opt out, omit the preset and reset the release values using your complete normal installation values:
@@ -83,7 +84,8 @@ The chart defaults are starting points, not capacity guarantees:
 | kube-state-metrics | `400Mi` | `600Mi` |
 | Namespace watcher, when enabled | `64Mi` | `256Mi` |
 
-With automatic namespace scope, size for the selected namespaces' pods, containers, exported labels and scrape frequency, plus cluster-wide node metrics.
+With automatic namespace scope, size for the selected namespaces' pods, containers, exported labels and scrape frequency, plus cluster-wide node metrics and container resource requests and limits.
+The scope reduces Prometheus memory but does not bound it: Prometheus still reads the whole cluster's kube-state-metrics and kubelet output on every scrape and keeps a small cache entry for each series it drops, so its memory still grows with the cluster, only more slowly.
 Without scoped Prometheus collection, size for workloads and label cardinality across the entire Kubernetes cluster, including workloads outside Hopsworks.
 A fixed memory limit can be insufficient on a large shared cluster even when Hopsworks itself is small.
 
