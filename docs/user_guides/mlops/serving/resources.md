@@ -24,7 +24,7 @@ For each component, you can set minimum (requests) and maximum (limits) resource
     A component is evicted and restarted when its container, or its pod as a whole, uses more local disk than its limit.
     With no limit, a component can use the node's free disk, which the other pods on the node share.
     A cluster can instead give vLLM deployments a volume of a fixed size for their model files.
-    The predictor of a vLLM deployment then takes no disk: the form shows the cluster's size, and the API refuses a predictor disk.
+    A vLLM deployment then accepts no predictor disk setting: the form shows the cluster's size instead, and the API refuses a predictor disk.
 
 !!! tip "Automatic downscale of inactive instances"
     Setting the number of instances to **0** for a component enables **scale-to-zero**: its instances scale down to zero after a period without requests and the next request wakes it.
@@ -116,6 +116,15 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 To limit a component's local disk, pass `disk` in GB to its limits, for example `Resources(cores=2, memory=256, gpus=1, disk=50)`.
 The same amount is requested, so `disk` is not accepted on the requests.
+The resources can also be given as a dict, which uses the same `disk` key:
+
+```python
+predictor_res = {
+    "num_instances": 1,
+    "requests": {"cores": 1, "memory": 128, "gpus": 1},
+    "limits": {"cores": 2, "memory": 256, "gpus": 1, "disk": 50},
+}
+```
 
 ### Step 3 (Optional): Define the transformer resource configuration
 

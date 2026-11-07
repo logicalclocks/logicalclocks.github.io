@@ -47,7 +47,7 @@ managerConfig:
 That chart keeps its CRDs among its templates, so Argo CD upgrades them with a version bump.
 Leave the `resources-finalizer.argocd.argoproj.io` finalizer off that Application: deleting it then leaves the CRDs, and every queue, in place.
 
-### Disk limits
+### Disk limits { #kueue-disk-limits }
 
 Jobs, notebooks and model deployments can set a disk limit, which requests `ephemeral-storage`.
 The Hopsworks queues do not cover that resource, so Kueue has to exclude it from its quota checks, or it never admits those workloads: they stay pending with `resource ephemeral-storage unavailable in ClusterQueue`.
@@ -59,8 +59,11 @@ Leave the exclusion out in two cases:
 
 The script reads all ClusterQueues and Cohorts before choosing the disk policy. A permission, API or response parsing error stops it; only a confirmed absent CRD counts as no objects.
 If disk is budgeted but some ClusterQueues do not cover it, the script lists those queues and stops before changing the cluster, unless the manager config already sets `IgnoreUndeclared`.
-Add disk coverage and the intended quota to those queues, or explicitly set `resources.quotaCheckStrategy: IgnoreUndeclared` in release `kueue`'s `managerConfig.controllerManagerConfigYaml` and remove `excludeResourcePrefixes`, then rerun the script.
-Choose that strategy only if ignoring **all** resources undeclared by each ClusterQueue is the intended policy; the script never selects it automatically.
+Hopsworks re-applies its own ClusterQueues with CPU, memory and GPU only, so disk coverage added to them by hand is reverted.
+If a listed queue is a Hopsworks queue, explicitly set `resources.quotaCheckStrategy: IgnoreUndeclared` in release `kueue`'s `managerConfig.controllerManagerConfigYaml` and remove `excludeResourcePrefixes`, then rerun the script.
+If all listed queues are your own, you can instead add disk coverage and the intended quota to them.
+Choose `IgnoreUndeclared` only if ignoring **all** resources undeclared by each ClusterQueue is the intended policy; the script never selects it automatically.
+The script chooses the disk policy when it runs, so rerun it after adding or removing a disk quota on a ClusterQueue or Cohort.
 
 A cluster that already runs Kueue 0.20.3 gets the exclusion by running `bash hopsworks/charts/hw-kueue/files/upgrade-kueue.sh upgrade` from the new chart after upgrading Hopsworks, or by adding the `resources` block to its Argo CD values.
 
