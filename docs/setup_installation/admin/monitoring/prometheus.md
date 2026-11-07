@@ -3,10 +3,9 @@
 ## Namespace scope { #prometheus-namespace-scope }
 
 Prometheus collects metrics only from the Hopsworks installation namespace and the project namespaces that `prometheus.namespaceScope.selector` selects.
-A namespace watcher evaluates the selector, `hopsworks.ai/project` by default, and publishes the Prometheus configuration.
+A helper container in the Prometheus pod evaluates the selector, `hopsworks.ai/project` by default, and writes the Prometheus configuration for the selected namespaces.
 Project creation, deletion and label changes update monitoring automatically; no namespace list or Helm upgrade is needed.
-The watcher checks the selector every 30 seconds by default.
-Kubernetes ConfigMap projection and configuration reloads add propagation time.
+The helper checks the selector every 30 seconds by default, and the configuration reload adds a few seconds.
 
 When multiple Hopsworks installations share a cluster, include a tenant label in the selector.
 For example, add the following to `my-values.yaml`:
@@ -26,10 +25,9 @@ For externally provisioned namespaces, a tenant selector such as `hopsworks.ai/t
 Testing only for the presence of `hopsworks.ai/project` includes labelled projects from every Hopsworks installation in the cluster.
 A project namespace the selector misses loses its metrics, including the model deployment metrics that autoscaling reads.
 
-Namespace changes reload the configuration without rolling the Prometheus server.
-The watcher owns the generated ConfigMap so GitOps reconciliation does not overwrite its contents.
-If the Kubernetes API is unavailable, it retains the last published configuration and retries.
-Before the first successful refresh, the ConfigMap is absent and the Prometheus server waits for it instead of starting with cluster-wide collection.
+Namespace changes reload the configuration without restarting Prometheus.
+If the Kubernetes API is unavailable, the helper keeps the last configuration and retries.
+When the pod starts, Prometheus waits for the helper's first configuration instead of starting with cluster-wide collection, so a pod that starts while the Kubernetes API is unavailable waits for the API.
 An empty selector result still includes the installation namespace.
 
 The namespace selection limits pod and service discovery in `serverFiles.prometheus.yml.scrape_configs` and templated `extraScrapeConfigs`.
@@ -49,8 +47,10 @@ Jobs supplied through additional scrape files need their own namespace restricti
 Only node metrics and the kube-state-metrics and Kueue series are filtered by the namespace they describe; an exporter that watches the whole cluster, such as KEDA, cert-manager or Knative, reports on every namespace it serves.
 The namespace selector controls metrics collection; it does not replace Kubernetes RBAC or provide namespace access isolation.
 
-The chart generates the Prometheus configuration, so it requires the Prometheus ConfigMap reloader and the default Prometheus config-file flags, and refuses `server.configFromSecret` and other values of `server.configMapOverrideName`.
-The Prometheus service account must have permission to watch the selected namespaces; the chart preserves its existing RBAC.
+The helper generates the Prometheus configuration from the chart's values, so the chart requires the Prometheus ConfigMap reloader and the default Prometheus config-file flags, and refuses `server.configFromSecret` and `server.configMapOverrideName`.
+The chart grants the Prometheus service account permission to list namespaces.
+The helper is wired through the Prometheus chart's `server.extraInitContainers`, `server.extraVolumes`, `server.extraVolumeMounts`, `configmapReload.prometheus.extraVolumeMounts` and `configmapReload.prometheus.extraVolumeDirs`.
+Helm replaces lists instead of merging them, so values that set one of these lists must restate the chart's entries; rendering fails otherwise.
 
 ## Memory sizing
 
@@ -60,7 +60,7 @@ The chart defaults are starting points, not capacity guarantees:
 | --- | --- | --- |
 | Prometheus server | `512Mi` | `3072Mi` |
 | kube-state-metrics | `400Mi` | `600Mi` |
-| Namespace watcher | `64Mi` | `256Mi` |
+| Namespace scope helper, in the Prometheus pod | `64Mi` | `256Mi` |
 
 Size Prometheus for the selected namespaces' pods, containers, exported labels and scrape frequency, plus cluster-wide node metrics and container resource requests and limits.
 The scope reduces Prometheus memory but does not bound it: Prometheus still reads the whole cluster's kube-state-metrics and kubelet output on every scrape and keeps a small cache entry for each series it drops, so its memory still grows with the cluster, only more slowly.

@@ -273,14 +273,15 @@ Releases before 5.3 collected metrics from every namespace of the cluster.
 From 5.3, Prometheus collects only from the Hopsworks namespace and the project namespaces its [namespace selector][prometheus-namespace-scope] selects, `hopsworks.ai/project` by default.
 On the upgrade:
 
-- The Prometheus server rolls once to mount the generated configuration and keeps its data volume.
-  It starts once the namespace watcher has published that configuration.
+- The Prometheus server restarts once and keeps its data volume.
+  A helper container in its pod writes the scoped configuration, and Prometheus starts once that configuration is written.
 - Every project namespace must carry the selector's labels, including namespaces provisioned outside Hopsworks.
   A project namespace the selector misses loses its metrics, including those that model deployment autoscaling reads.
 - On a cluster shared by several Hopsworks installations, add the tenant label to the selector.
   Otherwise each Prometheus collects the projects of every installation.
 - Workloads outside the selected namespaces are no longer collected; their stored series remain until the retention period ends.
-- `prometheus.prometheus.server.configFromSecret` and other values of `prometheus.prometheus.server.configMapOverrideName` fail rendering, because the chart generates the Prometheus configuration.
+- `prometheus.prometheus.server.configFromSecret` and `prometheus.prometheus.server.configMapOverrideName` fail rendering, because the helper generates the Prometheus configuration from the chart's values.
+- Values that set `server.extraInitContainers`, `server.extraVolumes` or `server.extraVolumeMounts`, or `extraVolumeMounts` or `extraVolumeDirs` of `configmapReload.prometheus`, under `prometheus.prometheus`, must restate the chart's entries, which wire in the helper; rendering fails otherwise.
 
 ### Logstash 9 { #upgrade-logstash-9 }
 
