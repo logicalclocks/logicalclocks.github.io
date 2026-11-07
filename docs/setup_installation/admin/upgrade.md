@@ -275,13 +275,16 @@ On the upgrade:
 
 - The Prometheus server restarts once and keeps its data volume.
   A helper container in its pod writes the scoped configuration, and Prometheus starts once that configuration is written.
-- Every project namespace must carry the selector's labels, including namespaces provisioned outside Hopsworks.
+- Every project namespace must carry the selector's labels.
+  Hopsworks labels the namespaces it creates, but not namespaces provisioned in advance (`hopsworks.variables.kube_skip_namespace_creation: true`, which `values.openshift.yaml` sets).
   A project namespace the selector misses loses its metrics, including those that model deployment autoscaling reads.
+  Before the upgrade, list the namespaces with their label, `kubectl get namespaces -L hopsworks.ai/project`, and label each project namespace that lacks it, `kubectl label namespace <namespace> hopsworks.ai/project=<namespace>`.
 - On a cluster shared by several Hopsworks installations, add the tenant label to the selector.
   Otherwise each Prometheus collects the projects of every installation.
 - Workloads outside the selected namespaces are no longer collected; their stored series remain until the retention period ends.
   The alerts on pods and workloads no longer cover them, except Kueue's, and OpenCost no longer attributes their costs.
 - `prometheus.prometheus.server.configFromSecret` and `prometheus.prometheus.server.configMapOverrideName` fail rendering, because the helper generates the Prometheus configuration from the chart's values.
+  So do a disabled config reloader (`prometheus.prometheus.configmapReload.prometheus.enabled: false`), `prometheus.prometheus.server.defaultFlagsOverride`, a `config.file` in `prometheus.prometheus.server.extraArgs`, another `prometheus.prometheus.server.configPath`, and a selector that is not a valid Kubernetes label selector.
 - Values that set `server.extraInitContainers`, `server.extraVolumes` or `server.extraVolumeMounts`, or `extraVolumeMounts` or `extraVolumeDirs` of `configmapReload.prometheus`, under `prometheus.prometheus`, must restate the chart's entries, which wire in the helper; rendering fails otherwise.
 
 ### Logstash 9 { #upgrade-logstash-9 }
