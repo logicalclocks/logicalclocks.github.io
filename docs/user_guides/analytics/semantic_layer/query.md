@@ -16,10 +16,12 @@ The examples query the `sales` semantic project from [Compile and builds][semant
 | A time dimension with a grain | `order__order_ts__week` |
 | The metric time with a grain | `metric_time__day`, `metric_time__month` |
 | A date part | `metric_time__extract_dow` |
+| A custom granularity of the [time spine][semantic-time-spine-custom] | `metric_time__fiscal_quarter` |
 
 A time group-by takes the `time_granularity` of its time dimension or any coarser grain, up to `year`.
 The date parts are `year`, `quarter`, `month`, `day`, `dow` and `doy`.
 A group-by is its column name in the result.
+A cumulative metric with a window and a metric read at an offset need `metric_time` in every query, see [Metric types][semantic-metric-types-requirements].
 
 ## Find metrics and dimensions { #semantic-query-discover }
 
@@ -80,6 +82,7 @@ US,62.875,27.875
 | Option | Meaning |
 | --- | --- |
 | `--metrics` | Metric names, comma-separated or repeated. |
+| `--saved-query` | A [saved query][semantic-saved-queries] to run in place of `--metrics`. |
 | `--group-by` | Group-bys, comma-separated or repeated. |
 | `--where` | A filter in the call syntax, repeated for `AND`: `--where "{{ Dimension('customer__country') }} = 'SE'"`. |
 | `--order-by` | Metric or group-by names; a leading `-` sorts descending. |
@@ -124,20 +127,55 @@ sql = sales.sql(metrics=["revenue"], group_by=["metric_time__month"])
 | `time_range` | `(start, end)` bounds on `metric_time`, both inclusive, each truncated to the query's time grain; either may be `None`. |
 | `group_limit` | Keep the top groups by a metric, such as the two countries with the most revenue. |
 | `dataframe_type` | `pandas` (default), `polars`, `pyarrow`, or `python` for a list of dicts. |
+| `saved_query` | A [saved query][semantic-saved-queries] to run in place of `metrics`. |
 
 A group-by can also be a dict, `{"name": "metric_time", "grain": "month"}` or `{"name": "metric_time", "date_part": "dow"}`.
 Results come back as an Arrow stream when `pyarrow` is installed, which keeps the column types, and as JSON otherwise.
 The client works from outside the cluster with an API key, through the same host as `hopsworks.login()`.
 
+### Query without metrics { #semantic-query-no-metrics }
+
+A query without metrics returns the distinct values of its group-bys under its filters:
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+sales = project.get_semantic_layer_api().get_project("sales")
+print(
+    sales.query(
+        group_by=["customer__country", "order__status"],
+        order_by=["customer__country", "order__status"],
+    )
+)
+```
+
+```text
+  customer__country order__status
+0                DE     completed
+1                DE       shipped
+2                SE     cancelled
+3                SE     completed
+4                SE       shipped
+5                US     cancelled
+6                US     completed
+```
+
+The rows come from the semantic model that reaches every group-by and filter with the fewest joins, and `metric_time` from the time spine.
+Over REST, the query body takes `"minMaxOnly": true` for the smallest and largest value of its one group-by, and `"applyGroupBy": false` for every row instead of the distinct ones.
+The CLI's `hops semantic query` needs `--metrics` or `--saved-query`; `hops semantic dimension-values` lists the values of one group-by.
+
 ## Query in the UI { #semantic-query-ui }
 
 Open **Semantic Layer** in the project sidebar, pick a semantic project, and click **Query metrics**.
-The **Metrics** card of the overview lists the metrics of the current build; clicking a metric shows its definition and what it can be grouped by.
+The **Metrics** card of the overview lists the metrics of the current build; clicking a metric shows its definition, its type, and what it can be grouped by.
+The **Saved queries** card lists the [saved queries][semantic-saved-queries], each with **Run**, which opens the query workbench on it.
 
 The query workbench takes:
 
 - **Metrics**, one or more;
-- **Group by**, offered only from what every picked metric can be grouped by, with a **Grain** for each time group-by;
+- **Group by**, offered only from what every picked metric can be grouped by, with a **Grain** for each time group-by; picking a metric that needs `metric_time` puts it first, at the metric's grain;
 - **Filters**, a group-by, an operator and a value each; numbers and `true` or `false` are sent as such, a quoted value is sent as text, and `IN` values are separated with commas;
 - **Order by**, a metric or group-by and a direction;
 - **Limit**, from 1 to 1,000 rows, 100 by default.
@@ -169,8 +207,9 @@ curl -X POST -H "Authorization: ApiKey $HOPSWORKS_API_KEY" \
 | POST | `sql` | The SQL of a query, without running it. |
 | POST | `query` | The rows of a query: JSON by default, or an Arrow IPC stream with `Accept: application/vnd.apache.arrow.stream`. |
 | POST | `dimension-values` | The distinct values of `{"groupBy": ..., "limit": 1000}`. |
+| GET | `saved-queries` | The [saved queries][semantic-saved-queries-list] of the current build. |
 
-The query body takes `metrics`, `groupBy`, `where`, `filters`, `having`, `timeRange`, `orderBy`, `limit`, `offset` and `groupLimit`, in the camel case of the Python arguments.
+The query body takes `metrics`, `savedQuery`, `groupBy`, `where`, `filters`, `having`, `timeRange`, `orderBy`, `limit`, `offset` and `groupLimit`, in the camel case of the Python arguments, and `minMaxOnly` and `applyGroupBy` for a [query without metrics][semantic-query-no-metrics].
 A JSON result carries `columns`, `rows`, `rowCount`, `truncated` and `sql`.
 Every response carries the `buildId` that answered and whether it is `stale`; an Arrow result carries them in the `X-Semantic-Build` and `X-Semantic-Stale` headers.
 
@@ -193,10 +232,10 @@ Add a `limit`, a filter or fewer group-bys to stay under the row caps.
 | Error | Status | Meaning | Fix |
 | --- | --- | --- | --- |
 | `SEMANTIC_LAYER_NO_VALID_BUILD` | 409 | No build has compiled valid yet. | `hops semantic compile <name> --wait`, and fix the issues. |
-| `SEMANTIC_LAYER_INVALID_QUERY` | 400 | An unknown metric, group-by or filter, or a group-by the metrics cannot reach. | `hops semantic dimensions <name> --metrics ...` lists what they can reach. |
+| `SEMANTIC_LAYER_INVALID_QUERY` | 400 | An unknown metric, group-by or filter, a group-by the metrics cannot reach, a metric that needs `metric_time` without it, or a shape under [Limits][semantic-metric-types-limits]. | `hops semantic dimensions <name> --metrics ...` lists what they can reach. |
 | `SEMANTIC_LAYER_EXECUTION_FAILED` | 502 | Trino refused or failed the generated SQL; its message follows. | `hops semantic sql` shows the SQL. |
 | `SEMANTIC_LAYER_FORBIDDEN` | 403 | Not a member of the project, or an API key without the `FEATURESTORE` and `TRINO` scopes. | Add the member or the scopes. |
-| `SEMANTIC_LAYER_NOT_FOUND` | 404 | No semantic project with that id. | `hops semantic list`. |
+| `SEMANTIC_LAYER_NOT_FOUND` | 404 | No semantic project with that id, or no saved query of that name. | `hops semantic list`, `hops semantic saved-queries <name>`. |
 
 In Python, each is a `SemanticLayerException` with the code in `error_code`.
 
@@ -206,6 +245,7 @@ In Python, each is a `SemanticLayerException` with the code in `error_code`.
         - <code class="doc-symbol doc-symbol-method"></code> [`query`][hopsworks_common.semantic_layer.SemanticProject.query]
         - <code class="doc-symbol doc-symbol-method"></code> [`sql`][hopsworks_common.semantic_layer.SemanticProject.sql]
         - <code class="doc-symbol doc-symbol-method"></code> [`list_metrics`][hopsworks_common.semantic_layer.SemanticProject.list_metrics]
+        - <code class="doc-symbol doc-symbol-method"></code> [`list_saved_queries`][hopsworks_common.semantic_layer.SemanticProject.list_saved_queries]
         - <code class="doc-symbol doc-symbol-method"></code> [`dimensions`][hopsworks_common.semantic_layer.SemanticProject.dimensions]
         - <code class="doc-symbol doc-symbol-method"></code> [`entities`][hopsworks_common.semantic_layer.SemanticProject.entities]
         - <code class="doc-symbol doc-symbol-method"></code> [`group_bys`][hopsworks_common.semantic_layer.SemanticProject.group_bys]

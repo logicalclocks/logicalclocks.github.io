@@ -4,7 +4,7 @@ description: The semantic layer tools of the Hopsworks MCP server, and the hops-
 
 # Semantic Layer Agent Tools { #semantic-agent-tools }
 
-The Hopsworks MCP server gives an agent tools to discover the metrics of a project's semantic projects, query them, compile their definitions, and build Superset dashboards of them.
+The Hopsworks MCP server gives an agent tools to discover the metrics and saved queries of a project's semantic projects, query them, compile their definitions, and build Superset dashboards of them.
 The discovery and query tools have the names of the semantic layer tools of the dbt MCP server.
 
 ## Run the MCP server { #semantic-agent-tools-server }
@@ -27,10 +27,12 @@ The API key needs the `FEATURESTORE` and `TRINO` scopes for the semantic layer t
 | --- | --- | --- | --- |
 | `list_semantic_projects` | READ | | Each semantic project's name, root path, mode, serving build, and whether it is stale. |
 | `list_metrics` | READ | `semantic_project`, `tag` (optional) | CSV of the metrics: name, type, label, description and tags. `tag` keeps the metrics that set that tag schema. |
+| `list_saved_queries` | READ | `semantic_project` | CSV of the [saved queries][semantic-saved-queries-agent]: name, label, description, metrics and group-bys. |
 | `get_dimensions` | READ | `semantic_project`, `metrics` | CSV of the dimensions the metrics can be grouped by: name, type, grains and entity path. |
 | `get_entities` | READ | `semantic_project`, `metrics` (optional) | CSV of the entities. |
 | `get_dimension_values` | READ | `semantic_project`, `dimension`, `metrics` and `limit` (optional) | CSV of the distinct values of a dimension. |
 | `query_metrics` | READ | `semantic_project`, `metrics`, then `group_by`, `where`, `order_by` and `limit` (optional) | CSV of the rows, 100 rows unless `limit` says otherwise. |
+| `query_saved_query` | READ | `semantic_project`, `name`, then `group_by`, `where` and `limit` (optional) | CSV of the rows of a saved query; `group_by` and `limit` replace its own, `where` adds to its filters. 100 rows unless `limit` says otherwise. |
 | `get_metrics_compiled_sql` | READ | The arguments of `query_metrics` | The SQL the query compiles to. |
 | `get_semantic_project_tags` | READ | `semantic_project` | The semantic project's tags, name and value. |
 | `validate_semantic_project` | WRITE | `semantic_project` | The build's status and its issues. |
@@ -38,14 +40,32 @@ The API key needs the `FEATURESTORE` and `TRINO` scopes for the semantic layer t
 | `create_dashboard_from_metrics` | WRITE | `semantic_project`, `metrics`, then `group_by` and `title` (optional) | The id, title and URL of a Superset dashboard of the metrics, see [Dashboards in Superset][semantic-superset-create-agent]. |
 
 Group-bys and filters take the forms of [Query metrics][semantic-query-metrics]: `customer__country`, `metric_time__month` and `{{ Dimension('order__status') }} = 'completed'`.
-The CSV of `query_metrics` is capped in length, so a large result needs a `limit` or a filter.
+The CSV of `query_metrics` and `query_saved_query` is capped in length, so a large result needs a `limit` or a filter.
+A metric that needs `metric_time`, such as a cumulative metric with a window, needs it in `group_by`, see [Metric types][semantic-metric-types-requirements].
 
 `validate_semantic_project` and `compile_semantic_project` both compile the definitions and report the build.
-Validating compiles, as compiling does: files that have not changed return their existing build. In `FOLLOW` mode the resulting `VALID` build answers queries, which undoes a promote of an older build; in `PINNED` mode only promoted builds are served.
-In `FOLLOW` mode a new valid build answers queries at once, see [Serving modes][semantic-overview-serving-modes].
+Validating compiles, as compiling does: files that have not changed return their existing build.
+In `FOLLOW` mode the resulting `VALID` build answers queries at once, which undoes a promote of an older build; in `PINNED` mode only promoted builds are served, see [Serving modes][semantic-overview-serving-modes].
 
 ## Coding agents { #semantic-agent-tools-skill }
 
-A coding agent that runs the `hops` CLI uses the `hops-semantic` skill: authoring semantic YAML over feature groups, compiling, testing metrics, and querying them with `hops semantic`.
-`hops skills list` lists it, and the [project terminal][terminal] has Claude Code and Codex preinstalled with `hops` connected.
+A coding agent that runs the `hops` CLI uses the `hops-semantic` skill: authoring semantic YAML over feature groups, with every metric type, the time spine and saved queries, compiling, testing metrics, and querying them with `hops semantic`.
+The `hops-semantic-views` skill scopes a semantic project to one business domain and keeps it small enough for an agent to read whole.
+`hops skills list` lists both, and the [project terminal][terminal] has Claude Code and Codex preinstalled with `hops` connected.
+
+## Size a semantic project for agents { #semantic-agent-tools-size }
+
+Keep each semantic project under 100k tokens, so that it does not swamp an agent's context window.
+Count the semantic YAML under its root path and the four lists an agent reads before it queries: metrics, dimensions, entities and saved queries.
+YAML and CSV of snake_case names run at about 3 characters per token, so 100k tokens is about 300,000 characters.
+The tools above cut each list at 50,000 characters and say so on a last line, so a list longer than that hides the metrics or dimensions past the cut.
+
+```bash
+hops semantic show sales                                   # the root path; a terminal mounts /Projects/<project>/<dir> at /hopsfs/<dir>
+grep -rlE --include='*.yml' '^(semantic_models|metrics|saved_queries):' /hopsfs/Resources/semantic/sales | xargs -r cat | wc -c
+for list in metrics dimensions entities saved-queries; do hops semantic $list sales --json | wc -c; done
+```
+
+To stay under it, give each business domain its own semantic project with only the feature groups its questions need, leave out dimensions nobody groups or filters by, and add saved queries for the most-asked questions.
+Two semantic projects can model the same feature group, so splitting a large project by domain loses no data.
 The [Hopsworks CLI][hopsworks-cli] guide covers installing the skills into a repository with `hops init`.

@@ -44,7 +44,7 @@ A semantic project keeps its 20 newest builds and the build that answers queries
 ## Metrics and group-bys { #semantic-overview-metrics }
 
 A semantic model reads one feature group.
-A measure aggregates a column or an expression of a semantic model, and a metric is a named calculation over measures: a simple metric, a ratio of two metrics, or an expression over other metrics.
+A measure aggregates a column or an expression of a semantic model, and a metric is a named calculation over measures: a simple metric, a ratio of two metrics, an expression over other metrics, a cumulative metric over a time window, or a conversion metric between two events, see [Metric types][semantic-metric-types].
 
 A query groups metrics by group-bys:
 
@@ -52,8 +52,9 @@ A query groups metrics by group-bys:
 - entities, the keys that join semantic models;
 - `metric_time`, the time axis of every metric, taken from the time dimension its measures aggregate over.
 
-A time group-by takes a grain suffix, such as `metric_time__month`.
+A time group-by takes a grain suffix, such as `metric_time__month`, or a custom granularity of the [time spine][semantic-time-spine], a feature group with one row per period.
 The semantic layer joins feature groups along their entities, so `revenue` from `orders` can be grouped by `customer__country` from `customers`.
+A [saved query][semantic-saved-queries] is a metric query defined by name in the YAML, which every client runs by name.
 
 ## Serving modes { #semantic-overview-serving-modes }
 

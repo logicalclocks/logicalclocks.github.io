@@ -48,9 +48,9 @@ Start with a query, then define metrics or turn it into a dashboard.
 - [Semantic layer][semantic-layer-overview]
   Metrics defined once in YAML over feature groups, queried by name.
 - [Define metrics][semantic-define-metrics]
-  Semantic models, and simple, ratio and derived metrics.
+  Semantic models, and simple, ratio, derived, cumulative and conversion metrics.
 - [Query metrics][semantic-query-metrics]
-  From Python, the CLI, the UI or an agent, as SQL or rows.
+  From Python, the CLI, the UI or an agent, as SQL or rows, or by saved query.
 
 </div>
 

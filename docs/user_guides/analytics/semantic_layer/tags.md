@@ -101,6 +101,9 @@ Hopsworks checks every metric's tags before it stores a build, and each problem 
 An error makes the build `INVALID`, so the last valid build keeps answering queries until the tags are fixed.
 A metric's tags change only with a new build: edit the YAML and compile.
 
+A [saved query][semantic-saved-queries-define] sets its tags the same way, and they are checked against their schemas under `SAVED_QUERY_TAGS_NOT_A_MAP`, `SAVED_QUERY_TAG_UNKNOWN_SCHEMA` and `SAVED_QUERY_TAG_INVALID_VALUE`.
+Mandatory tag rules do not apply to saved queries.
+
 ## Find metrics by tag { #semantic-tags-filter }
 
 === "CLI"

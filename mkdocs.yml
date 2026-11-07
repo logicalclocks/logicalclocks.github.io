@@ -239,8 +239,12 @@ nav:
               - Overview: user_guides/analytics/semantic_layer/overview.md
               - Get Started: user_guides/analytics/semantic_layer/get_started.md
               - Define Metrics: user_guides/analytics/semantic_layer/define_metrics.md
+              - Metric Types: user_guides/analytics/semantic_layer/metric_types.md
+              - Time Spine: user_guides/analytics/semantic_layer/time_spine.md
               - Compile and Builds: user_guides/analytics/semantic_layer/builds.md
+              - Validation Rules: user_guides/analytics/semantic_layer/validation_rules.md
               - Query Metrics: user_guides/analytics/semantic_layer/query.md
+              - Saved Queries: user_guides/analytics/semantic_layer/saved_queries.md
               - Dashboards in Superset: user_guides/analytics/semantic_layer/dashboards.md
               - Tags: user_guides/analytics/semantic_layer/tags.md
               - Agent Tools: user_guides/analytics/semantic_layer/agent_tools.md

@@ -38,9 +38,24 @@ Define the metrics, compile them into a build, then query them from Python, the 
 - [Get started][semantic-init]
   Scaffold a semantic project from feature groups, optionally in a new GitHub repository.
 - [Define metrics][semantic-define-metrics]
-  Semantic models over feature groups, and simple, ratio and derived metrics.
+  Semantic models over feature groups, and the fields every metric has.
+- [Metric types][semantic-metric-types]
+  Cumulative and conversion metrics, offsets, filled gaps, semi-additive measures and SCD dimensions.
+- [Time spine][semantic-time-spine]
+  The feature group with one row per period that windows and offsets join to.
+
+</div>
+
+<div class="hops-task-group" markdown>
+:material-check-decagram-outline:{ .hops-role-ico } Check
+{ .hops-role-cap }
+
+- [Compile and builds][semantic-compile-builds]
+  When builds happen, FOLLOW and PINNED, promote, and errors at file and line.
+- [Validation rules][semantic-validation-rules]
+  Every check of a compile, and what it reports.
 - [Tags][semantic-tags]
-  Schematised tags on semantic projects and metrics, and mandatory tags.
+  Schematised tags on semantic projects, metrics and saved queries, and mandatory tags.
 
 </div>
 
@@ -48,10 +63,10 @@ Define the metrics, compile them into a build, then query them from Python, the 
 :material-play-circle-outline:{ .hops-role-ico } Run
 { .hops-role-cap }
 
-- [Compile and builds][semantic-compile-builds]
-  When builds happen, FOLLOW and PINNED, promote, and errors at file and line.
 - [Query metrics][semantic-query-metrics]
   The Python client, the CLI, the query workbench in the UI, and the limits.
+- [Saved queries][semantic-saved-queries]
+  Named metric queries, run and refined from every client.
 - [Dashboards in Superset][semantic-superset-dashboards]
   Superset 7.0 dashboards and charts from metrics, and Explore links.
 - [Agent tools][semantic-agent-tools]

@@ -25,6 +25,7 @@ A dashboard from metrics reads the semantic project's view, and holds, top to bo
 - a big number with a trendline of the first metric, beside a line chart of the first metric;
 - a line chart of each further metric over `metric_time`, two to a row;
 - a table of every metric broken down by the group-bys, sorted by the first metric, descending;
+  when one of the metrics needs `metric_time`, such as a cumulative metric with a window, the table also breaks down by `metric_time` at the dashboard's grain;
 - a multi-select filter on each group-by, at most three, applied to every chart.
 
 | Choice | Value |
@@ -36,6 +37,7 @@ A dashboard from metrics reads the semantic project's view, and holds, top to bo
 
 The charts are named after the labels of the metrics and group-bys, or their names where they have no label: `Revenue` for the big number, `Revenue over time` for a line chart, and `Revenue, Orders by customer__country` for the table.
 When the metrics share no categorical dimension and no group-by is given, the dashboard has no table and no filters.
+A table that also breaks down by `metric_time` has "over time" added to its name, such as `Revenue, Revenue 7d by customer__country over time`.
 The metrics must share a `metric_time`, so metrics aggregated over time dimensions of different grains do not go on one dashboard.
 
 Creating a dashboard with the title of one you created before rebuilds that dashboard in place: it keeps its id and URL, and its charts are replaced.
@@ -55,6 +57,7 @@ The **Create a Superset dashboard** dialog takes:
 - **Title**, optional.
 
 **Create** builds the dashboard and opens it in a new tab, and the notification that follows links it.
+**Create dashboard** in a saved query's sheet opens the dialog on the saved query, see [Dashboards from a saved query][semantic-saved-queries-dashboards].
 The buttons show when the semantic layer, Trino and Superset are enabled, `superset_semantic_enabled` is on, and the project has the Superset service.
 
 ### From the CLI { #semantic-superset-create-cli }
@@ -81,8 +84,9 @@ hops semantic dashboard sales --metrics revenue,revenue_per_order --json
 
 | Option | Meaning |
 | --- | --- |
-| `--metrics` | Metric names, one to eight, comma-separated or repeated; required. |
+| `--metrics` | Metric names, one to eight, comma-separated or repeated; required unless `--saved-query` is given. |
 | `--group-by` | Categorical dimensions or entities for the table and the filters, comma-separated or repeated. |
+| `--saved-query` | A [saved query][semantic-saved-queries-dashboards] to chart, in place of `--metrics` and `--group-by`. |
 | `--title` | The dashboard title. |
 | `--json` | Print the id, title and URL as JSON. |
 
@@ -107,6 +111,7 @@ print(dashboard["id"], dashboard["url"])
 ```
 
 `create_dashboard` returns a dict with the dashboard's Superset `id`, its `title`, and the `url` that opens it through Hopsworks.
+`create_dashboard(saved_query="revenue_by_country")` charts a saved query instead.
 A refusal raises `SemanticLayerException`.
 The client works from outside the cluster with an API key, since Hopsworks builds the dashboard.
 
@@ -157,7 +162,10 @@ A chart on a view:
 - keeps the top series by a metric with a series limit.
 
 Superset sends each chart to the semantic layer as a metric query at the chart's own group-bys and grain, so the semantic layer computes every metric at that grain.
-The view reports a simple metric with the aggregation of its measure, and a percentile and every other metric, such as a ratio or a derived metric, with the aggregation `OTHER`, so Superset does not aggregate their values again.
+The view reports a simple metric with the aggregation of its measure, and a percentile and every other metric, such as a ratio, a derived, a cumulative or a conversion metric, with the aggregation `OTHER`, so Superset does not aggregate their values again.
+A native filter lists its options with a query without metrics, so it offers every value of its dimension.
+
+Each [saved query][semantic-saved-queries-superset-view] is a view too, named `<semantic project>.<saved query>`, which offers only the saved query's metrics and group-bys and runs every chart as the saved query.
 
 ## Who can see what { #semantic-superset-access }
 
@@ -166,7 +174,7 @@ Hopsworks keeps these Superset objects per project:
 | Object | Name | What it does |
 | --- | --- | --- |
 | Semantic layer | `HopsworksSemantic__<project>` | Connects Superset to the project's semantic projects. Hopsworks creates it as the Superset admin, once the project has a semantic project. |
-| Semantic view | The semantic project's name | One per semantic project of the project. |
+| Semantic view | The semantic project's name, and `<semantic project>.<saved query>` | One per semantic project of the project, and one per saved query of its build that answers queries. |
 | Role | `HW_semantic_<project>` | Read access to the layer and its views. Its users are the Superset accounts of the project's data owners and data scientists. |
 | API key | `superset-semantic-<project>` | An API key of the project owner, with the `FEATURESTORE` and `TRINO` scopes, kept as the owner's secret `superset_semantic_<project>`. The layer sends every chart's query with it. |
 
@@ -190,7 +198,7 @@ The dashboard is published with no viewers set, so Superset lists it to every us
 | A generated dashboard holds at most 8 metrics and 3 filters. | A dashboard request with more metrics is refused; build a second dashboard for the others. |
 | Superset never aggregates a ratio or another non-additive metric again. | Summing ratios or distinct counts across groups gives a wrong number, so the view reports them with the aggregation `OTHER` and every chart asks the semantic layer at its own grain. |
 | `ILIKE`, `NOT LIKE` and `NOT ILIKE` match case-insensitively through `LOWER(...) LIKE LOWER(...)`, and a pattern cannot contain `{{`. | Trino has no `ILIKE`, and the semantic layer reads `{{` as the start of a dimension reference. |
-| A filter lists the values that have rows for one metric of the semantic project, chosen to cover the filter's dimension and the dashboard's other filters. | A semantic view answers metric queries only, so a value with no rows for that metric, such as a country with no orders, is not offered. |
+| A chart of a metric that needs `metric_time`, such as a cumulative metric with a window, groups by `metric_time`. | The semantic layer refuses the query of a chart without it, such as a table you build without `metric_time`, see [Metric types][semantic-metric-types-requirements]. |
 | A filter offers at most 10,000 values of a dimension. | Superset asks a view for at most 10,000 values of a column. |
 | A series limit cannot group the other series, or rank them over another time range than the chart's. | The semantic layer ranks the groups under the query's own filters and returns the top groups only, with no group for the rest. |
 | The rows and the query time of a chart follow the [query limits][semantic-query-limits]. | Each chart is a metric query on the gateway. The line charts of a generated dashboard read up to 10,000 rows, and its table up to 1,000. |
@@ -214,9 +222,9 @@ Create the dataset from that SQL on the project's Trino connection with **Create
 
 | Error | Code | Status | Meaning |
 | --- | --- | --- | --- |
-| `SEMANTIC_LAYER_ILLEGAL_ARGUMENT` | 590004 | 400 | No metric or more than eight, a blank name, or a title longer than 500 characters. |
+| `SEMANTIC_LAYER_ILLEGAL_ARGUMENT` | 590004 | 400 | No metric or more than eight, a blank name, a title longer than 500 characters, or metrics or group-bys given with a saved query. |
 | `SEMANTIC_LAYER_INVALID_QUERY` | 590012 | 400 | An unknown metric, a group-by that is not a categorical dimension or entity every metric can be grouped by, or metrics that share no `metric_time`. |
-| `SEMANTIC_LAYER_NOT_FOUND` | 590001 | 404 | No semantic project with that id. |
+| `SEMANTIC_LAYER_NOT_FOUND` | 590001 | 404 | No semantic project with that id, or no saved query of that name. |
 | `SEMANTIC_LAYER_NO_VALID_BUILD` | 590013 | 409 | The semantic project has no valid build; compile it and fix its errors. |
 | `SEMANTIC_LAYER_DASHBOARDS_DISABLED` | 590014 | 503 | `superset_semantic_enabled` is off, Superset is not enabled, the project has no Superset service, or Superset has no Hopsworks semantic layer type. |
 | `SEMANTIC_LAYER_GATEWAY_ERROR` | 590010 | 502 | The semantic layer gateway could not be reached, or failed to list the metrics and group-bys. |

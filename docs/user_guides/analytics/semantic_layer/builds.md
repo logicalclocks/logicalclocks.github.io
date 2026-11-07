@@ -82,6 +82,7 @@ The summary line ends with `at commit <sha>` when the build was read from a Hops
 
 An `INVALID` build lists its issues, one row per issue under the columns `LEVEL`, `RULE`, `LOCATION`, `ELEMENT` and `MESSAGE`.
 `LOCATION` is `file:line:column`, with the file relative to the root path.
+[Validation rules][semantic-validation-rules] lists every `RULE` and what it reports.
 For example, `expr: amount_usd` on the `revenue` measure, a feature `orders` does not have, compiles to:
 
 ```text
@@ -108,6 +109,7 @@ except SemanticBuildException as err:
 ```
 
 A `WARNING` does not make a build invalid.
+A metric of a shape the planner refuses, listed under [Limits][semantic-metric-types-limits], is an `UNSUPPORTED` warning: the build serves the other metrics, and queries of that one are refused.
 The build of a `FAILED` compile has no issues: the compile could not run, and compiling again retries it.
 
 ## Builds and the current build { #semantic-builds-list }
@@ -166,7 +168,8 @@ hops semantic test sales
 ```
 
 `compile --fail-on-error` waits for the build and exits 1 when it is `INVALID` or `FAILED`.
-`test` compiles, then runs every metric once on Trino, ungrouped and limited to one row, and exits 1 when any metric fails:
+`test` compiles, then runs every metric once on Trino, limited to one row, and exits 1 when any metric fails.
+Each metric runs ungrouped, or grouped by `metric_time` when its queries [must be][semantic-metric-types-requirements]:
 
 ```text
 Build 1: VALID (0 errors, 0 warnings)
