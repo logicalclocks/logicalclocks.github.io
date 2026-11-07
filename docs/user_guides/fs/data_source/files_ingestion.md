@@ -28,8 +28,8 @@ Create it as described in the [S3][data-source-s3], [GCS][data-source-gcs] or [A
 Other data source types are not supported; see [Limitations](#limitations).
 
 An S3 data source that authenticates with an IAM role must have a role mapping an administrator created with [AWS Role chaining](../../../setup_installation/admin/roleChaining.md); a data source without one is refused when the job is created.
-Hopsworks assumes the role when it starts the job and hands the job temporary credentials, so a run cannot take longer than the role's session duration.
-The S3 guide explains how an administrator [raises the session duration](creation/s3.md#temporary-credentials) when runs need more time.
+Hopsworks assumes the role when it starts the job and hands the job temporary credentials that live for `dlt_files_credentials_duration_seconds`, an hour by default.
+A run longer than that fails at the first request made with the expired credentials, so for a long first copy an administrator raises the setting, and before that the [maximum session duration of the role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html#id_roles_use_view-role-max-session), which must allow it.
 Access key and secret, service account key file and service principal credentials have no such limit.
 
 ### Role
@@ -48,7 +48,8 @@ The Python client and the `hops` CLI need the same version or later.
 | Variable | Default | Meaning |
 | --- | --- | --- |
 | `data_source_audit_retention_days` | `7` | Days of audit files kept per dataset. `0` keeps them forever. |
-| `fs_data_source_session_duration` | `3600` | Seconds an IAM role is assumed for, which bounds a run of a job on an IAM-role S3 data source. |
+| `dlt_files_credentials_duration_seconds` | `3600` | Lifetime in seconds of the temporary credentials a run gets from an IAM-role S3 data source; the role's maximum session duration must allow it, and a longer run fails at the first expired request. |
+| `dlt_files_listing_timeout_seconds` | `3600` | Seconds a run waits for the listing of the prefix; see [How a run works](#how-a-run-works). |
 
 ## Creation in the UI
 
@@ -71,15 +72,18 @@ For an ADLS data source only the second is offered.
 
 1. **Prefix**: the path inside the bucket or container whose files are copied, for example `handbook/2026/`.
    It is relative to the root of the bucket or container; the path set on an S3 data source is not applied, so repeat it in the prefix when the files live under it.
+   A prefix is a folder, not the start of a key: the job lists under `<prefix>/`, so `handbook` selects `handbook/a.pdf` but not `handbook-old/a.pdf`.
    Click `Browse` to pick it from a listing of the bucket; each level lists its folders and files, with their size and modification time.
    Browsing is not available for ADLS, so type the prefix there.
    An empty prefix copies the whole bucket; see [How a run works](#how-a-run-works) before doing that on a large one.
-2. **Include** and **Exclude**: glob patterns, one per line, matched against the path of each file relative to the prefix.
+2. **Include** and **Exclude**: glob patterns, one per line, matched against the path of each file relative to the prefix, not to the bucket.
+   With prefix `handbook/`, write `**/*.pdf`, not `handbook/**/*.pdf`.
    `**` matches across folders, so `**/*.pdf` selects every PDF under the prefix and `**/~$*` excludes Office lock files.
    A file is copied when it matches at least one include pattern, or all of them when there is none, and no exclude pattern.
-3. **Dataset**: a new dataset in the project root, or an existing one you own.
-   A new dataset is created editable by data owners only.
-   A dataset can be the target of one files ingestion job; choosing one that another job already copies into is refused.
+3. **Dataset**: a new dataset in the project root, or an existing one.
+   A new dataset is created editable by data owners only, and an existing one is accepted only with that permission, since every run writes into it as a data owner.
+   The platform datasets `Logs`, `Resources`, `Jupyter`, `Models`, and the training-datasets and feature-store datasets cannot be targets.
+   A dataset can be the target of at most one files ingestion job across all data sources of the project; choosing one that another job already copies into is refused.
 4. **Mirror deletions**: also delete from the dataset the files that are no longer under the prefix; see [Mirroring deletions](#mirroring-deletions).
    Off by default, so a plain run only adds and updates.
 5. **Index the files in a feature group**: keep a feature group with one row per file; see [The file index](#the-file-index).
@@ -90,7 +94,7 @@ For an ADLS data source only the second is offered.
 9. Under `Advanced`:
     - **Files per page**: how many objects a listing request returns, `100` by default.
     - **Fail on first error**: stop the run at the first file that fails instead of continuing with the others.
-    - **Job name**: `<data source>_<dataset>_files` by default.
+    - **Job name**: `<data source>_<dataset>_files` by default, with every character outside letters, digits and underscore replaced by `_`.
     - **Alerts**: an alert receiver notified when a run fails.
 
 <!-- TODO screenshot files_ingestion_prefix_browser.png to capture; uncomment once the file exists:
@@ -131,6 +135,7 @@ The execution logs show every file the run touched and the error of each file th
 Deleting the job removes its schedule, its credentials in the cluster and its state directory, and keeps the dataset and the index feature group by default.
 The delete dialog offers `Also delete the dataset` and `Also delete the index feature group`.
 The index is only deleted when it is the feature group the job created, so a feature group that existed before the job is never removed.
+A data source that still has files ingestion jobs cannot be deleted; delete the jobs first.
 
 <!-- TODO screenshot files_ingestion_delete.png to capture; uncomment once the file exists:
 <figure markdown>
@@ -154,7 +159,7 @@ s3 = fs.get_data_source("acme_docs").storage_connector
 
 job = s3.ingest_files(
     dataset="acme_docs_handbook",  # existing (owned) or new
-    prefix="handbook/2026/",
+    prefix="handbook/2026/",  # a folder, from the bucket root; relative to it:
     include=["**/*.pdf", "**/*.docx"],
     exclude=["**/~$*"],
     mirror_deletions=False,
@@ -188,6 +193,7 @@ job.delete(delete_files=False, delete_index=False)
 ```
 
 `files_progress` and `last_stats` return the stats of the run as a dictionary with the keys of the stats file described in [State and audit files](#state-and-audit-files), plus `datasetName`, `connectorName`, `prefix` and `auditPath`, the absolute HopsFS path of the audit file.
+`prefix` is a folder relative to the root of the bucket or container, as in the UI, and the patterns are relative to the prefix.
 `update` re-saves the job; a job's data source and dataset cannot change.
 `index` accepts a feature group name only while the job had no index; afterwards turning it on uses the name chosen then.
 
@@ -235,10 +241,11 @@ A run goes through these steps.
 2. **Listing**.
    The run lists every object under the prefix, in pages of `Files per page`, and applies the include and exclude patterns.
    The listing is full every run, with no incremental listing, so a run over a prefix with millions of objects spends most of its time listing; narrow the prefix, or split it across jobs, for very large buckets.
-   A listing that does not complete within an hour is incomplete: the run copies what it listed and skips deletions.
+   The run waits `dlt_files_listing_timeout_seconds`, an hour by default, for the listing; the timeout bounds the listing only, not the copies.
+   A listing that exceeds it fails the run with an incomplete listing, `listingComplete` false in the stats, and deletions are never mirrored from one.
 3. **Skip or copy**.
    Each listed file is compared with its row in the manifest of the previous runs.
-   A file whose size, modification time and ETag, where the store provides one, are unchanged is skipped, and counted as `skipped`.
+   A file whose copy is in the dataset and whose size and modification date are unchanged is skipped, and counted as `skipped`; there is no checksum comparison, so a file changed without a change of either is only copied again after it is deleted from the dataset.
    A file over the size cap is counted as `oversized`, listed in the audit file, and not copied until it shrinks or the cap is raised.
    Any other file is downloaded one at a time, written next to its destination as a temporary file and renamed into place once complete, so readers of the dataset never see a partial file; it is counted as `copied` when new and `updated` when it replaced an earlier copy.
    The copy keeps the path relative to the prefix, so `handbook/2026/a/b.pdf` under prefix `handbook/2026/` lands at `<dataset>/a/b.pdf`.
@@ -255,13 +262,13 @@ The outcome of a run is its `status` in the stats file and the state of its exec
 | Status | Exit code | Execution | Meaning |
 | --- | --- | --- | --- |
 | `ok` | `0` | `FINISHED` | Every listed file is in the dataset, copied or unchanged; oversized files are reported but do not fail the run. |
-| `partial` | `2` | `FAILED` | Some files failed; the successful copies are kept and the failed ones are retried on the next run. |
+| `partial` | `2` | `FAILED` | Some files failed, or the prefix listed nothing while the dataset holds copies; the successful copies are kept and the failed ones are retried on the next run. |
 | `failed` | `1` | `FAILED` | The run stopped on an error, named in `error` and in the logs; with `Fail on first error`, that of the first file. |
 
 A partial run fails its execution so that the alert receiver is notified and the execution row shows it; the dataset still holds every file that was copied.
 
 A run that is killed, or that loses its credentials when an IAM role session expires, leaves no partial file in the dataset, since copies are renamed into place only when complete, and leaves its lease to expire.
-The manifest is written whole at the end of a run, so the files such a run copied are compared by size, modification time and ETag again on the next run and found unchanged.
+The manifest is written whole at the end of a run, so the files such a run copied are compared by size and modification date again on the next run and found unchanged.
 
 ## Mirroring deletions
 
@@ -271,7 +278,10 @@ Empty folders left behind are removed too.
 Deletions are skipped, and `deletionsSkipped` is set in the stats, whenever the run cannot be sure the file is really gone:
 
 - the listing was incomplete, because it timed out or failed part way;
-- any file failed to copy in this run, since a listing problem and a copy problem can have the same cause.
+- any file failed to copy in this run, since a listing problem and a copy problem can have the same cause;
+- the listing was complete but empty while the previous run had copied files.
+  The run then ends as `partial` with the error that the prefix listed nothing, so a prefix typo or a moved folder cannot empty the dataset.
+  Fix the prefix, or empty the dataset by hand when the source is really empty.
 
 The next run that lists and copies cleanly performs the deletions.
 A run with mirroring off never deletes, so a file removed from the prefix stays in the dataset until mirroring is turned on or a data owner deletes it.
@@ -291,7 +301,7 @@ DataSources/<data source>/files/<dataset>/
 | --- | --- | --- |
 | `owner.json` | Hopsworks, when the job is created | The job that copies into this dataset: `jobId`, `jobName`, `connectorId`, `connectorName`, `datasetName`, `createdAt`. A second files job on the same dataset is refused while it exists. |
 | `lease.json` | the run | `executionId`, `pod`, `startedAt` and `heartbeat` of the run that holds the dataset; see [How a run works](#how-a-run-works). |
-| `manifest.jsonl` | the run | One JSON object per file in the dataset: `file_id` (SHA-1 of the source URL), `source_url`, `relative_path`, `hopsfs_path`, `file_name`, `file_type`, `mime_type`, `size_bytes`, `modified_at`, `etag`, `content_hash` (SHA-256 of the copy), `execution_id` and `copied_at` of the run that copied it. Replaced atomically at the end of each run. |
+| `manifest.jsonl` | the run | One JSON object per file in the dataset: `file_id` (SHA-1 of the source URL), `source_url`, `relative_path`, `hopsfs_path`, `file_name`, `file_type`, `mime_type`, `size_bytes`, `modified_at`, `etag` (reserved, always empty), `content_hash` (SHA-256 of the copy), `execution_id` and `copied_at` of the run that copied it. Replaced atomically at the end of each run. |
 | `<execution id>_files_stats.json` | the run, also when it fails | The outcome of the run, described below. |
 | `audit/date=<YYYY-MM-DD>/<HHMMSS>Z_<execution id>.csv` | the run, when it changed something | One row per changed file, described below. |
 
@@ -373,7 +383,7 @@ Hopsworks creates it with the job, offline only and without statistics, with `fi
 | `source_url` | the object, as `s3://`, `gs://` or `az://` URL |
 | `mime_type`, `size_bytes` | content type, from the extension, and size in bytes |
 | `modified_at` | the object's last modification time, UTC |
-| `content_hash`, `etag` | SHA-256 of the copy, and the store's ETag when it provides one |
+| `content_hash`, `etag` | SHA-256 of the copy, and a reserved column that is always empty |
 | `execution_id`, `indexed_at` | the run that last wrote the row, and when |
 | `ingestion_date` | the partition: the UTC day the file was first indexed, which is the day it was copied in, or for a file already in the dataset, the day indexing was turned on |
 
@@ -408,11 +418,11 @@ Claude and the other coding agents in a terminal load the `hops-files-search` sk
 - Only S3, GCS and ADLS data sources are supported.
   SFTP and Google Drive sources are not, and [SharePoint](creation/sharepoint.md), Gmail and Outlook have their own sync jobs.
 - The listing is full on every run, and files are copied one at a time, so a prefix with millions of objects or a very large total size is better split into several jobs with narrower prefixes.
-- A run on an IAM-role S3 data source cannot outlast the role's session duration.
+- A run on an IAM-role S3 data source cannot outlast `dlt_files_credentials_duration_seconds`.
 - Files are copied as they are.
   Turning tabular files into feature groups is not part of this job; use an [external feature group](../feature_group/create_external.md) over the path or the [table ingestion flow][ingest-data-with-dlthub] instead.
 - Browsing the bucket for a prefix is not available for ADLS; type the prefix.
-- One job per dataset: a dataset that one job copies into cannot be the target of another.
+- One job per dataset: a dataset that one job copies into cannot be the target of another, whatever its data source.
 - The backend and the `dlthub-ingestion-pipeline` image must be of the same release; an older image does not know the files mode.
 
 ## Next steps
