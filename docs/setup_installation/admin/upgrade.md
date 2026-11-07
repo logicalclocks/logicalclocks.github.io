@@ -267,6 +267,21 @@ On the upgrade to 5.3:
 - Leave the existing contents of `/var/lib/filebeat-data` in place.
   Nothing in the chart reads them, and they may belong to another Filebeat on the node.
 
+### Prometheus collects only project namespaces { #upgrade-prometheus-namespace-scope }
+
+Releases before 5.3 collected metrics from every namespace of the cluster.
+From 5.3, Prometheus collects only from the Hopsworks namespace and the project namespaces its [namespace selector][prometheus-namespace-scope] selects, `hopsworks.ai/project` by default.
+On the upgrade:
+
+- The Prometheus server rolls once to mount the generated configuration and keeps its data volume.
+  It starts once the namespace watcher has published that configuration.
+- Every project namespace must carry the selector's labels, including namespaces provisioned outside Hopsworks.
+  A project namespace the selector misses loses its metrics, including those that model deployment autoscaling reads.
+- On a cluster shared by several Hopsworks installations, add the tenant label to the selector.
+  Otherwise each Prometheus collects the projects of every installation.
+- Workloads outside the selected namespaces are no longer collected; their stored series remain until the retention period ends.
+- `prometheus.prometheus.server.configFromSecret` and other values of `prometheus.prometheus.server.configMapOverrideName` fail rendering, because the chart generates the Prometheus configuration.
+
 ### Logstash 9 { #upgrade-logstash-9 }
 
 In 5.3, and from the 5.2.x patch release that ships it, Logstash moves from 7.17 to 9.5.
