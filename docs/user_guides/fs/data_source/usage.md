@@ -187,6 +187,11 @@ This workflow is especially useful when you want to:
 
 For the full workflow, including schema selection, ingestion job configuration, loading strategies, and REST pagination, see [Ingest Data with dltHub][ingest-data-with-dlthub].
 
+## Copying Files into a Dataset
+
+An S3, GCS or ADLS data source can also copy the files under a prefix, whatever their format, into a dataset of the project with the same ingestion job in its files mode, once or on a schedule, with optional mirroring of deletions and a feature group that indexes the files.
+See [Copy files from S3, GCS or ADLS into a dataset][files-ingestion].
+
 ## Writing Training Data
 
 Data Sources are also used while writing training data to external sources.
