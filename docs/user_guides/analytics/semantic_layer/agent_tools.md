@@ -6,6 +6,7 @@ description: The semantic layer tools of the Hopsworks MCP server, and the hops-
 
 The Hopsworks MCP server gives an agent tools to discover the metrics and saved queries of a project's semantic projects, query them, compile their definitions, and build Superset dashboards of them.
 The discovery and query tools have the names of the semantic layer tools of the dbt MCP server.
+`list_exports` lists the feature groups that saved queries keep filled, which an agent can then read like any feature group.
 
 ## Run the MCP server { #semantic-agent-tools-server }
 
@@ -28,6 +29,7 @@ The API key needs the `FEATURESTORE` and `TRINO` scopes for the semantic layer t
 | `list_semantic_projects` | READ | | Each semantic project's name, root path, mode, serving build, and whether it is stale. |
 | `list_metrics` | READ | `semantic_project`, `tag` (optional) | CSV of the metrics: name, type, label, description and tags. `tag` keeps the metrics that set that tag schema. |
 | `list_saved_queries` | READ | `semantic_project` | CSV of the [saved queries][semantic-saved-queries-agent]: name, label, description, metrics and group-bys. |
+| `list_exports` | READ | `semantic_project` | CSV of the [exports][semantic-exports-list]: name, saved query, feature group, version, schedule (empty for an export run on demand only), lookback, enabled, last status, last run, last rows and last message. |
 | `get_dimensions` | READ | `semantic_project`, `metrics` | CSV of the dimensions the metrics can be grouped by: name, type, grains and entity path. |
 | `get_entities` | READ | `semantic_project`, `metrics` (optional) | CSV of the entities. |
 | `get_dimension_values` | READ | `semantic_project`, `dimension`, `metrics` and `limit` (optional) | CSV of the distinct values of a dimension. |

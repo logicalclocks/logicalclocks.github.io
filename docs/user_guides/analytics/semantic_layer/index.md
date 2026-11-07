@@ -5,7 +5,7 @@ description: Guides for the Hopsworks Semantic Layer, metrics defined in dbt sem
 # Semantic Layer Guides { #semantic-layer-guides }
 
 The semantic layer compiles metric definitions written in dbt semantic YAML over feature groups, and answers metric queries with SQL it generates for Trino.
-Define the metrics, compile them into a build, then query them from Python, the CLI, the UI or an agent, or chart them in Superset.
+Define the metrics, compile them into a build, then query them from Python, the CLI, the UI, an agent or a dbt Semantic Layer client, chart them in Superset, or export them into feature groups.
 
 <!-- markdownlint-disable MD030 -->
 <div class="grid cards hops-start" markdown>
@@ -67,6 +67,12 @@ Define the metrics, compile them into a build, then query them from Python, the 
   The Python client, the CLI, the query workbench in the UI, and the limits.
 - [Saved queries][semantic-saved-queries]
   Named metric queries, run and refined from every client.
+- [Connect dbt clients][semantic-connect-clients]
+  dbt-sl-sdk, the Arrow Flight SQL JDBC driver, ADBC and GraphQL, with dbt's APIs.
+- [Result cache][semantic-result-cache]
+  Repeated queries answered from memory, and what makes a result fresh.
+- [Metric exports][semantic-exports]
+  Saved queries written into feature groups by scheduled jobs.
 - [Dashboards in Superset][semantic-superset-dashboards]
   Superset 7.0 dashboards and charts from metrics, and Explore links.
 - [Agent tools][semantic-agent-tools]

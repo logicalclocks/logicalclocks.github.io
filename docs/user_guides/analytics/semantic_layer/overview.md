@@ -74,10 +74,12 @@ In `FOLLOW` mode a promote of an older valid build rolls back until the next val
 
 1. A client sends the query to the semantic gateway, with the caller's own credential: an API key, or the session of the UI.
 2. The gateway generates the SQL for the query from the current build.
-3. The SQL runs on Trino as the caller's own Trino user, `<project>__<user>`, so a query reads only the data that member can read.
+3. The SQL runs on Trino as the caller's own Trino user, `<project>__<user>`, so a query reads only the data that member can read, unless the gateway's [result cache][semantic-result-cache] holds the result of the same query by the same user over the same feature group commits.
 4. The rows come back as an Arrow stream or as JSON.
 
 The Python client, the `hops` CLI, the UI and the agent tools all query through the gateway, from inside and outside the cluster.
+dbt Semantic Layer clients query it over GraphQL and Arrow Flight SQL, see [Connect dbt clients][semantic-connect-clients].
+A saved query's exports write its rows into feature groups on a schedule, see [Metric exports][semantic-exports].
 Superset charts query through the gateway too, with an API key of the project owner, see [Who can see what][semantic-superset-access].
 The semantic layer reads the offline feature store.
 
@@ -86,5 +88,6 @@ The semantic layer reads the offline feature store.
 - An administrator turns the semantic layer on with the Helm value `global._hopsworks.semanticLayer.enabled: true`, which installs the semantic gateway and adds **Semantic Layer** to the project sidebar.
   While it is off, the semantic layer endpoints answer 404 `SEMANTIC_LAYER_DISABLED`.
 - Data owners and data scientists of a project create, compile, promote and delete semantic projects; every member can list them and query their metrics.
+- Only data owners run [metric exports][semantic-exports] by hand, and an export's job runs as the semantic project's creator, who must be a data owner.
 - An API key needs the `FEATURESTORE` scope for semantic projects and builds.
   Everything the gateway answers, from listing metrics to running a query, also needs the `TRINO` scope, since the gateway connects to Trino as the key's user.

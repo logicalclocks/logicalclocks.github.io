@@ -48,7 +48,7 @@ saved_queries:
 | `config.meta.hopsworks.tags` | Tags, tag schema name to value, checked against their schemas as the [tags of a metric][semantic-tags-metrics] are. |
 
 A compile checks each saved query, its metrics, group-bys, order and filters, under the `SAVED_QUERY` and `WHERE_FILTER` [rules][semantic-validation-rules], then plans it once, so a saved query that would fail is an error at its file and line.
-`exports` are read and not run.
+A saved query's `exports` write its rows into feature groups, see [Export to a feature group][semantic-saved-queries-exports].
 
 ## List the saved queries { #semantic-saved-queries-list }
 
@@ -97,13 +97,14 @@ The listing names each group-by and order-by as a query does, such as `metric_ti
       "where": ["{{ Dimension('order__status') }} != 'cancelled'"],
       "orderBy": [{"name": "metric_time__month"}, {"name": "revenue", "descending": true}],
       "limit": null,
-      "tags": {"domain": "sales"}
+      "tags": {"domain": "sales"},
+      "exports": []
     }
   ]
 }
 ```
 
-In the UI, the **Saved queries** card of the semantic project's overview lists them; clicking one shows its metrics, group-bys, filters, order, limit and tags.
+In the UI, the **Saved queries** card of the semantic project's overview lists them; clicking one shows its metrics, group-bys, filters, order, limit and tags, and the status of its exports.
 
 ## Run a saved query { #semantic-saved-queries-run }
 
@@ -222,6 +223,35 @@ Over REST, the body is `{"savedQuery": "revenue_by_country", "groupBy": []}`.
 
 Both print the Trino SQL of the saved query, refined by the same options as a query, without running it.
 In the UI, **Show SQL** in the saved query's sheet shows it under the saved query's definition.
+
+## Export to a feature group { #semantic-saved-queries-exports }
+
+An export writes a saved query's rows into a feature group, which a job refreshes on a schedule or when a Data Owner runs it:
+
+```yaml
+saved_queries:
+  - name: daily_revenue_by_country
+    query_params:
+      metrics:
+        - revenue
+      group_by:
+        - TimeDimension('metric_time', 'day')
+        - Dimension('customer__country')
+    exports:
+      - name: revenue_by_country_daily
+        config:
+          export_as: table
+    config:
+      meta:
+        hopsworks:
+          exports:
+            revenue_by_country_daily:
+              schedule: "0 0 2 * * ?"
+              lookback: 7 days
+```
+
+The feature group is keyed by `customer__country`, with `metric_time__day` as its event time.
+[Metric exports][semantic-exports] covers the settings, the refreshes, who the job runs as, and the statuses.
 
 ## From an agent { #semantic-saved-queries-agent }
 

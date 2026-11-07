@@ -245,6 +245,9 @@ nav:
               - Validation Rules: user_guides/analytics/semantic_layer/validation_rules.md
               - Query Metrics: user_guides/analytics/semantic_layer/query.md
               - Saved Queries: user_guides/analytics/semantic_layer/saved_queries.md
+              - Connect dbt Clients: user_guides/analytics/semantic_layer/connect_clients.md
+              - Result Cache: user_guides/analytics/semantic_layer/caching.md
+              - Metric Exports: user_guides/analytics/semantic_layer/exports.md
               - Dashboards in Superset: user_guides/analytics/semantic_layer/dashboards.md
               - Tags: user_guides/analytics/semantic_layer/tags.md
               - Agent Tools: user_guides/analytics/semantic_layer/agent_tools.md

@@ -5,8 +5,9 @@ description: How to find metrics and query them by dimension and time grain from
 # Query Metrics { #semantic-query-metrics }
 
 A metric query names metrics, the group-bys to split them by, and optional filters, ordering and a row limit.
-The semantic layer generates the SQL from the current build and runs it on Trino as the caller.
+The semantic layer generates the SQL from the current build and runs it on Trino as the caller, or answers a repeated query from its [result cache][semantic-result-cache].
 The examples query the `sales` semantic project from [Compile and builds][semantic-compile-builds].
+dbt Semantic Layer clients, such as dbt-sl-sdk and the Arrow Flight SQL JDBC driver, query the same metrics, see [Connect dbt clients][semantic-connect-clients].
 
 ## Group-by names { #semantic-query-names }
 
@@ -90,6 +91,7 @@ US,62.875,27.875
 | `--start-time`, `--end-time` | Bounds on `metric_time`, both inclusive, each truncated to the query's time grain. |
 | `-o` | `table` (default), `json` or `csv`. |
 | `--explain` | Print the SQL instead of running it. |
+| `--no-cache` | Run the query on Trino even when the [result cache][semantic-result-cache] holds it. |
 
 `hops semantic sql` takes the same options except `-o` and `--explain`, and prints the SQL without running it.
 A monthly query with `--end-time 2026-02-01` includes all of February, since the bound is truncated to the month.
@@ -128,6 +130,7 @@ sql = sales.sql(metrics=["revenue"], group_by=["metric_time__month"])
 | `group_limit` | Keep the top groups by a metric, such as the two countries with the most revenue. |
 | `dataframe_type` | `pandas` (default), `polars`, `pyarrow`, or `python` for a list of dicts. |
 | `saved_query` | A [saved query][semantic-saved-queries] to run in place of `metrics`. |
+| `read_cache` | `False` runs the query on Trino even when the [result cache][semantic-result-cache] holds it; `True` by default. |
 
 A group-by can also be a dict, `{"name": "metric_time", "grain": "month"}` or `{"name": "metric_time", "date_part": "dow"}`.
 Results come back as an Arrow stream when `pyarrow` is installed, which keeps the column types, and as JSON otherwise.
@@ -210,8 +213,16 @@ curl -X POST -H "Authorization: ApiKey $HOPSWORKS_API_KEY" \
 | GET | `saved-queries` | The [saved queries][semantic-saved-queries-list] of the current build. |
 
 The query body takes `metrics`, `savedQuery`, `groupBy`, `where`, `filters`, `having`, `timeRange`, `orderBy`, `limit`, `offset` and `groupLimit`, in the camel case of the Python arguments, and `minMaxOnly` and `applyGroupBy` for a [query without metrics][semantic-query-no-metrics].
+`"cache": false` in a `query` or `dimension-values` body skips the [result cache][semantic-result-cache].
 A JSON result carries `columns`, `rows`, `rowCount`, `truncated` and `sql`.
 Every response carries the `buildId` that answered and whether it is `stale`; an Arrow result carries them in the `X-Semantic-Build` and `X-Semantic-Stale` headers.
+
+| Header | On | Value |
+| --- | --- | --- |
+| `X-Semantic-Max-Rows` | Arrow `query` | The row cap of an Arrow result. |
+| `X-Semantic-Truncated` | `query` | `true` when the row cap cut the result. An Arrow result carries it only when the cut is known before the first rows are sent, so treat one with `X-Semantic-Max-Rows` rows as cut. |
+| `X-Semantic-Feature-Groups` | `query`, `sql` | The ids of the feature groups the query reads through its semantic models, comma-separated. |
+| `X-Semantic-Sql-Base64` | Arrow `query` | The SQL that ran, base64 encoded. |
 
 ## Limits { #semantic-query-limits }
 
@@ -226,6 +237,7 @@ Every response carries the `buildId` that answered and whether it is `stale`; an
 
 The `semantic-gateway` Helm values `maxRows`, `maxJsonRows`, `queryTimeoutSeconds` and `queryConcurrency` change the first four limits.
 Add a `limit`, a filter or fewer group-bys to stay under the row caps.
+The limits of GraphQL and Arrow Flight SQL are in [Connect dbt clients][semantic-connect-limits].
 
 ## Errors { #semantic-query-errors }
 

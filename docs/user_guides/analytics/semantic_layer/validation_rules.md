@@ -69,5 +69,14 @@ Every issue is an `ERROR` unless the table says `WARNING`.
 | `UNSUPPORTED` | `WARNING` | A metric or saved query of a shape the planner refuses, see [Limits][semantic-metric-types-limits]; its queries are refused, and the build serves the others. |
 | `METRIC_TAGS_NOT_A_MAP`, `METRIC_TAG_UNKNOWN_SCHEMA`, `METRIC_TAG_INVALID_VALUE`, `METRIC_TAG_MANDATORY_MISSING` | `ERROR` | A metric's tags, see [Tag a metric][semantic-tags-metrics]. |
 | `SAVED_QUERY_TAGS_NOT_A_MAP`, `SAVED_QUERY_TAG_UNKNOWN_SCHEMA`, `SAVED_QUERY_TAG_INVALID_VALUE` | `ERROR` | A saved query's tags, checked as a metric's are. |
+| `EXPORT_NAME` | `ERROR` | An export name that is not a feature group name, lower case letters, digits and underscores starting with a letter and at most 63 characters, or that two saved queries define. |
+| `EXPORT_AS` | `ERROR` | An export without `export_as`, or with `export_as: view` or anything but `table`. |
+| `EXPORT_TARGET` | `ERROR` | An export's feature group name, its `alias` or else its name, that is not a valid feature group name or that two exports write; a `version` below 1. A `WARNING` for a `schema`, which is not used. |
+| `EXPORT_SCHEDULE` | `ERROR` | A `schedule` that is not a Quartz cron expression, is longer than 255 characters, or does not have `0` as its seconds field. |
+| `EXPORT_LOOKBACK` | `ERROR` | A `lookback` that is not `<count> <granularity>` with a count of at least 1, such as `7 days`, or an export with a lookback whose saved query does not group by `metric_time` at a grain. |
+| `EXPORT_KEYS` | `ERROR` | An export of a saved query without group-bys. |
+| `EXPORT_SETTINGS` | `ERROR` | A `config.meta.hopsworks.exports` that does not map export names to settings, or that names an export the saved query does not have. |
+
+The `EXPORT_*` rules check the [metric exports][semantic-exports-validation] of saved queries.
 
 `hops semantic build <name> <id>`, `SemanticProject.get_build(id).issues` and **View issues** on the **Builds** card list a build's issues.
