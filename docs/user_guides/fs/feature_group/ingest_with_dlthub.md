@@ -36,6 +36,7 @@ This ingestion flow supports multiple data sources:
 - CRM and REST API sources use the ingestion path only.
 - Incremental loading is available for SQL and REST API sources.
 - CRM sources currently use full-load ingestion.
+- S3, GCS and ADLS object stores are not table sources of this flow; the same job copies their files into a dataset instead, see [Copy files from S3, GCS or ADLS into a dataset][files-ingestion].
 
 ## Step 1: Open the Data Source and start Feature Group creation
 

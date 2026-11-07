@@ -70,3 +70,8 @@ Start by giving it a unique **name** and an optional **description**.
 
 Move on to the [usage guide for data sources](../usage.md) to see how you can use your newly created GCS
 connector.
+
+### Copy files into a dataset
+
+The same data source can also copy the files under a prefix of the bucket, whatever their format, into a dataset of the project, once or on a schedule, with optional mirroring of deletions and a file index feature group.
+See [Copy files from S3, GCS or ADLS into a dataset][files-ingestion].
