@@ -229,7 +229,8 @@ fields are:
 | `skillsRef` | string | no | - | Path to a `.md` skills file on HopsFS |
 | `envVars` | string[] | no | - | `"KEY=VALUE"` strings |
 | `environmentName` | string | no | `agent-job` | Must be `agent-job` or a clone of it |
-| `resourceConfig` | object | no | default | `{ cores, memory, gpus }` |
+| `resourceConfig` | object | no | default | `{ cores, memory, gpus, diskGb }`; `diskGb` is the container's local disk limit in GB, `1` to `16384`, no limit when not set |
+| `hopsfsMountConfig` | object | no | cluster default | `{ memory, cores, namenodeConnections }` of the `/hopsfs` mount container, each key optional |
 | `outputPath` | string | no | auto | Where to write results in HopsFS |
 
 Full reference: see the `[HWORKS-2667]` PR description and the
