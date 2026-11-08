@@ -117,6 +117,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 100082 | `OPENCOST_BAD_REQUEST` | 400 BAD_REQUEST | Invalid cost query. |
 | 100083 | `OPENCOST_NOT_ENABLED` | 404 NOT_FOUND | Cost tracking with OpenCost is not enabled on this cluster. |
 | 100084 | `OPENCOST_NAMESPACE_SHARED` | 409 CONFLICT | The project's namespace is shared with other projects, so its costs cannot be told apart. |
+| 100085 | `RESOURCE_QUOTA_EXCEEDED` | 412 PRECONDITION_FAILED | The project does not have enough quota left to start this. |
 
 ## DatasetErrorCode
 
@@ -177,6 +178,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 110054 | `DATASET_PERMISSION_IMMUTABLE` | 400 BAD_REQUEST | Internal datasets permission can not be changed. |
 | 110055 | `UPLOAD_DISK_SPACE_ERROR` | 500 INTERNAL_SERVER_ERROR | Upload failed: HopsFS storage is full. Please contact your administrator to free up disk space. |
 | 110056 | `UPLOAD_NOT_ALLOWED` | 403 FORBIDDEN | Uploading files is not allowed by the cluster upload policy. Please contact your administrator. |
+| 110057 | `DATASET_SYNC_MANAGED` | 403 FORBIDDEN | This dataset is managed by a data source sync; change it through the sync. |
 
 ## GenericErrorCode
 
@@ -283,6 +285,18 @@ Do not hand-edit the tables below; regenerate them instead.
 | 130079 | `JOB_UPDATE_FORBIDDEN` | 403 FORBIDDEN | Only the job creator or a Data owner can update this job. |
 | 130080 | `PYTHON_APP_ENTRYPOINT_INVALID` | 400 BAD_REQUEST | The app file is missing or is not a file of the app type's kind. |
 | 130081 | `PYTHON_APP_IDLE_SCALE_TO_ZERO_INVALID` | 400 BAD_REQUEST | Invalid scale-to-zero configuration for the app. |
+| 130082 | `SPARK_DYNAMIC_ALLOCATION_WITH_KUEUE` | 400 BAD_REQUEST | Spark jobs cannot use dynamic allocation on a cluster that schedules jobs with Kueue. |
+| 130083 | `APP_TABLE_CONFLICT` | 409 CONFLICT | The table already exists or belongs to another app. |
+| 130084 | `APP_TABLE_NOT_FOUND` | 404 NOT_FOUND | The app has no such table. |
+| 130085 | `APP_TABLES_NOT_MANAGED` | 400 BAD_REQUEST | The app was created before apps registered their tables; it has none. |
+| 130086 | `APP_TABLE_DATABASE_ERROR` | 500 INTERNAL_SERVER_ERROR | The app's tables could not be read or changed in the online database. |
+| 130087 | `RESOURCE_QUOTA_EXCEEDED` | 412 PRECONDITION_FAILED | The project does not have enough quota left to start this. |
+| 130088 | `APP_TABLE_DEFINITION_INVALID` | 400 BAD_REQUEST | Hopsworks sets the engine, tablespace and storage of app tables; leave them out of the definition. |
+| 130089 | `APP_TABLE_DDL_FAILED` | 400 BAD_REQUEST | The online database refused the app's table definition. |
+| 130090 | `APP_TABLE_NAME_INVALID` | 400 BAD_REQUEST | The table name must start with the app's prefix and use only a-z, 0-9 and _. |
+| 130091 | `SYNC_JOB_MANAGED` | 403 FORBIDDEN | This job runs a data source sync; delete or rename it through the sync. |
+| 130092 | `PYTHON_APP_BUSY` | 409 CONFLICT | Another start, stop or cleanup of this app is in progress. Try again in a minute. |
+| 130093 | `PYTHON_APP_AGENT_INVALID` | 400 BAD_REQUEST | The agent the app names is not an agent deployment of this project. |
 
 ## RequestErrorCode
 
@@ -414,6 +428,14 @@ Do not hand-edit the tables below; regenerate them instead.
 | 150118 | `DEPARTMENT_NAME_INVALID` | 400 BAD_REQUEST | Department names are 1-63 lowercase letters, digits and '-', starting and ending with a letter or digit. |
 | 150119 | `DEPARTMENT_DEFAULT_CANNOT_BE_DELETED` | 400 BAD_REQUEST | The default department cannot be deleted. |
 | 150120 | `DEPARTMENT_MOVE_REFUSED` | 409 CONFLICT | The project cannot be moved to this department now. |
+| 150121 | `PROJECT_OWNER_TARGET_NOT_ELIGIBLE` | 400 BAD_REQUEST | A project can only be transferred to an activated user account with a user or administrator role. |
+| 150122 | `PROJECT_OWNER_TARGET_NOT_DATA_OWNER` | 400 BAD_REQUEST | The new owner must be a data owner of the project. |
+| 150123 | `PROJECT_OWNER_TRANSFER_NOT_ALLOWED` | 403 FORBIDDEN | Only the project owner can transfer the project. |
+| 150124 | `SYSTEM_PROJECT_TRANSFER_NOT_ALLOWED` | 400 BAD_REQUEST | This project is managed by Hopsworks and its owner cannot be changed. |
+| 150125 | `PROJECT_OWNER_TARGET_LIMIT_REACHED` | 400 BAD_REQUEST | The new owner has reached the maximum number of projects they can own. An administrator can still transfer the project. |
+| 150126 | `PROJECT_OWNER_TRANSFER_PROJECT_NOT_READY` | 409 CONFLICT | The project is being created or removed, so its owner cannot be changed. |
+| 150127 | `PROJECT_OWNER_TRANSFER_INCOMPLETE` | 500 INTERNAL_SERVER_ERROR | The owner was changed, but not every follow-up step completed. The new owner or an administrator finishes them by transferring the project to the new owner again. |
+| 150128 | `PROJECT_OWNER_TRANSFER_IN_PROGRESS` | 409 CONFLICT | An ownership transfer of this project is still in progress. Try again once it has finished. |
 
 ## UserErrorCode
 
@@ -641,10 +663,33 @@ Do not hand-edit the tables below; regenerate them instead.
 | 240039 | `UPDATE_DEPLOYMENT_MODE_ERROR` | 400 BAD_REQUEST | The deployment mode (Knative or Standard) cannot be changed while the deployment is running. Stop the deployment first. |
 | 240040 | `LOG_PERSISTENCE_NOT_SUPPORTED` | 400 BAD_REQUEST | Disk logging is only supported for Python model deployments. |
 | 240041 | `INVALID_FEATURE_LOGGING_CONFIG` | 400 BAD_REQUEST | Invalid feature logging configuration |
+| 240042 | `CHAT_CONFIG_NOT_VALID` | 400 BAD_REQUEST | Chat configuration not valid |
+| 240043 | `TRACE_FEEDBACK_NOT_VALID` | 400 BAD_REQUEST | Trace feedback not valid |
+| 240044 | `EVAL_SUITE_NOT_FOUND` | 404 NOT_FOUND | Evaluation suite not found |
+| 240045 | `EVAL_TASK_NOT_FOUND` | 404 NOT_FOUND | Evaluation task not found |
+| 240046 | `EVAL_SUITE_NOT_VALID` | 400 BAD_REQUEST | Evaluation suite not valid |
+| 240047 | `EVAL_TASK_NOT_VALID` | 400 BAD_REQUEST | Evaluation task not valid |
+| 240048 | `EVAL_TASK_NOT_REDACTED` | 400 BAD_REQUEST | Promoted content must be reviewed before the task can join a suite |
+| 240049 | `EVAL_SUITE_PUBLISHED` | 400 BAD_REQUEST | A published suite is frozen; publish a new version instead |
+| 240050 | `EVAL_RUN_NOT_FOUND` | 404 NOT_FOUND | Evaluation run not found |
+| 240051 | `EVAL_RUN_NOT_VALID` | 400 BAD_REQUEST | Evaluation run not valid |
 | 240052 | `DEPLOYMENT_VERSION_NOT_FOUND` | 404 NOT_FOUND | Deployment version not found |
 | 240053 | `DEPLOYMENT_VERSION_MISMATCH` | 409 CONFLICT | The deployment changed since it was read. Reload it and retry. |
 | 240054 | `DEPLOYMENT_VERSION_CONFLICT` | 409 CONFLICT | A deployment version with this number was created concurrently. Retry. |
 | 240055 | `DEPLOYMENT_FILE_NOT_FOUND` | 400 BAD_REQUEST | Deployment artifact file not found |
+| 240056 | `EVAL_TASK_STORAGE_FAILED` | 500 INTERNAL_SERVER_ERROR | Evaluation task content could not be read or written |
+| 240057 | `MEMORY_CONFIG_NOT_VALID` | 400 BAD_REQUEST | Memory configuration not valid |
+| 240058 | `RESOURCE_QUOTA_EXCEEDED` | 412 PRECONDITION_FAILED | The project does not have enough quota left to start this deployment. |
+| 240059 | `CHAT_APP_NOT_VALID` | 400 BAD_REQUEST | The chat app cannot be created for this deployment |
+| 240060 | `CHAT_APP_NOT_FOUND` | 404 NOT_FOUND | This deployment has no chat app |
+| 240061 | `CHAT_APP_UPDATE_FORBIDDEN` | 403 FORBIDDEN | Only the creator of the chat app or a data owner can customize it. |
+| 240062 | `TRACING_CONFIG_NOT_VALID` | 400 BAD_REQUEST | Tracing configuration not valid |
+| 240063 | `TRACES_NOT_DELETED` | 500 INTERNAL_SERVER_ERROR | Traces could not be deleted |
+| 240064 | `TRACES_DELETE_NOT_VALID` | 400 BAD_REQUEST | Trace delete request not valid |
+| 240065 | `TRITON_NOT_ENABLED` | 400 BAD_REQUEST | Triton Inference Server is not enabled on this cluster |
+| 240066 | `TRITON_IMAGE_TAG_NOT_AVAILABLE` | 400 BAD_REQUEST | Triton image tag not available |
+| 240067 | `TRITON_MODEL_REPOSITORY_NOT_VALID` | 400 BAD_REQUEST | Triton model repository not valid |
+| 240068 | `TRITON_OPTION_NOT_SUPPORTED` | 400 BAD_REQUEST | Option not supported in Triton deployments |
 
 ## InferenceErrorCode
 
@@ -1002,6 +1047,29 @@ Do not hand-edit the tables below; regenerate them instead.
 | 270343 | `DATA_SOURCE_CREDENTIALS_RATE_LIMITED` | 429 TOO_MANY_REQUESTS | Too many credential checks against this data source; try again in a minute. |
 | 270344 | `ICEBERG_METASTORE_SYNC_NOT_SUPPORTED` | 400 BAD_REQUEST | Only ICEBERG feature groups on HopsFS are registered as Iceberg tables in the Hive metastore. |
 | 270345 | `ICEBERG_METASTORE_SYNC_ERROR` | 500 INTERNAL_SERVER_ERROR | Could not register the feature group's current Iceberg metadata in the Hive metastore. |
+| 270346 | `SHAREPOINT_AUTH_FAILED` | 400 BAD_REQUEST | Microsoft Entra ID rejected the SharePoint credentials. |
+| 270347 | `SHAREPOINT_SITE_NOT_FOUND` | 400 BAD_REQUEST | The SharePoint site does not exist or the application has no access to it. |
+| 270348 | `SHAREPOINT_DRIVE_NOT_FOUND` | 404 NOT_FOUND | The SharePoint document library was not found. |
+| 270349 | `SHAREPOINT_FOLDER_NOT_FOUND` | 404 NOT_FOUND | The SharePoint folder was not found. |
+| 270350 | `SHAREPOINT_GRAPH_ERROR` | 502 BAD_GATEWAY | Microsoft Graph returned an error. |
+| 270351 | `SHAREPOINT_UNTRUSTED_HOST` | 502 BAD_GATEWAY | Microsoft Graph returned a link to a host outside the connector's cloud. |
+| 270352 | `SHAREPOINT_CONNECTOR_PINNED` | 409 CONFLICT | Tenant, cloud and site cannot change while the data source has syncs. |
+| 270353 | `STORAGE_CONNECTOR_HAS_SYNCS` | 409 CONFLICT | Delete the data source's syncs before deleting the data source. |
+| 270354 | `SHAREPOINT_SYNC_NOT_FOUND` | 404 NOT_FOUND | SharePoint sync not found. |
+| 270355 | `SHAREPOINT_SYNC_RUNNING` | 409 CONFLICT | A run of this sync is in progress. |
+| 270356 | `SHAREPOINT_SYNC_LIFECYCLE` | 409 CONFLICT | The sync is being created or deleted; retry that operation first. |
+| 270357 | `SHAREPOINT_SYNC_INVALID_SCHEDULE` | 400 BAD_REQUEST | Invalid sync schedule. |
+| 270358 | `SHAREPOINT_SYNC_NOT_SCHEDULED` | 409 CONFLICT | The sync has no schedule. |
+| 270359 | `SHAREPOINT_SYNC_INVALID_PATTERN` | 400 BAD_REQUEST | Invalid include or exclude pattern. |
+| 270360 | `SHAREPOINT_SYNC_NOT_DATA_OWNER` | 403 FORBIDDEN | Sync runs need a data owner of the project. |
+| 270361 | `SHAREPOINT_SYNC_JOB_MISMATCH` | 409 CONFLICT | The execution does not belong to this sync's job. |
+| 270362 | `SHAREPOINT_SYNC_STALE_RESULT` | 409 CONFLICT | The run no longer holds the sync's claim. |
+| 270363 | `SHAREPOINT_ALERT_RECEIVER_NOT_FOUND` | 400 BAD_REQUEST | Alert receiver not found. |
+| 270364 | `SHAREPOINT_SYNC_ERROR` | 500 INTERNAL_SERVER_ERROR | The SharePoint sync operation failed. |
+| 270365 | `ONLINEFS_CONFIG_INVALID` | 400 BAD_REQUEST | Invalid OnlineFS configuration. |
+| 270366 | `ONLINEFS_FORBIDDEN` | 403 FORBIDDEN | Only the OnlineFS service user may read the OnlineFS runtime configuration. |
+| 270367 | `ONLINEFS_CONFIG_ENCRYPTION_ERROR` | 500 INTERNAL_SERVER_ERROR | Could not encrypt or decrypt the OnlineFS Kafka connection. |
+| 270368 | `ONLINEFS_CONFIG_CONFLICT` | 409 CONFLICT | The master encryption password changed while the OnlineFS configuration was saved; save it again. |
 
 ## AirflowErrorCode
 
@@ -1015,6 +1083,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 290006 | `DAG_NAME_INVALID` | 400 BAD_REQUEST | DAG definition failed validation |
 | 290007 | `AIRFLOW_GENERIC_ERROR` | 500 INTERNAL_SERVER_ERROR | Airflow internal error |
 | 290008 | `AIRFLOW_DISABLED` | 400 BAD_REQUEST | Airflow is disabled |
+| 290009 | `PROJECT_OWNER_TRANSFER_IN_PROGRESS` | 409 CONFLICT | The project's ownership is being transferred, which re-keys its DAGs. Try again once it has finished. |
 
 ## PythonErrorCode
 
@@ -1148,6 +1217,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 380003 | `MAPPING_NOT_FOUND` | 400 BAD_REQUEST | Mapping not found. |
 | 380004 | `MAPPING_ALREADY_EXISTS` | 400 BAD_REQUEST | Mapping for the given project and role already exists. |
 | 380005 | `FAILED_TO_GET_CLUSTER_CRED` | 400 BAD_REQUEST | Failed to get cluster credential. |
+| 380006 | `OBSERVER_NOT_ALLOWED` | 403 FORBIDDEN | Observers are not given credentials for this data source's IAM role. |
 
 ## AlertErrorCode
 
@@ -1257,6 +1327,25 @@ Do not hand-edit the tables below; regenerate them instead.
 | 510010 | `RUN_AI_DEPARTMENT_NOT_FOUND` | 404 NOT_FOUND | Run:ai department not found |
 | 510011 | `RUN_AI_GPU_QUOTA_EXCEEDED` | 409 CONFLICT | Not enough GPUs left in the project's Run:ai quota |
 | 510012 | `RUN_AI_PROJECT_BUSY` | 409 CONFLICT | The Run:ai project has running workloads |
+| 510013 | `KUEUE_PER_PROJECT_DISABLED` | 400 BAD_REQUEST | Compute allocation needs Kueue with the per-project queue model |
+| 510014 | `KUEUE_ALLOCATION_INVALID` | 400 BAD_REQUEST | The compute allocation is not valid |
+| 510015 | `KUEUE_ALLOCATION_STALE` | 409 CONFLICT | The compute allocation was changed by someone else |
+| 510016 | `KUEUE_OBJECT_NOT_OWNED` | 409 CONFLICT | A Kueue object with this name was not created by Hopsworks |
+| 510017 | `KUEUE_APPLY_FAILED` | 502 BAD_GATEWAY | Applying the compute allocation to Kueue failed |
+| 510018 | `KUEUE_SCOPE_NOT_FOUND` | 404 NOT_FOUND | Compute allocation scope not found |
+| 510019 | `KUEUE_OPERATION_NOT_FOUND` | 404 NOT_FOUND | Compute allocation operation not found |
+| 510020 | `KUBE_PERMISSION_MISSING` | 403 FORBIDDEN | Hopsworks is not allowed to make this change in Kubernetes |
+| 510021 | `NODE_LABEL_INVALID` | 400 BAD_REQUEST | The node label is not valid |
+| 510022 | `NODE_LABEL_NOT_OWNED` | 409 CONFLICT | The node label was not set by Hopsworks |
+| 510023 | `NODE_NOT_FOUND` | 404 NOT_FOUND | Node not found |
+| 510024 | `PRIORITY_CLASS_INVALID` | 400 BAD_REQUEST | The priority class is not valid |
+| 510025 | `PRIORITY_CLASS_NOT_OWNED` | 409 CONFLICT | The priority class was not created by Hopsworks |
+| 510026 | `PRIORITY_CLASS_EXISTS` | 409 CONFLICT | A priority class with this name already exists |
+| 510027 | `PRIORITY_CLASS_IN_USE` | 409 CONFLICT | The priority class is available in Hopsworks |
+| 510028 | `PRIORITY_CLASS_NOT_FOUND` | 404 NOT_FOUND | Priority class not found |
+| 510029 | `SCHEDULING_WRITE_DISABLED` | 403 FORBIDDEN | Changing node labels and priority classes from Hopsworks is turned off (label_priority_write) |
+| 510030 | `NODE_NOT_SCHEDULABLE` | 400 BAD_REQUEST | Hopsworks workloads cannot be scheduled on this node |
+| 510031 | `KUEUE_METRICS_UNAVAILABLE` | 503 SERVICE_UNAVAILABLE | Compute allocation metrics are unavailable: Prometheus did not answer |
 
 ## PlatformIntelligenceErrorCode
 
