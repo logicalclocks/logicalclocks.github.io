@@ -154,7 +154,9 @@ The index feature group, when turned on, records `gdrive` in `source_type` and t
 - A Google Drive data source is read-only and files-only.
   It backs no feature groups, cannot be read with Spark, and the dltHub table ingestion does not offer it.
 - Only files stored in Drive are copied.
-  Google Docs, Sheets, Slides and the other Google-native documents have no file content to download; the Drive API refuses to download them and the job does not export them, so they are listed, fail to copy, are reported as `failed` and end every run as `partial`.
+  Google Docs, Sheets, Slides, shortcuts and the other Google-native items have no file content to download, and the job does not export them; they are counted as `unsupported`, listed in the audit file and left out, without failing the run.
+  Files in the trash are not listed.
+  Two files with the same name in one folder are told apart by appending the Drive file ID to the later one; a file whose name contains a slash is counted as `unsupported`.
   Exclude them with an exclude pattern on their names, or keep them in a folder outside the prefix.
 - Files are copied one at a time and the folder tree is listed in full on every run, so a very large folder is better split into several jobs with narrower prefixes.
 - Browsing the folder for a prefix is not available; type the prefix, as a path of folder names.

@@ -121,7 +121,7 @@ The job appears in the `Jobs` view like any other ingestion job, and its page sh
 </figure>
 -->
 
-Each execution row shows the counters of the run: files listed (after the include and exclude patterns), copied, updated, skipped as unchanged, deleted, failed and oversized, and the bytes copied.
+Each execution row shows the counters of the run: files listed (after the include and exclude patterns), copied, updated, skipped as unchanged, deleted, failed, oversized and unsupported, and the bytes copied.
 The `Audit` link of a run that changed something opens its audit CSV in the file browser; see [State and audit files](#state-and-audit-files).
 The execution logs show every file the run touched and the error of each file that failed.
 
@@ -249,6 +249,7 @@ A run goes through these steps.
    Each listed file is compared with its row in the manifest of the previous runs.
    A file whose copy is in the dataset and whose size and modification date are unchanged is skipped, and counted as `skipped`; there is no checksum comparison, so a file changed without a change of either is only copied again after it is deleted from the dataset.
    A file over the size cap is counted as `oversized`, listed in the audit file, and not copied until it shrinks or the cap is raised.
+   A file that cannot be copied at all, such as a Google-native document, a symbolic link on an SFTP server or a Google Drive file whose name contains a slash, is counted as `unsupported`, listed in the audit file and left out; it does not fail the run.
    Any other file is downloaded one at a time, written next to its destination as a temporary file and renamed into place once complete, so readers of the dataset never see a partial file; it is counted as `copied` when new and `updated` when it replaced an earlier copy.
    The copy keeps the path relative to the prefix, so `handbook/2026/a/b.pdf` under prefix `handbook/2026/` lands at `<dataset>/a/b.pdf`.
 4. **Failures**.
@@ -322,6 +323,7 @@ The stats file holds the counters shown in the UI and returned by `files_progres
   "deleted": 3,
   "failed": 1,
   "oversized": 4,
+  "unsupported": 0,
   "bytesCopied": 123456,
   "listingComplete": true,
   "deletionsSkipped": true,
@@ -346,7 +348,7 @@ execution_id,op,kind,path,src_path
 4711,oversized,file,video/f.mp4,s3://acme-docs/handbook/2026/video/f.mp4
 ```
 
-`op` is `copied`, `updated`, `deleted`, `failed` or `oversized`, `kind` is always `file`, `path` is the path relative to the dataset root and `src_path` the source URL.
+`op` is `copied`, `updated`, `deleted`, `failed`, `oversized` or `unsupported`, `kind` is always `file`, `path` is the path relative to the dataset root and `src_path` the source URL.
 
 The `date=` directories are Hive-style partitions, so a filter on `date` reads only the matching days.
 From a Python job, with DuckDB from the `python-feature-pipeline` environment:
