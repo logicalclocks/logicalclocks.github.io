@@ -91,7 +91,7 @@ semantic_models:
 - **Dimensions** are `categorical` or `time`.
   A time dimension needs `type_params.time_granularity`, and its column must be a date or a timestamp.
 - **Measures** aggregate an `expr`, a feature or a SQL expression over the features of the feature group.
-  Every measure needs a time dimension to aggregate over, from `defaults.agg_time_dimension` or its own `agg_time_dimension`; it becomes the measure's `metric_time`.
+  Every measure needs a time dimension to aggregate over, from its own `agg_time_dimension`, from `defaults.agg_time_dimension`, or else from the [event time][semantic-define-event-time] of its feature group; it becomes the measure's `metric_time`.
   `create_metric: true` on a measure also defines a simple metric with the measure's name, and `non_additive_dimension` makes it [semi-additive][semantic-metric-types-semi-additive].
 
 Each `expr` is checked against the feature group's features at compile time, so a typo in a feature name is an error at its line instead of a failed query.
@@ -136,6 +136,38 @@ In the `NATIVE` format, a semantic model names its feature group table with `nod
 
 A semantic model reads a feature group that has an offline table: the project's own, or one shared with the project.
 Any other relation is a `RELATION` error.
+
+## Event time { #semantic-define-event-time }
+
+The compiler links the `event_time` of each feature group to a time dimension of every semantic model that reads it.
+The linked dimension is the model's time dimension whose `expr`, or name when it has no `expr`, is the event time feature, ignoring case.
+A model without one gets a time dimension named after the feature, at `day` granularity, so `orders` can be grouped by `order__order_ts` without declaring it.
+Declare the time dimension yourself for a finer granularity, such as `hour`; the compiler never changes a declared dimension.
+
+The linked dimension is the default agg time dimension: a measure without its own `agg_time_dimension`, in a semantic model without `defaults.agg_time_dimension`, aggregates over it, and it becomes the measure's `metric_time`.
+With the `orders` feature group, this semantic model compiles, and `revenue` by `metric_time__month` groups by the month of `order_ts`:
+
+```yaml
+semantic_models:
+  - name: orders
+    model: ref('orders')
+    entities:
+      - name: order
+        type: primary
+        expr: order_id
+    measures:
+      - name: revenue
+        agg: sum
+        expr: amount
+```
+
+To aggregate over another time, set `defaults.agg_time_dimension` on the semantic model or `agg_time_dimension` on the measure; the event time stays linked and queryable as a dimension.
+A [time spine][semantic-time-spine-model] declared without a column reads the event time of its feature group.
+The dimension listing of the REST API marks the linked dimension with `"eventTime": true`.
+
+A feature group without an event time links nothing, and a measure without an agg time dimension is an `AGG_TIME_DIMENSION` error that says the feature group has no `event_time`.
+When the event time is not a date or a timestamp, or the name of the dimension to add is already an element of the semantic model, a non-time element of another one, or a dimension of a semantic model with the same primary entity, the compiler adds nothing and reports an `EVENT_TIME` warning that names the clash.
+Declare a time dimension on the event time feature under another name to link it.
 
 ## Metrics { #semantic-define-metrics-types }
 

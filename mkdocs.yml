@@ -241,15 +241,19 @@ nav:
               - Define Metrics: user_guides/analytics/semantic_layer/define_metrics.md
               - Metric Types: user_guides/analytics/semantic_layer/metric_types.md
               - Time Spine: user_guides/analytics/semantic_layer/time_spine.md
+              - Edit Definitions in the UI: user_guides/analytics/semantic_layer/editor.md
               - Compile and Builds: user_guides/analytics/semantic_layer/builds.md
               - Validation Rules: user_guides/analytics/semantic_layer/validation_rules.md
+              - Tags: user_guides/analytics/semantic_layer/tags.md
               - Query Metrics: user_guides/analytics/semantic_layer/query.md
               - Saved Queries: user_guides/analytics/semantic_layer/saved_queries.md
-              - Connect dbt Clients: user_guides/analytics/semantic_layer/connect_clients.md
+              - Query Metrics on Spark: user_guides/analytics/semantic_layer/spark.md
               - Result Cache: user_guides/analytics/semantic_layer/caching.md
+              - Query History: user_guides/analytics/semantic_layer/query_history.md
+              - Connect dbt Clients: user_guides/analytics/semantic_layer/connect_clients.md
+              - Connect BI Tools: user_guides/analytics/semantic_layer/bi_tools.md
               - Metric Exports: user_guides/analytics/semantic_layer/exports.md
               - Dashboards in Superset: user_guides/analytics/semantic_layer/dashboards.md
-              - Tags: user_guides/analytics/semantic_layer/tags.md
               - Agent Tools: user_guides/analytics/semantic_layer/agent_tools.md
           - Superset: user_guides/projects/superset/superset.md
       - MLOps:
@@ -370,6 +374,7 @@ nav:
           - Service Operations: setup_installation/admin/operationLogs.md
           - Query Engine (Trino): setup_installation/admin/trino.md
           - Superset: setup_installation/admin/superset.md
+          - Semantic Layer: setup_installation/admin/semantic_layer.md
           - GPU Scheduling with Run:ai: setup_installation/admin/run_ai.md
           - Triton Inference Server: setup_installation/admin/triton.md
       - Helm Chart Values Reference:

@@ -103,7 +103,7 @@ print(fg.read().head())
 
 ## Refreshes { #semantic-exports-refresh }
 
-Every run runs the whole saved query, past the [result cache][semantic-result-cache], and replaces rows of the feature group in one commit that keeps the feature group and its id.
+Every run runs the whole saved query, past the [result cache][semantic-result-cache] and never from an export, and replaces rows of the feature group in one commit that keeps the feature group and its id.
 
 | Export | A run replaces |
 | --- | --- |
@@ -236,6 +236,93 @@ The feature group an export creates has `[semantic export <semantic project id>/
 
 - Delete that feature group when nothing needs it, then run the export again.
 - Or change the export's `alias` or `version` in the YAML and compile; the next run creates the new feature group.
+
+## Answer queries from an export { #semantic-exports-serving }
+
+When an export holds the exact rows a query asks for, read from the data its sources hold now, the gateway reads the rows from the export's feature group instead of computing them from the sources.
+It never serves rows that differ from what the sources would give: when any condition below does not hold, the query runs on the sources.
+
+```yaml
+saved_queries:
+  - name: monthly_revenue_by_country
+    query_params:
+      metrics:
+        - revenue
+        - orders
+      group_by:
+        - TimeDimension('metric_time', 'month')
+        - Dimension('customer__country')
+    exports:
+      - name: revenue_by_country_monthly
+        config:
+          export_as: table
+    config:
+      meta:
+        hopsworks:
+          exports:
+            revenue_by_country_monthly:
+              schedule: "0 0 3 * * ?"
+```
+
+After a run of `revenue_by_country_monthly`, and before any write to `orders` or `customers`:
+
+```bash
+curl -s -D - -o /dev/null -X POST -H "Authorization: ApiKey $HOPSWORKS_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"savedQuery": "monthly_revenue_by_country", "orderBy": [{"name": "revenue", "descending": true}], "limit": 5}' \
+  "https://hopsworks.example.com/semantic-layer/v1/projects/7/query"
+```
+
+```text
+HTTP/1.1 200 OK
+X-Semantic-Definition: 8c1f0e2b9d7a4c35e6f1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e6f7
+X-Semantic-Source-Versions: {"11":42,"12":7}
+X-Semantic-Served-From: export:revenue_by_country_monthly
+X-Semantic-Export-Feature-Group: 503
+X-Semantic-Feature-Groups: 11,12
+X-Semantic-Cache: miss
+```
+
+### When an export answers { #semantic-exports-serving-rules }
+
+All of these hold:
+
+- The export has no `lookback`, so each run replaces every row.
+- Its saved query has no `limit`, `order_by` or group limit, and no filter or time range relative to the current date or time.
+- The query asks for the saved query's rows: the same metrics, the same group-bys at the same grains, and the same filters and time range, whether it names the saved query or spells the same query out.
+  It may add `having`, `order_by` and `limit` over the saved query's columns, and nothing else: an extra filter is applied before the metrics are computed, so it is not a filter on the export's rows.
+- The saved query's definition, its SQL on the build that answers the query, is the one the export's last run read.
+- Every feature group the query reads, the time spine included, is a Delta feature group at the commit the last run read, and the export's feature group is at the commit that run wrote.
+- No Trino row filter, column mask or denied column applies to a source or to the export's feature group, under the rules in force when the run wrote it and now. New Trino rules count from a minute after Hopsworks publishes them and Trino has loaded them.
+- Every source is shared with the project whole, not with only some of its features, and the caller can read the export's feature group.
+
+The export stops answering as soon as one of these changes: a write to a source, another write to the export's feature group, a change of the saved query or of what it reads, or a new access rule.
+The next successful run makes it answer again.
+A run records what it read and wrote only when the export has no lookback, every source is a Delta feature group, and no row filter, column mask or denied column applies; the other exports still run, and never answer queries.
+
+### Which clients it applies to { #semantic-exports-serving-clients }
+
+| Client | Answered from an export |
+| --- | --- |
+| REST `query`: Python, the CLI, the UI, the agent tools | Yes, with the headers below. |
+| Arrow Flight SQL: dbt-sl-sdk, ADBC, JDBC with dbt's JDBC dialect | Yes, without headers; not with SQL around the call or metric aliases. |
+| GraphQL `createQuery` | Yes, without headers. |
+| SQL over the [BI tables][semantic-bi-tools] | No. |
+| [`engine="spark"`][semantic-spark] | No. |
+
+- The [query history][semantic-query-history] records `servedFrom: export:<export>` for each answer read from an export, on every surface.
+- The [result cache][semantic-result-cache] keys an answer from an export by the export's commit as well as the sources'.
+- When Trino refuses to read the export's feature group before any row is sent, the gateway answers from the sources.
+
+| Header | Value |
+| --- | --- |
+| `X-Semantic-Served-From` | `export:<export>`, on an answer read from an export. |
+| `X-Semantic-Export-Feature-Group` | The id of the export's feature group. |
+| `X-Semantic-Source-Versions` | The Delta version of each source, by feature group id, that the rows were computed from. |
+| `X-Semantic-Definition` | The definition fingerprint of the saved query, on every `query` that names one. |
+
+`"useExports": false` in a REST `query` body computes the rows from the sources, as export runs do.
+The Python client and the CLI do not take this option.
 
 ## Over REST { #semantic-exports-rest }
 

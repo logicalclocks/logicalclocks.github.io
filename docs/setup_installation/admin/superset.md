@@ -145,6 +145,27 @@ Manual connection management is typically not required, but administrators can:
 - Test connection availability
 - Modify advanced connection settings if needed
 
+## MCP Service { #superset-mcp-service }
+
+On Superset 7.0, the chart runs Superset's MCP service, which the `hops superset chart generate`, `chart types` and `dashboard update` commands call (see [Charts and dashboard edits from the CLI](../../user_guides/projects/superset/superset.md#superset-cli-mcp)).
+
+| Object | Purpose |
+| --- | --- |
+| Deployment and Service `hopsworks-superset-mcp` | `superset mcp run` on port 5008, with the Superset image and configuration, reached in the cluster as `app.superset-mcp.service.<domain>:5008`. |
+| Secret `superset-mcp-jwt` | The HS256 key Hopsworks signs a ten-minute token with on each call, for the caller's Superset user in the project. The service accepts only these tokens and applies that user's roles. |
+
+The chart creates the secret on install and keeps it on upgrade.
+Where the chart is rendered without cluster access, as under ArgoCD (`global._hopsworks.mode` other than `auto`), set `superset.mcp.jwtSecret`; without it the chart renders no MCP objects.
+Without the secret, Hopsworks answers the token request with `503` and the error `MCP_UNAVAILABLE`, and the commands report Superset MCP as unavailable.
+
+| Value | Default | Meaning |
+| --- | --- | --- |
+| `superset.mcp.enabled` | `true` | Run the MCP service. |
+| `superset.mcp.replicas` | `1` | Replicas of the service. |
+| `superset.mcp.port` | `5008` | Port of the service. |
+| `superset.mcp.jwtSecret` | `null` | Signing key; generated when null and the chart can read the cluster. |
+| `superset.mcp.resources` | requests `100m`, `1Gi`; limits `1`, `2Gi` | Container resources. |
+
 ## Configuration
 
 Superset behavior can be customized through Hopsworks cluster configuration variables.

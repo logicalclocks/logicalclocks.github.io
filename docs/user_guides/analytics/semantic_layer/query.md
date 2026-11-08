@@ -7,7 +7,8 @@ description: How to find metrics and query them by dimension and time grain from
 A metric query names metrics, the group-bys to split them by, and optional filters, ordering and a row limit.
 The semantic layer generates the SQL from the current build and runs it on Trino as the caller, or answers a repeated query from its [result cache][semantic-result-cache].
 The examples query the `sales` semantic project from [Compile and builds][semantic-compile-builds].
-dbt Semantic Layer clients, such as dbt-sl-sdk and the Arrow Flight SQL JDBC driver, query the same metrics, see [Connect dbt clients][semantic-connect-clients].
+dbt Semantic Layer clients, such as dbt-sl-sdk and the Arrow Flight SQL JDBC driver, query the same metrics, see [Connect dbt clients][semantic-connect-clients], and so do BI tools, through tables, see [Connect BI tools][semantic-bi-tools].
+A query can also run on your own Spark session, see [Query metrics on Spark][semantic-spark].
 
 ## Group-by names { #semantic-query-names }
 
@@ -131,6 +132,8 @@ sql = sales.sql(metrics=["revenue"], group_by=["metric_time__month"])
 | `dataframe_type` | `pandas` (default), `polars`, `pyarrow`, or `python` for a list of dicts. |
 | `saved_query` | A [saved query][semantic-saved-queries] to run in place of `metrics`. |
 | `read_cache` | `False` runs the query on Trino even when the [result cache][semantic-result-cache] holds it; `True` by default. |
+| `engine` | `trino` (default), or `spark` to run the query on your Spark session and get a PySpark DataFrame, see [Query metrics on Spark][semantic-spark]. |
+| `spark` | The Spark session for `engine="spark"`; the active one by default. |
 
 A group-by can also be a dict, `{"name": "metric_time", "grain": "month"}` or `{"name": "metric_time", "date_part": "dow"}`.
 Results come back as an Arrow stream when `pyarrow` is installed, which keeps the column types, and as JSON otherwise.
@@ -214,6 +217,8 @@ curl -X POST -H "Authorization: ApiKey $HOPSWORKS_API_KEY" \
 
 The query body takes `metrics`, `savedQuery`, `groupBy`, `where`, `filters`, `having`, `timeRange`, `orderBy`, `limit`, `offset` and `groupLimit`, in the camel case of the Python arguments, and `minMaxOnly` and `applyGroupBy` for a [query without metrics][semantic-query-no-metrics].
 `"cache": false` in a `query` or `dimension-values` body skips the [result cache][semantic-result-cache].
+`"useExports": false` in a `query` body computes the rows from the sources even when an [export][semantic-exports-serving] holds them.
+`"engine": "SPARK"` in a `sql` body answers Spark SQL and the views it reads, see [Over REST][semantic-spark-rest]; `query` runs on Trino only.
 A JSON result carries `columns`, `rows`, `rowCount`, `truncated` and `sql`.
 Every response carries the `buildId` that answered and whether it is `stale`; an Arrow result carries them in the `X-Semantic-Build` and `X-Semantic-Stale` headers.
 
@@ -223,6 +228,10 @@ Every response carries the `buildId` that answered and whether it is `stale`; an
 | `X-Semantic-Truncated` | `query` | `true` when the row cap cut the result. An Arrow result carries it only when the cut is known before the first rows are sent, so treat one with `X-Semantic-Max-Rows` rows as cut. |
 | `X-Semantic-Feature-Groups` | `query`, `sql` | The ids of the feature groups the query reads through its semantic models, comma-separated. |
 | `X-Semantic-Sql-Base64` | Arrow `query` | The SQL that ran, base64 encoded. |
+| `X-Semantic-Cache` | JSON `query` | `hit`, `miss` or `bypass`, see [Result cache][semantic-result-cache-never]. |
+| `X-Semantic-Served-From`, `X-Semantic-Export-Feature-Group` | `query` | The export, and its feature group, an answer was read from, see [Answer queries from an export][semantic-exports-serving]. |
+| `X-Semantic-Source-Versions` | `query` | The Delta version of each source feature group the rows were computed from, on an answer read from an export. |
+| `X-Semantic-Definition` | `query` | The definition fingerprint of the saved query the request names. |
 
 ## Limits { #semantic-query-limits }
 

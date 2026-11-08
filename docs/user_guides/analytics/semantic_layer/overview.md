@@ -1,11 +1,40 @@
 ---
-description: What a semantic project, a build and a metric are in the Hopsworks Semantic Layer, and which build answers queries.
+description: The Hopsworks Semantic Layer service, its control plane and semantic gateway, the APIs it serves, and what a semantic project, a build and a metric are.
 ---
 
 # Semantic Layer Overview { #semantic-layer-overview }
 
 The Hopsworks Semantic Layer reads metric definitions written in YAML over feature groups, and answers metric queries with SQL it generates for Trino.
 A query names metrics and the dimensions to group them by; the semantic layer writes the joins and the aggregations.
+
+## The service { #semantic-overview-service }
+
+The semantic layer is a Hopsworks service with two parts:
+
+- the control plane, in Hopsworks: semantic projects, their builds, the definitions editor, tags, metric exports and the query history;
+- the semantic gateway, a Deployment of its own, which compiles the definitions, plans every metric query and runs it on Trino as the caller.
+
+--8<-- "user_guides/analytics/semantic_layer/overview/semantic-gateway.html"
+
+| The gateway serves | To | Guide |
+| --- | --- | --- |
+| REST, JSON and Arrow | The Python client, the `hops` CLI, the query workbench in the UI, the agent tools, Superset | [Query metrics][semantic-query-metrics] |
+| GraphQL, dbt's Semantic Layer API | dbt-sl-sdk, GraphQL clients | [Connect dbt clients][semantic-connect-clients] |
+| Arrow Flight SQL, dbt's JDBC dialect | dbt-sl-sdk, ADBC, the Arrow Flight SQL JDBC driver | [Connect dbt clients][semantic-connect-clients] |
+| Arrow Flight SQL, tables | DBeaver, JDBC and ODBC tools, dbt's Tableau and Power BI connectors | [Connect BI tools][semantic-bi-tools] |
+| Spark SQL and the feature groups it reads | Your Spark session, with `engine="spark"` | [Query metrics on Spark][semantic-spark] |
+
+Around the queries:
+
+| Feature | Guide |
+| --- | --- |
+| A repeated query answered from the gateway's memory | [Result cache][semantic-result-cache] |
+| A saved query written into a feature group by a scheduled job, and queries answered from it | [Metric exports][semantic-exports] |
+| Every query recorded, for its members and Data Owners | [Query history][semantic-query-history] |
+| The YAML edited in the UI, validated as you type | [Edit definitions in the UI][semantic-editor] |
+| Dashboards from metrics on Superset 7.0 | [Dashboards in Superset][semantic-superset-dashboards] |
+| The semantic layer tools of the Hopsworks MCP server | [Agent tools][semantic-agent-tools] |
+| Turning it on and configuring it | [Semantic Layer administration][semantic-admin] |
 
 ## Semantic projects { #semantic-overview-projects }
 
@@ -78,14 +107,16 @@ In `FOLLOW` mode a promote of an older valid build rolls back until the next val
 4. The rows come back as an Arrow stream or as JSON.
 
 The Python client, the `hops` CLI, the UI and the agent tools all query through the gateway, from inside and outside the cluster.
-dbt Semantic Layer clients query it over GraphQL and Arrow Flight SQL, see [Connect dbt clients][semantic-connect-clients].
-A saved query's exports write its rows into feature groups on a schedule, see [Metric exports][semantic-exports].
+dbt Semantic Layer clients query it over GraphQL and Arrow Flight SQL, see [Connect dbt clients][semantic-connect-clients], and BI tools read it as tables, see [Connect BI tools][semantic-bi-tools].
+A saved query's exports write its rows into feature groups on a schedule, and the gateway answers the saved query from them while they hold its exact rows, see [Metric exports][semantic-exports].
+With `engine="spark"`, the gateway hands the SQL to your Spark session instead of running it, see [Query metrics on Spark][semantic-spark].
+The gateway records every query it runs in the [query history][semantic-query-history].
 Superset charts query through the gateway too, with an API key of the project owner, see [Who can see what][semantic-superset-access].
 The semantic layer reads the offline feature store.
 
 ## Prerequisites { #semantic-overview-prerequisites }
 
-- An administrator turns the semantic layer on with the Helm value `global._hopsworks.semanticLayer.enabled: true`, which installs the semantic gateway and adds **Semantic Layer** to the project sidebar.
+- An administrator turns the semantic layer on with the Helm value `global._hopsworks.semanticLayer.enabled: true`, which installs the semantic gateway and adds **Semantic Layer** to the project sidebar, see [Semantic Layer administration][semantic-admin].
   While it is off, the semantic layer endpoints answer 404 `SEMANTIC_LAYER_DISABLED`.
 - Data owners and data scientists of a project create, compile, promote and delete semantic projects; every member can list them and query their metrics.
 - Only data owners run [metric exports][semantic-exports] by hand, and an export's job runs as the semantic project's creator, who must be a data owner.

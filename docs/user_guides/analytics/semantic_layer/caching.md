@@ -26,7 +26,8 @@ A result is cached under a key made of:
 - the request as the surface received it, and any SQL around a dbt JDBC call;
 - the row cap of the answer;
 - the caller's Trino user, `<project>__<user>`, so two users never share an entry;
-- the time of the latest commit of every feature group the query reads, the time spine included.
+- the time of the latest commit of every feature group the query reads, the time spine included;
+- for an answer read from an [export][semantic-exports-serving], the commit of the export's feature group.
 
 Each replica keeps its own cache: a repeated query that reaches another replica runs on Trino.
 A replica keeps up to 256 MiB of results, each for up to 300 seconds, and drops the least recently used first when it is full.

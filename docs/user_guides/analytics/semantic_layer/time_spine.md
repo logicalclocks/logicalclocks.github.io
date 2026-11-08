@@ -90,10 +90,11 @@ models:
 ```
 
 In the `NATIVE` format, `project_configuration.time_spines` declares the spine, each with a `primary_column` of a `name` and a `time_granularity`, and its `node_relation` names the feature store of the feature group `time_spine_<grain>`.
+Without a `name`, the spine reads the event time of its feature group.
 
 A semantic project can declare one spine per grain.
 A metric reads the spine at the grain of its measures' agg time dimension, or a finer one, so measures aggregated by hour need an hourly spine.
-A spine binds when its feature group exists, its standard granularity column is a date or a timestamp, and it has a column for each custom granularity; otherwise the build has a `TIME_SPINE` warning that says why, at the time spine model.
+A spine binds when its feature group exists, its standard granularity column, or else the feature group's event time, is a date or a timestamp, and it has a column for each custom granularity; otherwise the build has a `TIME_SPINE` warning that says why, at the time spine model.
 
 ## Custom granularities { #semantic-time-spine-custom }
 

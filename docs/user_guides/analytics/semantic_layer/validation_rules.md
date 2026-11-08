@@ -28,7 +28,7 @@ Every issue is an `ERROR` unless the table says `WARNING`.
 | CumulativeMetricRule | `CUMULATIVE_METRIC` | Both `window` and `grain_to_date`; a `window` given twice with different values; a custom granularity in `window` or `grain_to_date`; an input metric that is not simple. A `WARNING` for both a measure and a metric as input. |
 | NonEmptyRule | `EMPTY` | No semantic models; a `WARNING` for no metrics. |
 | UniqueAndValidNameRule | `NAMING`, `UNIQUE_NAMES` | A name that is not lower case letters, digits and underscores starting with a letter, is shorter than two characters, ends with `_`, contains `__`, is a granularity or is `metric_time`; a name defined twice; two elements of a semantic model with one name; a custom granularity with the name of another element. |
-| AggregationTimeDimensionRule | `AGG_TIME_DIMENSION` | A measure without an agg time dimension, or with one that is not a time dimension of its semantic model. |
+| AggregationTimeDimensionRule | `AGG_TIME_DIMENSION` | A measure without an agg time dimension, declared or from the [event time][semantic-define-event-time] of its feature group, or with one that is not a time dimension of its semantic model. |
 | ReservedKeywordsRule | `RESERVED_KEYWORD` | An entity, dimension or measure, or a part of a `node_relation`, named with an SQL reserved keyword, such as `select` or `from`. |
 | MeasuresNonAdditiveDimensionRule | `NON_ADDITIVE_DIMENSION` | A `non_additive_dimension` that is not a time dimension of the semantic model, or not at the granularity of the measure's agg time dimension; `window_groupings` that are not entities of the semantic model. |
 | SemanticModelDefaultsRule | `AGG_TIME_DIMENSION` | A `defaults.agg_time_dimension` that is not a time dimension of the semantic model. |
@@ -63,6 +63,7 @@ Every issue is an `ERROR` unless the table says `WARNING`.
 | `RELATION` | `ERROR` | A semantic model whose feature group does not exist, or is in a feature store neither the project's nor shared with it. |
 | `EXPR` | `ERROR` | An `expr` that does not compile against the feature group's features, such as a feature name with a typo. |
 | `TIME_DIMENSION` | `ERROR` | A time dimension whose feature is not a date or a timestamp. |
+| `EVENT_TIME` | `WARNING` | A feature group event time that cannot be linked to a time dimension of a semantic model, see [Event time][semantic-define-event-time]. |
 | `TIME_SPINE` | `ERROR` | A metric that needs a time spine none is bound for, see [Without a time spine][semantic-time-spine-missing]. A `WARNING` for a declared time spine that does not bind. |
 | `METRIC` | `ERROR` | A metric that the planner cannot plan, with the planner's reason, such as an exact percentile on Trino. |
 | `SAVED_QUERY` | `ERROR` | A saved query that the planner cannot plan, with the planner's reason. |

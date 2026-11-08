@@ -7,6 +7,7 @@ description: How to connect dbt Semantic Layer clients to a Hopsworks semantic p
 The semantic gateway serves the two APIs of dbt's Semantic Layer: GraphQL, and Arrow Flight SQL with dbt's JDBC dialect.
 A client written for dbt's Semantic Layer connects with a host, an API key, and an environment id, which in Hopsworks is the id of a semantic project.
 Every query runs on Trino as the API key's user, as a query from Python or the CLI does, see [How a query runs][semantic-overview-query-path].
+BI tools and SQL clients that browse tables read the same port as tables, see [Connect BI tools][semantic-bi-tools].
 
 The examples use the `sales` semantic project of [Define metrics][semantic-define-metrics], with id 7, in the project with id 119.
 The Hopsworks host is `hopsworks.example.com`, and the load balancer of the Flight SQL port is `semantic.hopsworks.example.com`.
@@ -16,7 +17,8 @@ The Hopsworks host is `hopsworks.example.com`, and the load balancer of the Flig
 | API | Address | Used by |
 | --- | --- | --- |
 | GraphQL | `https://<hopsworks host>/semantic-layer/api/graphql` | dbt-sl-sdk for metadata, GraphQL clients |
-| Arrow Flight SQL | `grpc+tls://<flight host>:18446` | dbt-sl-sdk for queries, ADBC, the Arrow Flight SQL JDBC driver |
+| Arrow Flight SQL | `grpc+tls://<flight host>:18446` | dbt-sl-sdk for queries, ADBC, the Arrow Flight SQL JDBC driver, [BI tools][semantic-bi-tools] |
+| Both, dbt's layout | `https://<layout host>/api/graphql` and `grpc+tls://<layout host>:443` | dbt's Tableau and Power BI connectors, and tools that take a dbt host, when an administrator turns on the [dbt-compatible endpoint layout][semantic-bi-dbt-layout] |
 
 - The environment id is the semantic project's id, which `hops semantic list` prints under `ID`.
 - The Flight SQL host is the load balancer of the semantic gateway, see [For administrators][semantic-connect-admin].
@@ -176,7 +178,7 @@ select * from {{
 }}
 ```
 
-The driver's `DatabaseMetaData` lists one catalog, `semantic_layer`, with no schemas and no tables: a BI tool's table browser shows nothing, and every query names its metrics in a statement.
+The driver's `DatabaseMetaData` lists the catalog `semantic_layer`, the semantic project's id as its schema, and the `metrics` table and a table per saved query in it, which a statement without `{{ }}` queries with plain SQL, see [Connect BI tools][semantic-bi-tools].
 
 ## ADBC { #semantic-connect-adbc }
 
@@ -254,7 +256,7 @@ Refused statements fail with `INVALID_ARGUMENT` and the reason:
 | `semantic_layer.query_with_all_group_bys(...)` | `query_with_all_group_bys is not supported` |
 | Any other call | `unknown call semantic_layer.<call>` |
 | An argument the call does not take | `semantic_layer.<call> takes no argument <name>` |
-| No call, or a call without `{{ }}` | `the statement must hold one {{ semantic_layer.<call>(...) }}` |
+| No call, or a call without `{{ }}`, with the [BI tables][semantic-bi-admin] off | `the statement must hold one {{ semantic_layer.<call>(...) }}` |
 | Two calls | `a statement holds exactly one {{ semantic_layer.<call>(...) }}` |
 
 ### SQL around a call { #semantic-connect-outer-sql }
@@ -280,7 +282,7 @@ The GraphQL API is dbt's, with every operation dbt-sl-sdk 0.13.4 sends, plus the
 
 | Kind | Operations |
 | --- | --- |
-| Query | `environmentInfo`, `metrics`, `metricsPaginated`, `metricsForDimensions`, `dimensions`, `dimensionsPaginated`, `measures`, `entities`, `entitiesPaginated`, `savedQueries`, `savedQueriesPaginated`, `queryableGranularities`, `query` |
+| Query | `environmentInfo`, `metrics`, `metricsPaginated`, `metricsForDimensions`, `dimensions`, `dimensionsPaginated`, `measures`, `entities`, `entitiesPaginated`, `savedQueries`, `savedQueriesPaginated`, `queryableGranularities`, `query`, `queryRecords` |
 | Mutation | `createQuery`, `compileSql`, `createDimensionValuesQuery`, `cancelQuery` |
 
 Every operation takes `environmentId`, the semantic project's id.
@@ -316,6 +318,7 @@ curl -s -X POST "https://hopsworks.example.com/semantic-layer/api/graphql" \
 - `createQuery` takes `metrics`, `groupBy`, `where`, `orderBy`, `limit`, `savedQuery` and `readCache`; `readCache: false` skips the [result cache][semantic-result-cache].
 - `cancelQuery` stops the query, which then reads `FAILED` with `the query was cancelled`.
 - `compileSql` answers the SQL of a query without running it.
+- `queryRecords` lists the caller's own recent queries, see [Query history over GraphQL][semantic-query-history-graphql].
 - A refused request answers with HTTP 200 and an `errors` entry whose `extensions.code` is the gateway's error code, such as `SEMANTIC_LAYER_INVALID_QUERY`; a refused API key is `User is not authorized`.
 
 ## Timestamps { #semantic-connect-timestamps }
@@ -350,6 +353,7 @@ Any replica of the gateway serves a Flight SQL handle, so a client can fetch fro
 | REST, Arrow | 1,000,000 | The result stops there; `X-Semantic-Truncated: true` is set when the cut is known before the first rows are sent, and `X-Semantic-Max-Rows` gives the cap. |
 
 - Every API shares the query slots of a gateway replica, 16 by default, and the query time, 300 seconds, of [Query metrics][semantic-query-limits].
+  Through the dbt-compatible layout, nginx also ends a call after `hopsworks.semanticLayer.dbtCompatibleLayout.timeoutSeconds`, 300 by default, see [The dbt-compatible endpoint layout][semantic-bi-dbt-layout].
   A GraphQL query takes a slot while it runs.
 - A replica holds at most 512 MiB of GraphQL results, forgetting the oldest ended queries to make room, and 256 GraphQL queries waiting for a slot; when running queries fill the results, or the wait is full, a new query is `FAILED` and asks to retry shortly.
 - A replica's Arrow buffers are bounded, half the JVM heap by default; a query that finds them full fails with 503 `SEMANTIC_LAYER_BUSY`, or `UNAVAILABLE` over Flight SQL.
@@ -417,7 +421,8 @@ Handles signed with the old key keep working until they expire, after `handleTtl
 | `maxRows` | `1000000` | The rows of an Arrow result, over Flight SQL, GraphQL and REST. |
 
 `hopsworks.semanticLayer.graphqlIngress.annotations` sets the annotations of the GraphQL Ingress; keep `nginx.ingress.kubernetes.io/upstream-hash-by: "$http_authorization"`, which sends the polls of a GraphQL query to the replica that holds its result.
-The [result cache][semantic-result-cache-admin] has its own values.
+The [result cache][semantic-result-cache-admin] has its own values, and [Semantic Layer administration][semantic-admin] lists every value of the service.
+[The dbt-compatible endpoint layout][semantic-bi-dbt-layout] serves both APIs on port 443 of one host, for dbt's Tableau and Power BI connectors.
 
 !!! api "API reference"
 

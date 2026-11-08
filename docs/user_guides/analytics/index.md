@@ -51,8 +51,8 @@ Start with a query, then define metrics or turn it into a dashboard.
   Semantic models, and simple, ratio, derived, cumulative and conversion metrics.
 - [Query metrics][semantic-query-metrics]
   From Python, the CLI, the UI or an agent, as SQL or rows, or by saved query.
-- [Connect dbt clients][semantic-connect-clients]
-  dbt-sl-sdk, JDBC, ADBC and GraphQL clients over dbt's Semantic Layer APIs.
+- [Connect dbt clients and BI tools][semantic-bi-tools]
+  dbt-sl-sdk, JDBC, ADBC and GraphQL, and semantic projects as tables for BI tools.
 - [Metric exports][semantic-exports]
   Saved queries kept in feature groups by scheduled jobs.
 

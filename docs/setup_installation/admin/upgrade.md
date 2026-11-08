@@ -331,6 +331,12 @@ From 5.3 the default is 2048, up from 1024, because at 1 GiB the sidecar was OOM
 5.3 moves Superset from 6.0.0p4 to 7.0.0rc2.
 The `hopsworks-superset-init-db` Job runs Superset's schema migrations on the existing metadata database once, during the upgrade, and the Superset pods wait for it.
 On a cluster upgraded from a 6.0.0p4 database it ran 47 migrations and kept every database connection, role and dashboard.
+On a 6.0.0p4 MySQL database holding Superset's examples (12 dashboards, 123 charts of 39 types) plus reports, row level security, saved queries, permalinks and dashboards shared by role, the migrations took 19 seconds, every object was kept, and every dashboard rendered as it did on 6.0.
+
+- **Owners become editors.**
+  The owners of dashboards, charts, datasets and reports become their editors, and the roles of a row level security filter become its subjects.
+- **Old chart types are converted.**
+  Bubble charts become the ECharts bubble chart (`bubble_v2`), and 7.0's migrations also move the compare chart to ECharts and the Mapbox chart to the point cluster map.
 
 - **Back up Superset first.**
   Run the backup before the upgrade: `kubectl create job -n hopsworks --from=cronjob/create-superset-backup superset-backup-pre-53`.
@@ -345,6 +351,9 @@ On a cluster upgraded from a 6.0.0p4 database it ran 47 migrations and kept ever
 - **Celery beat now runs.**
   A new `hopsworks-superset-celerybeat` Deployment schedules Superset's periodic tasks, including 7.0's pruning of version history and of soft-deleted objects, which otherwise grow without bound.
   It also runs the alert and report schedules, which had no scheduler before.
+- **The MCP service runs.**
+  A new `hopsworks-superset-mcp` Deployment serves the `hops superset` chart and dashboard commands, with a signing key in the Secret `superset-mcp-jwt`.
+  Under ArgoCD, set `superset.mcp.jwtSecret`, or the service is not deployed; see [MCP service](superset.md#superset-mcp-service).
 - **Semantic layer dashboards.**
   With the semantic layer enabled, each project with Superset gets a semantic layer for its metrics, see [Dashboards in Superset](../../user_guides/analytics/semantic_layer/dashboards.md).
   Set `hopsworks.variables.superset_semantic_enabled: "false"` to keep that off.
