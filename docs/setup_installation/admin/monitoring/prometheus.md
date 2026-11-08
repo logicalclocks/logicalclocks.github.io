@@ -2,12 +2,14 @@
 
 ## Namespace scope { #prometheus-namespace-scope }
 
-Prometheus collects metrics only from the Hopsworks installation namespace and the project namespaces that `prometheus.namespaceScope.selector` selects.
-A helper container in the Prometheus pod evaluates the selector, `hopsworks.ai/project` by default, and writes the Prometheus configuration for the selected namespaces.
+Prometheus collects metrics only from the Hopsworks installation namespace, the project namespaces that `prometheus.namespaceScope.selector` selects, and the platform namespaces.
+A platform namespace carries none of the labels the selector reads, and holds a Service annotated with `prometheus.io/scrape: "true"` or `prometheus.io/scrape_slow: "true"`; the NVIDIA GPU operator's DCGM exporter, for example, keeps reporting GPU metrics this way.
+A helper container in the Prometheus pod evaluates the selector, `hopsworks.ai/project` by default, finds the platform namespaces, and writes the Prometheus configuration for these namespaces.
 Project creation, deletion and label changes update monitoring automatically; no namespace list or Helm upgrade is needed.
-The helper checks the selector every 30 seconds by default, and the configuration reload adds a few seconds.
+The helper checks the namespaces and Services every 30 seconds by default, and the configuration reload adds a few seconds.
 
-When multiple Hopsworks installations share a cluster, include a tenant label in the selector.
+When multiple Hopsworks installations share a cluster, include a tenant label in the selector, and label each installation's namespace with its tenant, `kubectl label namespace <namespace> hopsworks.ai/tenant=tenant-a`.
+Otherwise every installation's namespace is a platform namespace for the others, and each Prometheus collects the other installations.
 For example, add the following to `my-values.yaml`:
 
 ```yaml
@@ -40,8 +42,8 @@ Container resource requests and limits are kept for every namespace, together wi
 Series without a namespace, such as those of nodes, are kept.
 The Kueue metrics job keeps discovering in its configured Kueue namespace, and its series are scoped like those of kube-state-metrics.
 When Kueue is enabled (`global._hopsworks.kueue.enabled`), the kube-state-metrics and container series of its namespace are kept, so the alerts on pods and workloads keep covering Kueue, which Hopsworks jobs depend on.
-Platform dependencies that run outside the selected namespaces are discovered cluster-wide by label through `namespaceScope.dependencies`.
-The defaults find the NVIDIA GPU operator's DCGM exporter, labelled `app.kubernetes.io/component=nvidia-dcgm-exporter`, and OpenCost, labelled `app.kubernetes.io/name=opencost`, in any namespace, so GPU metrics and the cost metrics the admin Costs page reads back remain available.
+Platform dependencies that no annotated Service announces are discovered cluster-wide by label through `namespaceScope.dependencies`.
+The default finds OpenCost, whose pods are labelled `app.kubernetes.io/name=opencost`, in any namespace, so the cost metrics the admin Costs page reads back remain available.
 Each entry gets a scrape job of its own, a copy of the scrape job it names that discovers only the entry's label selection outside the selected namespaces; if you replace the scrape jobs, adjust or empty the list.
 The copy does not add the target's namespace to its series, so a dependency's series without a namespace of their own, such as OpenCost's node costs, are kept, while its series that name a namespace are filtered like any other.
 Static scrape targets and federation jobs retain their configured scope.
@@ -52,7 +54,7 @@ The namespace selector controls metrics collection; it does not replace Kubernet
 
 The helper generates the Prometheus configuration from the chart's values, so the chart requires the Prometheus ConfigMap reloader and the default Prometheus config-file flags, and refuses `server.configFromSecret` and `server.configMapOverrideName`.
 Rendering also fails when the selector, or a dependency's label selector, is not a valid Kubernetes label selector, since the Kubernetes API would reject it on every refresh.
-The chart grants the Prometheus service account permission to list namespaces.
+The chart grants the Prometheus service account permission to list namespaces and Services.
 The helper is wired through the Prometheus chart's `server.extraInitContainers`, `server.extraVolumes`, `server.extraVolumeMounts`, `configmapReload.prometheus.extraVolumeMounts` and `configmapReload.prometheus.extraVolumeDirs`.
 Helm replaces lists instead of merging them, so values that set one of these lists must restate the chart's entries; rendering fails otherwise.
 

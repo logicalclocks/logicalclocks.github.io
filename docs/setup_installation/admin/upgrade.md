@@ -270,7 +270,7 @@ On the upgrade to 5.3:
 ### Prometheus collects only project namespaces { #upgrade-prometheus-namespace-scope }
 
 Releases before 5.3 collected metrics from every namespace of the cluster.
-From 5.3, Prometheus collects only from the Hopsworks namespace and the project namespaces its [namespace selector][prometheus-namespace-scope] selects, `hopsworks.ai/project` by default.
+From 5.3, Prometheus collects only from the Hopsworks namespace, the project namespaces its [namespace selector][prometheus-namespace-scope] selects, `hopsworks.ai/project` by default, and the platform namespaces: those without the selector's labels where a Service is annotated with `prometheus.io/scrape` or `prometheus.io/scrape_slow`.
 On the upgrade:
 
 - The Prometheus server restarts once and keeps its data volume.
@@ -279,9 +279,9 @@ On the upgrade:
   Hopsworks labels the namespaces it creates, but not namespaces provisioned in advance (`hopsworks.variables.kube_skip_namespace_creation: true`, which `values.openshift.yaml` sets).
   A project namespace the selector misses loses its metrics, including those that model deployment autoscaling reads.
   Before the upgrade, list the namespaces with their label, `kubectl get namespaces -L hopsworks.ai/project`, and label each project namespace that lacks it, `kubectl label namespace <namespace> hopsworks.ai/project=<namespace>`.
-- On a cluster shared by several Hopsworks installations, add the tenant label to the selector.
-  Otherwise each Prometheus collects the projects of every installation.
-- Workloads outside the selected namespaces are no longer collected; their stored series remain until the retention period ends.
+- On a cluster shared by several Hopsworks installations, add the tenant label to the selector, and label each installation's namespace with its tenant.
+  Otherwise each Prometheus collects the projects, or the namespace, of every installation.
+- Workloads outside these namespaces are no longer collected; their stored series remain until the retention period ends.
   The alerts on pods and workloads no longer cover them, except Kueue's when it is enabled, and OpenCost no longer attributes their costs.
 - `prometheus.prometheus.server.configFromSecret` and `prometheus.prometheus.server.configMapOverrideName` fail rendering, because the helper generates the Prometheus configuration from the chart's values.
   So do a disabled config reloader (`prometheus.prometheus.configmapReload.prometheus.enabled: false`), `prometheus.prometheus.server.defaultFlagsOverride`, a `config.file` in `prometheus.prometheus.server.extraArgs`, another `prometheus.prometheus.server.configPath`, and a selector that is not a valid Kubernetes label selector.
