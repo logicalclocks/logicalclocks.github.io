@@ -1,19 +1,20 @@
 ---
-description: Copy the files under an S3, GCS or ADLS prefix into a project dataset with a files ingestion job, optionally mirroring deletions and keeping a file index feature group.
+description: Copy the files under a prefix of an S3, GCS, ADLS, SFTP or Google Drive data source into a project dataset with a files ingestion job, optionally mirroring deletions and keeping a file index feature group.
 ---
 
-# Copy files from S3, GCS or ADLS into a dataset { #files-ingestion }
+# Copy files from S3, GCS, ADLS, SFTP or Google Drive into a dataset { #files-ingestion }
 
 ## Introduction
 
 An [S3][data-source-s3], [GCS][data-source-gcs] or [ADLS](creation/adls.md) data source can do more than back external feature groups over tabular files.
 It can also copy the files under a prefix of its bucket or container, whatever their format, into a dataset of the project, either once or on a schedule.
+An [SFTP][data-source-sftp] or [Google Drive][data-source-google-drive] data source exists only for this, and copies the files under a path of the server or a folder of the Drive the same way.
 This is the **files mode** of the dltHub ingestion job that also [ingests tables into feature groups][ingest-data-with-dlthub].
 
 Each run lists the prefix, copies the files that are new or changed, skips the ones it already has, and writes a small CSV audit file of what it changed, so downstream jobs can process only what changed.
 Optionally, a run also deletes from the dataset the files that disappeared from the source, and keeps a feature group with one row per file.
 
-Data only flows from the object store into Hopsworks.
+Data only flows from the source into Hopsworks.
 Changes made in the dataset are never written back to the bucket.
 
 Typical uses are document corpora for retrieval, agents and unstructured data pipelines, where the files are read from the dataset through the HopsFS mount of a job, a terminal or an app.
@@ -23,14 +24,14 @@ Tabular files that should become feature groups are better served by an external
 
 ### Data source
 
-A data source of type S3, GCS or ADLS in the project's feature store, with credentials that can list and read the prefix.
-Create it as described in the [S3][data-source-s3], [GCS][data-source-gcs] or [ADLS](creation/adls.md) guide.
+A data source of type S3, GCS, ADLS, SFTP or Google Drive in the project's feature store, with credentials that can list and read the prefix.
+Create it as described in the [S3][data-source-s3], [GCS][data-source-gcs], [ADLS](creation/adls.md), [SFTP][data-source-sftp] or [Google Drive][data-source-google-drive] guide.
 Other data source types are not supported; see [Limitations](#limitations).
 
 An S3 data source that authenticates with an IAM role must have a role mapping an administrator created with [AWS Role chaining](../../../setup_installation/admin/roleChaining.md); a data source without one is refused when the job is created.
 Hopsworks assumes the role when it starts the job and hands the job temporary credentials that live for `dlt_files_credentials_duration_seconds`, an hour by default.
 A run longer than that fails at the first request made with the expired credentials, so for a long first copy an administrator raises the setting, and before that the [maximum session duration of the role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html#id_roles_use_view-role-max-session), which must allow it.
-Access key and secret, service account key file and service principal credentials have no such limit.
+Access key and secret, service account key file, service principal, SFTP password and SFTP private key credentials have no such limit.
 
 ### Role
 
@@ -55,13 +56,13 @@ The Python client and the `hops` CLI need the same version or later.
 
 ### Step 1: Open the data source
 
-Head to the `Data Sources` view in Hopsworks and open the S3, GCS or ADLS data source, or create it and continue from its last step.
+Head to the `Data Sources` view in Hopsworks and open the data source, or create it and continue from its last step.
 Click `Next` to open the second step of the wizard.
 
 ### Step 2: Choose `Copy files into a dataset`
 
 The second step offers two ways to use the data source: `External feature group over a path`, which keeps the files where they are, and `Copy files into a dataset`, which this guide covers.
-For an ADLS data source only the second is offered.
+For an ADLS, SFTP or Google Drive data source only the second is offered, since those types back no feature groups.
 
 <!-- TODO screenshot files_ingestion_wizard.png to capture; uncomment once the file exists:
 <figure markdown>
@@ -72,10 +73,11 @@ For an ADLS data source only the second is offered.
 
 1. **Prefix**: the path inside the bucket or container whose files are copied, for example `handbook/2026/`.
    It is relative to the root of the bucket or container; the path set on an S3 data source is not applied, so repeat it in the prefix when the files live under it.
+   For SFTP it is relative to the root path of the data source, and for Google Drive it is a path of folder names below the shared folder, so a run lists `sftp://<host>:<port><root path>/<prefix>` or `gdrive://<folder ID>/<prefix>`.
    A prefix is a folder, not the start of a key: the job lists under `<prefix>/`, so `handbook` selects `handbook/a.pdf` but not `handbook-old/a.pdf`.
    Click `Browse` to pick it from a listing of the bucket; each level lists its folders and files, with their size and modification time.
-   Browsing is not available for ADLS, so type the prefix there.
-   An empty prefix copies the whole bucket; see [How a run works](#how-a-run-works) before doing that on a large one.
+   Browsing is not available for ADLS, SFTP and Google Drive, so type the prefix there.
+   An empty prefix copies the whole bucket, root path or folder; see [How a run works](#how-a-run-works) before doing that on a large one.
 2. **Include** and **Exclude**: glob patterns, one per line, matched against the path of each file relative to the prefix, not to the bucket.
    With prefix `handbook/`, write `**/*.pdf`, not `handbook/**/*.pdf`.
    `**` matches across folders, so `**/*.pdf` selects every PDF under the prefix and `**/~$*` excludes Office lock files.
@@ -146,7 +148,7 @@ A data source that still has files ingestion jobs cannot be deleted; delete the 
 
 ## Using the Python client
 
-`ingest_files` on an S3, GCS or ADLS data source creates the job and returns it; other data source types raise.
+`ingest_files` on an S3, GCS, ADLS, SFTP or Google Drive data source creates the job and returns it; other data source types raise.
 
 ```python
 import hopsworks
@@ -193,7 +195,7 @@ job.delete(delete_files=False, delete_index=False)
 ```
 
 `files_progress` and `last_stats` return the stats of the run as a dictionary with the keys of the stats file described in [State and audit files](#state-and-audit-files), plus `datasetName`, `connectorName`, `prefix` and `auditPath`, the absolute HopsFS path of the audit file.
-`prefix` is a folder relative to the root of the bucket or container, as in the UI, and the patterns are relative to the prefix.
+`prefix` is a folder relative to the root of the bucket or container, to the SFTP root path or to the Drive folder, as in the UI, and the patterns are relative to the prefix.
 `update` re-saves the job; a job's data source and dataset cannot change.
 `index` accepts a feature group name only while the job had no index; afterwards turning it on uses the name chosen then.
 
@@ -376,11 +378,11 @@ Hopsworks creates it with the job, offline only and without statistics, with `fi
 | Column | Content |
 | --- | --- |
 | `file_id` | SHA-1 of the source URL, the primary key; it stays the same as long as the object keeps its key |
-| `connector`, `source_type` | the data source and its type, `s3`, `gcs` or `adls` |
+| `connector`, `source_type` | the data source and its type, `s3`, `gcs`, `adls`, `sftp` or `gdrive` |
 | `file_name`, `file_type` | the name, and its extension in lowercase |
 | `relative_path` | the path relative to the prefix and to the dataset root |
 | `hopsfs_path` | the copy in the dataset, `/Projects/<project>/<dataset>/...` |
-| `source_url` | the object, as `s3://`, `gs://` or `az://` URL |
+| `source_url` | the object, as `s3://`, `gs://`, `az://`, `sftp://` or `gdrive://` URL |
 | `mime_type`, `size_bytes` | content type, from the extension, and size in bytes |
 | `modified_at` | the object's last modification time, UTC |
 | `content_hash`, `etag` | SHA-256 of the copy, and a reserved column that is always empty |
@@ -415,13 +417,13 @@ Claude and the other coding agents in a terminal load the `hops-files-search` sk
 
 ## Limitations
 
-- Only S3, GCS and ADLS data sources are supported.
-  SFTP and Google Drive sources are not, and [SharePoint](creation/sharepoint.md), Gmail and Outlook have their own sync jobs.
+- Only S3, GCS, ADLS, SFTP and Google Drive data sources are supported.
+  [SharePoint](creation/sharepoint.md), Gmail and Outlook have their own sync jobs.
 - The listing is full on every run, and files are copied one at a time, so a prefix with millions of objects or a very large total size is better split into several jobs with narrower prefixes.
 - A run on an IAM-role S3 data source cannot outlast `dlt_files_credentials_duration_seconds`.
 - Files are copied as they are.
   Turning tabular files into feature groups is not part of this job; use an [external feature group](../feature_group/create_external.md) over the path or the [table ingestion flow][ingest-data-with-dlthub] instead.
-- Browsing the bucket for a prefix is not available for ADLS; type the prefix.
+- Browsing the source for a prefix is not available for ADLS, SFTP and Google Drive; type the prefix.
 - One job per dataset: a dataset that one job copies into cannot be the target of another, whatever its data source.
 - The backend and the `dlthub-ingestion-pipeline` image must be of the same release; an older image does not know the files mode.
 
@@ -429,4 +431,4 @@ Claude and the other coding agents in a terminal load the `hops-files-search` sk
 
 - Read the copied files from a job or an app through the HopsFS mount, at `/hopsfs/<dataset>/...`, and the index with the [feature group API][create-feature-group].
 - [Share the dataset](../../projects/datasets/sharing.md) read-only with another project.
-- Ingest tables of the same data source into feature groups with the [dltHub ingestion job][ingest-data-with-dlthub].
+- Ingest tables of an S3, GCS or ADLS data source into feature groups with the [dltHub ingestion job][ingest-data-with-dlthub].

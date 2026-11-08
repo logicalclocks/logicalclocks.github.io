@@ -88,6 +88,8 @@ nav:
                   - Gmail: user_guides/fs/data_source/creation/gmail.md
                   - Outlook: user_guides/fs/data_source/creation/outlook.md
                   - SharePoint: user_guides/fs/data_source/creation/sharepoint.md
+                  - SFTP: user_guides/fs/data_source/creation/sftp.md
+                  - Google Drive: user_guides/fs/data_source/creation/google_drive.md
               - Usage: user_guides/fs/data_source/usage.md
               - Copy files into a dataset: user_guides/fs/data_source/files_ingestion.md
           - Feature Group:
