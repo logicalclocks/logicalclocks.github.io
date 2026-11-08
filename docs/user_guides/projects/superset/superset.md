@@ -224,7 +224,7 @@ Change only the given fields of a dashboard, by id or slug:
 hops superset dashboard update 7 --title "Sales, weekly" --refresh 600 --published
 ```
 
-`dashboard update` also takes `--description`, `--slug`, `--css`, `--cross-filters/--no-cross-filters`, `--filter-bar vertical|horizontal`, `--tags` (tag ids, the full list), `--metadata` (merged into the dashboard's JSON metadata) and `--position` (the layout JSON), each as text or `@file`.
+`dashboard update` also takes `--description`, `--slug`, `--cross-filters/--no-cross-filters`, `--filter-bar vertical|horizontal` and `--tags` (tag ids, the full list), and `--css`, `--metadata` (merged into the dashboard's JSON metadata) and `--position` (the layout JSON), each as text or `@file`.
 
 The Python SDK has the same calls on `project.get_superset_api()`: `generate_chart(dataset_id, config, name=None, save=True)`, `chart_type_schema(chart_type)` and `patch_dashboard(dashboard_id, **fields)`.
 

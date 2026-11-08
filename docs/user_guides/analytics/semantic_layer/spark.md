@@ -20,23 +20,21 @@ project = hopsworks.login()
 sales = project.get_semantic_layer_api().get_project("sales")
 df = sales.query(
     metrics=["revenue", "orders"],
-    group_by=["metric_time__month", "customer__country"],
+    group_by=["metric_time__month"],
     engine="spark",
 )
-df.orderBy("metric_time__month", "customer__country").show()
+df.orderBy("metric_time__month").show()
 sales.drop_views(df)
 ```
 
 ```text
-+-------------------+-----------------+-------+------+
-| metric_time__month|customer__country|revenue|orders|
-+-------------------+-----------------+-------+------+
-|2026-01-01 00:00:00|               DE|  40.00|     1|
-|2026-01-01 00:00:00|               SE| 120.00|     2|
-|2026-02-01 00:00:00|               DE|  35.50|     1|
-|2026-02-01 00:00:00|               SE|  70.75|     2|
-|2026-02-01 00:00:00|               US| 125.75|     2|
-+-------------------+-----------------+-------+------+
++-------------------+-------+------+
+| metric_time__month|revenue|orders|
++-------------------+-------+------+
+|2026-01-01 00:00:00| 220.75|     4|
+|2026-02-01 00:00:00| 115.50|     3|
+|2026-03-01 00:00:00|  55.75|     1|
++-------------------+-------+------+
 ```
 
 - `query(..., engine="spark")` takes the arguments of every [query][semantic-query-python], and returns a lazy `pyspark.sql.DataFrame`; `dataframe_type` and `read_cache` do not apply.

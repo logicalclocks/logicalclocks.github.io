@@ -294,7 +294,7 @@ All of these hold:
 - The saved query's definition, its SQL on the build that answers the query, is the one the export's last run read.
 - Every feature group the query reads, the time spine included, is a Delta feature group at the commit the last run read, and the export's feature group is at the commit that run wrote.
 - No Trino row filter, column mask or denied column applies to a source or to the export's feature group, under the rules in force when the run wrote it and now. New Trino rules count from a minute after Hopsworks publishes them and Trino has loaded them.
-- Every source is shared with the project whole, not with only some of its features, and the caller can read the export's feature group.
+- Every source is the project's own feature group or one shared with the project whole, not with only some of its features, and the caller can read the export's feature group.
 
 The export stops answering as soon as one of these changes: a write to a source, another write to the export's feature group, a change of the saved query or of what it reads, or a new access rule.
 The next successful run makes it answer again.
