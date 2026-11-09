@@ -211,11 +211,12 @@ hops superset chart generate --dataset 12 --type xy --kind line \
 | `--columns` | Columns of a `table` chart. |
 | `--metric`, `--dimension` | Metric of a `pie` or `big_number` chart, and slice column of a `pie` chart. |
 | `--time-grain` | Time grain of an `xy` chart: `P1D`, `P1W`, `P1M`, `PT1H`. |
-| `--filter` | A filter, repeatable: `'country = SE'`, `'amount > 100'`, `'region IN EU,US'`, `'email IS NULL'`. |
+| `--filter` | A filter, repeatable: `'country = SE'`, `'amount > 100'`, `'region IN EU,US'`, `'email IS NULL'`. A quoted value stays a string, such as `"postal_code = '00123'"`; an unquoted one is a number when it reads as one. |
 | `--config` | The full config as JSON or `@file`; the options above override its fields. |
 | `--preview` | Leave the chart unsaved and print an Explore link to it. |
 
 A metric is an aggregate over a column (`SUM(amount)` with `SUM`, `COUNT`, `AVG`, `MIN`, `MAX`, `COUNT_DISTINCT` or `MEDIAN`), a saved metric's name, or any other SQL expression.
+`--y`, `--columns`, `--group-by` and `IN` lists split on commas outside parentheses and quotes, so `--y 'SUM(COALESCE(amount, 0)),revenue'` is two metrics.
 A column the dataset does not have fails the command with an error that names it, and nothing is saved.
 
 Change only the given fields of a dashboard, by id or slug:
