@@ -19,7 +19,7 @@ The editor lists the `.yml` and `.yaml` files under the semantic project's root 
 - **Save** writes the open file.
   A save does not compile: click **Compile**, or let a later query's staleness check compile it, see [When a compile runs][semantic-builds-triggers].
 - **Overview** goes back to the semantic project's page.
-- With unsaved changes, leaving the editor for another page asks first: **Stay** keeps the edits, **Discard and leave** drops them.
+- With unsaved changes, leaving the editor for another page, also with the browser's Back and Forward, asks first: **Stay** keeps the edits, **Discard and leave** drops them.
   Closing or reloading the browser tab asks the browser's own question.
 - Changing the root path, format or repository in **Edit** opens the definitions from the new source.
   With unsaved changes, **Save** in **Edit** asks first: **Discard and save** drops the edits, **Cancel** keeps them.
