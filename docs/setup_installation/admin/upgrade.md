@@ -305,6 +305,25 @@ Pipelines, outputs and plugins you added through `logstash.extraPipelines`, `log
 - **The kafka integration, the `azure_event_hubs` input and the `webhdfs` output are no longer in the image.**
   A pipeline that uses one of them needs it in `logstash.plugins`, which installs it when the Logstash pod starts, so it needs access to `rubygems.org` and cannot run on an airgapped cluster.
 
+### Prometheus scrape jobs and the Consul domain { #upgrade-prometheus-consul-domain }
+
+From 5.3, Prometheus, the Prometheus data source of Grafana, the Prometheus adapter and the VPA recommender reach the Hopsworks services in `global._hopsworks.consulDomainName`, so an installation with its own Consul domain needs no Prometheus values to point them there.
+With the default domain, `consul`, nothing changes.
+
+The `pushgateway`, `minio-job`, `minio-bucket`, `minio-resource` and `minio-node` scrape jobs move out of `prometheus.prometheus.serverFiles."prometheus.yml".scrape_configs` into a file Prometheus loads next to it, because only that file can follow the Consul domain.
+Values that restate `scrape_configs` replace the chart's list, so a restated list that still holds one of these jobs gives Prometheus the job twice, and Prometheus refuses its configuration with `found multiple scrape configs with job name`.
+Before upgrading, list the jobs your values restate:
+
+```bash
+helm get values <release> -n <namespace> -o yaml | yq '.prometheus.prometheus.serverFiles."prometheus.yml".scrape_configs[].job_name'
+```
+
+If the list exists only to change the domain of these targets, remove it from your values, which also brings back every job the chart has added since.
+Otherwise remove these five jobs from it.
+
+The `trino` job now reads its user from the `trino-monitoring-credentials` Secret, so a changed `trino.auth.monitoringUser` no longer needs the list restated.
+Overrides that only moved `prometheus.prometheus-adapter.prometheus.url`, `prometheus.prometheus-adapter.dnsConfig` or the Grafana data source to the installation's Consul domain are no longer needed either.
+
 ### Agent deployments reserve 2 GiB for their OTLP sidecar { #upgrade-agent-otlp-sidecar }
 
 An agent deployment with tracing enabled runs a `hops-otlp` sidecar next to the agent.
