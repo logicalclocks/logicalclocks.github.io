@@ -484,8 +484,9 @@ It refuses, with HTTP 422, a source of an unsupported type, one with PROVIDED cr
 The `sources` of `ontology.yaml` seed a new system only: once the app has a source, **Sources** is the record, so a source removed there stays removed.
 
 **Semantic Compilation** has **Enable Semantic Compilation**: the compile job compiles only while it is on, and switching it on starts a compile run.
+A new system starts with it on, from `semantic_compilation: true` in its `ontology.yaml`; the `pii_detection` and `distinct_value_probing` answers set **PII Settings** and **Semantic Input** the same way, and a later change in **Settings** stays.
 **Reset** there deletes the ontology of every database and compiles it again.
-An edit in the app shows in the catalog at once, and in the vector search after the next compile or embed run.
+An edit in the app re-embeds the edited object, so it shows in the catalog and in the vector search at once; an edit whose embedding fails is embedded again by the next compile or embed run.
 **Import / Export** exports the catalog and the ontology as YAML, in the native format or Apache Ossie's, and imports such a file.
 
 The app answers at most four questions at a time; past that it answers HTTP 429 with `Retry-After`.
