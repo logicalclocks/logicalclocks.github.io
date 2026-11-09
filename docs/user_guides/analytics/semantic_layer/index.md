@@ -87,6 +87,8 @@ Administrators turn the service on as in [Semantic Layer administration][semanti
   dbt-sl-sdk, the Arrow Flight SQL JDBC driver, ADBC and GraphQL, with dbt's APIs.
 - [Connect BI tools][semantic-bi-tools]
   Semantic projects as tables for DBeaver, JDBC and ODBC tools, Tableau and Power BI.
+- [Excel and ODBC][semantic-excel-odbc]
+  The Arrow Flight SQL ODBC driver, and metrics as CSV for Excel's From Web.
 - [Metric exports][semantic-exports]
   Saved queries written into feature groups by scheduled jobs, and answered from them.
 - [Dashboards in Superset][semantic-superset-dashboards]

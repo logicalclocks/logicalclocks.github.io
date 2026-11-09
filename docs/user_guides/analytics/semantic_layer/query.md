@@ -211,7 +211,8 @@ curl -X POST -H "Authorization: ApiKey $HOPSWORKS_API_KEY" \
 | GET | `group-bys?metrics=a,b` | Dimensions, entities and `metric_time`. |
 | POST | `compatible-metrics` | The metrics that can be grouped by every group-by in `{"groupBy": [...]}`. |
 | POST | `sql` | The SQL of a query, without running it. |
-| POST | `query` | The rows of a query: JSON by default, or an Arrow IPC stream with `Accept: application/vnd.apache.arrow.stream`. |
+| POST | `query` | The rows of a query: JSON by default, an Arrow IPC stream with `Accept: application/vnd.apache.arrow.stream`, or CSV with `Accept: text/csv`. |
+| GET | `query?metrics=a,b&groupBy=c&format=csv` | The same with URL parameters, for clients that send only a URL and headers, such as Excel's From Web, see [Excel and ODBC][semantic-excel-web]. |
 | POST | `dimension-values` | The distinct values of `{"groupBy": ..., "limit": 1000}`. |
 | GET | `saved-queries` | The [saved queries][semantic-saved-queries-list] of the current build. |
 
@@ -220,6 +221,9 @@ The query body takes `metrics`, `savedQuery`, `groupBy`, `where`, `filters`, `ha
 `"useExports": false` in a `query` body computes the rows from the sources even when an [export][semantic-exports-serving] holds them.
 `"engine": "SPARK"` in a `sql` body answers Spark SQL and the views it reads, see [Over REST][semantic-spark-rest]; `query` runs on Trino only.
 A JSON result carries `columns`, `rows`, `rowCount`, `truncated` and `sql`.
+A CSV result, with `format=csv` or `Accept: text/csv`, is a header row of the column names and a line per row, with timestamps as `yyyy-MM-dd HH:mm:ss` and an empty field for null.
+On `GET`, `metrics`, `groupBy` and `orderBy` are comma-separated or repeated, and given empty (`groupBy=`) to give a saved query none; `where` is repeated; `limit`, `offset`, `savedQuery`, `cache` and `useExports` (`true` or `false`) take one value; and `format=csv` asks for CSV.
+Any other parameter is refused with `400`, so `filters`, `having`, `timeRange` and the other fields of a body need a POST.
 Every response carries the `buildId` that answered and whether it is `stale`; an Arrow result carries them in the `X-Semantic-Build` and `X-Semantic-Stale` headers.
 
 | Header | On | Value |

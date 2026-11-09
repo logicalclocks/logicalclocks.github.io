@@ -252,6 +252,7 @@ nav:
               - Query History: user_guides/analytics/semantic_layer/query_history.md
               - Connect dbt Clients: user_guides/analytics/semantic_layer/connect_clients.md
               - Connect BI Tools: user_guides/analytics/semantic_layer/bi_tools.md
+              - Excel and ODBC: user_guides/analytics/semantic_layer/excel_odbc.md
               - Metric Exports: user_guides/analytics/semantic_layer/exports.md
               - Dashboards in Superset: user_guides/analytics/semantic_layer/dashboards.md
               - Agent Tools: user_guides/analytics/semantic_layer/agent_tools.md

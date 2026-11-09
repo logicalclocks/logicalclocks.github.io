@@ -107,7 +107,7 @@ is the metric query `metrics=[revenue]`, `group_by=[customer__country, order__or
 | `GROUP BY` | Group-by columns and the time expressions above, by expression, alias or position. |
 | `HAVING` | Comparisons, `IN`, `BETWEEN`, `LIKE`, `IS NULL` and `IS NOT NULL` over metric columns, with or without an aggregate, and over group-bys. A metric only in `HAVING` is computed and not returned. |
 | `ORDER BY` | Columns, aggregates, aliases and positions, `ASC` or `DESC`; `NULLS LAST` is the order already. A metric only in `ORDER BY` is computed and not returned. |
-| `LIMIT`, `OFFSET` | Numbers. |
+| `LIMIT`, `OFFSET` | Numbers. SQL Server's `SELECT TOP n`, which Power Query's ODBC connector can send, is read as `LIMIT n`. |
 
 - Names match without regard to case; quote an identifier with `"`.
 - `HAVING` runs before `LIMIT`, in the metric query, so a limited result holds the groups that pass the `HAVING`.
@@ -146,8 +146,10 @@ INVALID_ARGUMENT: the BI tables do not support joins; a statement over a BI tabl
 | `NULLS FIRST` | `NULLS FIRST: NULL sorts last` |
 | A column selected twice, such as `SUM(revenue), AVG(revenue)` | `selecting revenue twice` |
 | A parameter marker, `?` | `parameter markers (?): prepared statements with parameters are not supported yet` |
+| An ODBC function escape, such as `{fn CONVERT(x, SQL_DOUBLE)}` | `{FN CONVERT} (expressions over columns)` |
 
 A statement the grammar accepts can still fail as a metric query, with `INVALID_ARGUMENT` and the reason: an unknown column, a group-by column selected but missing from `GROUP BY`, a group-by the metrics cannot reach, or a statement that does not parse.
+`SELECT *` over the `metrics` table asks for every metric by every group-by in one query, which usually fails this way; the message then adds `SELECT * over the metrics table asks for every metric by every group-by in one query: select the metric and group-by columns you need, or read a saved query's table`.
 
 ## Connect a tool { #semantic-bi-connect }
 
@@ -169,7 +171,7 @@ Add the Apache Arrow Flight SQL JDBC driver, `org.apache.arrow:flight-sql-jdbc-d
 
 ### ODBC: Power BI, Excel and other ODBC tools { #semantic-bi-odbc }
 
-The Apache Arrow Flight SQL ODBC driver, shipped as a Windows installer with Apache Arrow releases since 25.0.0, takes a connection string:
+The Apache Arrow Flight SQL ODBC driver, shipped for Windows and Linux with Apache Arrow releases since 25.0.0, takes a connection string:
 
 ```text
 Driver={Apache Arrow Flight SQL ODBC Driver};host=semantic.hopsworks.example.com;port=18446;environmentId=7;token=<api key>;useEncryption=true;trustedCerts=C:\certs\hopsworks_semantic_119_7_ca.pem;useSystemTrustStore=false
@@ -177,7 +179,7 @@ Driver={Apache Arrow Flight SQL ODBC Driver};host=semantic.hopsworks.example.com
 
 The driver sends connection properties it does not know, such as `environmentId`, as headers.
 In Power BI and Excel, **Get Data** > **ODBC** with this connection string imports the tables, or the result of a SQL statement given under **Advanced options**, in Import mode.
-Not tested against Hopsworks.
+Install, a DSN, what the driver was tested with and what it refuses: [Excel and ODBC][semantic-excel-odbc].
 
 ### dbt's Tableau and Power BI connectors { #semantic-bi-dbt-connectors }
 
@@ -244,6 +246,7 @@ Arrow Flight SQL clients then connect to `grpc+tls://semantic.example.com:443`, 
 | `semantic-gateway` value | Default | Meaning |
 | --- | --- | --- |
 | `biTables.enabled` | `true` | Serve the tables, `BI_TABLES_ENABLED` in the gateway. |
+| `cors.allowedOrigins` | `[]` | Browser origins whose pages may call the GraphQL API, such as a spreadsheet add-in's, `CORS_ALLOWED_ORIGINS` in the gateway; `"*"` allows any. Requests authenticate with the `Authorization` header, never cookies. |
 
 ```yaml
 semantic-gateway:

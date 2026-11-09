@@ -18,10 +18,10 @@ The semantic layer is a Hopsworks service with two parts:
 
 | The gateway serves | To | Guide |
 | --- | --- | --- |
-| REST, JSON and Arrow | The Python client, the `hops` CLI, the query workbench in the UI, the agent tools, Superset | [Query metrics][semantic-query-metrics] |
+| REST, JSON, Arrow and CSV | The Python client, the `hops` CLI, the query workbench in the UI, the agent tools, Superset, Excel's From Web | [Query metrics][semantic-query-metrics], [Excel and ODBC][semantic-excel-odbc] |
 | GraphQL, dbt's Semantic Layer API | dbt-sl-sdk, GraphQL clients | [Connect dbt clients][semantic-connect-clients] |
 | Arrow Flight SQL, dbt's JDBC dialect | dbt-sl-sdk, ADBC, the Arrow Flight SQL JDBC driver | [Connect dbt clients][semantic-connect-clients] |
-| Arrow Flight SQL, tables | DBeaver, JDBC and ODBC tools, dbt's Tableau and Power BI connectors | [Connect BI tools][semantic-bi-tools] |
+| Arrow Flight SQL, tables | DBeaver, JDBC and ODBC tools, Excel, dbt's Tableau and Power BI connectors | [Connect BI tools][semantic-bi-tools], [Excel and ODBC][semantic-excel-odbc] |
 | Spark SQL and the feature groups it reads | Your Spark session, with `engine="spark"` | [Query metrics on Spark][semantic-spark] |
 
 Around the queries:
