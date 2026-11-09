@@ -234,7 +234,7 @@ nginx annotations apply to a whole Ingress, so the layout is two Ingresses on `h
 
 | Ingress | Path | Routes to |
 | --- | --- | --- |
-| `<release>-semantic-layer-dbt-flight` | `/arrow.flight.protocol.FlightService/`, prefix | The gateway's Flight port over gRPC with TLS, with gRPC read and send timeouts of `timeoutSeconds`. |
+| `<release>-semantic-layer-dbt-flight` | `/arrow.flight.protocol.FlightService/`, implementation specific, the path type ingress-nginx's path validation allows a dot in | The gateway's Flight port over gRPC with TLS, with gRPC read and send timeouts of `timeoutSeconds`. |
 | `<release>-semantic-layer-dbt-graphql` | `/api/graphql`, exact | The gateway's GraphQL handler at `/semantic-layer/api/graphql`, over HTTPS, hashed by the `Authorization` header so the polls of a query reach the replica that holds its result. |
 
 `<release>` is the full name of the `hopsworks` release, `hopsworks` by default.

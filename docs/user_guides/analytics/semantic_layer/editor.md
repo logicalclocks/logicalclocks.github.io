@@ -9,16 +9,19 @@ Open the semantic project from **Semantic Layer** in the project sidebar and cli
 
 ## Edit and validate { #semantic-editor-edit }
 
-The editor lists the `.yml` and `.yaml` files under the semantic project's root path, the files a compile reads.
+The editor lists the `.yml` and `.yaml` files under the semantic project's root path, the files a compile reads, read anew each time the editor opens.
 
 - Pick a file in the tree to open it; a changed file is marked in the tree until it is saved, and so is a file with errors.
 - **New file** asks for a path under the root path, such as `models/orders.yml`; the file is created when you save it.
 - Half a second after you stop typing, Hopsworks validates the files as they are in the editor, saved and unsaved, as a compile would, and stores nothing.
   The status next to the name reads **Validating**, **Valid**, **Valid, 2 warnings**, or the count of errors and warnings, such as **1 error**, **Validation busy, retrying** when the Hopsworks instance runs two validations already, or **Validation unavailable** when the validation fails; the next edit validates again.
-  Each issue is underlined at its line in the editor and listed under **Validation**, with its rule and message as in [Validation rules][semantic-validation-rules].
+  Each issue is underlined at its line in the editor and listed under **Validation**, with its rule and message as in [Validation rules][semantic-validation-rules]; clicking an issue's file opens it at its line.
 - **Save** writes the open file.
   A save does not compile: click **Compile**, or let a later query's staleness check compile it, see [When a compile runs][semantic-builds-triggers].
 - **Overview** goes back to the semantic project's page.
+- With unsaved changes, leaving the editor for another page asks first: **Stay** keeps the edits, **Discard and leave** drops them.
+  Closing or reloading the browser tab asks the browser's own question.
+- Changing the root path, format or repository in **Edit** opens the definitions from the new source, and drops the unsaved edits of the old one.
 
 A file holds at most 1 MiB, and the root path at most 1,000 definition files and 32 MiB, as for a compile.
 A path must end in `.yml` or `.yaml` and stay under the root path; symbolic links are refused.
