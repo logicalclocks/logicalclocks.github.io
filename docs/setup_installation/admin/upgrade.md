@@ -311,15 +311,21 @@ From 5.3, Prometheus, the Prometheus data source of Grafana, the Prometheus adap
 With the default domain, `consul`, nothing changes.
 
 The `pushgateway`, `minio-job`, `minio-bucket`, `minio-resource` and `minio-node` scrape jobs move out of `prometheus.prometheus.serverFiles."prometheus.yml".scrape_configs` into a file Prometheus loads next to it, because only that file can follow the Consul domain.
-Values that restate `scrape_configs` replace the chart's list, so a restated list that still holds one of these jobs gives Prometheus the job twice, and Prometheus refuses its configuration with `found multiple scrape configs with job name`.
-Before upgrading, list the jobs your values restate:
+A job of the same name in `scrape_configs` takes precedence and keeps its own targets and settings, because Prometheus refuses two jobs with one name.
+`scrape_configs` still holds these jobs in two cases:
 
-```bash
-helm get values <release> -n <namespace> -o yaml | yq '.prometheus.prometheus.serverFiles."prometheus.yml".scrape_configs[].job_name'
-```
+- **Your values restate the list.**
+  Helm replaces the chart's list with yours, including any of these jobs you customized.
+  List the jobs your values restate:
 
-If the list exists only to change the domain of these targets, remove it from your values, which also brings back every job the chart has added since.
-Otherwise remove these five jobs from it.
+    ```bash
+    helm get values <release> -n <namespace> -o yaml | yq '.prometheus.prometheus.serverFiles."prometheus.yml".scrape_configs[].job_name'
+    ```
+
+    If the list exists only to point these targets at your Consul domain, remove it from your values, which also brings back every job the chart has added since.
+- **You upgrade with `helm upgrade --reuse-values`.**
+  It keeps the chart defaults of the release it upgrades, including the previous list with these jobs, so they keep their previous targets.
+  Upgrade with `--reset-then-reuse-values` instead, which takes the new chart's defaults and keeps the values you supplied.
 
 The `trino` job now reads its user from the `trino-monitoring-credentials` Secret, so a changed `trino.auth.monitoringUser` no longer needs the list restated.
 Overrides that only moved `prometheus.prometheus-adapter.prometheus.url`, `prometheus.prometheus-adapter.dnsConfig` or the Grafana data source to the installation's Consul domain are no longer needed either.
