@@ -54,20 +54,19 @@ Resource allocation for the Driver and Workers can be configured.
 
 - `Driver GPUs`: Number of GPUs to allocate for the Driver
 
-- `Driver disk`: Local disk in GB the Driver may use.
-  Empty means no limit.
-  Files written to `/hopsfs` are stored in HopsFS and don't count against this disk.
-  While a file is open for writing, the HopsFS mount keeps a copy of it on the node's local disk until the file is closed.
+- `Driver disk`: Local disk limit of the Driver, in GB.
+  Empty means no limit; a Driver that writes more is evicted.
+  Files under `/hopsfs` don't count, though the mount keeps a file on the node's local disk while it is open for writing.
 
 - `Worker memory`: Memory in MBs to allocate for each worker
 
 - `Worker virtual cores`: Number of cores to allocate for each worker
 
-- `Worker disk`: Local disk in GB each worker may use.
-  Empty means no limit.
-  Files written to `/hopsfs` are stored in HopsFS and don't count against this disk.
-
 - `Worker GPUs`: Number of GPUs to allocate for each worker
+
+- `Worker disk`: Local disk limit of each worker, in GB.
+  Empty means no limit; a worker that writes more is evicted.
+  Files under `/hopsfs` don't count.
 
 - `Min workers`: Minimum number of workers to start with
 
@@ -92,8 +91,8 @@ Runtime environment and Additional files required for the Ray job can also be pr
   These files will be placed in `/srv/hops/ray/job`.
 
 - `Ray cluster HopsFS mount`: Memory (MB), cores and namenode connections of the container that serves `/hopsfs` in the Ray head and in every worker.
-  The fields show the cluster defaults and may need tuning when the notebook reads large datasets or does many concurrent reads or writes on `/hopsfs`.
-  The Jupyter server's own HopsFS mount is set on the Python or Spark tab and does not apply to the Ray cluster.
+  Prefilled with the cluster defaults; raise them for large datasets or many concurrent reads and writes on `/hopsfs`.
+  The Jupyter server's own mount is set on the Python or Spark tab.
 
 <p align="center">
   <figure>

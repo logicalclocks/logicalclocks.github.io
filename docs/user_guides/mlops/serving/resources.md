@@ -20,11 +20,9 @@ For each component, you can set minimum (requests) and maximum (limits) resource
     | Disk (GB)          | n/a             | unset (no limit) | 1 to 16384, set on the limit only; the request equals it |
 
 !!! note "Local disk"
-    The model files are downloaded to the predictor's local disk when an instance starts, so a disk limit on the predictor must fit them, plus whatever the model server writes.
-    A component is evicted and restarted when its container, or its pod as a whole, uses more local disk than its limit.
-    With no limit, a component can use the node's free disk, which the other pods on the node share.
-    A cluster can instead give vLLM deployments a volume of a fixed size for their model files.
-    A vLLM deployment then accepts no predictor disk setting: the form shows the cluster's size instead, and the API refuses a predictor disk.
+    A predictor downloads the model files to its local disk when an instance starts, so its disk limit must fit them plus whatever the model server writes.
+    A component that uses more than its limit is evicted and restarted; with no limit, it shares the node's free disk with the other pods on the node.
+    A cluster can instead give vLLM deployments a fixed-size volume for their model files; their predictor then takes no disk setting, and the form shows the volume's size.
 
 !!! tip "Automatic downscale of inactive instances"
     Setting the number of instances to **0** for a component enables **scale-to-zero**: its instances scale down to zero after a period without requests and the next request wakes it.
@@ -114,17 +112,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   )
   ```
 
-To limit a component's local disk, pass `disk` in GB to its limits, for example `Resources(cores=2, memory=256, gpus=1, disk=50)`.
-The same amount is requested, so `disk` is not accepted on the requests.
-The resources can also be given as a dict, which uses the same `disk` key:
-
-```python
-predictor_res = {
-    "num_instances": 1,
-    "requests": {"cores": 1, "memory": 128, "gpus": 1},
-    "limits": {"cores": 2, "memory": 256, "gpus": 1, "disk": 50},
-}
-```
+To limit a component's local disk, set `disk` in GB on its limits only, for example `Resources(cores=2, memory=256, gpus=1, disk=50)` or `"disk": 50` in a limits dict; the request is set to the same amount.
 
 ### Step 3 (Optional): Define the transformer resource configuration
 

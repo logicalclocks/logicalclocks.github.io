@@ -44,24 +44,22 @@ Resource allocation for the Spark driver and executors can be configured, also t
 
 - `Driver virtual cores`: Number of cores to allocate for the Spark driver
 
-- `Driver disk`: Local disk in GB the Jupyter server, which runs the Spark driver, may use.
-  Empty means no limit.
-  A server that writes more is evicted and its running kernels stop.
-  Files written to `/hopsfs` are stored in HopsFS and don't count against this disk.
+- `Driver disk`: Local disk limit of the Jupyter server, which runs the Spark driver, in GB.
+  Empty means no limit; a server that writes more is evicted and its running kernels stop.
+  Files under `/hopsfs` don't count.
 
 - `Executor memory`: Number of MBs to allocate for each Spark executor
 
 - `Executor virtual cores`: Number of cores to allocate for each Spark executor
 
-- `Executor disk`: Local disk in GB each Spark executor may use.
-  Empty means no limit.
-  An executor that writes more is evicted.
+- `Executor disk`: Local disk limit of each Spark executor, in GB.
+  Empty means no limit; an executor that writes more is evicted.
 
 - `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
 
 - `HopsFS mount`: Memory (MB), cores and namenode connections of the container that serves `/hopsfs` in the Jupyter server.
-  The fields show the cluster defaults and may need tuning when notebooks read large datasets or do many concurrent reads or writes on `/hopsfs`.
-  If the project has a resource quota, the mount's memory and cores count towards it.
+  Prefilled with the cluster defaults; raise them for large datasets or many concurrent reads and writes on `/hopsfs`.
+  The mount's memory and cores count towards the project's resource quota, if it has one.
 
 <p align="center">
   <figure>
