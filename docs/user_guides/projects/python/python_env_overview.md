@@ -41,6 +41,7 @@ The `FEATURE ENGINEERING` environments can be used in [Jupyter notebooks](../jup
 - `spark-feature-pipeline` for writing feature pipelines using PySpark
 - `dbt-pipeline` extends `python-feature-pipeline` with dbt and the Trino and DuckDB adapters, for
   transformations written as dbt models
+- `ontology-pipeline` extends `python-feature-pipeline` with the Auto-Ontology runtime and its web UI, which the app and the jobs of an [ontology system][build-an-ontology-and-text-to-sql-app] run in
 
 ### Model training
 

@@ -47,6 +47,7 @@ Inside the [project terminal][terminal] no login is needed, `hops` is pointed at
 
 Every asset type has a subcommand: `project`, `fg`, `fv`, `td`, `model`, `deployment`, `job`, `datasource`, `sql`.
 `hops <command> --help` lists the verbs.
+`hops ontology` asks an [ontology system][build-an-ontology-and-text-to-sql-app] questions about the data in its sources.
 
 ```bash
 hops project use fraud_detection
