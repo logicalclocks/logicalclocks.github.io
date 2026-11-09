@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793985847` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794214325` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -111,6 +111,9 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793985847` (Hopsworks `5.
             enabled: true
           redis:
             enabled: true
+        tenant:
+          id: ''
+          namespaceLabel: hopsworks.ai/tenant
         tolerations: []
         toolbox:
           image: hwutils
@@ -320,7 +323,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793985847` (Hopsworks `5.
 
 `global._hopsworks.projectPodSecurity.namespaceMatchLabels` <a class="headerlink" href="#helm.global._hopsworks.projectPodSecurity.namespaceMatchLabels" title="Permanent link">#</a> { #helm.global._hopsworks.projectPodSecurity.namespaceMatchLabels }
 :   Type `object`, default `{}`.
-    Additional administrator-managed labels selecting this release's project namespaces. For multiple releases on one cluster, configure disjoint tenant labels on every release and its project namespaces, including pre-created namespaces, before enabling admission.
+    Additional administrator-managed labels selecting this release's project namespaces. For multiple releases on one cluster, configure disjoint tenant labels on every release and its project namespaces, including pre-created namespaces, before enabling admission. If empty, the tenant's namespace label from global._hopsworks.tenant.
 
 `global._hopsworks.ray.enabled` <a class="headerlink" href="#helm.global._hopsworks.ray.enabled" title="Permanent link">#</a> { #helm.global._hopsworks.ray.enabled }
 :   Type `bool`, default `false`.
@@ -369,6 +372,18 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1793985847` (Hopsworks `5.
 `global._hopsworks.superset.redis.enabled` <a class="headerlink" href="#helm.global._hopsworks.superset.redis.enabled" title="Permanent link">#</a> { #helm.global._hopsworks.superset.redis.enabled }
 :   Type `bool`, default `true`.
     Enable or disable Redis for Superset. Must match superset.superset.redis.enabled for consistent behavior across charts.
+
+`global._hopsworks.tenant` <a class="headerlink" href="#helm.global._hopsworks.tenant" title="Permanent link">#</a> { #helm.global._hopsworks.tenant }
+:   Type `object`, default `{"id":"","namespaceLabel":"hopsworks.ai/tenant"}`.
+    Tenant of this deployment when several Hopsworks deployments share a Kubernetes cluster.
+
+`global._hopsworks.tenant.id` <a class="headerlink" href="#helm.global._hopsworks.tenant.id" title="Permanent link">#</a> { #helm.global._hopsworks.tenant.id }
+:   Type `string`, default `""`.
+    Tenant ID, unique on the cluster: lower-case letters, digits and '-', at most 63 characters. When set, it is the default of every per-chart tenant setting left empty, each of which still overrides it: global._hopsworks.projectPodSecurity.namespaceMatchLabels, olk.filebeat.namespaceSelector and spark.rss.namespaceSelector default to the namespace label `<namespaceLabel>=<id>`, and spark.rss.webhookName to `<id>-rss-webhook`. Hopsworks adds the label to hopsworks.variables.project_namespace_labels, which may set it only to this ID. Project namespaces created outside Hopsworks must carry the label too. If empty, it sets no defaults, and the per-chart settings apply as set.
+
+`global._hopsworks.tenant.namespaceLabel` <a class="headerlink" href="#helm.global._hopsworks.tenant.namespaceLabel" title="Permanent link">#</a> { #helm.global._hopsworks.tenant.namespaceLabel }
+:   Type `string`, default `"hopsworks.ai/tenant"`.
+    Namespace label that carries the tenant ID.
 
 `global._hopsworks.tolerations` <a class="headerlink" href="#helm.global._hopsworks.tolerations" title="Permanent link">#</a> { #helm.global._hopsworks.tolerations }
 :   Type `list`, default `[]`.

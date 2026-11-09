@@ -4,7 +4,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1793985847` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794214325` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -350,7 +350,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             name: rss-webhook
             port: 443
             targetPort: 9876
-        webhookName: rss-webhook
+        webhookName: ''
     ```
 
 <div class="hops-values" markdown>
@@ -466,7 +466,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             name: rss-webhook
             port: 443
             targetPort: 9876
-        webhookName: rss-webhook
+        webhookName: ''
         ```
 
 `spark.rss.controller.serviceAccount.annotations` <a class="headerlink" href="#helm.spark.rss.controller.serviceAccount.annotations" title="Permanent link">#</a> { #helm.spark.rss.controller.serviceAccount.annotations }
@@ -487,7 +487,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `spark.rss.namespaceSelector` <a class="headerlink" href="#helm.spark.rss.namespaceSelector" title="Permanent link">#</a> { #helm.spark.rss.namespaceSelector }
 :   Type `string`, default `""`.
-    Label selector (key=value or key1=value1,key2=value2) for namespaces this instance should manage. Only events from matching namespaces will be processed by the controller and webhook. If empty, all namespaces are managed.
+    Label selector (key=value or key1=value1,key2=value2) for namespaces this instance should manage. Only events from matching namespaces will be processed by the controller and webhook. If empty, the tenant's namespace label from global._hopsworks.tenant, or all namespaces without a tenant ID.
 
 `spark.rss.nodeSelector` <a class="headerlink" href="#helm.spark.rss.nodeSelector" title="Permanent link">#</a> { #helm.spark.rss.nodeSelector }
 :   Type `object`, default `{}`.
@@ -522,8 +522,8 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     TTL in seconds for the rss-config Job. Overrides global default.
 
 `spark.rss.webhookName` <a class="headerlink" href="#helm.spark.rss.webhookName" title="Permanent link">#</a> { #helm.spark.rss.webhookName }
-:   Type `string`, default `"rss-webhook"`.
-    Name of the MutatingWebhookConfiguration and ValidatingWebhookConfiguration. Override when running multiple instances on the same cluster to avoid name collisions.
+:   Type `string`, default `""`.
+    Name of the MutatingWebhookConfiguration and ValidatingWebhookConfiguration. Override when running multiple instances on the same cluster to avoid name collisions. If empty, `<global._hopsworks.tenant.id>-rss-webhook` with a tenant ID, otherwise `rss-webhook`.
 
 </div>
 
