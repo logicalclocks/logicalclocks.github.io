@@ -38,11 +38,35 @@ controllerManager:
 managerConfig:
   controllerManagerConfigYaml: |
     # the chart's default, with sparkoperator.k8s.io/sparkapplication
-    # added to integrations.frameworks
+    # added to integrations.frameworks, and:
+    resources:
+      excludeResourcePrefixes:
+        - ephemeral-storage
 ```
 
 That chart keeps its CRDs among its templates, so Argo CD upgrades them with a version bump.
 Leave the `resources-finalizer.argocd.argoproj.io` finalizer off that Application: deleting it then leaves the CRDs, and every queue, in place.
+
+### Disk limits { #kueue-disk-limits }
+
+Jobs, notebooks and model deployments can set a disk limit, which requests `ephemeral-storage`.
+The Hopsworks ClusterQueues cover only CPU, memory and GPUs, so Kueue must leave `ephemeral-storage` out of its quota checks; otherwise those workloads stay pending with `resource ephemeral-storage unavailable in ClusterQueue`.
+`upgrade-kueue.sh` adds the exclusion on install and upgrade, and the `resources` block above adds it with Argo CD.
+A cluster already on Kueue 0.20.3 gets it by running `bash hopsworks/charts/hw-kueue/files/upgrade-kueue.sh upgrade` from the new chart after upgrading Hopsworks.
+
+Leave the exclusion out in two cases; the script does so itself, and with Argo CD you drop the `resources` block:
+
+- **A ClusterQueue or Cohort budgets `ephemeral-storage`**: the exclusion would bypass that quota.
+  Every ClusterQueue that receives disk requests must then cover `ephemeral-storage` itself; a Cohort's quota does not count.
+- **The manager config sets `resources.quotaCheckStrategy: IgnoreUndeclared`**: it already ignores the resources a ClusterQueue does not declare, and Kueue refuses to start with both.
+
+When disk is budgeted but some ClusterQueues do not cover it, and `IgnoreUndeclared` is not set, the script lists those queues and stops before changing the cluster.
+If they are all your own, add disk coverage and quota to them.
+If one is a Hopsworks queue, set `resources.quotaCheckStrategy: IgnoreUndeclared` in release `kueue`'s `managerConfig.controllerManagerConfigYaml` and remove `excludeResourcePrefixes`, since Hopsworks re-applies its queues and reverts disk coverage added by hand.
+The script never picks `IgnoreUndeclared` itself, because it ignores **every** resource a ClusterQueue does not declare.
+
+The script decides the policy each time it runs, so rerun it after adding or removing a disk quota.
+It stops if it cannot read the ClusterQueues or Cohorts.
 
 ## Why `helm upgrade` alone cannot do it
 
