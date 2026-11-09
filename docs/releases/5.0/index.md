@@ -56,6 +56,9 @@ The releases of Hopsworks 5.0, newest first.
 
 ### What's changed
 
+- [HELM] Fixed the pushgateway and MinIO scrape targets of Prometheus, and the Prometheus address of Grafana, the Prometheus adapter and the VPA recommender, which named the `consul` domain instead of `global._hopsworks.consulDomainName`, so an installation with its own Consul domain no longer needs Prometheus values for them.
+  A `pushgateway` or `minio-*` job in `prometheus.prometheus.serverFiles."prometheus.yml".scrape_configs`, restated in your values or kept by `helm upgrade --reuse-values`, keeps its own targets: remove a restated list that only changed their domain, and upgrade with `--reset-then-reuse-values` instead of `--reuse-values`.
+- [HELM] Fixed the `trino` scrape job using the user `prometheus` instead of [`trino.auth.monitoringUser`][values-trino-monitoring-user], which it now reads from the `trino-monitoring-credentials` Secret.
 - Changed the RonDB REST server to size its buffer pool from its memory limit, return idle buffers after 15 minutes and opt out of transparent huge pages, so that its memory stays bounded.
 
 ### Breaking changes
@@ -64,11 +67,15 @@ The releases of Hopsworks 5.0, newest first.
 - [API] A primary key read of a BLOB or TEXT value larger than 2 MiB now fails that operation with HTTP 413, and a feature vector with such a value fails with error 22 `Feature value too large.`, where the RonDB REST server returned it; raise `rondb.rondb.rdrs.internal.maxBlobTextValueBytes` (`0` for no limit) if you store larger values.
 - [HELM] Remove `rondb.rondb.rdrs.internal.bufferSize`, `gomaxprocs` and `maxAllocatedBuffers` from your values, which the chart ignored, or `helm upgrade` fails before changing anything.
 - [HELM] If you pin `rondb.rondb.images.rondb.tag` to a version older than 26.02.12, set `rondb.rondb.rdrs.internal.bufferShrinkAfterS: null` before upgrading, or upgrade the image: the chart now sets `Internal.BufferShrinkAfterS`, which RonDB REST server images before 26.02.12 reject, and they then don't start.
+- [HELM] If you create the `trino-monitoring-credentials` Secret yourself ([`trino.auth.createSecrets: false`][values-trino-create-secrets]), add a `username` key with the monitoring user before upgrading: Prometheus now reads the user from it instead of using `prometheus`, and can't scrape Trino without it.
+- [HELM] If your values restate `prometheus.prometheus.server.extraConfigmapMounts`, or `extraConfigmapMounts` or `extraVolumeDirs` of `prometheus.prometheus.configmapReload.prometheus`, add the `extra-scrape-configs` entries of `charts/prometheus/values.yaml` in the 5.0.15 chart, or Prometheus stops scraping the pushgateway and MinIO.
 
 ### Configuration changes
 
 - [HELM] Changed the memory request and limit of the RonDB REST server pods (`rondb.rondb.resources.requests.memory.rdrsMiB`, `rondb.rondb.resources.limits.memory.rdrsMiB`) from 100 MiB and 500 MiB to 2 GiB; check node capacity before the upgrade.
   Large batches, wide rows or feature views with many feature groups can fill the RonDB REST server's buffer pool, which then answers HTTP 503, also to concurrent requests, and raising `maxOperationsPerBatchRequest` doesn't enlarge it: raise both values above 2 GiB for such workloads, or send smaller batches or fewer at once.
+- [HELM] Moved the `pushgateway`, `minio-job`, `minio-bucket`, `minio-resource` and `minio-node` scrape jobs out of the default `prometheus.prometheus.serverFiles."prometheus.yml".scrape_configs` into the `prometheus-extra-scrape-configs` ConfigMap, which Prometheus loads through the new `prometheus.prometheus.scrapeConfigFiles`.
+- [HELM] Removed the default `prometheus.prometheus-adapter.dnsConfig`, whose `service.consul` search domain the adapter no longer needs.
 - [HELM] Added the RonDB REST server settings the chart didn't expose, under `rondb.rondb.rdrs`, such as its buffer pool, its request, BLOB and batch size limits, its rate limit and its use of transparent huge pages.
 
 ## 5.0.14 { #hopsworks-5-0-14 }
@@ -749,3 +756,5 @@ No upgrade steps are listed for this release.
 
 [docs-env-clone-upgrades]: https://docs.hopsworks.ai/5.0/user_guides/projects/python/python_env_clone/#concerning-upgrades
 [docs-model-server]: https://docs.hopsworks.ai/5.0/user_guides/mlops/serving/predictor/#model-server
+[values-trino-create-secrets]: https://docs.hopsworks.ai/5.0/setup_installation/common/helm_chart_values/trino/#helm.trino.auth.createSecrets
+[values-trino-monitoring-user]: https://docs.hopsworks.ai/5.0/setup_installation/common/helm_chart_values/trino/#helm.trino.auth.monitoringUser
