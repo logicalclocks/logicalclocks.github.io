@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794228408` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794257788` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -3788,7 +3788,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.hopsworks_analytics_coding_agent` <a class="headerlink" href="#helm.hopsworks.variables.hopsworks_analytics_coding_agent" title="Permanent link">#</a> { #helm.hopsworks.variables.hopsworks_analytics_coding_agent }
 :   Type `string`, default `"claude"`.
-    Which coding agent the Setup Analytics wizard runs: "claude" (Claude Code), "codex" (OpenAI Codex CLI), "copilot" (GitHub Copilot CLI) or "opencode". The wizard uses this without asking, so setting it is how a cluster standardises on one agent; an advanced option in the wizard lets a user run a different one for their own session, which does not write back here. All four are installed in the terminal image under exactly these command names, so the value is the command. Constrained by a pattern rather than an enum for the reason given on docker_operations_package_cache_scope. The frontend falls back to "claude" when the row is missing or holds a value it does not recognise.
+    Which coding agent "Set up dashboards", on the hopsworks_analytics project's Superset page, runs in the Terminal: "claude" (Claude Code), "codex" (OpenAI Codex CLI), "copilot" (GitHub Copilot CLI) or "opencode". Every setup uses it without asking, so setting it is how a cluster standardises on one agent. All four are installed in the terminal image under exactly these command names, so the value is the command. The first three start on the setup prompt; opencode starts without it, and the page shows the prompt for the user to send. Constrained by a pattern rather than an enum for the reason given on docker_operations_package_cache_scope. The frontend falls back to "claude" when the row is missing or holds a value it does not recognise.
 
 `hopsworks.variables.hopsworks_analytics_ro_user` <a class="headerlink" href="#helm.hopsworks.variables.hopsworks_analytics_ro_user" title="Permanent link">#</a> { #helm.hopsworks.variables.hopsworks_analytics_ro_user }
 :   Type `string`, default `"hopsworks_ro"`.
@@ -3799,7 +3799,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.hopsworks_analytics_setup_repo` <a class="headerlink" href="#helm.hopsworks.variables.hopsworks_analytics_setup_repo" title="Permanent link">#</a> { #helm.hopsworks.variables.hopsworks_analytics_setup_repo }
 :   Type `string`, default `"https://github.com/logicalclocks/okr-dashboards"`.
-    Repository the Setup Analytics wizard clones when the terminal image does not already carry it, so a cluster that cannot reach github.com can point the flow at a reachable mirror instead of failing in the Terminal with a git error. The checkout directory is derived from the last path segment. Constrained to characters that cannot change the meaning of the shell line the URL is spliced into; the frontend falls back to the default when the row is missing or fails that check.
+    Repository "Set up dashboards", on the hopsworks_analytics project's Superset page, clones when the terminal image does not already carry it under /opt, so a cluster that cannot reach github.com can point the setup at a reachable mirror instead of failing in the Terminal with a git error. The checkout directory is derived from the last path segment, and a checkout of that name baked into the image is used instead of cloning. Constrained to characters that cannot change the meaning of the shell line the URL is spliced into, and to not starting with "-", which git would read as an option; the frontend falls back to the default when the row is missing or fails that check.
 
 `hopsworks.variables.hopsworks_db` <a class="headerlink" href="#helm.hopsworks.variables.hopsworks_db" title="Permanent link">#</a> { #helm.hopsworks.variables.hopsworks_db }
 :   Type `string`, default `"hopsworks"`.
