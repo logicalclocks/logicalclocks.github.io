@@ -66,6 +66,7 @@ import os
 
 import pyodbc
 
+
 api_key = os.environ["HOPSWORKS_API_KEY"]
 conn = pyodbc.connect("DSN=hopsworks-sales;token=" + api_key, autocommit=True)
 cursor = conn.cursor()
