@@ -65,6 +65,9 @@ After the release's resources are deleted:
 - **CustomResourceDefinitions.**
   Helm never deletes CRDs.
   Apart from KEDA's, the CRDs the chart installs, such as Strimzi's, KServe's and the certificate operator's, stay on the Kubernetes cluster, and a reinstall uses them.
+- **The backup metadata ConfigMaps**, once a backup has run: `rondb-backups-metadata`, `opensearch-backups-metadata` and `superset-backups-metadata` by default, and `rondb-backups-metadata-<n>` and `opensearch-backups-metadata-<n>` once one fills up.
+  The backup CronJobs create them, not Helm, and they stay on purpose: they index the backups, and you take a restore's backup ID from them, as described in [Disaster Recovery][disaster-recovery].
+  Deleting the namespace deletes them; the Velero backup keeps a copy.
 - **The `wipeWhenUninstall` Job's own ClusterRole and ClusterRoleBinding**, both named `<release>-uninstall-job`, after every uninstall with that Job on.
   They keep cluster-wide delete rights on the kinds the Job deletes, so delete them:
 
