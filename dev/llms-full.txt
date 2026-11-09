@@ -19780,6 +19780,15 @@ Next step is to configure Jupyter, Click `edit configuration` to get to the conf
 
 - `Container memory`: Number of MBs to allocate for the Jupyter instance
 
+- `Container disk`: Local disk limit of the Jupyter instance, in GB.
+  Empty means no limit; an instance that writes more is evicted and its running kernels stop.
+  With a PySpark kernel environment, the Spark tab's `Driver disk` applies instead.
+  Files under `/hopsfs` don't count, though the mount keeps a file on the node's local disk while it is open for writing.
+
+- `HopsFS mount`: Memory (MB), cores and namenode connections of the container that serves `/hopsfs` to every kernel.
+  Prefilled with the cluster defaults; raise them for large datasets or many concurrent reads and writes on `/hopsfs`.
+  The mount's memory and cores count towards the project's resource quota, if it has one.
+
 !!! notice "Configured resource pool is shared by all running kernels. If a kernel crashes while executing a cell, try increasing the Container memory."
 
 <p align="center">
@@ -19915,15 +19924,26 @@ configuration page and select `Ray`.
 
 Resource allocation for the Spark driver and executors can be configured, also the number of executors and whether dynamic execution should be enabled.
 
-- `Driver memory`: Number of cores to allocate for the Spark driver
+- `Driver memory`: Number of MBs to allocate for the Spark driver
 
-- `Driver virtual cores`: Number of MBs to allocate for the Spark driver
+- `Driver virtual cores`: Number of cores to allocate for the Spark driver
 
-- `Executor memory`: Number of cores to allocate for each Spark executor
+- `Driver disk`: Local disk limit of the Jupyter server, which runs the Spark driver, in GB.
+  Empty means no limit; a server that writes more is evicted and its running kernels stop.
+  Files under `/hopsfs` don't count.
 
-- `Executor virtual cores`: Number of MBs to allocate for each Spark executor
+- `Executor memory`: Number of MBs to allocate for each Spark executor
+
+- `Executor virtual cores`: Number of cores to allocate for each Spark executor
+
+- `Executor disk`: Local disk limit of each Spark executor, in GB.
+  Empty means no limit; an executor that writes more is evicted.
 
 - `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
+
+- `HopsFS mount`: Memory (MB), cores and namenode connections of the container that serves `/hopsfs` in the Jupyter server.
+  Prefilled with the cluster defaults; raise them for large datasets or many concurrent reads and writes on `/hopsfs`.
+  The mount's memory and cores count towards the project's resource quota, if it has one.
 
 <p align="center">
   <figure>
@@ -20102,11 +20122,19 @@ Resource allocation for the Driver and Workers can be configured.
 
 - `Driver GPUs`: Number of GPUs to allocate for the Driver
 
+- `Driver disk`: Local disk limit of the Driver, in GB.
+  Empty means no limit; a Driver that writes more is evicted.
+  Files under `/hopsfs` don't count, though the mount keeps a file on the node's local disk while it is open for writing.
+
 - `Worker memory`: Memory in MBs to allocate for each worker
 
 - `Worker virtual cores`: Number of cores to allocate for each worker
 
 - `Worker GPUs`: Number of GPUs to allocate for each worker
+
+- `Worker disk`: Local disk limit of each worker, in GB.
+  Empty means no limit; a worker that writes more is evicted.
+  Files under `/hopsfs` don't count.
 
 - `Min workers`: Minimum number of workers to start with
 
@@ -20129,6 +20157,10 @@ Runtime environment and Additional files required for the Ray job can also be pr
 
 - `Additional files`: List of other files required for the Ray job.
   These files will be placed in `/srv/hops/ray/job`.
+
+- `Ray cluster HopsFS mount`: Memory (MB), cores and namenode connections of the container that serves `/hopsfs` in the Ray head and in every worker.
+  Prefilled with the cluster defaults; raise them for large datasets or many concurrent reads and writes on `/hopsfs`.
+  The Jupyter server's own mount is set on the Python or Spark tab.
 
 <p align="center">
   <figure>
@@ -20691,12 +20723,18 @@ There you can also set the following configuration settings for a `PYTHON` job.
 - `Environment`: The python environment to use
 - `Container memory`: The amount of memory in MB to be allocated to the Python script
 - `Container cores`: The number of cores to be allocated for the Python script
+- `Container disk`: Local disk limit of the Python script's container, in GB, for example for files under `/tmp`.
+  Empty means no limit; a job that writes more is evicted and the execution fails.
+  Files under `/hopsfs` don't count, though the mount keeps a file on the node's local disk while it is open for writing.
 - `Additional files`: List of files that will be locally accessible in the working directory of the application.
   Only recommended to use if project datasets are not mounted under `/hopsfs`.
   You can always modify the arguments in the job settings.
 - `Environment variables`: Custom `KEY=VALUE` pairs that are set on the container for every
   execution of this job. Read them in your Python code with `os.environ["MY_KEY"]`. See
   [Environment variables](#environment-variables) below.
+- `HopsFS mount`: Memory (MB), cores and namenode connections of the container that serves `/hopsfs`.
+  Prefilled with the cluster defaults; raise them for large datasets or many concurrent reads and writes on `/hopsfs`.
+  The mount's memory and cores count towards the project's resource quota, if it has one.
 
 <p align="center">
   <figure>
@@ -20796,9 +20834,11 @@ The following table describes the job configuration parameters for a PYTHON job.
 | <nobr>`conf['resourceConfig']['cores']`</nobr> | float | Number of CPU cores to be allocated | `1.0` |
 | <nobr>`conf['resourceConfig']['memory']`</nobr> | int | Number of MBs to be allocated | `2048` |
 | <nobr>`conf['resourceConfig']['gpus']`</nobr> | int | Number of GPUs to be allocated | `0` |
+| <nobr>`conf['resourceConfig']['diskGb']`</nobr> | int | Local disk limit of the container in GB, `1` to `16384`; not set means no limit | `null` |
 | <nobr>`conf['logRedirection']`</nobr> | boolean | Whether logs are redirected | `true` |
 | <nobr>`conf['jobType']`</nobr> | string | Type of job | `"PYTHON"` |
 | <nobr>`conf['files']`</nobr> | string | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project>/Resources/file1.py,...` | `null` |
+| <nobr>`conf['hopsfsMountConfig']`</nobr> | dict | Resources of the `/hopsfs` mount container, each key optional and defaulting to the cluster's: `memory` (int, limit in MB, `512` to `1048576`), `cores` (float, request, `0.001` to `64` and at most the cluster's mount CPU limit) and `namenodeConnections` (int, `1` to `32`). `get_configuration` returns it only when the project default sets it, so assign the whole dict: `conf['hopsfsMountConfig'] = {"memory": 4096}` | `null` |
 
 ## Accessing project data
 
@@ -20954,9 +20994,15 @@ There you can also set the following configuration settings for a `PYTHON` job.
 - `Environment`: The python environment to use
 - `Container memory`: The amount of memory in MB to be allocated to the Jupyter Notebook script
 - `Container cores`: The number of cores to be allocated for the Jupyter Notebook script
+- `Container disk`: Local disk limit of the Jupyter Notebook script's container, in GB, for example for files under `/tmp`.
+  Empty means no limit; a job that writes more is evicted and the execution fails.
+  Files under `/hopsfs` don't count, though the mount keeps a file on the node's local disk while it is open for writing.
 - `Additional files`: List of files that will be locally accessible in the working directory of the application.
 Only recommended to use if project datasets are not mounted under `/hopsfs`.
 You can always modify the arguments in the job settings.
+- `HopsFS mount`: Memory (MB), cores and namenode connections of the container that serves `/hopsfs`.
+  Prefilled with the cluster defaults; raise them for large datasets or many concurrent reads and writes on `/hopsfs`.
+  The mount's memory and cores count towards the project's resource quota, if it has one.
 
 <p align="center">
   <figure>
@@ -21058,9 +21104,11 @@ The following table describes the job configuration parameters for a PYTHON job.
 | <nobr>`conf['resourceConfig']['cores']`</nobr> | float | Number of CPU cores to be allocated | `1.0` |
 | <nobr>`conf['resourceConfig']['memory']`</nobr> | int | Number of MBs to be allocated | `2048` |
 | <nobr>`conf['resourceConfig']['gpus']`</nobr> | int | Number of GPUs to be allocated | `0` |
+| <nobr>`conf['resourceConfig']['diskGb']`</nobr> | int | Local disk limit of the container in GB, `1` to `16384`; not set means no limit | `null` |
 | <nobr>`conf['logRedirection']`</nobr> | boolean | Whether logs are redirected | `true` |
 | <nobr>`conf['jobType']`</nobr> | string | Type of job | `"PYTHON"` |
 | <nobr>`conf['files']`</nobr> | string | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project>/Resources/file1.py,...` | `null` |
+| <nobr>`conf['hopsfsMountConfig']`</nobr> | dict | Resources of the `/hopsfs` mount container, each key optional and defaulting to the cluster's: `memory` (int, limit in MB, `512` to `1048576`), `cores` (float, request, `0.001` to `64` and at most the cluster's mount CPU limit) and `namenodeConnections` (int, `1` to `32`). `get_configuration` returns it only when the project default sets it, so assign the whole dict: `conf['hopsfsMountConfig'] = {"memory": 4096}` | `null` |
 
 ## Accessing project data
 
@@ -21192,6 +21240,9 @@ Resource allocation for the Spark driver and executors can be configured, also t
   Prefilled with 0.40, which is also what Spark applies to a PySpark job.
   Clear the field to let Spark decide.
 
+- `Driver disk`: Local disk limit of the Spark driver, in GB.
+  Empty means no limit; a driver that writes more is evicted and the job fails.
+
 - `Executor memory`: Number of MBs to allocate for each Spark executor
 
 - `Executor virtual cores`: Number of cores to allocate for each Spark executor
@@ -21199,6 +21250,9 @@ Resource allocation for the Spark driver and executors can be configured, also t
 - `Executor overhead factor`: Fraction of the executor memory that Spark adds to each executor pod as non-heap headroom.
   Prefilled with 0.40, which is also what Spark applies to a PySpark job.
   Raise it when executors are OOMKilled.
+
+- `Executor disk`: Local disk limit of each Spark executor, in GB.
+  Empty means no limit; an executor that writes more is evicted.
 
 - `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
   On a cluster that schedules jobs with Kueue, only static is allowed: a job with dynamic allocation is refused, and new jobs default to static ([Spark jobs and Kueue](../scheduling/kueue_details.md#spark-jobs)).
@@ -21340,6 +21394,8 @@ The following table describes the job configuration parameters for a PYSPARK job
 | <nobr>`conf['spark.executor.memory']`</nobr> | int | Memory allocated per executor (in MB) | `4096` |
 | <nobr>`conf['spark.driver.memoryOverheadFactor']`</nobr> | float | Fraction of the driver memory added to the driver pod as non-heap overhead. `null` keeps Spark's default: 0.10 for Spark jobs, 0.40 for PySpark | `null` |
 | <nobr>`conf['spark.executor.memoryOverheadFactor']`</nobr> | float | Fraction of the executor memory added to each executor pod as non-heap overhead. `null` keeps Spark's default: 0.10 for Spark jobs, 0.40 for PySpark | `null` |
+| <nobr>`conf['driverDiskGb']`</nobr> | int | Local disk limit of the driver in GB, `1` to `16384`; not set means no limit | `null` |
+| <nobr>`conf['executorDiskGb']`</nobr> | int | Local disk limit of each executor in GB, `1` to `16384`; not set means no limit | `null` |
 | <nobr>`conf['spark.dynamicAllocation.enabled']`</nobr> | boolean | Enable dynamic allocation of executors. Must be `false` on a cluster with Kueue | `true`, `false` with Kueue |
 | <nobr>`conf['spark.dynamicAllocation.minExecutors']`</nobr> | int | Minimum number of executors with dynamic allocation | `1` |
 | <nobr>`conf['spark.dynamicAllocation.maxExecutors']`</nobr> | int | Maximum number of executors with dynamic allocation | `2` |
@@ -21492,6 +21548,9 @@ Resource allocation for the Spark driver and executors can be configured, also t
   Prefilled with 0.40.
   Clear the field to let Spark decide, which for a jar job is 0.10.
 
+- `Driver disk`: Local disk limit of the Spark driver, in GB.
+  Empty means no limit; a driver that writes more is evicted and the job fails.
+
 - `Executor memory`: Number of MBs to allocate for each Spark executor
 
 - `Executor virtual cores`: Number of cores to allocate for each Spark executor
@@ -21500,6 +21559,9 @@ Resource allocation for the Spark driver and executors can be configured, also t
   Prefilled with 0.40.
   Clear the field to let Spark decide, which for a jar job is 0.10.
   Raise it when executors are OOMKilled.
+
+- `Executor disk`: Local disk limit of each Spark executor, in GB.
+  Empty means no limit; an executor that writes more is evicted.
 
 - `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
   On a cluster that schedules jobs with Kueue, only static is allowed: a job with dynamic allocation is refused, and new jobs default to static ([Spark jobs and Kueue](../scheduling/kueue_details.md#spark-jobs)).
@@ -21638,6 +21700,8 @@ The following table describes the job configuration parameters for a SPARK job.
 | <nobr>`conf['spark.executor.memory']`</nobr> | int | Memory allocated per executor (in MB) | `4096` |
 | <nobr>`conf['spark.driver.memoryOverheadFactor']`</nobr> | float | Fraction of the driver memory added to the driver pod as non-heap overhead. `null` keeps Spark's default: 0.10 for Spark jobs, 0.40 for PySpark | `null` |
 | <nobr>`conf['spark.executor.memoryOverheadFactor']`</nobr> | float | Fraction of the executor memory added to each executor pod as non-heap overhead. `null` keeps Spark's default: 0.10 for Spark jobs, 0.40 for PySpark | `null` |
+| <nobr>`conf['driverDiskGb']`</nobr> | int | Local disk limit of the driver in GB, `1` to `16384`; not set means no limit | `null` |
+| <nobr>`conf['executorDiskGb']`</nobr> | int | Local disk limit of each executor in GB, `1` to `16384`; not set means no limit | `null` |
 | <nobr>`conf['spark.dynamicAllocation.enabled']`</nobr> | boolean | Enable dynamic allocation of executors. Must be `false` on a cluster with Kueue | `true`, `false` with Kueue |
 | <nobr>`conf['spark.dynamicAllocation.minExecutors']`</nobr> | int | Minimum number of executors with dynamic allocation | `1` |
 | <nobr>`conf['spark.dynamicAllocation.maxExecutors']`</nobr> | int | Maximum number of executors with dynamic allocation | `2` |
@@ -21811,11 +21875,19 @@ Resource allocation for the Driver and Workers can be configured.
 
 - `Driver GPUs`: Number of GPUs to allocate for the Driver
 
+- `Driver disk`: Local disk limit of the Driver, in GB.
+  Empty means no limit; a Driver that writes more is evicted and the job fails.
+  Files under `/hopsfs` don't count, though the mount keeps a file on the node's local disk while it is open for writing.
+
 - `Worker memory`: Memory in MBs to allocate for each worker
 
 - `Worker virtual cores`: Number of cores to allocate for each worker
 
 - `Worker GPUs`: Number of GPUs to allocate for each worker
+
+- `Worker disk`: Local disk limit of each worker, in GB.
+  Empty means no limit; a worker that writes more is evicted.
+  Files under `/hopsfs` don't count.
 
 - `Min workers`: Minimum number of workers to start with
 
@@ -21838,6 +21910,9 @@ Runtime environment and Additional files required for the Ray job can also be pr
 
 - `Additional files`: List of other files required for the Ray job.
   These files will be placed in `/srv/hops/ray/job`.
+
+- `HopsFS mount`: Memory (MB), cores and namenode connections of the container that serves `/hopsfs` in the head and in every worker, when HopsFS is mounted in the Ray containers.
+  Prefilled with the cluster defaults; raise them for large datasets or many concurrent reads and writes on `/hopsfs`.
 
 <p align="center">
   <figure>
@@ -21966,6 +22041,9 @@ The following table describes the job configuration parameters for a RAY job.
 | <nobr>`conf['workerCores']`</nobr> | float | Number of CPU cores to be allocated for each Ray worker process | `1.0` |
 | <nobr>`conf['workerMemory']`</nobr> | int | Number of MBs to be allocated for each Ray worker process | `4096` |
 | <nobr>`conf['workerGpus']`</nobr> | int | Number of GPUs to be allocated for each Ray worker process | `0` |
+| <nobr>`conf['driverDiskGb']`</nobr> | int | Local disk limit of the Ray head in GB, `1` to `16384`; not set means no limit | `null` |
+| <nobr>`conf['workerDiskGb']`</nobr> | int | Local disk limit of each Ray worker in GB, `1` to `16384`; not set means no limit | `null` |
+| <nobr>`conf['hopsfsMountConfig']`</nobr> | dict | Resources of the `/hopsfs` mount container in the head and in every worker, each key optional and defaulting to the cluster's: `memory` (int, limit in MB, `512` to `1048576`), `cores` (float, request, `0.001` to `64` and at most the cluster's mount CPU limit) and `namenodeConnections` (int, `1` to `32`). `get_configuration` returns it only when the project default sets it, so assign the whole dict: `conf['hopsfsMountConfig'] = {"memory": 4096}` | `null` |
 | <nobr>`conf['workerMinInstances']`</nobr> | int | Minimum number of Ray workers | `1` |
 | <nobr>`conf['workerMaxInstances']`</nobr> | int | Maximum number of Ray workers | `1` |
 | <nobr>`conf['jobType']`</nobr> | string | Type of job | `"RAY"` |
@@ -29429,17 +29507,23 @@ Source: https://docs.hopsworks.ai/latest/user_guides/mlops/serving/resources/
 
 ## Introduction
 
-Resource allocation can be configured ==per component== (predictor and transformer) in a deployment, allowing you to specify how many CPUs, GPUs, and memory are allocated.
+Resource allocation can be configured ==per component== (predictor and transformer) in a deployment, allowing you to specify how many CPUs, GPUs, and memory are allocated, and how much local disk a component may use.
 For each component, you can set minimum (requests) and maximum (limits) resources, as well as the number of instances.
 
 ??? info "Resource defaults"
 
-    | Field              | Default Request | Default Limit  | Validation                                         |
-    | ------------------ | --------------- | -------------- | -------------------------------------------------- |
-    | CPU (cores)        | 0.2             | -1 (unlimited) | Request cannot exceed limit (unless -1, unlimited) |
-    | Memory (MB)        | 32              | -1 (unlimited) | Request cannot exceed limit (unless -1, unlimited) |
-    | GPUs               | 0               | 0              | Request must equal limit                           |
-    | Shared Memory (MB) | 128             | n/a            | n/a                                                |
+    | Field              | Default Request | Default Limit    | Validation                                               |
+    | ------------------ | --------------- | ---------------- | -------------------------------------------------------- |
+    | CPU (cores)        | 0.2             | -1 (unlimited)   | Request cannot exceed limit (unless -1, unlimited)       |
+    | Memory (MB)        | 32              | -1 (unlimited)   | Request cannot exceed limit (unless -1, unlimited)       |
+    | GPUs               | 0               | 0                | Request must equal limit                                 |
+    | Shared Memory (MB) | 128             | n/a              | n/a                                                      |
+    | Disk (GB)          | n/a             | unset (no limit) | 1 to 16384, set on the limit only; the request equals it |
+
+!!! note "Local disk"
+    A predictor downloads the model files to its local disk when an instance starts, so its disk limit must fit them plus whatever the model server writes.
+    A component that uses more than its limit is evicted and restarted; with no limit, it shares the node's free disk with the other pods on the node.
+    A cluster can instead give vLLM deployments a fixed-size volume for their model files; their predictor then takes no disk setting, and the form shows the volume's size.
 
 !!! tip "Automatic downscale of inactive instances"
     Setting the number of instances to **0** for a component enables **scale-to-zero**: its instances scale down to zero after a period without requests and the next request wakes it.
@@ -29479,6 +29563,7 @@ To navigate to the advanced creation form, click on `Advanced options`.
 
 In the `Resource allocation` section of the form, you can optionally set the resources to be allocated to the predictor and/or the transformer (if available).
 Moreover, you can choose the minimum number of replicas for each of these components.
+`Disk (GB)` limits a component's local disk; leave it empty for no limit.
 
 !!! note "Scale-to-zero capabilities"
     Set the number of instances to **0** to enable scale-to-zero on the component.
@@ -29527,6 +29612,8 @@ Once you are done with the changes, click on `Create new deployment` at the bott
       num_instances=1, requests=minimum_res, limits=maximum_res
   )
   ```
+
+To limit a component's local disk, set `disk` in GB on its limits only, for example `Resources(cores=2, memory=256, gpus=1, disk=50)` or `"disk": 50` in a limits dict; the request is set to the same amount.
 
 ### Step 3 (Optional): Define the transformer resource configuration
 
@@ -31975,7 +32062,8 @@ fields are:
 | `skillsRef` | string | no | - | Path to a `.md` skills file on HopsFS |
 | `envVars` | string[] | no | - | `"KEY=VALUE"` strings |
 | `environmentName` | string | no | `agent-job` | Must be `agent-job` or a clone of it |
-| `resourceConfig` | object | no | default | `{ cores, memory, gpus }` |
+| `resourceConfig` | object | no | default | `{ cores, memory, gpus, diskGb }`; `diskGb` is the local disk limit in GB, `1` to `16384`, unset for no limit |
+| `hopsfsMountConfig` | object | no | cluster default | `{ memory, cores, namenodeConnections }` of the `/hopsfs` mount container, each key optional |
 | `outputPath` | string | no | auto | Where to write results in HopsFS |
 
 Full reference: see the `[HWORKS-2667]` PR description and the
@@ -39439,6 +39527,8 @@ What changes for users and operators ([details](kueue_external.md#what-changes))
 - A workload whose pods are not all ready 30 minutes after admission is evicted and queued again (Kueue 0.19 `waitForPodsReady`).
 - The Ray autoscaler and job-submitter sidecars count against quota (Kueue 0.19).
 - A workload without a priority class gets the WorkloadPriorityClass named `default`, when one exists (Kueue 0.20).
+- Disk limits need Kueue to leave `ephemeral-storage` out of its quota checks, which the upgrade script sets up.
+  It stops before changing the cluster when it cannot read the queues, or when disk is budgeted but some ClusterQueues do not cover it ([Disk limits][kueue-disk-limits]).
 
 ### Bring your own Kafka: Hopsworks creates and deletes topics { #upgrade-byok-topics }
 
@@ -40476,11 +40566,35 @@ controllerManager:
 managerConfig:
   controllerManagerConfigYaml: |
     # the chart's default, with sparkoperator.k8s.io/sparkapplication
-    # added to integrations.frameworks
+    # added to integrations.frameworks, and:
+    resources:
+      excludeResourcePrefixes:
+        - ephemeral-storage
 ```
 
 That chart keeps its CRDs among its templates, so Argo CD upgrades them with a version bump.
 Leave the `resources-finalizer.argocd.argoproj.io` finalizer off that Application: deleting it then leaves the CRDs, and every queue, in place.
+
+### Disk limits { #kueue-disk-limits }
+
+Jobs, notebooks and model deployments can set a disk limit, which requests `ephemeral-storage`.
+The Hopsworks ClusterQueues cover only CPU, memory and GPUs, so Kueue must leave `ephemeral-storage` out of its quota checks; otherwise those workloads stay pending with `resource ephemeral-storage unavailable in ClusterQueue`.
+`upgrade-kueue.sh` adds the exclusion on install and upgrade, and the `resources` block above adds it with Argo CD.
+A cluster already on Kueue 0.20.3 gets it by running `bash hopsworks/charts/hw-kueue/files/upgrade-kueue.sh upgrade` from the new chart after upgrading Hopsworks.
+
+Leave the exclusion out in two cases; the script does so itself, and with Argo CD you drop the `resources` block:
+
+- **A ClusterQueue or Cohort budgets `ephemeral-storage`**: the exclusion would bypass that quota.
+  Every ClusterQueue that receives disk requests must then cover `ephemeral-storage` itself; a Cohort's quota does not count.
+- **The manager config sets `resources.quotaCheckStrategy: IgnoreUndeclared`**: it already ignores the resources a ClusterQueue does not declare, and Kueue refuses to start with both.
+
+When disk is budgeted but some ClusterQueues do not cover it, and `IgnoreUndeclared` is not set, the script lists those queues and stops before changing the cluster.
+If they are all your own, add disk coverage and quota to them.
+If one is a Hopsworks queue, set `resources.quotaCheckStrategy: IgnoreUndeclared` in release `kueue`'s `managerConfig.controllerManagerConfigYaml` and remove `excludeResourcePrefixes`, since Hopsworks re-applies its queues and reverts disk coverage added by hand.
+The script never picks `IgnoreUndeclared` itself, because it ignores **every** resource a ClusterQueue does not declare.
+
+The script decides the policy each time it runs, so rerun it after adding or removing a disk quota.
+It stops if it cannot read the ClusterQueues or Cohorts.
 
 ## Why `helm upgrade` alone cannot do it
 

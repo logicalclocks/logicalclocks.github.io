@@ -88,11 +88,19 @@ Resource allocation for the Driver and Workers can be configured.
 
 - `Driver GPUs`: Number of GPUs to allocate for the Driver
 
+- `Driver disk`: Local disk limit of the Driver, in GB.
+  Empty means no limit; a Driver that writes more is evicted and the job fails.
+  Files under `/hopsfs` don't count, though the mount keeps a file on the node's local disk while it is open for writing.
+
 - `Worker memory`: Memory in MBs to allocate for each worker
 
 - `Worker virtual cores`: Number of cores to allocate for each worker
 
 - `Worker GPUs`: Number of GPUs to allocate for each worker
+
+- `Worker disk`: Local disk limit of each worker, in GB.
+  Empty means no limit; a worker that writes more is evicted.
+  Files under `/hopsfs` don't count.
 
 - `Min workers`: Minimum number of workers to start with
 
@@ -115,6 +123,9 @@ Runtime environment and Additional files required for the Ray job can also be pr
 
 - `Additional files`: List of other files required for the Ray job.
   These files will be placed in `/srv/hops/ray/job`.
+
+- `HopsFS mount`: Memory (MB), cores and namenode connections of the container that serves `/hopsfs` in the head and in every worker, when HopsFS is mounted in the Ray containers.
+  Prefilled with the cluster defaults; raise them for large datasets or many concurrent reads and writes on `/hopsfs`.
 
 <p align="center">
   <figure>
@@ -243,6 +254,9 @@ The following table describes the job configuration parameters for a RAY job.
 | <nobr>`conf['workerCores']`</nobr> | float | Number of CPU cores to be allocated for each Ray worker process | `1.0` |
 | <nobr>`conf['workerMemory']`</nobr> | int | Number of MBs to be allocated for each Ray worker process | `4096` |
 | <nobr>`conf['workerGpus']`</nobr> | int | Number of GPUs to be allocated for each Ray worker process | `0` |
+| <nobr>`conf['driverDiskGb']`</nobr> | int | Local disk limit of the Ray head in GB, `1` to `16384`; not set means no limit | `null` |
+| <nobr>`conf['workerDiskGb']`</nobr> | int | Local disk limit of each Ray worker in GB, `1` to `16384`; not set means no limit | `null` |
+| <nobr>`conf['hopsfsMountConfig']`</nobr> | dict | Resources of the `/hopsfs` mount container in the head and in every worker, each key optional and defaulting to the cluster's: `memory` (int, limit in MB, `512` to `1048576`), `cores` (float, request, `0.001` to `64` and at most the cluster's mount CPU limit) and `namenodeConnections` (int, `1` to `32`). `get_configuration` returns it only when the project default sets it, so assign the whole dict: `conf['hopsfsMountConfig'] = {"memory": 4096}` | `null` |
 | <nobr>`conf['workerMinInstances']`</nobr> | int | Minimum number of Ray workers | `1` |
 | <nobr>`conf['workerMaxInstances']`</nobr> | int | Maximum number of Ray workers | `1` |
 | <nobr>`conf['jobType']`</nobr> | string | Type of job | `"RAY"` |
