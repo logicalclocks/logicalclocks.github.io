@@ -7,7 +7,7 @@ description: How to read a semantic project's metrics in Excel and ODBC tools, t
 Excel and other ODBC tools read metrics in two ways:
 
 - **ODBC:** the Apache Arrow Flight SQL ODBC driver connects to the semantic gateway's Arrow Flight SQL port and shows each semantic project as [tables][semantic-bi-tables], which plain SQL queries.
-- **REST as CSV:** a `GET` of the [query endpoint][semantic-query-rest] with the query in the URL answers CSV, which Excel's **From Web** reads with no driver, on Windows and macOS.
+- **REST as CSV:** a `GET` of the [query endpoint][semantic-query-rest] with the query in the URL answers CSV, which Excel reads with no driver: through **From Web** on Windows, and through the [Power Query template][semantic-excel-power-query] elsewhere.
 
 Both authenticate with an API key with the `FEATURESTORE` and `TRINO` scopes, and both run each query as a metric query on Trino, as the caller.
 
@@ -132,7 +132,7 @@ metric_time__month,bookings,booking_value
 2020-01-01 00:00:00,15,5378.810000000001
 ```
 
-In Excel on Windows or macOS:
+In Excel on Windows:
 
 1. **Data** > **From Web**, then **Advanced**.
 2. Put the URL in **URL parts**.
@@ -140,6 +140,7 @@ In Excel on Windows or macOS:
 4. When Excel asks how to sign in to the site, choose **Anonymous**: the header carries the key.
 5. **Load** the table; **Refresh All** queries again.
 
+Excel for Mac has no **Advanced** dialog under **From Web**; there, the [Power Query template][semantic-excel-power-query] goes into **Get Data** > **Blank Query** > **Advanced Editor**, untested.
 Excel checks the gateway's certificate against the computer's trust store, so a cluster whose certificate comes from the Hopsworks CA needs that CA trusted on the computer.
 Not yet tested in Excel itself.
 
