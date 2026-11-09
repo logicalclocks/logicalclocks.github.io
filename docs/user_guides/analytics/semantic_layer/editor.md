@@ -21,7 +21,8 @@ The editor lists the `.yml` and `.yaml` files under the semantic project's root 
 - **Overview** goes back to the semantic project's page.
 - With unsaved changes, leaving the editor for another page asks first: **Stay** keeps the edits, **Discard and leave** drops them.
   Closing or reloading the browser tab asks the browser's own question.
-- Changing the root path, format or repository in **Edit** opens the definitions from the new source, and drops the unsaved edits of the old one.
+- Changing the root path, format or repository in **Edit** opens the definitions from the new source.
+  With unsaved changes, **Save** in **Edit** asks first: **Discard and save** drops the edits, **Cancel** keeps them.
 
 A file holds at most 1 MiB, and the root path at most 1,000 definition files and 32 MiB, as for a compile.
 A path must end in `.yml` or `.yaml` and stay under the root path; symbolic links are refused.
