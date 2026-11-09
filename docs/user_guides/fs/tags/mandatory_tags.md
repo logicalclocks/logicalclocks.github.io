@@ -1,4 +1,4 @@
-# Mandatory Tags
+# Mandatory Tags { #mandatory-tags }
 
 ## Introduction
 

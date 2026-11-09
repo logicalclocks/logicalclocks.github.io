@@ -20,7 +20,8 @@ This allows tags to be consistent no matter the project or the team generating t
 
 !!! warning "Immutable"
     Tag schemas are immutable.
-    Once defined, a tag schema cannot be edited nor deleted.
+    Once defined, a tag schema cannot be edited.
+    It can be deleted only while it is unused; see [Deleting a tag schema][deleting-a-tag-schema].
 
 ## Step 1: Define a tag schema
 
@@ -378,3 +379,45 @@ Tags on artifacts of every indexed class are searchable, so a governance questio
     <figcaption>Search for tags in the feature store</figcaption>
   </figure>
 </p>
+
+## Deleting a tag schema { #deleting-a-tag-schema }
+
+An administrator can delete a tag schema from `Cluster settings` > `Tag schemas` with the delete button on its row, or through the API.
+A schema can be deleted only while:
+
+- no tag created from it is attached to a feature group, feature view, training dataset, model, deployment, job or dataset, and
+- it has no archived values in the [tag history][archive-tag-history].
+
+Otherwise the delete is refused with `TAG_SCHEMA_IN_USE` (370014, HTTP 409), and the message says how many tags are created from the schema, per kind of artifact, or how many archived values it has.
+Remove the tags with `delete_tag()` to make the schema deletable.
+Archived values are kept, so a schema with tag history cannot be deleted.
+
+A [mandatory][mandatory-tags] schema can be deleted when it is otherwise unused.
+The delete dialog warns where the schema is mandatory, and deleting the schema removes those requirements.
+
+`usage` reports what still refers to a schema before you try:
+
+=== "Python"
+
+    ```python
+    from hopsworks.core.tag_schemas_api import TagSchemasApi
+
+
+    usage = TagSchemasApi().usage("data_privacy")
+    if not usage["deletable"]:
+        # e.g. "Tag schema 'data_privacy' cannot be deleted: 3 tags are created from it
+        # (feature groups, feature views and training datasets: 3)."
+        print(usage["reason"])
+    print(usage["mandatoryIn"])  # e.g. ["feature store, every project"]
+
+    TagSchemasApi().delete("data_privacy")
+    ```
+
+=== "REST"
+
+    ```bash
+    curl -H "Authorization: ApiKey $API_KEY" https://<hopsworks>/hopsworks-api/api/tags/data_privacy/usage
+    curl -X DELETE -H "Authorization: ApiKey $API_KEY" https://<hopsworks>/hopsworks-api/api/tags/data_privacy
+    ```
+
+Both require the platform administrator role.
