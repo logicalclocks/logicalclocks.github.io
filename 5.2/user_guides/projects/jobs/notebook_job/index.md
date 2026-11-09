@@ -90,9 +90,15 @@ There you can also set the following configuration settings for a `PYTHON` job.
 - `Environment`: The python environment to use
 - `Container memory`: The amount of memory in MB to be allocated to the Jupyter Notebook script
 - `Container cores`: The number of cores to be allocated for the Jupyter Notebook script
+- `Container disk`: Local disk limit of the Jupyter Notebook script's container, in GB, for example for files under `/tmp`.
+  Empty means no limit; a job that writes more is evicted and the execution fails.
+  Files under `/hopsfs` don't count, though the mount keeps a file on the node's local disk while it is open for writing.
 - `Additional files`: List of files that will be locally accessible in the working directory of the application.
 Only recommended to use if project datasets are not mounted under `/hopsfs`.
 You can always modify the arguments in the job settings.
+- `HopsFS mount`: Memory (MB), cores and namenode connections of the container that serves `/hopsfs`.
+  Prefilled with the cluster defaults; raise them for large datasets or many concurrent reads and writes on `/hopsfs`.
+  The mount's memory and cores count towards the project's resource quota, if it has one.
 
 <p align="center">
   <figure>
@@ -194,9 +200,11 @@ The following table describes the job configuration parameters for a PYTHON job.
 | <nobr>`conf['resourceConfig']['cores']`</nobr> | float | Number of CPU cores to be allocated | `1.0` |
 | <nobr>`conf['resourceConfig']['memory']`</nobr> | int | Number of MBs to be allocated | `2048` |
 | <nobr>`conf['resourceConfig']['gpus']`</nobr> | int | Number of GPUs to be allocated | `0` |
+| <nobr>`conf['resourceConfig']['diskGb']`</nobr> | int | Local disk limit of the container in GB, `1` to `16384`; not set means no limit | `null` |
 | <nobr>`conf['logRedirection']`</nobr> | boolean | Whether logs are redirected | `true` |
 | <nobr>`conf['jobType']`</nobr> | string | Type of job | `"PYTHON"` |
 | <nobr>`conf['files']`</nobr> | string | Comma-separated string of HDFS path(s) to files to be made available to the application. Example: `hdfs:///Project/<project>/Resources/file1.py,...` | `null` |
+| <nobr>`conf['hopsfsMountConfig']`</nobr> | dict | Resources of the `/hopsfs` mount container, each key optional and defaulting to the cluster's: `memory` (int, limit in MB, `512` to `1048576`), `cores` (float, request, `0.001` to `64` and at most the cluster's mount CPU limit) and `namenodeConnections` (int, `1` to `32`). `get_configuration` returns it only when the project default sets it, so assign the whole dict: `conf['hopsfsMountConfig'] = {"memory": 4096}` | `null` |
 
 ## Accessing project data
 
