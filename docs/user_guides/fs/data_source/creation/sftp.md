@@ -24,8 +24,6 @@ Changes made in the dataset are never written back to the server.
   Hopsworks only lists and downloads, so a read-only account is enough.
 - **Root path**: the absolute directory on the server under which the files live, `/` by default.
   Every prefix of a files ingestion job is relative to it, so an account chrooted to its home directory typically uses `/`.
-- **Host keys**: unknown and changed host keys are accepted automatically, because the data source has no host-key field and Hopsworks keeps no known-hosts list.
-  The server's host key is not pinned; the user's credentials and the network protect the connection.
 
 ### Credentials
 
@@ -72,7 +70,7 @@ Pick the `SFTP` card, in the `Files & documents` category.
 6. **Authentication**: `Password`, with the password, or `Private key`, with the PEM private key pasted into the text area and the passphrase if the key has one.
 
 Click `Test connection` to check that the server is reachable.
-Hopsworks opens a TCP connection to the host and port, waits up to five seconds for the first line the server sends, and succeeds when it is an SSH banner, such as `SSH-2.0-OpenSSH_9.6`.
+Hopsworks checks that an SSH server answers at the host and port, and reports `SSH server reached at <host>:<port>` when it does.
 The test does not log in, so a wrong username, password or key is only found by the first run of a files ingestion job.
 
 Click `Next` to save the data source and go on to the second step of the wizard, `Copy files into a dataset`, described in the [files ingestion guide][files-ingestion].
@@ -197,5 +195,5 @@ The manifest and the index feature group, when turned on, record `sftp` in `sour
   It backs no feature groups, cannot be read with Spark, and the dltHub table ingestion does not offer it.
 - Files are copied one at a time and the directory is listed in full on every run, so a very large tree is better split into several jobs with narrower prefixes.
 - Browsing the server for a prefix is not available; type the prefix.
-- `Test connection` only checks that the host answers with an SSH banner; the credentials are checked by the first run.
-- Unknown and changed host keys are accepted automatically, so a changed host key is not detected.
+- `Test connection` only checks that an SSH server answers at the host and port; the credentials are checked by the first run.
+  Testing a server at a private or cluster-internal address needs an administrator to enable the `sftp_allow_private_ranges` variable.

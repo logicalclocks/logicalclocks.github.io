@@ -247,13 +247,16 @@ A run goes through these steps.
    A listing that exceeds it fails the run with an incomplete listing, `listingComplete` false in the stats, and deletions are never mirrored from one.
 3. **Skip or copy**.
    Each listed file is compared with its row in the manifest of the previous runs.
-   A file whose copy is in the dataset and whose size and modification date are unchanged is skipped, and counted as `skipped`; there is no checksum comparison, so a file changed without a change of either is only copied again after it is deleted from the dataset.
+   A file whose copy is in the dataset is skipped, and counted as `skipped`, when its size and entity tag match the previous copy, where the data source provides one: the ETag of S3, the etag of GCS and ADLS, and the version of Google Drive.
+   Otherwise, as on SFTP, it is skipped when its size and modification date match, so a file changed without a change of either is only copied again after it is deleted from the dataset.
    A file over the size cap is counted as `oversized`, listed in the audit file, and not copied until it shrinks or the cap is raised.
    A file that cannot be copied at all, such as a Google-native document, a symbolic link on an SFTP server or a Google Drive file whose name contains a slash, is counted as `unsupported`, listed in the audit file and left out; it does not fail the run.
+   An archived S3 object, in the `GLACIER` or `DEEP_ARCHIVE` storage class, is reported as `unsupported` the same way; restore it in S3 before a run can copy it.
    Any other file is downloaded one at a time, written next to its destination as a temporary file and renamed into place once complete, so readers of the dataset never see a partial file; it is counted as `copied` when new and `updated` when it replaced an earlier copy.
+   When the data source provides a checksum of the file, the download is verified against it before the rename: GCS, Google Drive, S3 objects uploaded in a single part, and ADLS files that have a content MD5 set.
    The copy keeps the path relative to the prefix, so `handbook/2026/a/b.pdf` under prefix `handbook/2026/` lands at `<dataset>/a/b.pdf`.
 4. **Failures**.
-   A file that cannot be downloaded or written is counted as `failed`, logged with its error, and the run continues with the next file unless `Fail on first error` is on.
+   A file that cannot be downloaded or written, or whose download does not match the checksum of the data source, is counted as `failed`, logged with its error, and the run continues with the next file unless `Fail on first error` is on.
    The previous copy of a failed file, if any, stays in place and in the manifest, and the file is retried on the next run.
    A run that cannot list the prefix, reach the dataset or write its state fails outright.
 5. **Mirroring and indexing**, when turned on; see the next sections.
@@ -304,7 +307,7 @@ DataSources/<data source>/files/<dataset>/
 | --- | --- | --- |
 | `owner.json` | Hopsworks, when the job is created | The job that copies into this dataset: `jobId`, `jobName`, `connectorId`, `connectorName`, `datasetName`, `createdAt`. A second files job on the same dataset is refused while it exists. |
 | `lease.json` | the run | `executionId`, `pod`, `startedAt` and `heartbeat` of the run that holds the dataset; see [How a run works](#how-a-run-works). |
-| `manifest.jsonl` | the run | One JSON object per file in the dataset: `file_id` (SHA-1 of the source URL), `source_url`, `relative_path`, `hopsfs_path`, `file_name`, `file_type`, `mime_type`, `size_bytes`, `modified_at`, `etag` (reserved, always empty), `content_hash` (SHA-256 of the copy), `execution_id` and `copied_at` of the run that copied it. Replaced atomically at the end of each run. |
+| `manifest.jsonl` | the run | One JSON object per file in the dataset: `file_id` (SHA-1 of the source URL), `source_url`, `relative_path`, `hopsfs_path`, `file_name`, `file_type`, `mime_type`, `size_bytes`, `modified_at`, `etag` (entity tag in the data source, empty for SFTP), `source_id`, `source_content_type`, `created_at`, `content_hash` (SHA-256 of the copy), `execution_id` and `copied_at` of the run that copied it. Replaced atomically at the end of each run. |
 | `<execution id>_files_stats.json` | the run, also when it fails | The outcome of the run, described below. |
 | `audit/date=<YYYY-MM-DD>/<HHMMSS>Z_<execution id>.csv` | the run, when it changed something | One row per changed file, described below. |
 
@@ -387,7 +390,11 @@ Hopsworks creates it with the job, offline only and without statistics, with `fi
 | `source_url` | the object, as `s3://`, `gs://`, `az://`, `sftp://` or `gdrive://` URL |
 | `mime_type`, `size_bytes` | content type, from the extension, and size in bytes |
 | `modified_at` | the object's last modification time, UTC |
-| `content_hash`, `etag` | SHA-256 of the copy, and a reserved column that is always empty |
+| `content_hash` | SHA-256 of the copy |
+| `etag` | the entity tag in the data source: the ETag of S3, the etag of GCS and ADLS, the version of Google Drive; null for SFTP |
+| `source_id` | the identifier of the file in the data source: the file ID of Google Drive, the generation of GCS, the version ID of ADLS |
+| `source_content_type` | the content type recorded in the data source |
+| `created_at` | the creation time in the data source |
 | `execution_id`, `indexed_at` | the run that last wrote the row, and when |
 | `ingestion_date` | the partition: the UTC day the file was first indexed, which is the day it was copied in, or for a file already in the dataset, the day indexing was turned on |
 
