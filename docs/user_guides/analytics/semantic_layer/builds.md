@@ -110,7 +110,10 @@ except SemanticBuildException as err:
 
 A `WARNING` does not make a build invalid.
 A metric of a shape the planner refuses, listed under [Limits][semantic-metric-types-limits], is an `UNSUPPORTED` warning: the build serves the other metrics, and queries of that one are refused.
-The build of a `FAILED` compile has no issues: the compile could not run, and compiling again retries it.
+A `FAILED` compile could not run, for example because the definition files could not be read or the semantic gateway did not answer.
+Its build has one `COMPILE_FAILED` error whose message says what stopped it.
+When the compile stopped without recording why, for example because its Hopsworks instance restarted, the message says so.
+Read that issue, with `hops semantic build` or **View issues**, before compiling again, which retries the build.
 
 ## Builds and the current build { #semantic-builds-list }
 
