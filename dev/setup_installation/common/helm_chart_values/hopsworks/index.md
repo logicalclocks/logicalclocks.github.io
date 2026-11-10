@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794340874` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794350218` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -297,7 +297,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.opensearchReindex.enabled` <a class="headerlink" href="#helm.hopsworks.opensearchReindex.enabled" title="Permanent link">#</a> { #helm.hopsworks.opensearchReindex.enabled }
 :   Type `bool`, default `true`.
-    Rebuild the featurestore search index after an upgrade, when what the index holds has changed since its last rebuild. The hook keys its request with the index generation, featurestore-index-5.1, which the chart bumps only with a change to what the backend indexes: a generation already rebuilt is answered with that run, so patch upgrades and ArgoCD syncs do not rebuild again, and a cluster that missed the rebuild gets it on its next upgrade. Runs requested by earlier charts carry no key, so the first upgrade with this chart rebuilds once. The rebuild runs in the backend after the upgrade and takes hours on a large cluster, with search incomplete until it finishes; its progress shows under Cluster Settings > Service Operations > OpenSearch Index Commands. A failed hook Job is removed after global._hopsworks.jobs.ttlSecondsAfterFinished in the default mode, or when the hook next renders; with global._hopsworks.mode set, as under ArgoCD, delete post-upgrade-opensearch-reindex-job by hand if you turn this off after a failed attempt.
+    Bring the featurestore search index up to date after an upgrade, when what the index holds has changed. The hook keys its request with the index generation, featurestore-index-5.3, which the chart bumps only with a change to what the backend indexes: a generation already requested is answered with that run, so patch upgrades and ArgoCD syncs do not request it again, and a cluster that missed it gets it on its next upgrade. 5.3 adds data sources and changes nothing already indexed, so the request has scope ADDITIVE: the backend queues the existing data sources and datasets into the index as it is, without emptying it, and search stays complete for every other artifact meanwhile. Datasets are included because 5.2, which added them to search, kept the 5.1 generation, so a cluster that rebuilt under 5.1 never queued them. A full rebuild stays available from the Featurestore search index card and the REST API. Progress shows under Cluster Settings > Service Operations > OpenSearch Index Commands. A failed hook Job is removed after global._hopsworks.jobs.ttlSecondsAfterFinished in the default mode, or when the hook next renders; with global._hopsworks.mode set, as under ArgoCD, delete post-upgrade-opensearch-reindex-job by hand if you turn this off after a failed attempt.
 
 `hopsworks.payaraVersion` <a class="headerlink" href="#helm.hopsworks.payaraVersion" title="Permanent link">#</a> { #helm.hopsworks.payaraVersion }
 :   Type `string`, default `"6.2025.11-jdk21.4"`.
