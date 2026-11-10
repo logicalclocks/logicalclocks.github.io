@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794314162` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794324072` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -315,7 +315,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1794314162` (Hopsworks `5.
 
 `global._hopsworks.projectPodSecurity.enabled` <a class="headerlink" href="#helm.global._hopsworks.projectPodSecurity.enabled" title="Permanent link">#</a> { #helm.global._hopsworks.projectPodSecurity.enabled }
 :   Type `bool`, default `true`.
-    Enforce project pod admission. Requires permission to manage ValidatingAdmissionPolicies and their bindings.
+    Enforce project pod and Service admission. Requires permission to manage ValidatingAdmissionPolicies and their bindings.
 
 `global._hopsworks.projectPodSecurity.namespaceLabel` <a class="headerlink" href="#helm.global._hopsworks.projectPodSecurity.namespaceLabel" title="Permanent link">#</a> { #helm.global._hopsworks.projectPodSecurity.namespaceLabel }
 :   Type `string`, default `"hopsworks.ai/project"`.

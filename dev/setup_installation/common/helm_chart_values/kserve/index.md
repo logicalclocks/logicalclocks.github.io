@@ -4,7 +4,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794314162` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794324072` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -41,7 +41,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
             tag: v0.32.0
       kserveUtilsImage:
         name: hopsworks/kserve-utils
-        tag: 0.1.12
+        tag: 0.1.13
       manager:
         serviceAccount:
           annotations: {}
@@ -118,7 +118,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 :   Type `string`, default `"hopsworks/kserve-utils"`.
 
 `kserve.kserveUtilsImage.tag` <a class="headerlink" href="#helm.kserve.kserveUtilsImage.tag" title="Permanent link">#</a> { #helm.kserve.kserveUtilsImage.tag }
-:   Type `string`, default `"0.1.12"`.
+:   Type `string`, default `"0.1.13"`.
 
 `kserve.manager.serviceAccount.annotations` <a class="headerlink" href="#helm.kserve.manager.serviceAccount.annotations" title="Permanent link">#</a> { #helm.kserve.manager.serviceAccount.annotations }
 :   Type `object`, default `{}`.
@@ -171,7 +171,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
         nodeSelector: {}
         tolerations: []
         topologySpreadConstraint: {}
-        version: v1.21.1
+        version: v1.21.3
     ```
 
 <div class="hops-values" markdown>
@@ -211,7 +211,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     The default topology spread constraint. If not defined the global topology spread constraint would be used instead.
 
 `kserve.cert_manager.version` <a class="headerlink" href="#helm.kserve.cert_manager.version" title="Permanent link">#</a> { #helm.kserve.cert_manager.version }
-:   Type `string`, default `"v1.21.1"`.
+:   Type `string`, default `"v1.21.3"`.
     cert-manager version. v1.21 supports Kubernetes 1.33-1.36; kserve-deps.env pins v1.17 (KServe CI), which is EOL and tops out at Kubernetes 1.33.
 
 </div>
