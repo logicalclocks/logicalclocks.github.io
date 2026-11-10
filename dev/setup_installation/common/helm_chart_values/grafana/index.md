@@ -4,7 +4,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794332518` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794340874` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -215,7 +215,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             verify_email_enabled: false
             viewers_can_edit: false
         image:
-          tag: 12.4.14-h3
+          tag: 12.4.14-h5
         nodeSelector: {}
         rbac:
           create: false
@@ -454,7 +454,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             verify_email_enabled: false
             viewers_can_edit: false
         image:
-          tag: 12.4.14-h3
+          tag: 12.4.14-h5
         nodeSelector: {}
         rbac:
           create: false
