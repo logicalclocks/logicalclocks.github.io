@@ -308,17 +308,14 @@ Pipelines, outputs and plugins you added through `logstash.extraPipelines`, `log
 ### Prometheus follows the Consul domain { #upgrade-prometheus-consul-domain }
 
 From 5.3, Prometheus, the Grafana data source, the Prometheus adapter and the VPA recommender use `global._hopsworks.consulDomainName`.
-With the default domain, `consul`, nothing changes.
+If your values set any of the following only to point these components at your Consul domain, or only for a changed `trino.auth.monitoringUser`, remove them before the upgrade:
 
-Values that only point these components at your Consul domain are no longer needed, and you can remove them:
-
-- `prometheus.prometheus.serverFiles."prometheus.yml".scrape_configs`.
-  A restated list keeps its own `pushgateway` and `minio-*` targets and lacks the jobs the chart has added since.
-  The same holds for a list restated for a changed `trino.auth.monitoringUser`, because the `trino` job now reads the user from the `trino-monitoring-credentials` Secret.
-- `prometheus.prometheus-adapter.prometheus.url` and `prometheus.prometheus-adapter.dnsConfig`.
+- `prometheus.prometheus.serverFiles."prometheus.yml".scrape_configs`, because it replaces the chart's list and so misses the scrape jobs the chart adds.
+- `prometheus.prometheus-adapter.prometheus.url`.
+- `prometheus.prometheus-adapter.dnsConfig`.
 - The Prometheus data source in `grafana.grafana.datasources`.
 
-Upgrade with `--reset-then-reuse-values`, not `--reuse-values`, which keeps the previous chart's scrape jobs and their old targets.
+Upgrade with `--reset-then-reuse-values`, not `--reuse-values`, which keeps the previous chart's scrape jobs and their `service.consul` targets.
 
 ### Agent deployments reserve 2 GiB for their OTLP sidecar { #upgrade-agent-otlp-sidecar }
 
