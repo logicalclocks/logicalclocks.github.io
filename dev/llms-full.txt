@@ -4020,7 +4020,8 @@ The data source keeps a reference to these entries, not a copy.
 Fetching or listing a provided data source returns the status of your binding and the names of your env var and secrets, never your username or password.
 The Python client reads the values from your own account entries when it needs them.
 Deleting the secret or the env var from your account leaves the binding `INCOMPLETE`, and the data source refuses to read until you set your credentials again.
-Removing your credentials deletes the binding, the wallet file, and the env var and secrets that carry the default names above.
+Your [Trino catalogs][data-source-provided-credentials-trino] on the data source keep reading with the login already in their published file, so remove your credentials to stop them using it.
+Removing your credentials deletes the binding, the wallet file, the env var and secrets that carry the default names above, and your [Trino catalogs][data-source-provided-credentials-trino] on the data source.
 The same deletion happens for a member who is removed from the project, and for every member when the data source is deleted.
 Entries saved under names of your own stay in your account, since you may use them elsewhere.
 
@@ -4105,38 +4106,40 @@ On a feature group whose data source has shared credentials it tests the shared 
 
 ### Trino catalogs { #data-source-provided-credentials-trino }
 
-A provided Oracle data source can back a [Trino catalog][trino-catalogs], and each query through the catalog runs as the member who sends it.
-Such a catalog is always a [private catalog][private-catalogs] of the member who creates it, named `_<username>__<name>` and available in every project they belong to.
+A provided Oracle data source can back a [Trino catalog][trino-catalogs] that reads it as the member who creates it.
+Such a catalog is always a [private catalog][private-catalogs] of that member, named `_<username>__<name>` and available in every project they belong to.
 Each member who wants to query the data source through Trino creates their own, as a Data Owner or a Data Scientist.
 A request for a project catalog from a provided data source is refused with `CREDENTIALS_MODE_NOT_SUPPORTED` (270337), and a catalog on a provided data source cannot be shared, so only its owner queries it.
-The catalog stores no login.
-Its properties name the Trino extra credentials that carry the username and password with each query:
+
+The catalog's properties name the data source instead of holding a login:
 
 ```properties
 user-credential-name=hops_ds_<data source id>_user
 password-credential-name=hops_ds_<data source id>_password
-oracle.connection-pool.enabled=false
 ```
 
-The connection pool is off because a pooled connection keeps the login of the member who opened it.
-Metadata caching is refused for the same reason: a cached table list would show one member what another member's database user can see.
+When the catalog is published to the query engine, Hopsworks puts your username and password for the data source in their place.
+Every Trino client therefore reads the catalog as you, in any of your projects: the SQL runner, `project.get_trino_api()`, Superset, JDBC and the Trino CLI.
+The catalog cannot carry `connection-user` or `connection-password` of its own, since its login always comes from your credentials, and its connection URL stays the data source's, since your credentials are sent to it.
+A Superset dashboard you build on the catalog and share shows its viewers data read with your credentials.
 
-Which clients send the extra credentials:
+The catalog follows your credentials:
 
-| Client | Extra credentials |
+| When you | The catalog |
 | --- | --- |
-| SQL runner in the UI | Added by Hopsworks for the member running the query |
-| `project.get_trino_api().connect()` and `create_engine()` | Fetched by the Python client for the caller |
-| JDBC, the Trino CLI, Superset and other Trino clients | Sent by the client, or the Oracle login fails |
+| Save credentials | Uses them once the query engine reloads its catalogs, as described in [When the catalog goes live][when-the-catalog-goes-live]; until then it uses the ones saved before |
+| Remove your credentials, are removed from the project, or the data source is deleted | Is removed and refused at once, because it would otherwise keep reading with credentials you no longer hold; saving credentials again does not bring it back |
 
-A client that is not listed fetches your values from `GET /hopsworks-api/api/project/<project id>/trino/extra-credentials`, with an API key that has the `TRINO` scope, and sends each entry as a Trino extra credential, for example with the CLI's `--extra-credential hops_ds_<data source id>_user=<username>` or the JDBC `extraCredentials` property.
-A member who has not set credentials for the data source has nothing to send, and the Oracle login fails.
+When your database password changes, save the new one on the data source as well.
+The catalog keeps logging in with the saved password until then, and the database may lock your account after repeated failed logins.
+Editing or deleting the secret or the env var under **Account Settings** does not reach the catalog.
+The catalog changes only when its file is rewritten, that is when you save the credentials on the data source or edit the catalog.
+A query engine restart for another reason reloads it from its unchanged file.
+To stop the catalog using your login, remove your credentials from the data source.
 
 Creating the catalog requires you to have set your own credentials for the data source.
-For a database behind mTLS, the catalog's wallet (`TNS_ADMIN`) is built from your wallet into a [mountable secret of your account][mountable-secrets-for-private-catalogs]; it only secures the transport, and every query still logs in with your username and password.
-The wallet follows your credentials: it is rebuilt when you save a new wallet, and deleted when you remove your credentials, when you leave the project (your credentials go with it), when the data source is deleted, or when you delete your last catalog that uses it.
-The catalog itself stays, like any private catalog, until you delete it.
-It reads only in projects that can read the data source's feature store, since only there are your extra credentials for it sent, and without your credentials it no longer reads at all.
+For a database behind mTLS, the catalog's wallet (`TNS_ADMIN`) is built from your wallet into a [mountable secret of your account][mountable-secrets-for-private-catalogs]; it only secures the transport, and the catalog still logs in with your username and password.
+The wallet follows your credentials: it is rebuilt when you save a new wallet, and deleted when you remove your credentials, or when you delete your last catalog that uses it.
 `Test connection` on the catalog runs with your credentials.
 The catalog becomes queryable after the query engine restarts, as described in [When the catalog goes live][when-the-catalog-goes-live].
 
@@ -24776,9 +24779,9 @@ An Oracle data source that authenticates with a wallet is delivered the second w
 
 No credential is ever sent to the browser, and rotating one stays a single operation on the secret rather than an edit of every catalog that uses it.
 
-An Oracle data source with [provided credentials][data-source-provided-credentials] is the exception: its catalog stores no login, and each query logs in with the querying member's own credentials, sent as Trino extra credentials.
+An Oracle data source with [provided credentials][data-source-provided-credentials] is the exception: its catalog names the data source, and the query engine gets the owner's own username and password for it when the catalog is published.
 Such a catalog is always a [private catalog][private-catalogs] of the member who creates it, and each member creates their own.
-The SQL runner and the Python client send them for you; other Trino clients must send them themselves.
+Every Trino client reads it as its owner, Superset included.
 Creating such a catalog requires your own credentials for the data source, and its connection test runs as you.
 See [Trino catalogs on a data source with provided credentials][data-source-provided-credentials-trino].
 
@@ -45026,7 +45029,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -45107,7 +45110,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -46410,7 +46413,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -47276,7 +47279,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -47558,7 +47561,7 @@ Values under `certs-operator` configure the operator that issues the TLS certifi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -47746,7 +47749,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -48079,7 +48082,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -48530,7 +48533,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -49028,7 +49031,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -49446,7 +49449,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -50590,7 +50593,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 
@@ -50860,7 +50863,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -56232,7 +56235,7 @@ The LLM Gateway's controller ships in the same subchart, and its values, under `
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: `global._hopsworks.envoyGateway.enabled`, [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -56672,7 +56675,7 @@ See [LLM Gateway][llm-gateway] for what the feature installs and what the cluste
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 ## aiGateway { #helm-values-hw-envoy-ai-gateway-aigateway }
 
@@ -57169,7 +57172,7 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -57576,7 +57579,7 @@ With `kueue.enabled=false` Hopsworks uses a Kueue installed outside its release;
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -57962,7 +57965,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -58457,7 +58460,7 @@ Values under `judge` configure Judge, the active cluster arbitrator service.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -58592,7 +58595,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -59482,7 +59485,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -61393,7 +61396,7 @@ Values under `minio` configure MinIO, an S3-compatible object store deployed ins
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) is `true`.
 
@@ -61648,7 +61651,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -62624,7 +62627,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -63134,7 +63137,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -63294,7 +63297,7 @@ Values under `ray` configure the KubeRay operator, which runs the Ray clusters b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.ray.enabled`](global.md#helm.global._hopsworks.ray.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -63441,7 +63444,7 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -66359,7 +66362,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -67944,7 +67947,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -69390,7 +69393,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -69698,7 +69701,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794403803` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794417134` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
