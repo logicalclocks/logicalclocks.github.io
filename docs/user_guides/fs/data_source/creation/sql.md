@@ -316,6 +316,7 @@ The data source keeps a reference to these entries, not a copy.
 Fetching or listing a provided data source returns the status of your binding and the names of your env var and secrets, never your username or password.
 The Python client reads the values from your own account entries when it needs them.
 Deleting the secret or the env var from your account leaves the binding `INCOMPLETE`, and the data source refuses to read until you set your credentials again.
+Your [Trino catalogs][data-source-provided-credentials-trino] on the data source keep reading with the login already in their published file, so remove your credentials to stop them using it.
 Removing your credentials deletes the binding, the wallet file, the env var and secrets that carry the default names above, and your [Trino catalogs][data-source-provided-credentials-trino] on the data source.
 The same deletion happens for a member who is removed from the project, and for every member when the data source is deleted.
 Entries saved under names of your own stay in your account, since you may use them elsewhere.
@@ -427,7 +428,10 @@ The catalog follows your credentials:
 
 When your database password changes, save the new one on the data source as well.
 The catalog keeps logging in with the saved password until then, and the database may lock your account after repeated failed logins.
-Editing the secret under **Account Settings** reaches the catalog only at its next reload for another reason, so save the credentials on the data source instead.
+Editing or deleting the secret or the env var under **Account Settings** does not reach the catalog.
+The catalog changes only when its file is rewritten, that is when you save the credentials on the data source or edit the catalog.
+A query engine restart for another reason reloads it from its unchanged file.
+To stop the catalog using your login, remove your credentials from the data source.
 
 Creating the catalog requires you to have set your own credentials for the data source.
 For a database behind mTLS, the catalog's wallet (`TNS_ADMIN`) is built from your wallet into a [mountable secret of your account][mountable-secrets-for-private-catalogs]; it only secures the transport, and the catalog still logs in with your username and password.
