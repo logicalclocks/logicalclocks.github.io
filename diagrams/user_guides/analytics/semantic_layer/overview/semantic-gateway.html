@@ -1,0 +1,63 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 800 340" role="img" aria-label="How the semantic layer serves a metric query. Python, the CLI and the UI call the semantic gateway over REST, dbt clients over GraphQL and Arrow Flight SQL, and BI tools over Arrow Flight SQL tables. The gateway reads the caller's session and the build from Hopsworks, which stores the builds, and posts the query history back to it. It runs the SQL it plans on Trino as the caller, over the feature groups, or reads the result from an export feature group. With engine spark, it hands the SQL to the caller's Spark session, which reads the feature groups itself." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="sg-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
+    <marker id="sg-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
+  </defs>
+
+  <!-- the Hopsworks cluster -->
+  <rect class="viz-zone" data-tone="accent" x="208" y="16" width="576" height="308" rx="6"/>
+  <path class="viz-kv-header" d="M208 22 a6 6 0 0 1 6 -6 h564 a6 6 0 0 1 6 6 v20 h-576 z"/>
+  <text class="viz-kv-title" x="224" y="35">Hopsworks cluster</text>
+
+  <!-- edges -->
+  <path class="viz-edge" d="M176 98 L200 98 Q216 98 216 114 L216 148 Q216 164 232 164 L264 164" marker-start="url(#sg-knob)" marker-end="url(#sg-arrow)"/>
+  <path class="viz-edge" d="M176 174 L264 174" marker-start="url(#sg-knob)" marker-end="url(#sg-arrow)"/>
+  <path class="viz-edge" d="M176 250 L200 250 Q216 250 216 234 L216 200 Q216 184 232 184 L264 184" marker-start="url(#sg-knob)" marker-end="url(#sg-arrow)"/>
+  <path class="viz-edge" d="M352 148 L352 116" marker-start="url(#sg-knob)" marker-end="url(#sg-arrow)"/>
+  <path class="viz-edge" d="M440 174 L504 174" marker-start="url(#sg-knob)" marker-end="url(#sg-arrow)"/>
+  <path class="viz-edge" d="M584 200 L584 240" marker-start="url(#sg-knob)" marker-end="url(#sg-arrow)"/>
+  <path class="viz-edge" d="M352 200 L352 242" marker-start="url(#sg-knob)" marker-end="url(#sg-arrow)"/>
+  <path class="viz-edge" d="M440 262 L504 262" marker-start="url(#sg-knob)" marker-end="url(#sg-arrow)"/>
+
+  <g>
+    <rect class="viz-node" x="16" y="72" width="160" height="52" rx="4"/>
+    <text class="viz-node-title" x="96" y="94" text-anchor="middle">Python, CLI, UI</text>
+    <text class="viz-node-subtitle" x="96" y="112" text-anchor="middle">REST</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="16" y="148" width="160" height="52" rx="4"/>
+    <text class="viz-node-title" x="96" y="170" text-anchor="middle">dbt clients</text>
+    <text class="viz-node-subtitle" x="96" y="188" text-anchor="middle">GraphQL, Flight</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="16" y="224" width="160" height="52" rx="4"/>
+    <text class="viz-node-title" x="96" y="246" text-anchor="middle">BI tools</text>
+    <text class="viz-node-subtitle" x="96" y="264" text-anchor="middle">Flight SQL tables</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="264" y="64" width="176" height="52" rx="4"/>
+    <text class="viz-node-title" x="352" y="86" text-anchor="middle">Hopsworks</text>
+    <text class="viz-node-subtitle" x="352" y="104" text-anchor="middle">builds, history</text>
+  </g>
+  <g data-tone="data">
+    <rect class="viz-node" x="264" y="148" width="176" height="52" rx="4"/>
+    <text class="viz-node-title" x="352" y="170" text-anchor="middle">Semantic gateway</text>
+    <text class="viz-node-subtitle" x="352" y="188" text-anchor="middle">plans the SQL</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="504" y="148" width="160" height="52" rx="4"/>
+    <text class="viz-node-title" x="584" y="170" text-anchor="middle">Trino</text>
+    <text class="viz-node-subtitle" x="584" y="188" text-anchor="middle">as the caller</text>
+  </g>
+  <g>
+    <rect class="viz-node" x="504" y="240" width="160" height="52" rx="4"/>
+    <text class="viz-node-title" x="584" y="262" text-anchor="middle">Feature groups</text>
+    <text class="viz-node-subtitle" x="584" y="280" text-anchor="middle">Delta, exports</text>
+  </g>
+  <g>
+    <rect class="viz-node viz-ghost" x="264" y="242" width="176" height="40" rx="4"/>
+    <text class="viz-node-title" x="352" y="266" text-anchor="middle">Spark session</text>
+  </g>
+</svg>
+</figure>

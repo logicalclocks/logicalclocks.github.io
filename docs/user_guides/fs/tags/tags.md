@@ -128,6 +128,7 @@ The per-value history is what the archive is for.
 ## Step 2: Attach a tag to an artifact
 
 Once the tag schema has been created, you can attach a tag with that schema to a feature group, feature view, training dataset, job, app, model or deployment either using the APIs, or by using the UI.
+Semantic projects and metrics carry tags as well, described in [Semantic Layer Tags][semantic-tags].
 
 ### Using the API
 
