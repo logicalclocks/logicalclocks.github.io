@@ -1306,6 +1306,8 @@ Hopsworks supports free-text search to discover machine-learning assets:
 - feature groups
 - feature views
 - training data
+- data sources
+- datasets
 - jobs, including apps
 - models
 - deployments, including agents
@@ -15801,7 +15803,7 @@ Source: https://docs.hopsworks.ai/latest/user_guides/fs/tags/tags/
 
 ## Introduction
 
-Hopsworks feature store enables users to attach tags to artifacts, such as feature groups, feature views, training datasets, jobs, apps, models or deployments.
+Hopsworks Feature Store enables users to attach tags to artifacts, such as feature groups, feature views, training datasets, data sources, datasets, jobs, apps, models or deployments.
 
 A tag is a `{key: value}` pair which provides additional information about the data managed by Hopsworks.
 Tags allow you to design custom metadata for your artifacts.
@@ -15926,7 +15928,7 @@ The per-value history is what the archive is for.
 
 ## Step 2: Attach a tag to an artifact
 
-Once the tag schema has been created, you can attach a tag with that schema to a feature group, feature view, training dataset, job, app, model or deployment either using the APIs, or by using the UI.
+Once the tag schema has been created, you can attach a tag with that schema to a feature group, feature view, training dataset, data source, dataset, job, app, model or deployment either using the APIs, or by using the UI.
 
 ### Using the API
 
@@ -16008,6 +16010,31 @@ For an app, the equivalent section is on the app overview page.
 Deleting a job deletes its tags with it.
 They are not restored by creating a new job under the same name, because the tags belong to the job that was deleted and not to its name.
 
+#### Data sources
+
+Data sources carry tags through the same methods, on the data source the Feature Store returns:
+
+=== "Python"
+
+    ```python
+    ds = fs.get_data_source("raw_events")
+
+    ds.add_tag("data_privacy", {"business_unit": "Fraud", "pii": True})
+    ds.get_tags()
+    ds.delete_tag("data_privacy")
+    ```
+
+The tags belong to the data source's connection, so every data source read through the same connection, whatever table or query it names, shows the same tags.
+Only a data owner of the project that owns the Feature Store can attach or remove them.
+Data scientists, Observers, and projects the Feature Store is shared with can read them.
+The online Feature Store data sources that Hopsworks creates for each project and its members cannot be tagged, because Hopsworks creates and removes them itself.
+
+Tags on a data source are also editable in the UI, in the `Tags` section of the data source page.
+Deleting a data source deletes its tags with it.
+
+A tag schema can be made mandatory for data sources, as described in [Mandatory tags][mandatory-tags-guide].
+When a schema has [Archive tag history][archive-tag-history] turned on, the changes to its tags on a data source are recorded as they are for a feature group.
+
 ### Using the UI
 
 You can attach tags to feature groups and feature views directly from the UI.
@@ -16039,7 +16066,7 @@ Hopsworks records the time each tag was attached and reports it alongside the va
         print(name, attached.created_on)
     ```
 
-`created_on` is an aware UTC `datetime`, and the same methods exist on feature views, training datasets and jobs.
+`created_on` is an aware UTC `datetime`, and the same methods exist on feature views, training datasets, data sources and jobs.
 
 The timestamp records when the tag was **attached**, not when its value last changed.
 Re-attaching a tag to change its value keeps the original attachment time, so the value can be corrected without losing the record of when the artifact was first classified.
@@ -16056,7 +16083,8 @@ record every change to that tag's values, so you can ask how long an artifact sp
 The flag is set per schema, in `Cluster settings` > `Tag schemas`, when the schema is created. To
 turn it on or off for a schema that already exists, a cluster administrator calls
 `PUT /hopsworks-api/api/tags/{name}/archive?value=true`. It applies to every artifact the tag is
-attached to: feature groups, feature views, training datasets, jobs, models and deployments.
+attached to: feature groups, feature views, training datasets, data sources, jobs, models and deployments.
+Tags on datasets keep no history.
 
 Turning it off ends every interval the tag still has open, at the moment you turn it off, and keeps
 everything already recorded. The recorded rows stay because they are still true; the open intervals
@@ -16120,6 +16148,8 @@ table directly, and
 dashboard over it: time spent in each state, whether that is increasing, what is in each state now,
 and what has been in one state longest.
 
+`artifact_type` is one of `FEATURE_GROUP`, `FEATURE_VIEW`, `TRAINING_DATASET`, `DATA_SOURCE`, `JOB`, `MODEL` or `DEPLOYMENT`, and `artifact_id` is the id of that artifact.
+
 The table stores events rather than intervals. To get `added_on` and `removed_at`, take the next
 event's time for the same artifact, tag and key:
 
@@ -16162,10 +16192,11 @@ left empty rather than filled with a guess.
 The history outlives what it describes. Deleting the artifact, the tag schema or the project closes
 the open intervals and keeps the rows, so a report over a past quarter still returns what was true
 then.
+Deleting a dataset does the same for the HopsFS data sources that point into it, since they are deleted with it.
 
 ## Step 3: Search
 
-Hopsworks indexes the tags attached to feature groups, feature views, training datasets, jobs, models and deployments.
+Hopsworks indexes the tags attached to feature groups, feature views, training datasets, data sources, datasets, jobs, models and deployments.
 The tags are then searchable using the free text search box located at the top of the UI, and can be filtered on directly.
 See the [tag and keyword search guide][search-with-tags-and-keywords] for filtering by a specific tag key and value rather than by free text.
 
@@ -16182,20 +16213,20 @@ Tags on artifacts of every indexed class are searchable, so a governance questio
 # Mandatory Tags
 Source: https://docs.hopsworks.ai/latest/user_guides/fs/tags/mandatory_tags/
 
-# Mandatory Tags
+# Mandatory Tags { #mandatory-tags-guide }
 
 ## Introduction
 
 Mandatory tags let a Hopsworks administrator require that specific tag schemas are populated on artifacts.
-They build on top of [tags](tags.md) and are used to enforce governance rules, such as requiring every model to declare a data owner.
+They build on top of [tags][tags-guide] and are used to enforce governance rules, such as requiring every model to declare a data owner.
 
 A mandatory tag is a tag schema that has been marked as required for one or more artifact types.
-The supported artifact types are feature groups, feature views, training datasets, models and deployments.
+The supported artifact types are feature groups, feature views, training datasets, data sources, models and deployments.
 
 ## Prerequisites
 
 A mandatory tag references an existing tag schema.
-Define the tag schema first, as described in the [Tags](tags.md) guide, before marking it mandatory.
+Define the tag schema first, as described in the [Tags][tags-guide] guide, before marking it mandatory.
 
 Only administrators can configure mandatory tags.
 Attaching the tag values afterwards is done by any project member with write access to the artifact.
@@ -16215,16 +16246,20 @@ Mandatory tags are configured in two scopes.
     <img src="../../../../assets/images/guides/tags/project_mandatory_tags.png" alt="Configure project-specific mandatory tags under Cluster settings, Projects, by editing a project">
 
 For each mandatory tag you select the artifact types it applies to.
-A tag schema can be mandatory for any combination of feature groups, feature views, training datasets, models and deployments.
-For example, a `data_owner` schema can be marked mandatory for models and deployments only, leaving feature groups, feature views and training datasets unaffected.
+A tag schema can be mandatory for any combination of feature groups, feature views, training datasets, data sources, models and deployments.
+For example, a `data_owner` schema can be marked mandatory for models and deployments only, leaving feature groups, feature views, training datasets and data sources unaffected.
 
 ## Enforcement per artifact type
 
-All five artifact types, feature groups, feature views, training datasets, models and deployments, enforce mandatory tags the same way.
+All six artifact types, feature groups, feature views, training datasets, data sources, models and deployments, enforce mandatory tags the same way.
 
 The create request is validated against the configured mandatory tags.
 If any mandatory tag is missing from the tags provided at creation, the artifact is not created and the request is rejected with an HTTP 400 error that lists the missing tag names.
 The bulk tag endpoint applies the same validation.
+
+Updating a data source that lacks a mandatory tag is refused with the same HTTP 400 error until the tag is added, as updating the metadata of a feature group is.
+The online Feature Store data sources that Hopsworks creates for each project and its members cannot be tagged, so mandatory tags do not apply to them.
+Other data sources that Hopsworks creates itself, such as the training datasets data source of a new project, are created without the check and report the missing tag like a data source created before the tag became mandatory.
 
 An artifact created before a tag was marked mandatory stays valid and is not deleted.
 The missing tag is surfaced on read through the `missing_mandatory_tags` property, described in [Missing mandatory tags on pre-existing artifacts](#missing-mandatory-tags-on-pre-existing-artifacts), and on the artifact page in the UI.
@@ -16272,6 +16307,34 @@ The `tags` argument takes the same shape as feature group tags: a `{"name": ...,
 
     # data_owner is mandatory for training datasets; pass it at creation
     td_version, td_job = fv.create_training_data(
+        tags=[{"name": "data_owner", "value": "email@hopsworks.ai"}],
+    )
+    ```
+
+=== "Data Source (Python)"
+
+    ```python
+    from hsfs.storage_connector import S3Connector
+
+    fs = project.get_feature_store()
+
+    sc = S3Connector(
+        id=None,
+        name="raw_events",
+        featurestore_id=fs.id,
+        bucket="my-bucket",
+        region="eu-north-1",
+    )
+
+    # data_owner is mandatory for data sources; pass it at creation
+    sc.save(tags=[{"name": "data_owner", "value": "email@hopsworks.ai"}])
+    ```
+
+    `create_data_source` takes the same `tags`, in place of `save()`:
+
+    ```python
+    data_source = fs.create_data_source(
+        sc,
         tags=[{"name": "data_owner", "value": "email@hopsworks.ai"}],
     )
     ```
@@ -16365,6 +16428,26 @@ Adding a tag does not update the property on the object in hand, so fetch the ar
     # Fetch the deployment again to see the updated list (no warning now)
     deployment = ms.get_deployment("fraudmodeldeployment")
     print(deployment.missing_mandatory_tags)  # []
+    ```
+
+=== "Data Source (Python)"
+
+    ```python
+    fs = project.get_feature_store()
+
+    # If data_owner is mandatory but was never set on this data source,
+    # the fetch emits: UserWarning: Missing mandatory tags: ['data_owner']
+    data_source = fs.get_data_source("raw_events")
+
+    missing = [tag["name"] for tag in data_source.missing_mandatory_tags]
+
+    # Set the missing tag
+    if "data_owner" in missing:
+        data_source.add_tag("data_owner", "email@hopsworks.ai")
+
+    # Fetch the data source again to see the updated list (no warning now)
+    data_source = fs.get_data_source("raw_events")
+    print(data_source.missing_mandatory_tags)  # []
     ```
 
 After the tag is set, it no longer appears in `missing_mandatory_tags` on the next fetch, and the fetch no longer warns.
@@ -17962,7 +18045,7 @@ For what search is and how its scope relates to project membership, see the [sea
 
 ## What you can search
 
-Search returns ten classes of artifact, each on its own tab:
+Search has a tab for each of eleven classes of artifact, and an `All` tab that combines them:
 
 | Tab | What it contains |
 | --- | --- |
@@ -17971,6 +18054,8 @@ Search returns ten classes of artifact, each on its own tab:
 | Feature Views | Feature views. |
 | Training Datasets | Training datasets. |
 | Features | Individual features, matched by feature name. |
+| Data Sources | Data sources of the project's Feature Store. |
+| Datasets | Datasets, including those shared with the project. |
 | Jobs | Jobs, excluding those that are apps. |
 | Apps | Jobs of type PythonApp. |
 | Models | Models in a model registry. |
@@ -17980,6 +18065,10 @@ Search returns ten classes of artifact, each on its own tab:
 Apps and agents are not separate kinds of artifact, which is why they are not separate tabs in the sense the others are.
 An app is a job, and an agent is a deployment.
 They appear as their own tabs because the question "which agents are tagged for production" is worth asking on its own, and each tab excludes the other: a job that is an app is reported under Apps and not under Jobs.
+
+In a project's search, a data source is found from the project that owns it, the same way the data source list shows it.
+Sharing a Feature Store with another project lets that project read a data source by name, but does not list it or make it searchable in that project's search.
+A search across all projects returns data sources like the other classes, with the limited details the [search concept page][search-concept] describes for a project you are not a member of.
 
 Each tab shows the number of matches next to its name, so you can see where the results are without visiting every tab.
 
@@ -18026,7 +18115,7 @@ curl -H "Authorization: ApiKey $API_KEY" \
   "https://$HOPSWORKS_HOST/hopsworks-api/api/project/$PROJECT_ID/elastic/featurestore?searchTerm=fraud&docType=ALL"
 ```
 
-`docType` accepts `ALL`, `FEATURE`, `FEATUREGROUP`, `FEATUREVIEW`, `TRAININGDATASET`, `JOB`, `APP`, `MODEL`, `DEPLOYMENT` and `AGENT`, and defaults to `ALL`.
+`docType` accepts `ALL`, `FEATURE`, `FEATUREGROUP`, `FEATUREVIEW`, `TRAININGDATASET`, `DATASOURCE`, `DATASET`, `JOB`, `APP`, `MODEL`, `DEPLOYMENT` and `AGENT`, and defaults to `ALL`.
 `from` and `size` page the results, with `size` capped at 10000.
 
 Tag and keyword filters are JSON arrays in the `tags` and `keywords` query parameters.
@@ -18044,10 +18133,11 @@ The response carries one bucket per class, each with its own total, for example 
 ### API key scopes { #search-api-key-scopes }
 
 Search results are filtered to the scopes of the API key you use, so a key cannot discover a class it was not minted for.
-A `FEATURESTORE` key sees feature groups, feature views, training datasets and features, `JOB` sees jobs and apps, `MODELREGISTRY` sees models, and `SERVING` sees deployments and agents.
+A `FEATURESTORE` key sees feature groups, feature views, training datasets, features and data sources, `DATASET_VIEW` sees datasets, `JOB` sees jobs and apps, `MODELREGISTRY` sees models, and `SERVING` sees deployments and agents.
 
 Naming a `docType` the key does not carry the scope for is rejected, rather than returned empty, so a missing scope is distinguishable from a genuinely empty result.
 A `docType=ALL` request is instead narrowed to the classes the key does carry, which is what makes `ALL` usable from a single-scope key.
+The tag vocabulary the `featurestore/tagfacets` endpoint returns for the filter panel is narrowed the same way, so a key does not learn the tag values of a class it cannot search.
 
 A search made with a JWT, as the UI and the Python client do after logging in, is not scope-restricted; it is limited by project membership alone.
 
@@ -37102,7 +37192,7 @@ Source: https://docs.hopsworks.ai/latest/setup_installation/admin/search_index/
 
 ## Introduction
 
-Hopsworks keeps a search index of the artifacts in a deployment: feature groups, feature views, training datasets, jobs, models and deployments.
+Hopsworks keeps a search index of the artifacts in a deployment: feature groups, feature views, training datasets, data sources, datasets, jobs, models and deployments.
 The index is updated from the database, not written to directly.
 Every change to a searchable property queues a command in the same transaction that made the change, and a background executor applies the queued commands to OpenSearch.
 
@@ -37121,7 +37211,7 @@ You do not need to check the tab on the off-chance.
 While any command needs attention, the `Service Operations` entry in the settings menu shows a pulsing orange dot and the `OpenSearch Index Commands` tab is outlined in orange.
 Both appear and clear on their own as the queue fails and drains, so no dot means there is nothing to look at.
 
-The tab lists every command that has failed at least once, oldest first.
+Below the `Featurestore search index` card, which reports on the [index rebuild][search-index-rebuild], the tab lists every command that has failed at least once, oldest first.
 
 For each it shows the document, the artifact type, the operation, the number of attempts made, when the next attempt is due, the project, and the last error.
 When the list is empty, every queued update has been applied.
@@ -37140,7 +37230,7 @@ The threshold is where the retry delay has been at its cap for a while, so cross
 Read the stuck command's error first, because a failure whose cause has since been fixed clears itself on the next retry and needs nothing from you.
 Otherwise cancel it, as described below.
 
-### Cancelling a command
+### Cancelling a command { #cancelling-a-command }
 
 Cancel a command only to let the ones behind it through.
 
@@ -37154,25 +37244,44 @@ Wait for the attempt to finish and retry.
 
 Each cancellation is logged with the command id, the document, the attempt count, the requesting administrator and the last error, because once the row is gone the log is the only record it existed.
 
-## Rebuilding the index
+## Rebuilding the index { #search-index-rebuild }
 
 A reindex rebuilds the search index from the database.
 It is the recovery path after the index has been lost or has diverged, not routine maintenance.
+
+The `Featurestore search index` card at the top of the `OpenSearch Index Commands` tab shows the latest run: its state, how many of its commands are pending, failed and cancelled, and `rebuilt` once every command has been applied.
+Its `Reindex now` button requests a run.
+The same is available through the REST API:
 
 ```bash
 # queue a reindex, returns the run id
 curl -X POST -H "Authorization: Bearer $JWT" \
   "https://$HOPSWORKS_HOST/hopsworks-api/api/admin/search/featurestore/reindex"
 
+# queue the data sources and datasets only, into the index as it is
+curl -X POST -H "Authorization: Bearer $JWT" \
+  "https://$HOPSWORKS_HOST/hopsworks-api/api/admin/search/featurestore/reindex?scope=ADDITIVE"
+
 # follow that run
 curl -H "Authorization: Bearer $JWT" \
   "https://$HOPSWORKS_HOST/hopsworks-api/api/admin/search/featurestore/reindex/$RUN_ID"
 ```
 
-The `POST` returns `200` with the run id rather than an empty `204`.
-The run id is what makes progress observable: without it a caller can only watch the global command queue, which mixes the reindex with whatever ordinary use is queueing alongside it.
+A run without `scope`, or with `scope=ALL`, empties the index and queues commands for every artifact; `Reindex now` requests this one.
+A run with `scope=ADDITIVE` leaves the index as it is and queues commands for the data sources and datasets only, so the rest of search keeps answering while it runs.
+The 5.3 post-upgrade hook requests that one: data sources are the only class 5.3 adds, and datasets, added in 5.2, may be missing from the index of a cluster upgraded from 5.1.
+If an `ADDITIVE` run ends early, request another `ADDITIVE` run rather than pressing `Reindex now`, which would empty the index.
+The run's description, in the answer to the `POST` and to both `GET`s, carries its `scope`.
 
-Reindexing queues a command per document, so on a large deployment it takes a while and shows up as a long queue.
+The `POST` returns `202` with the run id, and `409` while another run is in progress or still applying its commands.
+A `POST` with a `key` returns `200` with the run already queued under that key, and `400` when that run has another scope.
+The run id is what makes progress observable: without it a caller can only watch the global command queue, which mixes the reindex with whatever ordinary use is queueing alongside it.
+The run has finished when its `state` is `QUEUED`, meaning every command is in the queue, and its `pending` count is `0`.
+It rebuilt the index only if its `cancelled` count is also `0`.
+Otherwise the card shows `applied, with cancelled commands`: the documents those commands carried kept what the index already held, as with any [cancelled command][cancelling-a-command].
+Once the cause of their failures is fixed, request another run to rebuild them.
+
+Reindexing queues commands for every document, so on a large deployment it takes a while and shows up as a long queue.
 That is expected, and ordinary updates continue to be applied while it drains.
 
 ## Configuration
@@ -39648,6 +39757,11 @@ Clients keep their endpoint, Knative-mode deployments stay on Istio, and no depl
 
     - Every Standard-mode deployment answers through the usual endpoint, with both URL shapes.
     - The Knative-mode deployments are unchanged.
+
+### Search index rebuild { #upgrade-53-search-reindex }
+
+After the upgrade, the `post-upgrade-opensearch-reindex-job` hook indexes the existing data sources, which 5.3 adds to search, and datasets, which a cluster upgraded from 5.1 may lack, without emptying the index.
+No action is needed unless `hopsworks.opensearchReindex.enabled` is `false` or the hook's log reports a run already in progress: then request a reindex with `scope=ADDITIVE` through the [REST API][search-index-rebuild] once no run is in progress.
 
 ### LLM Gateway { #upgrade-llm-gateway }
 

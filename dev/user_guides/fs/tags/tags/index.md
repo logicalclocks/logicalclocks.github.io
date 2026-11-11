@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Hopsworks feature store enables users to attach tags to artifacts, such as feature groups, feature views, training datasets, jobs, apps, models or deployments.
+Hopsworks Feature Store enables users to attach tags to artifacts, such as feature groups, feature views, training datasets, data sources, datasets, jobs, apps, models or deployments.
 
 A tag is a `{key: value}` pair which provides additional information about the data managed by Hopsworks.
 Tags allow you to design custom metadata for your artifacts.
@@ -127,7 +127,7 @@ The per-value history is what the archive is for.
 
 ## Step 2: Attach a tag to an artifact
 
-Once the tag schema has been created, you can attach a tag with that schema to a feature group, feature view, training dataset, job, app, model or deployment either using the APIs, or by using the UI.
+Once the tag schema has been created, you can attach a tag with that schema to a feature group, feature view, training dataset, data source, dataset, job, app, model or deployment either using the APIs, or by using the UI.
 
 ### Using the API
 
@@ -209,6 +209,31 @@ For an app, the equivalent section is on the app overview page.
 Deleting a job deletes its tags with it.
 They are not restored by creating a new job under the same name, because the tags belong to the job that was deleted and not to its name.
 
+#### Data sources
+
+Data sources carry tags through the same methods, on the data source the Feature Store returns:
+
+=== "Python"
+
+    ```python
+    ds = fs.get_data_source("raw_events")
+
+    ds.add_tag("data_privacy", {"business_unit": "Fraud", "pii": True})
+    ds.get_tags()
+    ds.delete_tag("data_privacy")
+    ```
+
+The tags belong to the data source's connection, so every data source read through the same connection, whatever table or query it names, shows the same tags.
+Only a data owner of the project that owns the Feature Store can attach or remove them.
+Data scientists, Observers, and projects the Feature Store is shared with can read them.
+The online Feature Store data sources that Hopsworks creates for each project and its members cannot be tagged, because Hopsworks creates and removes them itself.
+
+Tags on a data source are also editable in the UI, in the `Tags` section of the data source page.
+Deleting a data source deletes its tags with it.
+
+A tag schema can be made mandatory for data sources, as described in [Mandatory tags][mandatory-tags-guide].
+When a schema has [Archive tag history][archive-tag-history] turned on, the changes to its tags on a data source are recorded as they are for a feature group.
+
 ### Using the UI
 
 You can attach tags to feature groups and feature views directly from the UI.
@@ -240,7 +265,7 @@ Hopsworks records the time each tag was attached and reports it alongside the va
         print(name, attached.created_on)
     ```
 
-`created_on` is an aware UTC `datetime`, and the same methods exist on feature views, training datasets and jobs.
+`created_on` is an aware UTC `datetime`, and the same methods exist on feature views, training datasets, data sources and jobs.
 
 The timestamp records when the tag was **attached**, not when its value last changed.
 Re-attaching a tag to change its value keeps the original attachment time, so the value can be corrected without losing the record of when the artifact was first classified.
@@ -257,7 +282,8 @@ record every change to that tag's values, so you can ask how long an artifact sp
 The flag is set per schema, in `Cluster settings` > `Tag schemas`, when the schema is created. To
 turn it on or off for a schema that already exists, a cluster administrator calls
 `PUT /hopsworks-api/api/tags/{name}/archive?value=true`. It applies to every artifact the tag is
-attached to: feature groups, feature views, training datasets, jobs, models and deployments.
+attached to: feature groups, feature views, training datasets, data sources, jobs, models and deployments.
+Tags on datasets keep no history.
 
 Turning it off ends every interval the tag still has open, at the moment you turn it off, and keeps
 everything already recorded. The recorded rows stay because they are still true; the open intervals
@@ -321,6 +347,8 @@ table directly, and
 dashboard over it: time spent in each state, whether that is increasing, what is in each state now,
 and what has been in one state longest.
 
+`artifact_type` is one of `FEATURE_GROUP`, `FEATURE_VIEW`, `TRAINING_DATASET`, `DATA_SOURCE`, `JOB`, `MODEL` or `DEPLOYMENT`, and `artifact_id` is the id of that artifact.
+
 The table stores events rather than intervals. To get `added_on` and `removed_at`, take the next
 event's time for the same artifact, tag and key:
 
@@ -363,10 +391,11 @@ left empty rather than filled with a guess.
 The history outlives what it describes. Deleting the artifact, the tag schema or the project closes
 the open intervals and keeps the rows, so a report over a past quarter still returns what was true
 then.
+Deleting a dataset does the same for the HopsFS data sources that point into it, since they are deleted with it.
 
 ## Step 3: Search
 
-Hopsworks indexes the tags attached to feature groups, feature views, training datasets, jobs, models and deployments.
+Hopsworks indexes the tags attached to feature groups, feature views, training datasets, data sources, datasets, jobs, models and deployments.
 The tags are then searchable using the free text search box located at the top of the UI, and can be filtered on directly.
 See the [tag and keyword search guide][search-with-tags-and-keywords] for filtering by a specific tag key and value rather than by free text.
 

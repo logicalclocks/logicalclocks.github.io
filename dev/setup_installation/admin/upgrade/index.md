@@ -456,6 +456,11 @@ Clients keep their endpoint, Knative-mode deployments stay on Istio, and no depl
     - Every Standard-mode deployment answers through the usual endpoint, with both URL shapes.
     - The Knative-mode deployments are unchanged.
 
+### Search index rebuild { #upgrade-53-search-reindex }
+
+After the upgrade, the `post-upgrade-opensearch-reindex-job` hook indexes the existing data sources, which 5.3 adds to search, and datasets, which a cluster upgraded from 5.1 may lack, without emptying the index.
+No action is needed unless `hopsworks.opensearchReindex.enabled` is `false` or the hook's log reports a run already in progress: then request a reindex with `scope=ADDITIVE` through the [REST API][search-index-rebuild] once no run is in progress.
+
 ### LLM Gateway { #upgrade-llm-gateway }
 
 The [LLM Gateway][llm-gateway] is new in 5.3 and off by default.

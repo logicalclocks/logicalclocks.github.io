@@ -8,6 +8,8 @@ Hopsworks supports free-text search to discover machine-learning assets:
 - feature groups
 - feature views
 - training data
+- data sources
+- datasets
 - jobs, including apps
 - models
 - deployments, including agents
