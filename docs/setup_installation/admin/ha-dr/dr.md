@@ -400,7 +400,7 @@ The RonDB backup holds the Kafka offsets OnlineFS saved, in `onlinefs.kafka_offs
 Kafka on the new cluster starts without the topics of the backed-up cluster, creates each online topic again when it is first written to, and gives it a new ID.
 OnlineFS reads each partition of a recreated topic from its start instead of resuming at the restored offset, so the offsets need no step after the restore, and no record written to the new topics is skipped.
 
-- Until OnlineFS saves an offset for a recreated topic, [Kafka offsets][onlinefs-offsets-admin] in `Cluster Settings` → `OnlineFS` shows the restored offsets as `Earlier topic`, or as `Topic missing` while Kafka has not created the topic yet.
+- Until OnlineFS saves an offset for a recreated topic, [Kafka offsets][onlinefs-offsets-admin] in `Cluster Settings` → `OnlineFS` shows no current offset for its partitions, which OnlineFS reads from their min offset, and says that Kafka has no topic of this name while Kafka has not created it yet.
 - After an [in-place restore][in-place-restore], Kafka keeps its topics and their IDs, and OnlineFS resumes at the restored offsets: it writes the records that arrived since the backup again, which brings the restored online feature store up to date with them.
 - Each OnlineFS pod runs its `offsets-schema` step when it starts, which leaves the restored table as it is.
   If the step fails, the pod does not start, as described in [If the offsets-schema step fails][upgrade-onlinefs-offsets-failures].
@@ -408,7 +408,7 @@ OnlineFS reads each partition of a recreated topic from its start instead of res
   On such a Kafka, stop OnlineFS after the restore, delete the rows of `onlinefs.kafka_offsets` and start OnlineFS again, so that it reads every online topic from its start.
 - Offset changes that were pending at the backup come back with `onlinefs.kafka_offset_changes`.
   OnlineFS rejects them on a new cluster, since each was asked for a topic Kafka no longer has.
-  After an in-place restore, one restored within 24 hours of its request applies when OnlineFS next gets the partition; cancel it in [Kafka offsets][onlinefs-offsets-admin] if it should not.
+  After an in-place restore, one restored within 24 hours of its request applies when OnlineFS next gets the partition; cancel it through the [REST API][onlinefs-offsets-rest-api] if it should not.
 
 ### In-Place Restore { #in-place-restore }
 
