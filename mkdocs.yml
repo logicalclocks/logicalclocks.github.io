@@ -319,6 +319,7 @@ nav:
           - Model Serving Ingress Gateway: setup_installation/admin/model_serving_gateway.md
           - Kafka Quotas: setup_installation/admin/kafka_quotas.md
           - OnlineFS Configuration: setup_installation/admin/onlinefs.md
+          - Security Response Headers: setup_installation/admin/security_headers.md
           - Uninstalling Hopsworks: setup_installation/admin/uninstall.md
           - Upgrades:
               - Upgrading Hopsworks: setup_installation/admin/upgrade.md
