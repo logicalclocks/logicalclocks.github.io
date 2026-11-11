@@ -304,6 +304,7 @@ nav:
           - Python Build Performance: setup_installation/admin/build_performance.md
           - User Management: setup_installation/admin/user.md
           - Project Management: setup_installation/admin/project.md
+          - Custom Project Roles: setup_installation/admin/project_roles.md
           - Configure Alerts: setup_installation/admin/alert.md
           - IAM Role Chaining: setup_installation/admin/roleChaining.md
           - Configure Project Mapping: setup_installation/admin/configure-project-mapping.md
