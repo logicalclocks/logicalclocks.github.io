@@ -445,9 +445,9 @@ Its last phase asks five questions and compares each answer with the one the dat
 | --- | --- |
 | How many orders were placed in March 2025? | 14 |
 | What was the total revenue of delivered orders? | 107467.00 |
-| Which state has the most customers? | Georgia, with 7 |
+| Which state has the most customers, and how many? | Georgia, with 7 |
 | Which products have fewer than 20 units in stock? | Build your own robot kit, Office desk toy, Ride on toy sedan car |
-| Which salesperson brought in the most revenue from delivered orders? | Archer Lamble, with 33722.00 |
+| Which salesperson brought in the most revenue from delivered orders, and how much? | Archer Lamble, with 33722.00 |
 
 #### Roles in the ontology app
 
@@ -499,7 +499,7 @@ From a terminal:
 
 ```bash
 hops ontology status sales-ontology                                      # can it answer, and what stops it; exits 1 when it cannot
-hops ontology ask sales-ontology "Which state has the most customers?"   # the answer, its SQL and up to 100 rows
+hops ontology ask sales-ontology "Which state has the most customers, and how many?"   # the answer, its SQL and up to 100 rows
 hops ontology ask sales-ontology "How many orders did they place?" --conversation-id <uuid>  # a follow-up in a saved conversation
 ```
 
