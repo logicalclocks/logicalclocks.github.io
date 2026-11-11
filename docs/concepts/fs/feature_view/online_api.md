@@ -5,6 +5,14 @@ To retrieve a feature vector, a client provides the feature view's serving keys.
 The serving keys are the foreign keys of the feature view's label feature group; a feature view does not have a primary key of its own.
 For example, if a feature view is built from the `customer_profile` and `customer_purchases` feature groups joined on `customer_id`, then `customer_id` is the serving key you provide to retrieve a feature vector.
 
+A feature-view query can also produce historical or aggregate online features.
+The `collect` operation returns the most recent N matching rows for an entity as one ordered array of row structs.
+The `aggregate` operation returns scalar count, sum, minimum, maximum, or average features over an entity's matching rows and optional event-time window, as well as the greatest or least value across several columns.
+Hopsworks applies the same operations when creating offline training data to prevent training-serving skew.
+
+The online API serves regular features with primary-key reads, collected history with ordered index scans, and aggregate or supported nested-join features with pushdown queries in RonDB.
+The entity key identifies the feature vector, while a collected feature's event-time ordering column remains inside the collected rows and is not required from the caller.
+
 ## Feature Vectors
 
 A feature vector is a row of features (without the primary key(s) and event timestamp):
