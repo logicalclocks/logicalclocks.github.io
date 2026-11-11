@@ -1,17 +1,17 @@
-# Mandatory Tags
+# Mandatory Tags { #mandatory-tags-guide }
 
 ## Introduction
 
 Mandatory tags let a Hopsworks administrator require that specific tag schemas are populated on artifacts.
-They build on top of [tags](tags.md) and are used to enforce governance rules, such as requiring every model to declare a data owner.
+They build on top of [tags][tags-guide] and are used to enforce governance rules, such as requiring every model to declare a data owner.
 
 A mandatory tag is a tag schema that has been marked as required for one or more artifact types.
-The supported artifact types are feature groups, feature views, training datasets, models and deployments.
+The supported artifact types are feature groups, feature views, training datasets, data sources, models and deployments.
 
 ## Prerequisites
 
 A mandatory tag references an existing tag schema.
-Define the tag schema first, as described in the [Tags](tags.md) guide, before marking it mandatory.
+Define the tag schema first, as described in the [Tags][tags-guide] guide, before marking it mandatory.
 
 Only administrators can configure mandatory tags.
 Attaching the tag values afterwards is done by any project member with write access to the artifact.
@@ -31,16 +31,20 @@ Mandatory tags are configured in two scopes.
     <img src="../../../../assets/images/guides/tags/project_mandatory_tags.png" alt="Configure project-specific mandatory tags under Cluster settings, Projects, by editing a project">
 
 For each mandatory tag you select the artifact types it applies to.
-A tag schema can be mandatory for any combination of feature groups, feature views, training datasets, models and deployments.
-For example, a `data_owner` schema can be marked mandatory for models and deployments only, leaving feature groups, feature views and training datasets unaffected.
+A tag schema can be mandatory for any combination of feature groups, feature views, training datasets, data sources, models and deployments.
+For example, a `data_owner` schema can be marked mandatory for models and deployments only, leaving feature groups, feature views, training datasets and data sources unaffected.
 
 ## Enforcement per artifact type
 
-All five artifact types, feature groups, feature views, training datasets, models and deployments, enforce mandatory tags the same way.
+All six artifact types, feature groups, feature views, training datasets, data sources, models and deployments, enforce mandatory tags the same way.
 
 The create request is validated against the configured mandatory tags.
 If any mandatory tag is missing from the tags provided at creation, the artifact is not created and the request is rejected with an HTTP 400 error that lists the missing tag names.
 The bulk tag endpoint applies the same validation.
+
+Updating a data source that lacks a mandatory tag is refused with the same HTTP 400 error until the tag is added, as updating the metadata of a feature group is.
+The online Feature Store data sources that Hopsworks creates for each project and its members cannot be tagged, so mandatory tags do not apply to them.
+Other data sources that Hopsworks creates itself, such as the training datasets data source of a new project, are created without the check and report the missing tag like a data source created before the tag became mandatory.
 
 An artifact created before a tag was marked mandatory stays valid and is not deleted.
 The missing tag is surfaced on read through the `missing_mandatory_tags` property, described in [Missing mandatory tags on pre-existing artifacts](#missing-mandatory-tags-on-pre-existing-artifacts), and on the artifact page in the UI.
@@ -88,6 +92,34 @@ The `tags` argument takes the same shape as feature group tags: a `{"name": ...,
 
     # data_owner is mandatory for training datasets; pass it at creation
     td_version, td_job = fv.create_training_data(
+        tags=[{"name": "data_owner", "value": "email@hopsworks.ai"}],
+    )
+    ```
+
+=== "Data Source (Python)"
+
+    ```python
+    from hsfs.storage_connector import S3Connector
+
+    fs = project.get_feature_store()
+
+    sc = S3Connector(
+        id=None,
+        name="raw_events",
+        featurestore_id=fs.id,
+        bucket="my-bucket",
+        region="eu-north-1",
+    )
+
+    # data_owner is mandatory for data sources; pass it at creation
+    sc.save(tags=[{"name": "data_owner", "value": "email@hopsworks.ai"}])
+    ```
+
+    `create_data_source` takes the same `tags`, in place of `save()`:
+
+    ```python
+    data_source = fs.create_data_source(
+        sc,
         tags=[{"name": "data_owner", "value": "email@hopsworks.ai"}],
     )
     ```
@@ -181,6 +213,26 @@ Adding a tag does not update the property on the object in hand, so fetch the ar
     # Fetch the deployment again to see the updated list (no warning now)
     deployment = ms.get_deployment("fraudmodeldeployment")
     print(deployment.missing_mandatory_tags)  # []
+    ```
+
+=== "Data Source (Python)"
+
+    ```python
+    fs = project.get_feature_store()
+
+    # If data_owner is mandatory but was never set on this data source,
+    # the fetch emits: UserWarning: Missing mandatory tags: ['data_owner']
+    data_source = fs.get_data_source("raw_events")
+
+    missing = [tag["name"] for tag in data_source.missing_mandatory_tags]
+
+    # Set the missing tag
+    if "data_owner" in missing:
+        data_source.add_tag("data_owner", "email@hopsworks.ai")
+
+    # Fetch the data source again to see the updated list (no warning now)
+    data_source = fs.get_data_source("raw_events")
+    print(data_source.missing_mandatory_tags)  # []
     ```
 
 After the tag is set, it no longer appears in `missing_mandatory_tags` on the next fetch, and the fetch no longer warns.

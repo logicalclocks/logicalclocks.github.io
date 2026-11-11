@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Hopsworks keeps a search index of the artifacts in a deployment: feature groups, feature views, training datasets, jobs, models and deployments.
+Hopsworks keeps a search index of the artifacts in a deployment: feature groups, feature views, training datasets, data sources, datasets, jobs, models and deployments.
 The index is updated from the database, not written to directly.
 Every change to a searchable property queues a command in the same transaction that made the change, and a background executor applies the queued commands to OpenSearch.
 
@@ -21,7 +21,7 @@ You do not need to check the tab on the off-chance.
 While any command needs attention, the `Service Operations` entry in the settings menu shows a pulsing orange dot and the `OpenSearch Index Commands` tab is outlined in orange.
 Both appear and clear on their own as the queue fails and drains, so no dot means there is nothing to look at.
 
-The tab lists every command that has failed at least once, oldest first.
+Below the `Featurestore search index` card, which reports on the [index rebuild][search-index-rebuild], the tab lists every command that has failed at least once, oldest first.
 
 For each it shows the document, the artifact type, the operation, the number of attempts made, when the next attempt is due, the project, and the last error.
 When the list is empty, every queued update has been applied.
@@ -40,7 +40,7 @@ The threshold is where the retry delay has been at its cap for a while, so cross
 Read the stuck command's error first, because a failure whose cause has since been fixed clears itself on the next retry and needs nothing from you.
 Otherwise cancel it, as described below.
 
-### Cancelling a command
+### Cancelling a command { #cancelling-a-command }
 
 Cancel a command only to let the ones behind it through.
 
@@ -54,25 +54,44 @@ Wait for the attempt to finish and retry.
 
 Each cancellation is logged with the command id, the document, the attempt count, the requesting administrator and the last error, because once the row is gone the log is the only record it existed.
 
-## Rebuilding the index
+## Rebuilding the index { #search-index-rebuild }
 
 A reindex rebuilds the search index from the database.
 It is the recovery path after the index has been lost or has diverged, not routine maintenance.
+
+The `Featurestore search index` card at the top of the `OpenSearch Index Commands` tab shows the latest run: its state, how many of its commands are pending, failed and cancelled, and `rebuilt` once every command has been applied.
+Its `Reindex now` button requests a run.
+The same is available through the REST API:
 
 ```bash
 # queue a reindex, returns the run id
 curl -X POST -H "Authorization: Bearer $JWT" \
   "https://$HOPSWORKS_HOST/hopsworks-api/api/admin/search/featurestore/reindex"
 
+# queue the data sources and datasets only, into the index as it is
+curl -X POST -H "Authorization: Bearer $JWT" \
+  "https://$HOPSWORKS_HOST/hopsworks-api/api/admin/search/featurestore/reindex?scope=ADDITIVE"
+
 # follow that run
 curl -H "Authorization: Bearer $JWT" \
   "https://$HOPSWORKS_HOST/hopsworks-api/api/admin/search/featurestore/reindex/$RUN_ID"
 ```
 
-The `POST` returns `200` with the run id rather than an empty `204`.
-The run id is what makes progress observable: without it a caller can only watch the global command queue, which mixes the reindex with whatever ordinary use is queueing alongside it.
+A run without `scope`, or with `scope=ALL`, empties the index and queues commands for every artifact; `Reindex now` requests this one.
+A run with `scope=ADDITIVE` leaves the index as it is and queues commands for the data sources and datasets only, so the rest of search keeps answering while it runs.
+The 5.3 post-upgrade hook requests that one: data sources are the only class 5.3 adds, and datasets, added in 5.2, may be missing from the index of a cluster upgraded from 5.1.
+If an `ADDITIVE` run ends early, request another `ADDITIVE` run rather than pressing `Reindex now`, which would empty the index.
+The run's description, in the answer to the `POST` and to both `GET`s, carries its `scope`.
 
-Reindexing queues a command per document, so on a large deployment it takes a while and shows up as a long queue.
+The `POST` returns `202` with the run id, and `409` while another run is in progress or still applying its commands.
+A `POST` with a `key` returns `200` with the run already queued under that key, and `400` when that run has another scope.
+The run id is what makes progress observable: without it a caller can only watch the global command queue, which mixes the reindex with whatever ordinary use is queueing alongside it.
+The run has finished when its `state` is `QUEUED`, meaning every command is in the queue, and its `pending` count is `0`.
+It rebuilt the index only if its `cancelled` count is also `0`.
+Otherwise the card shows `applied, with cancelled commands`: the documents those commands carried kept what the index already held, as with any [cancelled command][cancelling-a-command].
+Once the cause of their failures is fixed, request another run to rebuild them.
+
+Reindexing queues commands for every document, so on a large deployment it takes a while and shows up as a long queue.
 That is expected, and ordinary updates continue to be applied while it drains.
 
 ## Configuration
