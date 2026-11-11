@@ -132,7 +132,7 @@ In the UI, the **Metrics** card shows a **Tags** column and a filter by tag sche
 
 ## Mandatory tags { #semantic-tags-mandatory }
 
-An administrator makes a tag schema mandatory for **Semantic projects**, for **Metrics**, or both, among the artifact types of a mandatory tag rule, cluster-wide or for one project, as described in [Mandatory Tags][mandatory-tags].
+An administrator makes a tag schema mandatory for **Semantic projects**, for **Metrics**, or both, among the artifact types of a mandatory tag rule, cluster-wide or for one project, as described in [Mandatory Tags][mandatory-tags-guide].
 The two types are offered while the semantic layer is on.
 
 | Rule for | Enforced |
