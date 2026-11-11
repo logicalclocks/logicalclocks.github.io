@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794391025` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794402971` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -1603,6 +1603,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           nginx.ingress.kubernetes.io/proxy-redirect-to: 'https:'
           nginx.ingress.kubernetes.io/session-cookie-expires: '5259600'
           nginx.ingress.kubernetes.io/session-cookie-max-age: '5259600'
+          nginx.ingress.kubernetes.io/session-cookie-samesite: Lax
           nginx.ingress.kubernetes.io/ssl-redirect: 'true'
         enabled: true
         extraLabels: {}
@@ -1638,6 +1639,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         nginx.ingress.kubernetes.io/proxy-redirect-to: 'https:'
         nginx.ingress.kubernetes.io/session-cookie-expires: '5259600'
         nginx.ingress.kubernetes.io/session-cookie-max-age: '5259600'
+        nginx.ingress.kubernetes.io/session-cookie-samesite: Lax
         nginx.ingress.kubernetes.io/ssl-redirect: 'true'
         ```
 
@@ -1751,6 +1753,20 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           enabled: false
         postbootCommands: /opt/payara/k8s/commands/post-boot-commands.asadmin
         prebootCommands: /opt/payara/k8s/commands/pre-boot-commands.asadmin
+        securityHeaders:
+          cspMode: enforce
+          extraSources:
+            connect-src: []
+            font-src: []
+            form-action: []
+            frame-ancestors: []
+            frame-src: []
+            img-src: []
+            script-src: []
+            style-src: []
+          hsts:
+            includeSubDomains: true
+            maxAge: 31536000
         uniformLogFormatter: false
         versionUpgrade: null
         websocketProxy:
@@ -1904,6 +1920,89 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.payara.prebootCommands` <a class="headerlink" href="#helm.hopsworks.payara.prebootCommands" title="Permanent link">#</a> { #helm.hopsworks.payara.prebootCommands }
 :   Type `string`, default `"/opt/payara/k8s/commands/pre-boot-commands.asadmin"`.
+
+`hopsworks.payara.securityHeaders` <a class="headerlink" href="#helm.hopsworks.payara.securityHeaders" title="Permanent link">#</a> { #helm.hopsworks.payara.securityHeaders }
+:   Type `object`.
+    Security response headers Payara adds to Hopsworks responses (UI, REST API, error pages, CA, proxied services). Rendered into the `<release>-security-headers` ConfigMap; editing these needs no restart: once Kubernetes updates the mounted file, usually within one to two minutes, Payara applies it within 30 seconds.
+
+    ??? note "Default"
+
+        ```yaml
+        cspMode: enforce
+        extraSources:
+          connect-src: []
+          font-src: []
+          form-action: []
+          frame-ancestors: []
+          frame-src: []
+          img-src: []
+          script-src: []
+          style-src: []
+        hsts:
+          includeSubDomains: true
+          maxAge: 31536000
+        ```
+
+`hopsworks.payara.securityHeaders.cspMode` <a class="headerlink" href="#helm.hopsworks.payara.securityHeaders.cspMode" title="Permanent link">#</a> { #helm.hopsworks.payara.securityHeaders.cspMode }
+:   Type `string`, default `"enforce"`.
+    `enforce` blocks what the Content-Security-Policy forbids. `report-only` sends it as Content-Security-Policy-Report-Only, so the browser console reports violations without blocking: the switch to use while finding the source a page needs.
+
+`hopsworks.payara.securityHeaders.extraSources` <a class="headerlink" href="#helm.hopsworks.payara.securityHeaders.extraSources" title="Permanent link">#</a> { #helm.hopsworks.payara.securityHeaders.extraSources }
+:   Type `object`.
+    Sources added to directives of the UI's Content-Security-Policy, keyed by directive. Each is a list of CSP sources, such as an inference endpoint on its own host or port (`connect-src: ["https://serving.example.com:32443"]`), an error-reporting endpoint, or a site allowed to frame Hopsworks (`frame-ancestors`).
+
+    ??? note "Default"
+
+        ```yaml
+        connect-src: []
+        font-src: []
+        form-action: []
+        frame-ancestors: []
+        frame-src: []
+        img-src: []
+        script-src: []
+        style-src: []
+        ```
+
+`hopsworks.payara.securityHeaders.extraSources.connect-src` <a class="headerlink" href="#helm.hopsworks.payara.securityHeaders.extraSources.connect-src" title="Permanent link">#</a> { #helm.hopsworks.payara.securityHeaders.extraSources.connect-src }
+:   Type `list`, default `[]`.
+    Extra `connect-src` sources (fetch, XHR, WebSocket).
+
+`hopsworks.payara.securityHeaders.extraSources.font-src` <a class="headerlink" href="#helm.hopsworks.payara.securityHeaders.extraSources.font-src" title="Permanent link">#</a> { #helm.hopsworks.payara.securityHeaders.extraSources.font-src }
+:   Type `list`, default `[]`.
+    Extra `font-src` sources.
+
+`hopsworks.payara.securityHeaders.extraSources.form-action` <a class="headerlink" href="#helm.hopsworks.payara.securityHeaders.extraSources.form-action" title="Permanent link">#</a> { #helm.hopsworks.payara.securityHeaders.extraSources.form-action }
+:   Type `list`, default `[]`.
+    Extra `form-action` sources (where the UI's forms may post).
+
+`hopsworks.payara.securityHeaders.extraSources.frame-ancestors` <a class="headerlink" href="#helm.hopsworks.payara.securityHeaders.extraSources.frame-ancestors" title="Permanent link">#</a> { #helm.hopsworks.payara.securityHeaders.extraSources.frame-ancestors }
+:   Type `list`, default `[]`.
+    Extra `frame-ancestors` sources (sites allowed to embed the UI).
+
+`hopsworks.payara.securityHeaders.extraSources.frame-src` <a class="headerlink" href="#helm.hopsworks.payara.securityHeaders.extraSources.frame-src" title="Permanent link">#</a> { #helm.hopsworks.payara.securityHeaders.extraSources.frame-src }
+:   Type `list`, default `[]`.
+    Extra `frame-src` sources (pages the UI may embed).
+
+`hopsworks.payara.securityHeaders.extraSources.img-src` <a class="headerlink" href="#helm.hopsworks.payara.securityHeaders.extraSources.img-src" title="Permanent link">#</a> { #helm.hopsworks.payara.securityHeaders.extraSources.img-src }
+:   Type `list`, default `[]`.
+    Extra `img-src` sources.
+
+`hopsworks.payara.securityHeaders.extraSources.script-src` <a class="headerlink" href="#helm.hopsworks.payara.securityHeaders.extraSources.script-src" title="Permanent link">#</a> { #helm.hopsworks.payara.securityHeaders.extraSources.script-src }
+:   Type `list`, default `[]`.
+    Extra `script-src` sources.
+
+`hopsworks.payara.securityHeaders.extraSources.style-src` <a class="headerlink" href="#helm.hopsworks.payara.securityHeaders.extraSources.style-src" title="Permanent link">#</a> { #helm.hopsworks.payara.securityHeaders.extraSources.style-src }
+:   Type `list`, default `[]`.
+    Extra `style-src` sources.
+
+`hopsworks.payara.securityHeaders.hsts.includeSubDomains` <a class="headerlink" href="#helm.hopsworks.payara.securityHeaders.hsts.includeSubDomains" title="Permanent link">#</a> { #helm.hopsworks.payara.securityHeaders.hsts.includeSubDomains }
+:   Type `bool`, default `true`.
+    Add `includeSubDomains` to Strict-Transport-Security.
+
+`hopsworks.payara.securityHeaders.hsts.maxAge` <a class="headerlink" href="#helm.hopsworks.payara.securityHeaders.hsts.maxAge" title="Permanent link">#</a> { #helm.hopsworks.payara.securityHeaders.hsts.maxAge }
+:   Type `int`, default `31536000`.
+    Strict-Transport-Security max-age, in seconds. Every service on the Hopsworks host, and with `includeSubDomains` on its subdomains, must then be served over HTTPS, as browsers will only use HTTPS there. Set 0 to make browsers forget the host.
 
 `hopsworks.payara.uniformLogFormatter` <a class="headerlink" href="#helm.hopsworks.payara.uniformLogFormatter" title="Permanent link">#</a> { #helm.hopsworks.payara.uniformLogFormatter }
 :   Type `bool`, default `false`.
