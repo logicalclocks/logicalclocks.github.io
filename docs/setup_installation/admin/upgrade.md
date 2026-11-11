@@ -305,30 +305,20 @@ Pipelines, outputs and plugins you added through `logstash.extraPipelines`, `log
 - **The kafka integration, the `azure_event_hubs` input and the `webhdfs` output are no longer in the image.**
   A pipeline that uses one of them needs it in `logstash.plugins`, which installs it when the Logstash pod starts, so it needs access to `rubygems.org` and cannot run on an airgapped cluster.
 
-### Prometheus scrape jobs and the Consul domain { #upgrade-prometheus-consul-domain }
+### Prometheus follows the Consul domain { #upgrade-prometheus-consul-domain }
 
-From 5.3, Prometheus, the Prometheus data source of Grafana, the Prometheus adapter and the VPA recommender reach the Hopsworks services in `global._hopsworks.consulDomainName`, so an installation with its own Consul domain needs no Prometheus values to point them there.
+From 5.3, Prometheus, the Grafana data source, the Prometheus adapter and the VPA recommender use `global._hopsworks.consulDomainName`.
 With the default domain, `consul`, nothing changes.
 
-The `pushgateway`, `minio-job`, `minio-bucket`, `minio-resource` and `minio-node` scrape jobs move out of `prometheus.prometheus.serverFiles."prometheus.yml".scrape_configs` into a file Prometheus loads next to it, because only that file can follow the Consul domain.
-A job of the same name in `scrape_configs` takes precedence and keeps its own targets and settings, because Prometheus refuses two jobs with one name.
-`scrape_configs` still holds these jobs in two cases:
+Values that only point these components at your Consul domain are no longer needed, and you can remove them:
 
-- **Your values restate the list.**
-  Helm replaces the chart's list with yours, including any of these jobs you customized.
-  List the jobs your values restate:
+- `prometheus.prometheus.serverFiles."prometheus.yml".scrape_configs`.
+  A restated list keeps its own `pushgateway` and `minio-*` targets and lacks the jobs the chart has added since.
+  The same holds for a list restated for a changed `trino.auth.monitoringUser`, because the `trino` job now reads the user from the `trino-monitoring-credentials` Secret.
+- `prometheus.prometheus-adapter.prometheus.url` and `prometheus.prometheus-adapter.dnsConfig`.
+- The Prometheus data source in `grafana.grafana.datasources`.
 
-    ```bash
-    helm get values <release> -n <namespace> -o yaml | yq '.prometheus.prometheus.serverFiles."prometheus.yml".scrape_configs[].job_name'
-    ```
-
-    If the list exists only to point these targets at your Consul domain, remove it from your values, which also brings back every job the chart has added since.
-- **You upgrade with `helm upgrade --reuse-values`.**
-  It keeps the chart defaults of the release it upgrades, including the previous list with these jobs, so they keep their previous targets.
-  Upgrade with `--reset-then-reuse-values` instead, which takes the new chart's defaults and keeps the values you supplied.
-
-The `trino` job now reads its user from the `trino-monitoring-credentials` Secret, so a changed `trino.auth.monitoringUser` no longer needs the list restated.
-Overrides that only moved `prometheus.prometheus-adapter.prometheus.url`, `prometheus.prometheus-adapter.dnsConfig` or the Grafana data source to the installation's Consul domain are no longer needed either.
+Upgrade with `--reset-then-reuse-values`, not `--reuse-values`, which keeps the previous chart's scrape jobs and their old targets.
 
 ### Agent deployments reserve 2 GiB for their OTLP sidecar { #upgrade-agent-otlp-sidecar }
 
