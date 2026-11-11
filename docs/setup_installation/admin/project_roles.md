@@ -107,8 +107,8 @@ A permission follows the base role when a member can exercise it without going t
 | Superset | View dashboards, Edit dashboards | Superset's own roles |
 | Kafka | Create topics | Kafka clients |
 
-Data validation and feature monitoring create and run jobs.
-Switching off _Jobs: Create & edit_ or _Jobs: Run & stop_ therefore also switches off _Data validation: Run validation_ and _Feature monitoring: Create & edit configs_, and neither can be switched back on while a job permission is off.
+Data validation, feature monitoring and semantic layer exports create and run jobs.
+Switching off _Jobs: Create & edit_ or _Jobs: Run & stop_ therefore also switches off _Data validation: Run validation_ and _Feature monitoring: Create & edit configs_, and in a role based on Data owner _Semantic layer: Run exports_, and none of them can be switched back on while a job permission is off.
 The chat app, the evaluation job and the feedback review job of an agent deployment are jobs too, so creating or changing one also needs _Jobs: Create & edit_, and starting one _Jobs: Run & stop_.
 The evaluation job Hopsworks creates with default settings, when the deployment is created or its first evaluation run starts, does not need _Jobs: Create & edit_.
 
@@ -146,6 +146,7 @@ The info button shows the same: what the service is, what each cell covers where
 | Git | Git repositories in the project.<br>**Clone, commit, push & pull**: also branches and remotes. |
 | SQL queries | SQL through the project's Trino endpoint.<br>**Run SQL**: running queries, and the query history. |
 | Superset | Superset dashboards.<br>**View dashboards**: opening Superset and listing dashboards.<br>**Edit dashboards**: deleting, sharing and publishing dashboards. |
+| Semantic layer | Semantic projects: metric definitions, their builds, and the queries, exports and dashboards made from them.<br>**View & query**: semantic projects, their builds, metrics, saved queries, definition files, query history and connection details, validating unsaved definitions, and running metric queries.<br>**Create & edit**: creating and editing semantic projects, compiling and promoting builds, saving and deleting definition files, and creating dashboards from metrics.<br>**Delete**: deleting semantic projects.<br>**Run exports**: starts the export's job, so it also needs _Jobs_.<br>Saving or deleting a definition file also needs HopsFS write access to it. Queries through the semantic layer gateway (SQL, GraphQL, Flight SQL, ODBC) need only View & query. |
 | Kafka | Kafka topics, schemas and subjects of the project and its feature store.<br>**Manage schemas**: registering and deleting schemas, and changing compatibility settings. |
 | Alerts | Alerts on jobs, feature group validation, feature monitoring and the project.<br>**Manage receivers, routes & silences**: the project's own alert receivers, routes and silences. |
 | MCP servers | MCP servers defined in the project. |
