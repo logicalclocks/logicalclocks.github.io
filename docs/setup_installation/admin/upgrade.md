@@ -535,7 +535,7 @@ kubectl exec mysqlds-0 -n "$NAMESPACE" -c mysqld -- env MYSQL_PWD="$ROOT_PW" mys
   "SELECT table_schema FROM information_schema.tables WHERE table_name = 'kafka_offsets' AND table_schema <> 'onlinefs'"
 ```
 
-[Kafka offsets][onlinefs-offsets-admin] in `Cluster Settings` → `OnlineFS` then shows the moved offsets as `Current topic`.
+[Kafka offsets][onlinefs-offsets-admin] in `Cluster Settings` → `OnlineFS` then shows the moved offsets as the current offset of each partition.
 
 ### Search index rebuild { #upgrade-53-search-reindex }
 
