@@ -315,7 +315,7 @@ If your values set any of the following only to point these components at your C
 - `prometheus.prometheus-adapter.dnsConfig`.
 - The Prometheus data source in `grafana.grafana.datasources`.
 
-Upgrade with `--reset-then-reuse-values`, not `--reuse-values`, which keeps the previous chart's scrape jobs and their `service.consul` targets.
+Upgrade with your values files and without `--reuse-values` or `--reset-then-reuse-values`, because both carry the removed values over from the previous release.
 
 ### Agent deployments reserve 2 GiB for their OTLP sidecar { #upgrade-agent-otlp-sidecar }
 
