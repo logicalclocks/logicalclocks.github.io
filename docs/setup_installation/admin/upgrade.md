@@ -528,7 +528,7 @@ kubectl exec mysqlds-0 -n "$NAMESPACE" -c mysqld -- env MYSQL_PWD="$ROOT_PW" mys
 
 OnlineFS then has no offsets for the online topics of that project and reads them from their earliest retained record, so it writes the records Kafka still retains to the online feature store again, and skips none.
 
-The step has finished when every OnlineFS pod is `Running`, the `offsets-schema` log ends with `Moved the per-project kafka_offsets into onlinefs.kafka_offsets` or `No per-project kafka_offsets left to move`, and no project table is left:
+The step has finished when every OnlineFS pod is `Running`, the `offsets-schema` log has `Moved the per-project kafka_offsets into onlinefs.kafka_offsets` or `No per-project kafka_offsets left to move`, and no project table is left:
 
 ```sh
 kubectl exec mysqlds-0 -n "$NAMESPACE" -c mysqld -- env MYSQL_PWD="$ROOT_PW" mysql -uroot -N -e \

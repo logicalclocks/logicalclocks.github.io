@@ -291,7 +291,7 @@ Each row shows the project, the topic and its number of partitions in Kafka.
 The search matches the project or the topic name.
 
 <figure>
-  <img src="../../../assets/images/admin/onlinefs/offsets_card.png" alt="The Kafka offsets card listing two topics of the fraud_detection project with their partition counts and pending changes" />
+  <img src="../../../assets/images/admin/onlinefs/offsets_card.png" alt="The Kafka offsets card listing the topic of the fraud_detection project with its number of partitions" />
   <figcaption>The topics OnlineFS consumes</figcaption>
 </figure>
 
