@@ -16,6 +16,9 @@ A client sends every request to the same URL and picks the deployment with the r
 
 `<project>` is the project's namespace, and the project name works wherever it works for deployments.
 `GET .../v1/models` lists the project's started LLM deployments.
+The Anthropic Messages API is served under `/v1/<project>/v1/anthropic/`, for example `/v1/<project>/v1/anthropic/v1/messages` and `/v1/<project>/v1/anthropic/v1/models`, and the LLM Gateway translates it to the OpenAI API of the vLLM deployment.
+Its `count_tokens` operation answers `422`.
+See [Use coding agents with Hopsworks LLMs][serving-coding-agents].
 It runs on top of [Envoy Gateway][envoy-gateway], and the Hopsworks backend adds and removes its routes as deployments start and stop.
 
 --8<-- "setup_installation/admin/llm_gateway/request-flow.html"
@@ -127,6 +130,11 @@ An external user whose groups are listed for a deployment can send requests with
 
 Every listing, `GET .../v1/models` under any prefix, and every other path are refused for them with `403`.
 `model-serving-authenticator` makes the check on the request body, which the AI Gateway sends to it up to its 50Mi buffer limit (`kserve.envoyGateway.aiGateway.bufferLimit`).
+
+Requests authenticate with `Authorization: Bearer <api key>` or `ApiKey <api key>`, or with `x-api-key: <api key>` when no `Authorization` header is sent.
+A request with both headers is accepted when they carry the same key and refused with `401` when they differ; an `x-api-key` that is not a Hopsworks API key is not checked.
+On the LLM Gateway route the `authorization` and `x-api-key` headers are removed from the request after the check, so they do not reach the model server.
+On its own path, a deployment that is not vLLM receives both headers as sent.
 
 ## Reserved deployment names { #llm-gateway-reserved-names }
 
@@ -277,7 +285,7 @@ Model name, token counts, status, timing, user and session stay, because they ar
 
 - Administrators, in Cluster Settings, LLM Gateway Traces, which lists the traces of every project, filtered by project and deployment, with the project, deployment, user, session, status and timing of each.
   This page never returns prompt or answer content: the backend does not read the `messages` column, keeps only an allowlist of span attributes (model, token counts, session, user, project, operation and HTTP status), keeps events without their attributes, and returns only `Error code: <status>` of a span's status, without the upstream error response.
-- Project members with the role Data Owner or Data Scientist, in Project settings, LLM Gateway Traces, which shows their project's traces with a filter on the deployment, and in the Overview of each exposed deployment, which shows that deployment's traces.
+- Project members with the role Data Owner or Data Scientist, in Project settings, LLM Gateway, which shows their project's traces with a filter on the deployment, and in the Overview of each exposed deployment, which shows that deployment's traces.
   The backend returns only the project's own spans.
 
 No Grafana datasource is provisioned for the traces table.
@@ -335,6 +343,8 @@ Grafana shows them in the ModelServing folder:
 
 - The LLM Gateway (Agent Router) dashboard has tokens, requests, errors and latency per project and deployment, for one project at a time, a `user` variable with panels for tokens and requests per user, and a table of usage by project, user and model over the dashboard's time range.
 - The vLLM Deployment Metrics dashboard has an LLM Gateway row for each deployment.
+
+Project members see the project's token usage by deployment and by user in Project settings, LLM Gateway, above the traces.
 
 The access logs carry the same user, model and token counts per request, for audits.
 

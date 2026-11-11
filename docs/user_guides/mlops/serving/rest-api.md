@@ -152,6 +152,12 @@ On a cluster where the [LLM Gateway][llm-gateway] is enabled, all the vLLM deplo
 The `model` of each request is the name of the deployment it goes to.
 Every deployment also stays on its own path.
 
+The LLM Gateway also serves the Anthropic Messages API.
+Its base URL is `<inference endpoint>/v1/<project>/v1/anthropic`, which `ms.get_anthropic_url()` returns and Claude Code takes as `ANTHROPIC_BASE_URL`.
+Requests go to `<base URL>/v1/messages`, that is `<inference endpoint>/v1/<project>/v1/anthropic/v1/messages`.
+A vLLM deployment serves it on its own path too, verified from vLLM v0.28.0: the base URL is `<inference endpoint>/v1/<project>/<deployment>` and requests go to `<inference endpoint>/v1/<project>/<deployment>/v1/messages`.
+See [Use coding agents with Hopsworks LLMs][serving-coding-agents].
+
 !!! info "Deployments the LLM Gateway does not serve"
 
     - A deployment in Knative mode.
@@ -189,7 +195,7 @@ The LLM Gateway is on for every project and deployment by default, and a Data Ow
 
 - For the whole project, with the LLM Gateway card in the project settings, or `ms.set_llm_gateway(False)`.
   The project's endpoint then answers `404`.
-- For one deployment, with the LLM Gateway switch under Advanced configuration when editing the deployment, or `deployment.set_llm_gateway(False)`.
+- For one deployment, with the LLM Gateway switch, under Deployment configuration when creating the deployment and under Advanced configuration when editing it, or `deployment.set_llm_gateway(False)`.
 
 No deployment restarts, every deployment keeps its own URL, and the change takes effect within a minute.
 A deployment's Overview shows whether the LLM Gateway serves it.
