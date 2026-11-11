@@ -315,8 +315,6 @@ If your values set any of the following only to point these components at your C
 - `prometheus.prometheus-adapter.dnsConfig`.
 - The Prometheus data source in `grafana.grafana.datasources`.
 
-Upgrade with your values files and without `--reuse-values` or `--reset-then-reuse-values`, because both carry the removed values over from the previous release.
-
 ### Agent deployments reserve 2 GiB for their OTLP sidecar { #upgrade-agent-otlp-sidecar }
 
 An agent deployment with tracing enabled runs a `hops-otlp` sidecar next to the agent.
