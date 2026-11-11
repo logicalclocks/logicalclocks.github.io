@@ -349,6 +349,7 @@
 - [Model Serving Ingress Gateway](https://docs.hopsworks.ai/latest/setup_installation/admin/model_serving_gateway/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/model_serving_gateway/index.md))
 - [Kafka Quotas](https://docs.hopsworks.ai/latest/setup_installation/admin/kafka_quotas/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/kafka_quotas/index.md))
 - [OnlineFS Configuration](https://docs.hopsworks.ai/latest/setup_installation/admin/onlinefs/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/onlinefs/index.md))
+- [Security Response Headers](https://docs.hopsworks.ai/latest/setup_installation/admin/security_headers/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/security_headers/index.md))
 - [Uninstalling Hopsworks](https://docs.hopsworks.ai/latest/setup_installation/admin/uninstall/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/uninstall/index.md))
 
 #### Upgrades

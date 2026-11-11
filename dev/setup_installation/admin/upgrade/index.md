@@ -482,6 +482,16 @@ Enable with one `helm upgrade`: no predictive pod, Knative pod or `kserve-ingres
 Data Owners can then turn the LLM Gateway off per project and per deployment, both on by default.
 Disable with one upgrade with `aiGateway.enabled: false`, as described under [Turn it off][llm-gateway-disable], which also lists what a `helm rollback` leaves behind and how to remove it.
 
+### Security response headers { #upgrade-security-headers }
+
+Hopsworks now sets [security response headers][security-headers] itself, including a Content-Security-Policy that the UI enforces.
+An upgrade needs no action.
+The policy allows what the Hopsworks UI loads from the Hopsworks origin only.
+If the UI calls model deployments on another host or port, or another site frames the UI, add that origin to `hopsworks.payara.securityHeaders.extraSources`, as described under [Model deployments on another host or port][security-headers-inference] and [Embedding Hopsworks in another site][security-headers-embedding].
+A page the policy breaks shows a `Content-Security-Policy` error in the browser console; set `cspMode: report-only` while [finding what it needs][security-headers-troubleshooting].
+
+Pages are no longer served from the browser's offline cache, so a page needs the cluster to be reachable.
+
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
 These changes ship in 5.2.2 and 5.3.0.
