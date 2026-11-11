@@ -218,9 +218,9 @@ Starting a run while another run of the export goes on is refused with `SEMANTIC
 
 | Error | Code | Status | Meaning |
 | --- | --- | --- | --- |
-| `SEMANTIC_LAYER_FORBIDDEN` | 590003 | 403 | The caller is not a Data Owner of the project. |
-| `SEMANTIC_LAYER_EXPORT_NOT_FOUND` | 590020 | 404 | The build that answers queries defines no export of that name. |
-| `SEMANTIC_LAYER_EXPORT_NOT_RUNNABLE` | 590021 | 409 | The export is disabled, its owner is not a Data Owner, Hopsworks has not created its job yet, or a run is in progress; the message says which. |
+| `SEMANTIC_LAYER_FORBIDDEN` | 600003 | 403 | The caller is not a Data Owner of the project. |
+| `SEMANTIC_LAYER_EXPORT_NOT_FOUND` | 600020 | 404 | The build that answers queries defines no export of that name. |
+| `SEMANTIC_LAYER_EXPORT_NOT_RUNNABLE` | 600021 | 409 | The export is disabled, its owner is not a Data Owner, Hopsworks has not created its job yet, or a run is in progress; the message says which. |
 
 A run that wrote nothing fails its job execution: with `--wait`, the CLI exits with `The run of export <export> failed: ...` and points to `hops semantic export list`, and `run_export(..., wait=True)` raises `JobExecutionException`.
 

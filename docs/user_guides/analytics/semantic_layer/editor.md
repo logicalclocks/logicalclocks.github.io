@@ -80,8 +80,8 @@ curl -X POST -H "Authorization: ApiKey $HOPSWORKS_API_KEY" -H "Content-Type: app
 
 | Error | Code | Status | Meaning |
 | --- | --- | --- | --- |
-| `SEMANTIC_LAYER_FILE_NOT_FOUND` | 590060 | 404 | The file does not exist. |
-| `SEMANTIC_LAYER_FILE_CHANGED` | 590061 | 412 | The file is not the version `If-Match` names, or exists for an `If-None-Match: *`. |
-| `SEMANTIC_LAYER_PRECONDITION_REQUIRED` | 590062 | 428 | A save without `If-Match` or `If-None-Match: *`. |
-| `SEMANTIC_LAYER_READ_ONLY` | 590063 | 409 | The semantic project is in a git repository, or compiled from a `semantic_manifest.json`. |
-| `SEMANTIC_LAYER_VALIDATION_BUSY` | 590064 | 429 | The Hopsworks instance runs two validations already; try again shortly. |
+| `SEMANTIC_LAYER_FILE_NOT_FOUND` | 600060 | 404 | The file does not exist. |
+| `SEMANTIC_LAYER_FILE_CHANGED` | 600061 | 412 | The file is not the version `If-Match` names, or exists for an `If-None-Match: *`. |
+| `SEMANTIC_LAYER_PRECONDITION_REQUIRED` | 600062 | 428 | A save without `If-Match` or `If-None-Match: *`. |
+| `SEMANTIC_LAYER_READ_ONLY` | 600063 | 409 | The semantic project is in a git repository, or compiled from a `semantic_manifest.json`. |
+| `SEMANTIC_LAYER_VALIDATION_BUSY` | 600064 | 429 | The Hopsworks instance runs two validations already; try again shortly. |

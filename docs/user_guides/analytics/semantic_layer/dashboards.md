@@ -227,14 +227,14 @@ A dashboard shared in the project, with another project or made public shows its
 
 | Error | Code | Status | Meaning |
 | --- | --- | --- | --- |
-| `SEMANTIC_LAYER_ILLEGAL_ARGUMENT` | 590004 | 400 | No metric or more than eight, a blank name, a title longer than 500 characters, or metrics or group-bys given with a saved query. |
-| `SEMANTIC_LAYER_INVALID_QUERY` | 590012 | 400 | An unknown metric, a group-by that is not a categorical dimension or entity every metric can be grouped by, or metrics that share no `metric_time`. |
-| `SEMANTIC_LAYER_NOT_FOUND` | 590001 | 404 | No semantic project with that id, or no saved query of that name. |
-| `SEMANTIC_LAYER_FORBIDDEN` | 590003 | 403 | The caller's role has no semantic connection: only Data owners and Data scientists have one. |
-| `SEMANTIC_LAYER_NO_VALID_BUILD` | 590013 | 409 | The semantic project has no valid build; compile it and fix its errors. |
-| `SEMANTIC_LAYER_DASHBOARDS_DISABLED` | 590014 | 503 | `superset_semantic_enabled` is off, Superset is not enabled, or the project has no Superset service. |
-| `SEMANTIC_LAYER_GATEWAY_ERROR` | 590010 | 502 | The semantic layer gateway could not be reached, or failed to list the metrics and group-bys. |
-| `SEMANTIC_LAYER_SUPERSET_ERROR` | 590015 | 503 | Superset refused a request or did not answer. |
+| `SEMANTIC_LAYER_ILLEGAL_ARGUMENT` | 600004 | 400 | No metric or more than eight, a blank name, a title longer than 500 characters, or metrics or group-bys given with a saved query. |
+| `SEMANTIC_LAYER_INVALID_QUERY` | 600012 | 400 | An unknown metric, a group-by that is not a categorical dimension or entity every metric can be grouped by, or metrics that share no `metric_time`. |
+| `SEMANTIC_LAYER_NOT_FOUND` | 600001 | 404 | No semantic project with that id, or no saved query of that name. |
+| `SEMANTIC_LAYER_FORBIDDEN` | 600003 | 403 | The caller's role has no semantic connection: only Data owners and Data scientists have one. |
+| `SEMANTIC_LAYER_NO_VALID_BUILD` | 600013 | 409 | The semantic project has no valid build; compile it and fix its errors. |
+| `SEMANTIC_LAYER_DASHBOARDS_DISABLED` | 600014 | 503 | `superset_semantic_enabled` is off, Superset is not enabled, or the project has no Superset service. |
+| `SEMANTIC_LAYER_GATEWAY_ERROR` | 600010 | 502 | The semantic layer gateway could not be reached, or failed to list the metrics and group-bys. |
+| `SEMANTIC_LAYER_SUPERSET_ERROR` | 600015 | 503 | Superset refused a request or did not answer. |
 
 In Python, each is a `SemanticLayerException` with the numeric code in `error_code`.
 
