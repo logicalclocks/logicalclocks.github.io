@@ -460,6 +460,83 @@ Clients keep their endpoint, Knative-mode deployments stay on Istio, and no depl
     - Every Standard-mode deployment answers through the usual endpoint, with both URL shapes.
     - The Knative-mode deployments are unchanged.
 
+### OnlineFS offsets move to `onlinefs.kafka_offsets` { #upgrade-onlinefs-offsets }
+
+From 5.3, OnlineFS keeps its consumer offsets in one table, `onlinefs.kafka_offsets`, in the RonDB it writes to, with the ID of the Kafka topic each offset was saved for, in place of a `kafka_offsets` table in the online feature store of each project.
+With the topic ID, OnlineFS reads a topic that was deleted and created again under the same name from its start, as after a restore that rebuilt Kafka, instead of resuming at an offset of the earlier topic ([Consumer offsets][onlinefs-offsets]).
+
+- **No step before `helm upgrade`.**
+  Each OnlineFS pod runs an `offsets-schema` init container before OnlineFS starts.
+  It creates the table, copies the offsets of every project into it, and then drops the project tables.
+  For each consumer group, topic and partition it keeps the highest offset the project tables hold, with the topic's current ID, and leaves out the offsets of topics Kafka no longer has.
+  A pod that starts later finds nothing to move.
+  It also creates `onlinefs.kafka_offset_changes`, which holds the offset changes administrators ask for in [Kafka offsets][onlinefs-offsets-admin].
+- **It connects to the DDL SQL node of the release as `hopsworksroot`**: the `ddl-mysqld` Service of the release, or, when RonDB is managed externally on a release with `global._hopsworks.full_platform: true`, the consul name in `onlinefs.dependencies.mysql.ddlConsulServiceName` (`mysqlddl`).
+  A satellite cluster (`global._hopsworks.full_platform: false`) always connects to the Service, also with an external RonDB.
+  A cluster that disables the DDL SQL node (`rondb.rondb.meta.ddlMySQLd.enabled: false`) sets `onlinefs.dependencies.mysql.serviceName: mysqld`, and also `onlinefs.dependencies.mysql.ddlConsulServiceName: mysql` when it is not a satellite and RonDB is managed externally.
+  `onlinefs.dependencies.mysql.url` overrides both.
+- **A step that fails keeps the pod from starting.**
+  It reads every project table before it writes, and drops none before the copy is committed, so a step that fails while it copies leaves every project table as it is.
+  One that fails while it drops the tables has copied every offset already, and the next start drops the rest.
+  The pod stays in `Init:Error` or `Init:CrashLoopBackOff`, and the log names the database:
+
+    ```sh
+    kubectl logs <onlinefs-pod> -c offsets-schema -n <namespace>
+    ```
+
+  The step gives up after 15 minutes, its wait for Hopsworks to answer with the OnlineFS settings included, and Kubernetes starts it again.
+  Fix the cause, as described in [If the offsets-schema step fails][upgrade-onlinefs-offsets-failures], and the next start of the pod runs it again.
+- **Records written during the rollout can be written to the online feature store twice, never skipped.**
+  An OnlineFS pod of the earlier release that still runs while a new pod moves the offsets saves to project tables that are gone, and its partitions resume from the moved offsets.
+- **On satellite clusters**, upgraded after central as [Strimzi 1.3][upgrade-strimzi-13] requires, a project created after central's upgrade has no offsets table on a satellite that is not upgraded yet.
+  The satellite's OnlineFS logs `Failed to save offsets` for that project and keeps writing its rows, but reads the project's online topics again from their start when it restarts, and once more at the satellite's upgrade.
+- **Rolling OnlineFS back to 5.2** makes it read every online topic again from its earliest retained record, because the project tables it reads are gone.
+  An offset change still pending stays in `onlinefs.kafka_offset_changes` unapplied; once OnlineFS is upgraded again, a change more than 24 hours old expires instead of applying.
+- **A restore needs no step for the offsets on a Kafka that gives its topics IDs**, as the Kafka the chart installs does.
+  `onlinefs.kafka_offsets` is in the RonDB backup like any other database, and after a restore that rebuilt Kafka, OnlineFS reads the recreated topics from their start.
+  An offset saved without a topic ID, by a consumer group of an earlier Kafka connection or on a Kafka that gives no IDs, has nothing to check against, and OnlineFS resumes from it.
+
+#### If the offsets-schema step fails { #upgrade-onlinefs-offsets-failures }
+
+A step that fails logs `Failed to set up onlinefs.kafka_offsets, OnlineFS does not start`, followed by the error, in the `offsets-schema` container of a pod that is not `Running`:
+
+```sh
+kubectl logs <onlinefs-pod> -c offsets-schema -n <namespace>
+```
+
+| The error | What it means | What to do |
+| --- | --- | --- |
+| `Hopsworks did not answer with the OnlineFS settings within 900 s` | Hopsworks did not answer within the step's 15 minutes. Nothing was changed. | Wait until the `hopsworks-instance` pods are ready. The next start runs the step again. |
+| `Communications link failure`, `UnknownHostException` or `Access denied for user 'hopsworksroot'` | The step cannot reach or log in to the SQL node. Nothing was changed. | While the upgrade restarts the SQL node, this passes on its own. Otherwise check the SQL node the step connects to, as described above, and the `hopsworksroot` key of the `mysql-users-secrets` Secret. |
+| `Got error 4009 'No data node(s) available'` | RonDB's data nodes are restarting or down, as while the upgrade restarts them. Nothing was changed. | The next start runs the step again once the data nodes are up. |
+| `onlinefs.kafka_offsets has the columns [...], OnlineFS maps [...]` | The table exists with columns OnlineFS does not map, because it was created or changed outside OnlineFS. Nothing was moved. | Do not drop it, it holds the offsets. Change its columns to the ones the message lists after `OnlineFS maps`, keeping its rows. |
+| `onlinefs.kafka_offset_changes has the columns [...], OnlineFS maps [...]` | The table of offset changes exists with columns OnlineFS does not map. Nothing was moved. | It holds only the changes administrators asked for and their outcomes. Drop it, and the next start creates it again. |
+| `Failed to read a per-project kafka_offsets, it is kept as it is`, with the database | The table of that project cannot be read. A single such table stops the whole step: nothing was written, and every project table is kept. | Repair that table, from the RonDB backup if needed. A table that cannot be repaired can be dropped, as described below. |
+| A Kafka error, such as `org.apache.kafka.common.errors.TimeoutException` | The step could not ask Kafka for the IDs of the topics. Nothing was written. | Check that OnlineFS reaches Kafka, as for its own consumers. |
+| `onlinefs.kafka_offsets was not set up within 900 s` | The step ran out of time while it moved the offsets. | The next start goes on. Offsets it moved already keep their values. |
+| The error of a `DROP TABLE` statement | Every offset is in `onlinefs.kafka_offsets`, and the project tables before the failing one are dropped. | Fix the cause. The next start drops the remaining tables. |
+
+The commands below run SQL as the RonDB `root` user on the chart's `mysqlds-0` pod; with an external RonDB, run the statements on one of its SQL nodes instead.
+A project table that cannot be repaired can be dropped, so that the step moves the others:
+
+```sh
+NAMESPACE=hopsworks
+ROOT_PW=$(kubectl get secret mysql-users-secrets -n "$NAMESPACE" -o jsonpath='{.data.root}' | base64 -d)
+kubectl exec mysqlds-0 -n "$NAMESPACE" -c mysqld -- env MYSQL_PWD="$ROOT_PW" mysql -uroot -e \
+  'DROP TABLE `<database>`.kafka_offsets'
+```
+
+OnlineFS then has no offsets for the online topics of that project and reads them from their earliest retained record, so it writes the records Kafka still retains to the online feature store again, and skips none.
+
+The step has finished when every OnlineFS pod is `Running`, the `offsets-schema` log ends with `Moved the per-project kafka_offsets into onlinefs.kafka_offsets` or `No per-project kafka_offsets left to move`, and no project table is left:
+
+```sh
+kubectl exec mysqlds-0 -n "$NAMESPACE" -c mysqld -- env MYSQL_PWD="$ROOT_PW" mysql -uroot -N -e \
+  "SELECT table_schema FROM information_schema.tables WHERE table_name = 'kafka_offsets' AND table_schema <> 'onlinefs'"
+```
+
+[Kafka offsets][onlinefs-offsets-admin] in `Cluster Settings` → `OnlineFS` then shows the moved offsets as `Current topic`.
+
 ### Search index rebuild { #upgrade-53-search-reindex }
 
 After the upgrade, the `post-upgrade-opensearch-reindex-job` hook indexes the existing data sources, which 5.3 adds to search, and datasets, which a cluster upgraded from 5.1 may lack, without emptying the index.
