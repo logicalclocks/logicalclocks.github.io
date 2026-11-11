@@ -334,6 +334,7 @@
 - [Python Build Performance](https://docs.hopsworks.ai/latest/setup_installation/admin/build_performance/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/build_performance/index.md))
 - [User Management](https://docs.hopsworks.ai/latest/setup_installation/admin/user/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/user/index.md))
 - [Project Management](https://docs.hopsworks.ai/latest/setup_installation/admin/project/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/project/index.md))
+- [Custom Project Roles](https://docs.hopsworks.ai/latest/setup_installation/admin/project_roles/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/project_roles/index.md))
 - [Configure Alerts](https://docs.hopsworks.ai/latest/setup_installation/admin/alert/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/alert/index.md))
 - [IAM Role Chaining](https://docs.hopsworks.ai/latest/setup_installation/admin/roleChaining/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/roleChaining/index.md))
 - [Configure Project Mapping](https://docs.hopsworks.ai/latest/setup_installation/admin/configure-project-mapping/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/configure-project-mapping/index.md))

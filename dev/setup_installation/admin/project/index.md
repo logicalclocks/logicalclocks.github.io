@@ -119,6 +119,7 @@ The owner cannot be removed from the project and their role cannot be changed, s
 To transfer a project, click _Edit configuration_ next to it on the Project management page, then click _Transfer ownership_ under _Manage project_, choose the new owner and confirm.
 Any activated user with the user or administrator role can be chosen.
 The new owner is added to the project as a Data owner, or promoted to one, if they are not one already.
+A member holding a custom role is given the built-in Data owner role in its place.
 The previous owner stays a Data owner, and can then be removed like any other member.
 The project limit of the new owner does not apply to a transfer made by an administrator.
 

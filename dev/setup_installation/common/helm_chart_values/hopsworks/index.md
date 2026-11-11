@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794350218` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794391025` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2731,6 +2731,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         enable_adls_storage_connectors: 'false'
         enable_bigquery_storage_connectors: 'true'
         enable_bring_your_own_kafka: 'false'
+        enable_custom_project_roles: 'false'
         enable_elasticsearch_storage_connectors: 'true'
         enable_feature_monitoring: 'true'
         enable_fix_receivers_timer: 'true'
@@ -2742,6 +2743,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         enable_metadata_designer: ''
         enable_opensearch_storage_connectors: 'true'
         enable_outlook_storage_connectors: 'true'
+        enable_project_observer_role: null
         enable_public_apps: false
         enable_read_only_git_repositories: 'false'
         enable_redshift_storage_connectors: 'true'
@@ -3550,6 +3552,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.enable_bring_your_own_kafka` <a class="headerlink" href="#helm.hopsworks.variables.enable_bring_your_own_kafka" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_bring_your_own_kafka }
 :   Type `string`, default `"false"`.
 
+`hopsworks.variables.enable_custom_project_roles` <a class="headerlink" href="#helm.hopsworks.variables.enable_custom_project_roles" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_custom_project_roles }
+:   Type `string`, default `"false"`.
+    Custom project roles: a cluster admin defines roles as a base role minus removed permissions and assigns them to project members, who are refused what their role removed.
+
 `hopsworks.variables.enable_elasticsearch_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_elasticsearch_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_elasticsearch_storage_connectors }
 :   Type `string`, default `"true"`.
 
@@ -3584,6 +3590,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.enable_outlook_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_outlook_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_outlook_storage_connectors }
 :   Type `string`, default `"true"`.
     Enables Outlook data sources and their sync jobs into Delta feature groups.
+
+`hopsworks.variables.enable_project_observer_role` <a class="headerlink" href="#helm.hopsworks.variables.enable_project_observer_role" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_project_observer_role }
+:   Type `string`, default `nil`.
+    Offer the Observer project role, which can read a project but not change it. False hides it from the role pickers and the backend refuses to give it to a member. Null leaves the variable as it is, so a value set on the cluster configuration page survives upgrades; unset, it is false.
 
 `hopsworks.variables.enable_public_apps` <a class="headerlink" href="#helm.hopsworks.variables.enable_public_apps" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_public_apps }
 :   Type `bool`, default `false`.
