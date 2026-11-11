@@ -35,6 +35,14 @@ The key file is uploaded to the Hopsworks project when the data source is create
 
 Share the folder with the service account's email, as a `Viewer`.
 Hopsworks only lists and downloads, so viewer access is enough.
+The service account is its own Google identity: a folder in your My Drive is invisible to it until it is shared, even though the service account's key was created in your Google Cloud project.
+
+1. In Google Drive, right-click the folder and choose `Share`.
+2. Enter the service account's email, `<name>@<project>.iam.gserviceaccount.com`, and pick `Viewer`.
+3. Untick `Notify people`, since the service account has no inbox, and click `Share`.
+   Google may warn that the address is outside your organisation; confirm it.
+
+A Google Workspace administrator can block sharing with addresses outside the organisation; in that case put the folder on a shared drive and add the service account as a member of it.
 
 For a shared drive, add the service account as a member of the shared drive, as a `Viewer`, or share one of its folders with it.
 Shared drives are reached through the same data source; nothing else is needed.
@@ -76,7 +84,7 @@ Pick the `Google Drive` card, in the `Files & documents` category.
 
 Click `Test connection` to check the key file.
 Hopsworks reads it from the project and checks that it is a service account key, with a `client_email` and a `private_key`, and answers with the service account's email and a reminder to share the folder with it, such as `Service account ingest@acme.iam.gserviceaccount.com; share folder 1AbCdEfGhIjKlMnOpQrStUvWxYz with it`.
-The test does not call Google Drive, so a folder that is not shared with the service account, or a project without the Drive API enabled, is only found by the first run of a files ingestion job.
+The test does not call Google Drive, so a folder that is not shared with the service account, or a project without the Drive API enabled, is only found by the first run of a files ingestion job; see [Troubleshooting](#troubleshooting) for the messages such a run shows.
 
 Click `Next` to save the data source and go on to the second step of the wizard, `Copy files into a dataset`, described in the [files ingestion guide][files-ingestion].
 The `Browse` button of the prefix is not available for Google Drive, so type the prefix.
@@ -149,6 +157,22 @@ Copy the files under the folder into a dataset with a [files ingestion job][file
 The prefix of the job is a folder path below the shared folder, by folder names, and a run reads `gdrive://<folder ID>/<prefix>`, so an empty prefix copies the whole shared folder.
 The index feature group, when turned on, records `gdrive` in `source_type` and the same `gdrive://` URL in `source_url`.
 
+## Troubleshooting { #troubleshooting }
+
+A run that cannot reach the folder fails before listing anything.
+Its execution on the job page shows `root path '<folder ID>' not found or not readable` followed by Google's answer, and the same text is in the execution logs.
+The answer tells which step of the setup is missing:
+
+| Google's answer | Cause | Fix |
+| --- | --- | --- |
+| `HttpError 403 ... Google Drive API has not been used in project <number> before or it is disabled` | The Drive API is not enabled in the Google Cloud project the service account belongs to. | Enable it at the link in the message, or in the [API library](https://console.cloud.google.com/apis/library/drive.googleapis.com). Wait a few minutes for the change to propagate, then re-run the job. |
+| `HttpError 404 ... File not found: <folder ID>` | The folder is not shared with the service account, or the ID is not a folder's ID. Drive answers `not found` for anything the caller cannot see, so an unshared folder looks the same as a wrong ID. | Share the folder with the service account's email as described under [Folder](#folder), or add the service account to the shared drive. Check the ID against the folder's URL. The service account's email is shown on the data source page. |
+| `HttpError 403 ... insufficientFilePermissions` or `cannotDownloadFile` on a file | The service account sees the folder but not that file, or the file's owner has disabled downloading for viewers. | Share the file, or turn `Viewers and commenters can download` back on; otherwise the file is counted as failed and the rest of the run goes on. |
+| `RefreshError: invalid_grant: Invalid JWT Signature` | The key in the uploaded JSON file is no longer valid: it was deleted or rotated in the Google Cloud console, or the service account was disabled. | Create a new JSON key for the service account, upload it, and pick it as the key file of the data source. The next run uses it. |
+| `RefreshError: invalid_grant: Invalid grant: account not found` | The service account was deleted. | Create a service account and key again, share the folder with the new email, and update the data source. |
+
+A `file_cache is only supported with oauth2client<4.0.0` line at the top of the logs is a notice of the Google client library and not an error.
+
 ## Limitations
 
 - A Google Drive data source is read-only and files-only.
@@ -160,4 +184,4 @@ The index feature group, when turned on, records `gdrive` in `source_type` and t
   Exclude them with an exclude pattern on their names, or keep them in a folder outside the prefix.
 - Files are copied one at a time and the folder tree is listed in full on every run, so a very large folder is better split into several jobs with narrower prefixes.
 - Browsing the folder for a prefix is not available; type the prefix, as a path of folder names.
-- `Test connection` only checks the key file; sharing and the Drive API are checked by the first run.
+- `Test connection` only checks the key file; sharing and the Drive API are checked by the first run, see [Troubleshooting](#troubleshooting).
