@@ -384,17 +384,19 @@ A project can hold several ontology systems, and each one builds:
 
 | Part | Name |
 | --- | --- |
-| App: the HTTP API, the web UI and the chat | `<name>`, a custom app in the `ontology-pipeline` environment |
+| Python environment: a clone of `python-feature-pipeline` with Auto-Ontology installed | `ontology-<commit>`, where `<commit>` is the first 8 characters of the Auto-Ontology commit it installs |
+| App: the HTTP API, the web UI and the chat | `<name>`, a custom app in that environment |
 | App tables: the catalog, the ontology, conversations and settings | `<table prefix><table>`, in the project's online database |
-| Jobs, in the `ontology-pipeline` environment | `<name>-ingest`, `<name>-compile`, `<name>-embed`, `<name>-reset`, `<name>-import` |
+| Jobs, in that environment | `<name>-ingest`, `<name>-compile`, `<name>-embed`, `<name>-reset`, `<name>-import` |
 | Online feature groups, each with an embedding index | `<name_>_data_objects` (tables and columns), `<name_>_semantic` (the ontology) |
 | Models in the Model Registry, imported from Hugging Face | `Nemotron_3_5_Embed_1B_BF16`, `NVIDIA_Nemotron_3_5_Lightning_30B_A3B_FP8` |
 | vLLM deployments | `nemotronembed`, `nemotronllm` |
 
 `<name_>` is the name with hyphens replaced by underscores, and `<table prefix>` is the app's table prefix.
-The models and the deployments are shared by the project's ontology systems: a second system reuses those the first one made, and a system with an external model makes neither that model nor its deployment.
+The environment, the models and the deployments are shared by the project's ontology systems: a second system reuses those the first one made, and a system with an external model makes neither that model nor its deployment.
+Deleting a system keeps the environment.
 Each embedding index holds vectors of the dimension chosen in the form, compared by cosine similarity.
-The system's directory holds `ontology.yaml`, the system's configuration and the only file written from the answers, and the launchers of the app (`app.py`) and of the jobs (`jobs/`), which run the Auto-Ontology runtime that the `ontology-pipeline` environment ships.
+The system's directory holds `ontology.yaml`, the system's configuration and the only file written from the answers, and the launchers of the app (`app.py`) and of the jobs (`jobs/`), which run the Auto-Ontology runtime installed in the system's environment.
 
 #### Before you build an ontology
 
@@ -425,6 +427,7 @@ The build runs these phases:
 | Phase | What the build does |
 | --- | --- |
 | Check the sources and write ontology.yaml | Checks that every source exists, has a supported type and SHARED credentials, and that an external model's account variables are set, then writes `ontology.yaml` |
+| Python environment with Auto-Ontology | Clones `python-feature-pipeline` and installs Auto-Ontology into the clone, or reuses the environment another ontology system made |
 | Import the models and deploy them with vLLM | Imports each local model from Hugging Face at a pinned revision and deploys it, or reuses what another ontology system made; skipped when both models are external |
 | Ontology app | Creates and starts the app, which creates its tables |
 | Jobs, and ingest the sources' metadata | Creates the five jobs, schedules ingest and compile, and runs ingest |
@@ -530,7 +533,7 @@ The Hopsworks MCP server, `hopsworks-mcp`, which ships with the `hopsworks` libr
 
 #### Ontology jobs
 
-The five jobs run in the `ontology-pipeline` environment with 2 cores, 4096 MB and no GPU.
+The five jobs run in the system's `ontology-<commit>` environment with 2 cores, 4096 MB and no GPU.
 Their default arguments name the system's configuration, `--config <dir>/ontology.yaml`, where `<dir>` is the system's directory relative to the project, such as `Users/<user>/sales-ontology`.
 One job works on the ontology at a time: a job that starts while another runs fails with `another ontology pipeline job is running`.
 
