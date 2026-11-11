@@ -264,8 +264,12 @@ Administrators also see the revision of the saved settings, the revision the las
 
 ## Consumer offsets { #onlinefs-offsets }
 
-OnlineFS stores its consumer offsets in the online feature store of each project, per consumer group, topic and partition.
-It keeps the offsets of a saved connection apart from those of the Helm connection, and starts new ones whenever the saved `bootstrap.servers` changes:
+OnlineFS stores its consumer offsets in the `onlinefs.kafka_offsets` table of the RonDB it writes to, per consumer group, topic and partition, with the ID Kafka gives the topic the offset was saved for.
+When a topic is deleted and created again under the same name, after a restore that rebuilt Kafka or by hand, Kafka gives it a new ID, and OnlineFS reads each partition of the new topic from its start instead of resuming at an offset of the earlier topic.
+A running OnlineFS sees the new topic at its next Kafka metadata refresh, every 60 seconds with the chart's `metadata.max.age.ms`.
+If a topic is deleted and created again between two refreshes, OnlineFS may keep its position on the new topic until it restarts, and then reads the new topic from its start.
+
+OnlineFS keeps the offsets of a saved connection apart from those of the Helm connection, and starts new ones whenever the saved `bootstrap.servers` changes:
 
 - With the Helm connection, OnlineFS uses the offsets it has always used, so an upgraded cluster resumes where it was.
 - A saved connection whose `bootstrap.servers` differs from the previous one, or a connection saved where there was none, starts a new set of offsets.
@@ -278,6 +282,86 @@ Hopsworks tells Kafka clusters apart by `bootstrap.servers` alone.
 A new broker list for the same cluster, or moving a connection from the Helm values into Cluster Settings, also makes OnlineFS read the retained records again and write them to the online feature store again.
 Plan such a change for a time when that load is acceptable.
 A change of the Helm connection itself, in the Helm values, keeps the offsets of the Helm connection, as in earlier releases.
+
+### Kafka offsets { #onlinefs-offsets-admin }
+
+The `Kafka offsets` card lists the topics OnlineFS consumes: for each project with an online feature group, every topic its online feature groups write to, the project's online topic or one a feature group names itself.
+Each row shows the project, the topic, its number of partitions in Kafka and the offset changes pending for it.
+`Read only` marks a topic whose offsets cannot be changed, with the reason in its tooltip, as listed in [Changing offsets][onlinefs-offset-changes].
+The search matches the project or the topic name.
+
+<figure>
+  <img src="../../../assets/images/admin/onlinefs/offsets_card.png" alt="The Kafka offsets card listing two topics of the fraud_detection project with their partition counts and pending changes" />
+  <figcaption>The topics OnlineFS consumes</figcaption>
+</figure>
+
+A click on a topic opens its offsets, for each consumer group and partition: the offset OnlineFS resumes from, the offsets Kafka still has, from the first one to the end offset, the lag, and a status.
+Every partition Kafka has is listed, also one OnlineFS saved no offset for.
+
+<figure>
+  <img src="../../../assets/images/admin/onlinefs/offsets_topic.png" alt="The offsets of the fraud_detection_onlinefs topic for the RONDB consumer group, with the actions to change them and an applied change that moved partition 3 to its start" />
+  <figcaption>A topic's offsets and its offset changes</figcaption>
+</figure>
+
+| Status | Meaning |
+| --- | --- |
+| `Current topic` | The offset was saved for the topic Kafka has under this name now. |
+| `Earlier topic` | The offset was saved for an earlier topic of the same name, so OnlineFS reads the partition from its start. |
+| `No topic ID` | The offset was saved without a topic ID, or Kafka gives its topics none, so which topic it belongs to is not known. |
+| `Topic missing` | Kafka has no topic of this name. |
+| `Kafka unavailable` | Hopsworks could not ask Kafka, so the offsets Kafka has and the lag are unknown. |
+| `Not saved` | OnlineFS saved no offset for the partition, so it reads it from its start. |
+
+OnlineFS consumes each topic in two consumer groups: `RONDB`, which writes the online feature store, and `VECTORDB`, which writes embeddings to the vector database.
+With a saved Kafka connection the groups carry a number after an `@`, such as `RONDB@3`, which changes with the saved `bootstrap.servers` as described above.
+A consumer group marked `Not read` belongs to an earlier Kafka connection, and OnlineFS no longer reads its offsets.
+`RONDB` is always listed, and `VECTORDB` once it saved an offset for the topic.
+OnlineFS runs consumers of a group only while its thread number is above 0: with `service.vectorDbThreadNumber` at `0`, the default without VectorDB ingestion, the `VECTORDB` offsets stay as they were.
+
+The lag is the number of records OnlineFS has still to process, written or not.
+It shows for the current topic, and for a partition with no saved offset, in a consumer group of the current connection; elsewhere the page shows `-`, never 0.
+The offsets are those in the RonDB of the region the Hopsworks backend runs in.
+
+#### Changing offsets { #onlinefs-offset-changes }
+
+In a topic's offsets, an administrator can move partitions of one consumer group:
+
+- `Set offset` moves one selected partition to a given offset, from the first offset Kafka still has up to the end offset.
+- `Move to start` moves the selected partitions, or all of them, to the first offset Kafka still has, to process their records again.
+- `Move to end` moves them to the end offset, to skip every record written until then.
+
+The confirmation lists each partition with its saved offset, the offsets Kafka has and the new offset.
+Hopsworks then stores a change for each partition in `onlinefs.kafka_offset_changes` and restarts OnlineFS, as described in [Applying changes][onlinefs-applying-changes].
+OnlineFS applies a change when it next gets the partition, normally during that restart: it saves the new offset and the outcome of the change together, and resumes the partition from it.
+
+- Every OnlineFS pod restarts, one after another, so ingestion of every topic slows or pauses until the rollout ends.
+- The `RONDB` and `VECTORDB` groups move separately, each with changes of its own.
+- Moving back processes the records again under the current rules: rows are written and deletes applied again, ingestion notifications repeat, and readers can see older values until OnlineFS catches up.
+  Records Kafka no longer retains cannot be read again.
+- Moving forward skips records, which never reach the online feature store.
+- The offline feature store is not affected.
+
+| Change state | Meaning |
+| --- | --- |
+| `Pending` | Stored, and waiting for OnlineFS to get the partition. |
+| `Applied` | OnlineFS saved the new offset. The change shows the offset before and after. |
+| `Rejected` | OnlineFS refused it and kept the saved offset, with the reason: the topic was deleted and created again after the change was asked for, Kafka gives the topic no ID, or the offset is no longer in the partition's range, as when Kafka deleted older records meanwhile. |
+| `Expired` | Not applied within 24 hours of the request. |
+| `Cancelled` | Cancelled with `Cancel` while pending. |
+| `Replaced` | A later change for the same partition and consumer group was asked for while it was pending. |
+
+A partition has at most one pending change per consumer group: asking for another replaces it, also when two administrators ask at the same time.
+A change stays pending while OnlineFS does not get the partition, as for a group whose thread number is 0 or when OnlineFS was not restarted.
+When changes are pending and the [status][onlinefs-status] shows no rollout, press `Restart`.
+Each time OnlineFS gets partitions, it gives Kafka 30 seconds for the topic IDs and the ranges of the partitions with changes; a change whose range Kafka does not give in that time stays pending until the next time.
+Every change is kept, with who asked for it and when, its outcome, and the offsets before and after.
+
+A topic is read only, and its changes can be neither asked for nor cancelled, when:
+
+- the project's online feature store is on a satellite, whose OnlineFS this cluster does not restart;
+- the OnlineFS that runs does not apply changes, as an OnlineFS older than 5.3 creates no `onlinefs.kafka_offset_changes`;
+- Kafka could not be asked, has no topic of this name, or gives the topic no ID;
+- the saved [subscription][onlinefs-subscription] leaves the topic out; a subscription in the Helm values is not checked.
 
 ## Startup { #onlinefs-startup }
 
@@ -350,3 +434,45 @@ All three restart OnlineFS as described in [Applying changes][onlinefs-applying-
 
 Every logged-in user can read the status of OnlineFS with `GET /hopsworks-api/api/onlinefs/status`, also with an API key of scope `FEATURESTORE`.
 It returns the state, the replica counts, the message, the settings state, and whether any setting is saved, without the revisions and the restart error.
+
+### Kafka offsets { #onlinefs-offsets-rest-api }
+
+Administrators can read and change the [Kafka offsets][onlinefs-offsets-admin], also with an API key of scope `ADMIN`:
+
+```text
+GET    /hopsworks-api/api/admin/onlinefs/offsets?filter=<text>&offset=<n>&limit=<n>
+GET    /hopsworks-api/api/admin/onlinefs/offsets/projects/{projectId}/topics/{topic}
+POST   /hopsworks-api/api/admin/onlinefs/offsets/projects/{projectId}/topics/{topic}/changes
+DELETE /hopsworks-api/api/admin/onlinefs/offsets/projects/{projectId}/topics/{topic}/changes/{changeId}
+```
+
+- The list returns a page of `items`, by project and topic name, with `count`, the number of topics the filter matches; `limit` is at most 100.
+- A topic returns its `topicId`, its `readOnlyReason` when its offsets cannot be changed, `items` with an entry per consumer group and partition, and its `changes`: every pending change and the 500 newest ended ones, latest request first.
+  A field left out is unknown, such as the `offset` of a partition OnlineFS saved none for.
+- `status` is one of `CURRENT_TOPIC`, `EARLIER_TOPIC`, `TOPIC_ID_UNKNOWN`, `TOPIC_MISSING`, `KAFKA_UNAVAILABLE` and `NOT_SAVED`, the statuses of the table above in that order.
+
+A change moves partitions of one consumer group:
+
+```json
+{
+  "consumerGroup": "RONDB",
+  "partitions": [3],
+  "target": "OFFSET",
+  "offset": 1981,
+  "topicId": "qIquf00TSxOofDURgAgSlg"
+}
+```
+
+- `target` is `OFFSET`, `EARLIEST` or `LATEST`, and `offset` is set for `OFFSET` only.
+- An empty `partitions` moves every partition the topic has.
+- `topicId` repeats the one the topic returned, so a change is refused once the topic was deleted and created again since.
+- The answer holds the stored `changes`, with their `changeId`, and `restartRequested`, false when the restart could not be requested: the changes then stay pending until OnlineFS restarts.
+
+| Status | Error code | When |
+| --- | --- | --- |
+| 400 | `270378` | The change is invalid: no target, a consumer group OnlineFS does not read, an offset with `EARLIEST` or `LATEST`, a partition the topic does not have, or an offset outside the partition's range. |
+| 404 | `270375` | No online feature group of the project writes to the topic. |
+| 409 | `270376` | The topic is read only; the message gives the reason. |
+| 409 | `270377` | The topic was deleted and created again since its offsets were read. |
+| 409 | `270379` | The change to cancel is no longer pending. |
+| 503 | `270374` | The offsets or the changes cannot be read or stored, as before OnlineFS has created its tables. When RonDB did not confirm the commit of a change, the message says it may have been stored: read the topic before asking again. |
