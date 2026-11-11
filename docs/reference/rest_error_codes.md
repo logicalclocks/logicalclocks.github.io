@@ -1460,6 +1460,35 @@ Do not hand-edit the tables below; regenerate them instead.
 | 590011 | `PROJECT_ROLE_VERSION_REQUIRED` | 400 BAD_REQUEST | The version of the project role being changed is required |
 | 590012 | `PROJECT_ROLE_REMOVES_NOTHING` | 400 BAD_REQUEST | A project role must remove at least one permission from its base role |
 
+## SemanticLayerErrorCode
+
+| Code | Name | HTTP status | Message |
+| --- | --- | --- | --- |
+| 600000 | `SEMANTIC_LAYER_DISABLED` | 404 NOT_FOUND | The semantic layer is not enabled on this cluster |
+| 600001 | `SEMANTIC_LAYER_NOT_FOUND` | 404 NOT_FOUND | Semantic project not found |
+| 600002 | `SEMANTIC_LAYER_BUILD_NOT_FOUND` | 404 NOT_FOUND | Semantic layer build not found |
+| 600003 | `SEMANTIC_LAYER_FORBIDDEN` | 403 FORBIDDEN | Not allowed to access this semantic project |
+| 600004 | `SEMANTIC_LAYER_ILLEGAL_ARGUMENT` | 400 BAD_REQUEST | Illegal argument provided |
+| 600005 | `SEMANTIC_LAYER_ALREADY_EXISTS` | 409 CONFLICT | A semantic project with this name already exists in the project |
+| 600006 | `SEMANTIC_LAYER_BUILD_NOT_VALID` | 409 CONFLICT | Only a valid build can be promoted |
+| 600007 | `SEMANTIC_LAYER_ARTIFACT_NOT_FOUND` | 404 NOT_FOUND | The build has no compiled document |
+| 600008 | `SEMANTIC_LAYER_ROOT_PATH_NOT_FOUND` | 404 NOT_FOUND | The semantic project's root path does not exist |
+| 600009 | `SEMANTIC_LAYER_STORAGE_ERROR` | 500 INTERNAL_SERVER_ERROR | Failed to read or write the semantic layer files |
+| 600010 | `SEMANTIC_LAYER_GATEWAY_ERROR` | 502 BAD_GATEWAY | The semantic layer gateway could not compile the files |
+| 600011 | `SEMANTIC_LAYER_SETTINGS_CHANGED` | 409 CONFLICT | The semantic project's settings changed while its files were read; compile again |
+| 600012 | `SEMANTIC_LAYER_INVALID_QUERY` | 400 BAD_REQUEST | Unknown metric or group-by, or the metrics share no time dimension |
+| 600013 | `SEMANTIC_LAYER_NO_VALID_BUILD` | 409 CONFLICT | The semantic project has no valid build |
+| 600014 | `SEMANTIC_LAYER_DASHBOARDS_DISABLED` | 503 SERVICE_UNAVAILABLE | Superset dashboards from the semantic layer are not enabled |
+| 600015 | `SEMANTIC_LAYER_SUPERSET_ERROR` | 503 SERVICE_UNAVAILABLE | Superset did not answer |
+| 600020 | `SEMANTIC_LAYER_EXPORT_NOT_FOUND` | 404 NOT_FOUND | Export not found in the semantic project's current build |
+| 600021 | `SEMANTIC_LAYER_EXPORT_NOT_RUNNABLE` | 409 CONFLICT | The export has no job that can run |
+| 600022 | `SEMANTIC_LAYER_EXPORT_STATUS_REFUSED` | 403 FORBIDDEN | Only the running execution of the export's job reports its status |
+| 600060 | `SEMANTIC_LAYER_FILE_NOT_FOUND` | 404 NOT_FOUND | The definition file does not exist |
+| 600061 | `SEMANTIC_LAYER_FILE_CHANGED` | 412 PRECONDITION_FAILED | The definition file is not the version the request names |
+| 600062 | `SEMANTIC_LAYER_PRECONDITION_REQUIRED` | 428 PRECONDITION_REQUIRED | A write of a definition file needs If-Match or If-None-Match: * |
+| 600063 | `SEMANTIC_LAYER_READ_ONLY` | 409 CONFLICT | The semantic project's files cannot be edited here |
+| 600064 | `SEMANTIC_LAYER_VALIDATION_BUSY` | 429 TOO_MANY_REQUESTS | Too many validations are running; try again shortly |
+
 ## SchemaRegistryErrorCode
 
 This category does not follow the 6-digit convention described at the top of this page; it mirrors the Confluent Schema Registry's own error codes instead.
