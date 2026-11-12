@@ -132,7 +132,8 @@ Each export has a Python job, `semantic-export-<semantic project id>-<export>`, 
 - Hopsworks updates the job right after a build with changed exports starts answering queries, and checks every job every two minutes.
 - An export the served build no longer defines loses its job, and its feature group stays; so does a deleted semantic project.
 
-Data Owners and Data Scientists who can edit the YAML can change what an export reads, and the job writes only the export's own feature group.
+Data Owners and Data Scientists who can edit the YAML can change an export's saved query, target feature group and schedule, and those changes run as the creator.
+The job reads with the creator's access, under the Trino row filters, column masks and denied columns that apply to the creator, and writes only the export's own feature group.
 
 The job needs the Hopsworks 5.3 library in the `python-feature-pipeline` environment; with an older one, the run fails before writing and the job's log says `update the python-feature-pipeline environment to 5.3`.
 
