@@ -316,7 +316,8 @@ The data source keeps a reference to these entries, not a copy.
 Fetching or listing a provided data source returns the status of your binding and the names of your env var and secrets, never your username or password.
 The Python client reads the values from your own account entries when it needs them.
 Deleting the secret or the env var from your account leaves the binding `INCOMPLETE`, and the data source refuses to read until you set your credentials again.
-Removing your credentials deletes the binding, the wallet file, and the env var and secrets that carry the default names above.
+Your [Trino catalogs][data-source-provided-credentials-trino] on the data source keep reading with the login already in their published file, so remove your credentials to stop them using it.
+Removing your credentials deletes the binding, the wallet file, the env var and secrets that carry the default names above, and your [Trino catalogs][data-source-provided-credentials-trino] on the data source.
 The same deletion happens for a member who is removed from the project, and for every member when the data source is deleted.
 Entries saved under names of your own stay in your account, since you may use them elsewhere.
 
@@ -401,38 +402,40 @@ On a feature group whose data source has shared credentials it tests the shared 
 
 ### Trino catalogs { #data-source-provided-credentials-trino }
 
-A provided Oracle data source can back a [Trino catalog][trino-catalogs], and each query through the catalog runs as the member who sends it.
-Such a catalog is always a [private catalog][private-catalogs] of the member who creates it, named `_<username>__<name>` and available in every project they belong to.
+A provided Oracle data source can back a [Trino catalog][trino-catalogs] that reads it as the member who creates it.
+Such a catalog is always a [private catalog][private-catalogs] of that member, named `_<username>__<name>` and available in every project they belong to.
 Each member who wants to query the data source through Trino creates their own, as a Data Owner or a Data Scientist.
 A request for a project catalog from a provided data source is refused with `CREDENTIALS_MODE_NOT_SUPPORTED` (270337), and a catalog on a provided data source cannot be shared, so only its owner queries it.
-The catalog stores no login.
-Its properties name the Trino extra credentials that carry the username and password with each query:
+
+The catalog's properties name the data source instead of holding a login:
 
 ```properties
 user-credential-name=hops_ds_<data source id>_user
 password-credential-name=hops_ds_<data source id>_password
-oracle.connection-pool.enabled=false
 ```
 
-The connection pool is off because a pooled connection keeps the login of the member who opened it.
-Metadata caching is refused for the same reason: a cached table list would show one member what another member's database user can see.
+When the catalog is published to the query engine, Hopsworks puts your username and password for the data source in their place.
+Every Trino client therefore reads the catalog as you, in any of your projects: the SQL runner, `project.get_trino_api()`, Superset, JDBC and the Trino CLI.
+The catalog cannot carry `connection-user` or `connection-password` of its own, since its login always comes from your credentials, and its connection URL stays the data source's, since your credentials are sent to it.
+A Superset dashboard you build on the catalog and share shows its viewers data read with your credentials.
 
-Which clients send the extra credentials:
+The catalog follows your credentials:
 
-| Client | Extra credentials |
+| When you | The catalog |
 | --- | --- |
-| SQL runner in the UI | Added by Hopsworks for the member running the query |
-| `project.get_trino_api().connect()` and `create_engine()` | Fetched by the Python client for the caller |
-| JDBC, the Trino CLI, Superset and other Trino clients | Sent by the client, or the Oracle login fails |
+| Save credentials | Uses them once the query engine reloads its catalogs, as described in [When the catalog goes live][when-the-catalog-goes-live]; until then it uses the ones saved before |
+| Remove your credentials, are removed from the project, or the data source is deleted | Is removed and refused at once, because it would otherwise keep reading with credentials you no longer hold; saving credentials again does not bring it back |
 
-A client that is not listed fetches your values from `GET /hopsworks-api/api/project/<project id>/trino/extra-credentials`, with an API key that has the `TRINO` scope, and sends each entry as a Trino extra credential, for example with the CLI's `--extra-credential hops_ds_<data source id>_user=<username>` or the JDBC `extraCredentials` property.
-A member who has not set credentials for the data source has nothing to send, and the Oracle login fails.
+When your database password changes, save the new one on the data source as well.
+The catalog keeps logging in with the saved password until then, and the database may lock your account after repeated failed logins.
+Editing or deleting the secret or the env var under **Account Settings** does not reach the catalog.
+The catalog changes only when its file is rewritten, that is when you save the credentials on the data source or edit the catalog.
+A query engine restart for another reason reloads it from its unchanged file.
+To stop the catalog using your login, remove your credentials from the data source.
 
 Creating the catalog requires you to have set your own credentials for the data source.
-For a database behind mTLS, the catalog's wallet (`TNS_ADMIN`) is built from your wallet into a [mountable secret of your account][mountable-secrets-for-private-catalogs]; it only secures the transport, and every query still logs in with your username and password.
-The wallet follows your credentials: it is rebuilt when you save a new wallet, and deleted when you remove your credentials, when you leave the project (your credentials go with it), when the data source is deleted, or when you delete your last catalog that uses it.
-The catalog itself stays, like any private catalog, until you delete it.
-It reads only in projects that can read the data source's feature store, since only there are your extra credentials for it sent, and without your credentials it no longer reads at all.
+For a database behind mTLS, the catalog's wallet (`TNS_ADMIN`) is built from your wallet into a [mountable secret of your account][mountable-secrets-for-private-catalogs]; it only secures the transport, and the catalog still logs in with your username and password.
+The wallet follows your credentials: it is rebuilt when you save a new wallet, and deleted when you remove your credentials, or when you delete your last catalog that uses it.
 `Test connection` on the catalog runs with your credentials.
 The catalog becomes queryable after the query engine restarts, as described in [When the catalog goes live][when-the-catalog-goes-live].
 

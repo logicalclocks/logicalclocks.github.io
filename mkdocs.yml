@@ -287,6 +287,7 @@ nav:
               - Evaluation: user_guides/agents/evaluation/index.md
               - Monitoring: user_guides/agents/monitoring/index.md
               - Failure Analysis: user_guides/agents/failure_analysis/index.md
+          - Coding Agents: user_guides/agents/coding_agents/index.md
       - Migration 3.X to 4.0: user_guides/migration/40_migration.md
   - Administration:
       - setup_installation/index.md
@@ -304,6 +305,7 @@ nav:
           - Python Build Performance: setup_installation/admin/build_performance.md
           - User Management: setup_installation/admin/user.md
           - Project Management: setup_installation/admin/project.md
+          - Custom Project Roles: setup_installation/admin/project_roles.md
           - Configure Alerts: setup_installation/admin/alert.md
           - IAM Role Chaining: setup_installation/admin/roleChaining.md
           - Configure Project Mapping: setup_installation/admin/configure-project-mapping.md
@@ -318,6 +320,7 @@ nav:
           - Model Serving Ingress Gateway: setup_installation/admin/model_serving_gateway.md
           - Kafka Quotas: setup_installation/admin/kafka_quotas.md
           - OnlineFS Configuration: setup_installation/admin/onlinefs.md
+          - Security Response Headers: setup_installation/admin/security_headers.md
           - Uninstalling Hopsworks: setup_installation/admin/uninstall.md
           - Upgrades:
               - Upgrading Hopsworks: setup_installation/admin/upgrade.md
