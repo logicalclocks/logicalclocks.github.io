@@ -406,9 +406,9 @@ OnlineFS reads each partition of a recreated topic from its start instead of res
   If the step fails, the pod does not start, as described in [If the offsets-schema step fails][upgrade-onlinefs-offsets-failures].
 - On a Kafka that gives its topics no IDs, OnlineFS cannot tell a recreated topic from the earlier one and resumes at the restored offsets.
   On such a Kafka, stop OnlineFS after the restore, delete the rows of `onlinefs.kafka_offsets` and start OnlineFS again, so that it reads every online topic from its start.
-- Offset changes that were pending at the backup come back with `onlinefs.kafka_offset_changes`.
-  OnlineFS rejects them on a new cluster, since each was asked for a topic Kafka no longer has.
-  After an in-place restore, one restored within 24 hours of its request applies when OnlineFS next gets the partition; cancel it through the [REST API][onlinefs-offsets-rest-api] if it should not.
+- An offset set in [Kafka offsets][onlinefs-offsets-admin] that OnlineFS had not applied at the backup comes back with `onlinefs.kafka_offsets`.
+  OnlineFS clears it on a new cluster without moving the partition, since it was set for a topic Kafka no longer has.
+  After an in-place restore it applies within about 10 seconds; set the partition's offset again if it should not.
 
 ### In-Place Restore { #in-place-restore }
 
