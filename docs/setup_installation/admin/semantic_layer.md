@@ -42,9 +42,10 @@ The gateway's Service, `semantic-gateway`, has four ports:
 | 18443 | `public` | REST and GraphQL, behind the Ingresses. |
 | 18444 | `internal` | Compile and validation requests from Payara; the NetworkPolicy admits only the Payara pods. |
 | 18445 | `metrics` | Prometheus metrics, in the release namespace. |
-| 18446 | `flight` | Arrow Flight SQL, `flightPort`. |
+| 18446 | `flight` | Arrow Flight SQL. The Service keeps this port when `flightPort`, the port of the container and of the external load balancer, changes. |
 
-All of them serve TLS with a certificate from the cluster's CA, the HopsworksCert `semantic-gateway`.
+All but `metrics` serve TLS with a certificate from the cluster's CA, the HopsworksCert `semantic-gateway`.
+Prometheus and the gateway's probes read `metrics` over plain HTTP.
 
 ## Endpoints for clients outside the cluster { #semantic-admin-endpoints }
 
@@ -92,7 +93,7 @@ Under `semantic-gateway:`:
 | `maxRows`, `maxJsonRows` | `1000000`, `100000` | Rows of an Arrow result and of a JSON result. |
 | `sessionCacheSeconds` | `60` | Seconds a replica keeps a caller's session before it asks Hopsworks again. |
 | `buildCacheEntries` | `100` | Compiled builds a replica keeps in memory. |
-| `flightPort` | `18446` | The Arrow Flight SQL port; change `hopsworks.variables.semantic_gateway_flight_port` with it. |
+| `flightPort` | `18446` | The Arrow Flight SQL port of the gateway and of its external load balancer; change `hopsworks.variables.semantic_gateway_flight_port` with it. Superset and other clients inside the cluster keep using port 18446 of the Service. |
 | `biTables.enabled` | `true` | Serve semantic projects as tables over Flight SQL, see [Connect BI tools][semantic-bi-admin]. Experimental. |
 | `handleTtlSeconds` | `3600` | Seconds a Flight ticket, prepared statement or GraphQL query id stays valid. |
 | `cache.maxBytes`, `cache.ttlSeconds`, `cache.entryMaxBytes`, `cache.dataVersionSeconds` | `268435456`, `300`, `8388608`, `30` | The [result cache][semantic-result-cache-admin]. |

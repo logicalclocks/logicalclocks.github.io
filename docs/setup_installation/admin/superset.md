@@ -170,7 +170,7 @@ Without the secret, Hopsworks answers the token request with `503` and the error
 | --- | --- | --- |
 | `superset.mcp.enabled` | `true` | Run the MCP service. |
 | `superset.mcp.replicas` | `1` | Replicas of the service. |
-| `superset.mcp.port` | `5008` | Port of the service. |
+| `superset.mcp.port` | `5008` | Port the service's container listens on. The Service, which the SDK and the CLI call, stays on 5008. |
 | `superset.mcp.jwtSecret` | `null` | Signing key; generated when null and the chart can read the cluster. |
 | `superset.mcp.resources` | requests `100m`, `1Gi`; limits `1`, `2Gi` | Container resources. |
 
