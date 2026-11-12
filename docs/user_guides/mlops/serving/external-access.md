@@ -146,6 +146,59 @@ An external user can use only the deployments granted to them there, with these 
 Listing the project's models, and every other path, is refused with `403`.
 The LLM Gateway serves only the deployments described under [LLM Gateway][rest-api-llm-gateway]; the others stay on their own path.
 A Data Owner can turn the LLM Gateway off for the project or for one deployment, which leaves the deployment's own path as it is.
+A Data Owner can also turn direct access off, see [Turning direct access off][rest-api-direct-access].
+
+### Sharing with projects { #serving-sharing }
+
+A vLLM deployment that the LLM Gateway serves can also be shared with other projects of the cluster.
+Members of those projects call it through the owning project's LLM Gateway with their own API keys, as described under [Coding agents][coding-agents-access].
+They run inference with the five operations listed above, for the deployment's own `model` only.
+They cannot list models, see or manage the deployment, or call its direct route, and each request is attributed to them in the owning project's usage.
+
+Three mechanisms grant access to a deployment, each to a different kind of caller:
+
+| Mechanism | Who it grants | Routes |
+| --- | --- | --- |
+| Project membership | Members of the owning project | LLM Gateway and direct |
+| External access groups | External users in the listed groups | LLM Gateway and direct |
+| Sharing with projects | Members of the projects it is shared with | LLM Gateway only |
+
+Data Owners of the owning project decide, per deployment.
+In the deployment's Overview, the **Sharing** card has:
+
+- the **All projects** switch, which shares the deployment with every project of the cluster;
+- with the switch off, a list of project names, which shares it with the members of those projects only.
+
+Project members see the card, and only Data Owners change it.
+It is hidden when the deployment is not served by the LLM Gateway or when an administrator turned sharing off for the cluster, see [Access to the LLM Gateway][llm-gateway-access].
+
+With the Python client, `Deployment` reads and changes the same state:
+
+```python
+deployment = ms.get_deployment("my_llm_deployment")
+
+print(deployment.shared_with)  # {'all_projects': True, 'projects': []}
+
+# Restrict it to two projects
+deployment.unshare(all_projects=True)
+deployment.share_with(projects=["analytics", "research"])
+print(deployment.shared_with)  # {'all_projects': False, 'projects': [...]}
+```
+
+A new LLM deployment is shared with all projects by default.
+A deployment created before the upgrade that introduced sharing stays project-only until a Data Owner shares it.
+A choice a Data Owner made, including switching **All projects** off, is kept when the deployment leaves and joins the LLM Gateway again.
+
+To keep a deployment reachable only through the LLM Gateway, turn off its [direct access][rest-api-direct-access].
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-class"></code> [`Deployment`][hsml.deployment.Deployment]
+        - <code class="doc-symbol doc-symbol-method"></code> [`shared_with`][hsml.deployment.Deployment.shared_with]
+        - <code class="doc-symbol doc-symbol-method"></code> [`share_with`][hsml.deployment.Deployment.share_with]
+        - <code class="doc-symbol doc-symbol-method"></code> [`unshare`][hsml.deployment.Deployment.unshare]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ### Limits and traces of the LLM Gateway
 

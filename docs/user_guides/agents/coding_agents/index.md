@@ -87,7 +87,13 @@ Claude Code needs vLLM v0.28.0 or later on this route, the first version it was 
 
 ## Access { #coding-agents-access }
 
-Both routes accept the same callers: members of the project, and external users whose groups have [external access][serving-external-access] to the deployment.
+The callers differ by route:
+
+- Members of the project use both routes, unless a Data Owner turned off [direct access][rest-api-direct-access] for the deployment or the project.
+- External users whose groups have [external access][serving-external-access] to the deployment use both routes, under the same exception.
+- Members of other projects use the owning project's LLM Gateway only, for the deployments [shared][serving-sharing] with their project.
+  They send the owning project's namespace in the URL and use their own API key.
+
 Each request needs an [API key][how-to-create-an-api-key] with the **serving** scope, in one of two headers:
 
 - `Authorization: Bearer <key>`, which OpenAI-compatible clients and Claude Code's `ANTHROPIC_AUTH_TOKEN` send.
@@ -95,13 +101,15 @@ Each request needs an [API key][how-to-create-an-api-key] with the **serving** s
 
 Set only one of the two: a request carrying a different API key in each header is refused with `401`.
 
-External users cannot list models, so `GET /v1/models` answers `403` for them.
+Members of other projects and external users cannot list models, so `GET /v1/models` answers `403` for them.
 They set the model explicitly and turn off model discovery in agents that have it.
 
 ## In the Terminal { #coding-agents-terminal }
 
-When you [start a Terminal][start-the-terminal], choose **Hopsworks** as the LLM provider and pick a running vLLM deployment of the project.
-No API key is needed, because the Terminal already holds one.
+When you [start a Terminal][start-the-terminal], choose **Hopsworks** as the LLM provider and pick a running vLLM deployment of the project, or one shared with it.
+The list is grouped: **This project** first, then one **Shared by `<project>`** group for each project that shares deployments with you.
+A shared deployment is listed when it is shared with all projects or with any project you are a member of, and is left out while it is not running.
+No API key is needed, because the Terminal already holds one: a shared deployment is reached through the owning project's LLM Gateway with the serving API key of the Terminal's own project.
 Claude Code, Codex, opencode, Copilot CLI, pi and Hermes then start configured for the deployment and its context window.
 
 Each deployment in the list shows the route the agents will take:
@@ -267,6 +275,31 @@ deployment.get_anthropic_url()  # https://<host>/v1/<project>/<deployment>
         - <code class="doc-symbol doc-symbol-method"></code> [`get_anthropic_url`][hsml.deployment.Deployment.get_anthropic_url]
 
     <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+
+### A deployment of another project { #coding-agents-python-shared }
+
+`ModelServing` and `Deployment` build the URLs of the project they belong to.
+The SDK has no helper for the URL of a deployment shared by another project, so write it by hand from the inference endpoint and the owning project's namespace, and authenticate with your own API key:
+
+```python
+import os
+
+from openai import OpenAI
+
+
+owner_namespace = "<owner namespace>"
+client = OpenAI(
+    base_url=f"https://<host>/v1/{owner_namespace}/v1",
+    api_key=os.environ["HOPSWORKS_SERVING_KEY"],
+)
+response = client.chat.completions.create(
+    model="<deployment>",
+    messages=[{"role": "user", "content": "Hello"}],
+)
+```
+
+The Anthropic Messages API of the same deployment has the base URL `https://<host>/v1/<owner namespace>/v1/anthropic`.
+The deployment name goes in `model`, as for the project's own LLM Gateway.
 
 ## TLS { #coding-agents-tls }
 

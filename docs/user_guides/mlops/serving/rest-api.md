@@ -198,6 +198,31 @@ The LLM Gateway is on for every project and deployment by default, and a Data Ow
 No deployment restarts, every deployment keeps its own URL, and the change takes effect within a minute.
 A deployment's Overview shows whether the LLM Gateway serves it.
 
+#### Turning direct access off { #rest-api-direct-access }
+
+By default a deployment also answers on its own path.
+A Data Owner can make the LLM Gateway its only route:
+
+- For the whole project, with the **Direct access** switch of the LLM Gateway card in the project settings, or `ms.set_direct_access(False)`.
+- For one deployment, with the **Reachable directly, outside the LLM Gateway** switch, next to the LLM Gateway switch, or `deployment.set_direct_access(False)`.
+
+```python
+ms = project.get_model_serving()
+ms.set_direct_access(False)  # every deployment the LLM Gateway serves
+
+deployment = ms.get_deployment("my_llm_deployment")
+deployment.set_direct_access(False)  # this deployment only
+print(deployment.direct_access)  # False
+```
+
+While direct access is off, the deployment's own path refuses every caller with `403`, members of the project and external users with External access groups included.
+The LLM Gateway keeps serving the project's members, the external users and the projects the deployment is shared with.
+
+Direct access turns off only for a deployment the LLM Gateway serves.
+A project switch leaves the other deployments on their own path, and a deployment switch is refused with error code `240079` for a deployment the LLM Gateway does not serve.
+The switch is a stored choice: when the LLM Gateway stops serving the deployment, for example after its LLM Gateway switch is turned off, the deployment answers on its own path again, and the choice applies again once the LLM Gateway serves it.
+The change takes effect within a minute, and no deployment restarts.
+
 !!! api "API reference"
 
     - <code class="doc-symbol doc-symbol-class"></code> [`ModelServing`][hsml.model_serving.ModelServing]
@@ -205,9 +230,12 @@ A deployment's Overview shows whether the LLM Gateway serves it.
         - <code class="doc-symbol doc-symbol-method"></code> [`get_openai_client`][hsml.model_serving.ModelServing.get_openai_client]
         - <code class="doc-symbol doc-symbol-method"></code> [`get_llm_gateway`][hsml.model_serving.ModelServing.get_llm_gateway]
         - <code class="doc-symbol doc-symbol-method"></code> [`set_llm_gateway`][hsml.model_serving.ModelServing.set_llm_gateway]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_direct_access`][hsml.model_serving.ModelServing.get_direct_access]
+        - <code class="doc-symbol doc-symbol-method"></code> [`set_direct_access`][hsml.model_serving.ModelServing.set_direct_access]
     - <code class="doc-symbol doc-symbol-class"></code> [`Deployment`][hsml.deployment.Deployment]
         - <code class="doc-symbol doc-symbol-method"></code> [`get_openai_client`][hsml.deployment.Deployment.get_openai_client]
         - <code class="doc-symbol doc-symbol-method"></code> [`set_llm_gateway`][hsml.deployment.Deployment.set_llm_gateway]
+        - <code class="doc-symbol doc-symbol-method"></code> [`set_direct_access`][hsml.deployment.Deployment.set_direct_access]
 
     <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 

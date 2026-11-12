@@ -109,14 +109,47 @@ Its filter chain checks the API key before anything else, so `GET /v1/models` ne
 ## Access to the LLM Gateway { #llm-gateway-access }
 
 Project members with an allowed role can use their project's LLM Gateway.
-Two switches, both on by default, narrow what it serves:
+Members of other projects can use the deployments shared with them, through the owning project's LLM Gateway.
+Switches, all on by default, narrow what it serves:
 
 - The project switch turns the LLM Gateway off for a whole project, which then answers `404`.
 - The deployment switch keeps one LLM deployment off the LLM Gateway while the others stay on it.
   The deployment is still reachable on its per-deployment path.
+- The direct access switches, for a project and for a deployment, turn off the per-deployment path of the deployments the LLM Gateway serves.
+  They refuse every direct caller, members and external users included, and the LLM Gateway keeps admitting its callers.
 
-Only the project's Data Owners change either switch.
+Only the project's Data Owners change these switches.
 A change takes effect without restarting a deployment: the backend adds or removes the project's routes.
+
+### Sharing with projects { #llm-gateway-sharing }
+
+A Data Owner shares a vLLM deployment that the LLM Gateway serves with all projects or with selected projects, as described under [Sharing with projects][serving-sharing].
+Members of the projects it is shared with use the owning project's LLM Gateway with their own API keys, with the owning project's namespace in the URL, for these operations only:
+
+- Chat completions, `/v1/chat/completions`
+- Completions, `/v1/completions`
+- Embeddings, `/v1/embeddings`
+- Responses, `/v1/responses`
+- Anthropic messages, `/anthropic/v1/messages`
+
+Listing models and every other path are refused for them with `403`, and they have no access to the deployment's per-deployment path.
+A deployment shared with all projects admits every user with an allowed platform role, an administrator included, whatever the project.
+
+A new vLLM deployment is shared with all projects.
+A deployment that existed before the upgrade that introduced sharing stays project-only until a Data Owner shares it.
+
+The cluster variable `serving_sharing_enabled` controls the feature:
+
+| Variable | Default | Effect |
+| --- | --- | --- |
+| `serving_sharing_enabled` | `true` | When `false`, no deployment is shared, the Sharing card is hidden, the Terminal lists no shared deployment and the sharing API answers error code `240078` |
+
+Change it in [Cluster Configuration][cluster-configuration].
+The Hopsworks Helm chart seeds it once, so an upgrade keeps the value an administrator set.
+A change reaches the LLM Gateway's routes within about a minute.
+The sharing choices of the Data Owners are kept while it is `false`, and apply again when it is `true`.
+
+### External users { #llm-gateway-access-external }
 
 External users reach a deployment through its External access groups, described in [External access][serving-external-access], and those groups also grant its use through the LLM Gateway.
 An external user whose groups are listed for a deployment can send requests with that deployment as the `model`, and no others, to these operations only:
@@ -152,10 +185,10 @@ Starting it again later has the same effect again.
 
 ## Identity headers { #llm-gateway-identity }
 
-For a request that passes the check, `model-serving-authenticator` returns three headers that Envoy adds to the request, for members and external users alike:
+For a request that passes the check, `model-serving-authenticator` returns three headers that Envoy adds to the request, for members, members of other projects and external users alike:
 
 - `x-hopsworks-user`, the username.
-- `x-hopsworks-project`, the project's namespace.
+- `x-hopsworks-project`, the namespace of the project that owns the deployment.
 - `x-hopsworks-project-id`, its numeric id.
 
 The rate limits, the traces, the access logs and the usage metrics are keyed on them.
@@ -335,7 +368,7 @@ The `OpenSearchCleaner` deletes an index older than `elastic_logs_index_expirati
 The ext_proc sidecar's metrics follow the OpenTelemetry generative AI conventions, for example `gen_ai_client_token_usage` and `gen_ai_server_request_duration_seconds`.
 They are labelled with the model, the backend, `<Hopsworks namespace>/<project namespace>-<deployment>-aibackend`, and `hopsworks_user`, taken from `x-hopsworks-user`.
 Prometheus sets their `namespace` label to the project's namespace, so token usage can be summed per project, per deployment and per user.
-The number of `hopsworks_user` values is bounded by the number of project members and of external users granted access to a deployment.
+A deployment shared with all projects admits every user of the cluster, so the number of `hopsworks_user` values is bounded by the number of users of the cluster, external users granted access to a deployment included.
 
 Grafana shows them in the ModelServing folder:
 
@@ -354,6 +387,7 @@ The access logs carry the same user, model and token counts per request, for aud
 - While the LLM Gateway is published, a vLLM deployment created without a minimum number of instances gets a minimum of 1, so it does not scale to zero when idle and the LLM Gateway serves it.
   An explicit minimum of 0 is allowed, and a deployment with it is not served by the LLM Gateway.
 - Any member of the project can reach every one of its deployments through the LLM Gateway, unless a Data Owner turns it off for the project or for a deployment, as described under [Access to the LLM Gateway][llm-gateway-access].
+- Sharing is per deployment and has no finer grain: a deployment shared with a project is open to every member of it with an allowed role, and one shared with all projects to every user with an allowed role.
 - External providers, MCP and `InferencePool` backends are not part of it.
 - On RonDB 26.02 (26.02.11 and 26.02.13 tested), the queries behind the trace pages can stop a RonDB data node with error 2341, `DBQACC (Line: 2154) Check m_curr_acc->oprec_pool.getValidPtr(loopPtr) failed`.
   It happens when one statement reads the `messages` column and looks up parent spans by primary key, which the project trace list, the session view and the message search do, with the table in memory or on disk alike.
