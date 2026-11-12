@@ -4,7 +4,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794470192` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794471731` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -103,7 +103,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
               isDefault: true
               name: Prometheus
               type: prometheus
-              url: http://prometheus.prometheus.service.consul:9090
+              url: http://prometheus.prometheus.service.{{ .Values.global._hopsworks.consulDomainName }}:9090
         downloadDashboardsImage:
           pullPolicy: IfNotPresent
           registry: docker.hops.works
@@ -342,7 +342,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
               isDefault: true
               name: Prometheus
               type: prometheus
-              url: http://prometheus.prometheus.service.consul:9090
+              url: http://prometheus.prometheus.service.{{ .Values.global._hopsworks.consulDomainName }}:9090
         downloadDashboardsImage:
           pullPolicy: IfNotPresent
           registry: docker.hops.works

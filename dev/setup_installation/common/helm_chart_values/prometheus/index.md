@@ -4,7 +4,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794470192` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794471731` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -34,9 +34,6 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             enabled: true
             storageClass: null
       prometheus-adapter:
-        dnsConfig:
-          searches:
-          - service.consul
         image:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/prometheus/prometheus-adapter
@@ -46,7 +43,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         prometheus:
           path: ''
           port: 9090
-          url: http://prometheus.service.consul
+          url: http://prometheus.service.{{ .Values.global._hopsworks.consulDomainName }}
         resources:
           limits:
             cpu: 100m
@@ -117,9 +114,6 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     ??? note "Default"
 
         ```yaml
-        dnsConfig:
-          searches:
-          - service.consul
         image:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/prometheus/prometheus-adapter
@@ -129,7 +123,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         prometheus:
           path: ''
           port: 9090
-          url: http://prometheus.service.consul
+          url: http://prometheus.service.{{ .Values.global._hopsworks.consulDomainName }}
         resources:
           limits:
             cpu: 100m

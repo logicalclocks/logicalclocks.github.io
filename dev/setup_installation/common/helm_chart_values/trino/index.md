@@ -4,7 +4,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794470192` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794471731` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -92,7 +92,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 
 `trino.auth.monitoringUser` <a class="headerlink" href="#helm.trino.auth.monitoringUser" title="Permanent link">#</a> { #helm.trino.auth.monitoringUser }
 :   Type `string`, default `"prometheus"`.
-    Username used by Prometheus for scraping Trino metrics. If you override this value, you MUST also:   1. Update Trino access control to grant this user the required permissions      (e.g. adjust `accessControl.rules.rules.json` accordingly).   2. Update the Prometheus scrape configuration so that the same username is used:      set `.Values.prometheus.prometheus.serverFiles.prometheus.yml.scrape_configs[*].basic_auth.username`      for the scrape job with `job_name: "trino"` to match this value.
+    Username used by Prometheus for scraping Trino metrics, which Prometheus reads from the trino-monitoring-credentials Secret. If you override this value, you MUST also grant this user the required permissions in Trino access control (e.g. adjust `accessControl.rules.rules.json` accordingly).
 
 `trino.auth.monitoringUserPwd` <a class="headerlink" href="#helm.trino.auth.monitoringUserPwd" title="Permanent link">#</a> { #helm.trino.auth.monitoringUserPwd }
 :   Type `string`, default `""`.
