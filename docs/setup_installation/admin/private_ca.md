@@ -18,23 +18,29 @@ The bundle replaces the directory, so it holds the public root CAs as well as th
 
 - Kyverno installed in the cluster, engine only.
   The chart is tested with the Kyverno Helm chart 3.3.3 (Kyverno 1.13.1).
-- The private CA certificate in PEM format.
+- The certificates of the private CA in PEM format, one file each: the root CA, and every intermediate CA between it and the service's certificate, such as an issuing CA.
 - `kubectl`, `docker` and `keytool` (from a Java runtime) on the machine that builds the bundle.
 
 ## Build the bundle { #private-ca-bundle }
 
-The bundle has three keys:
+Add the root CA and every intermediate CA to the bundle.
+The clients differ in what they accept: boto3 does not trust a service through an intermediate CA alone, and no client fetches an intermediate CA that the service does not send.
+`openssl s_client -connect <host>:<port> -showcerts` lists the certificates a service sends.
 
-- `ca-certificates.crt`: the public root CAs and the private CA, read by Python, DuckDB and other clients that use the system bundle.
-- `java-cacerts`: the Java truststore with the private CA added, mounted at `/etc/ssl/certs/java/cacerts`, where the Java runtime of the Hopsworks Spark images looks for it.
-- `private-ca.crt`: the private CA alone.
-  The Hopsworks server imports every `.crt` and `.pem` file of the bundle into its own truststore when it starts, the first certificate of each file only, so a CA chain needs one key per certificate.
+The bundle has these keys:
 
-Start from the files of an image the workloads use, so the public roots match theirs, and add the private CA:
+- `ca-certificates.crt`: the public root CAs and the private CA certificates, read by Python, DuckDB and other clients that use the system bundle.
+- `java-cacerts`: the Java truststore with the private CA certificates added, mounted at `/etc/ssl/certs/java/cacerts`, where the Java runtime of the Hopsworks Spark images looks for it.
+- `private-ca.crt`: the root CA alone.
+- `private-ca-<n>.crt`: each intermediate CA alone, one key per certificate.
+  The Hopsworks server imports every `.crt` and `.pem` file of the bundle into its own truststore when it starts, the first certificate of each file only.
+
+Start from the files of an image the workloads use, so the public roots match theirs, and add the private CA certificates:
 
 ```bash
 IMAGE=<a Hopsworks Spark image>
-CA=private-ca.crt
+ROOT=root-ca.crt
+INTERMEDIATES=(issuing-ca.crt)
 mkdir bundle
 
 cid=$(docker create "$IMAGE")
@@ -42,13 +48,19 @@ docker cp -L "$cid:/etc/ssl/certs/ca-certificates.crt" bundle/ca-certificates.cr
 docker cp -L "$cid:/etc/ssl/certs/java/cacerts" bundle/java-cacerts
 docker rm "$cid"
 
-cat "$CA" >> bundle/ca-certificates.crt
-keytool -importcert -noprompt -keystore bundle/java-cacerts -storepass changeit -alias private-ca -file "$CA"
+files=(--from-file=private-ca.crt="$ROOT")
+n=0
+for cert in "$ROOT" "${INTERMEDIATES[@]}"; do
+  cat "$cert" >> bundle/ca-certificates.crt
+  keytool -importcert -noprompt -keystore bundle/java-cacerts -storepass changeit -alias "private-ca-$n" -file "$cert"
+  [ "$cert" = "$ROOT" ] || files+=(--from-file="private-ca-$n.crt=$cert")
+  n=$((n + 1))
+done
 
 kubectl -n hopsworks create configmap ca-pemstore \
   --from-file=ca-certificates.crt=bundle/ca-certificates.crt \
   --from-file=java-cacerts=bundle/java-cacerts \
-  --from-file=private-ca.crt="$CA"
+  "${files[@]}"
 ```
 
 Create the ConfigMap with `kubectl create`, or with `kubectl apply --server-side`.
@@ -82,6 +94,8 @@ hw-kyverno:
 - `preconditions.enabled: false` mounts the bundle into every pod of the Hopsworks namespace and of the project namespaces, which covers Spark, Python and notebook workloads.
   With the preconditions on, the policy only reaches the pods that opt in: the admin server, the Arrow Flight server, HopsFS, and the docker and git jobs listed in `hw-kyverno.policies.addCertificatesVolume.labels`.
 - `items` places the Java truststore in the `java` subdirectory, which a ConfigMap key cannot name.
+  It also lists the other keys to mount, and a key without an entry is not mounted, so add one per intermediate CA key, such as `- {key: private-ca-1.crt, path: private-ca-1.crt}`.
+  List only keys the ConfigMap has: a pod waits in `ContainerCreating` while an entry names a missing key.
 - `envs` points the clients that do not read `/etc/ssl/certs` at the bundle: boto3 reads `AWS_CA_BUNDLE`, and the `requests` library reads `REQUESTS_CA_BUNDLE`.
 - Leave `hw-kyverno.policies.addCertificatesVolume.labels` unset: a value replaces the default list rather than extending it.
 
@@ -119,7 +133,7 @@ All values are listed in [Kyverno values][helm-values-hw-kyverno].
 ## Verify { #private-ca-verify }
 
 - In a pod of a project namespace, `/etc/ssl/certs/ca-certificates.crt` and `/etc/ssl/certs/java/cacerts` exist.
-- `keytool -list -keystore /etc/ssl/certs/java/cacerts -storepass changeit -alias private-ca` finds the CA.
+- `keytool -list -keystore /etc/ssl/certs/java/cacerts -storepass changeit -alias private-ca-0` finds the root CA.
 - An S3 data source on the store, created with its `https://` endpoint, lists the bucket's tables in the data source view.
 
 ## Rotate the CA { #private-ca-rotation }
