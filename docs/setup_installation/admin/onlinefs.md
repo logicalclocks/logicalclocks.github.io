@@ -329,7 +329,9 @@ In a topic's offsets, an administrator can move partitions of one consumer group
 The confirmation lists each partition with its min, current and max offset and the new offset.
 Hopsworks then sets the new offset as the partition's `desired_offset` in `onlinefs.kafka_offsets`, the start and the end as Kafka has them at that moment.
 The OnlineFS consumer that holds the partition looks for a new offset every 10 seconds, between batches, and moves the partition there with no restart: it saves the new offset, clears `desired_offset`, and resumes the partition from it.
-The page reads the topic's offsets again every 5 seconds; after a move back, OnlineFS can catch up before the page shows the new current offset.
+The page reads the topic's offsets again every 5 seconds.
+Under its current offset, a partition shows `Moving to <offset>` until OnlineFS moved it, then `Moved to <offset> by <time>`, the end of the first read that showed the move, until the page is closed.
+After a move back, OnlineFS can catch up before that read, so the current offset may already be at the max offset again.
 
 - Ingestion of other partitions and topics goes on.
 - The `RONDB` and `VECTORDB` groups move separately.
@@ -340,6 +342,7 @@ The page reads the topic's offsets again every 5 seconds; after a move back, Onl
 
 Setting another offset for a partition before OnlineFS moved it replaces the first, also when two administrators set one at the same time.
 OnlineFS clears a desired offset without moving the partition when the topic was deleted and created again since it was set, once OnlineFS has seen the new topic at its metadata refresh, or when Kafka no longer has the offset, as when it deleted older records meanwhile, and logs a warning.
+The page shows such a partition as moved too, since the desired offset is gone either way; the warning tells them apart.
 A partition no OnlineFS consumer holds, as in a group whose thread number is 0, moves when a consumer gets it.
 Hopsworks logs who set which offsets; OnlineFS logs each move.
 
@@ -433,7 +436,7 @@ POST /hopsworks-api/api/admin/onlinefs/offsets/projects/{projectId}/topics/{topi
 - The list returns a page of `items`, by project and topic name, with `count`, the number of topics the filter matches; `limit` is at most 100.
 - A topic returns its `topicId`, its `readOnlyReason` when its offsets cannot be changed, and `items` with an entry per consumer group and partition.
   A field left out is unknown, such as the `offset` of a partition OnlineFS saved none for.
-- Each entry of `items` has the `offset` OnlineFS saved, `beginningOffset` and `endOffset`, the offsets Kafka has, `lag`, `activeConsumerGroup` and a `status`.
+- Each entry of `items` has the `offset` OnlineFS saved, the `desiredOffset` set that OnlineFS has not moved the partition to yet, `beginningOffset` and `endOffset`, the offsets Kafka has, `lag`, `activeConsumerGroup` and a `status`.
   `lag` is the number of records OnlineFS has still to process, written or not; it is set for the current topic, and for a partition with no saved offset, in a consumer group of the current connection.
 
 | `status` | Meaning |
