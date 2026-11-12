@@ -221,6 +221,7 @@ Kubernetes rejects a Pod whose request is above its limit, so if you raised a co
 
 - Init containers have their own waiter, tool and runtime tiers under `global._hopsworks.initContainerResources`.
   The model-serving authenticator and webhook have separate resource maps under `kserve.servingAuthenticator.resources` and `kserve.servingWebhook.resources`.
+  Istiod's resources are under `kserve.istio.pilot.resources`: it keeps Istio's `500m` CPU and `2Gi` memory requests and gets a `2` CPU and `2Gi` memory limit.
   Registry node-configuration init containers accept partial resource overrides under `docker-registry.tamperContainerEngine.initContainerResources`.
   The backup namespace-filter Job accepts partial resource overrides under `hopsworks.velero.backup.dynamicNamespaceFilter.resources`, with a `256Mi` memory request and a `1Gi` memory limit.
 - Review existing JVM heap customizations before accepting the new memory limits.
