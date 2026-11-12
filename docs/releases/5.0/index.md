@@ -1,8 +1,8 @@
 ---
 releases:
   "5.0.15":
-    released: "TBD"
-    python_client: "5.0.10"
+    released: "2026-11-11"
+    python_client: "5.0.11"
   "5.0.14":
     released: "2026-10-16"
     python_client: "5.0.10"
@@ -56,20 +56,85 @@ The releases of Hopsworks 5.0, newest first.
 
 ### What's changed
 
+- [API] [FRONTEND] Fixed deleting a feature group on an S3 or GCS data source also deleting the data of other feature groups whose folder starts with the same name, such as version 10 when deleting version 1; an object S3 refuses to delete now fails the delete instead of being ignored.
+- [API] [FRONTEND] Fixed model deployments never becoming ready, with an x509 error, when the image registry has an organisation path or a port.
+- [API] [FRONTEND] Fixed, on clusters with more than one RonDB MySQL server, library installs building on an older image of the environment and losing earlier installs, and jobs running on that older image.
+- [API] [FRONTEND] Changed the Kubernetes Monitoring dialog of a job to stay open when the run ends and show its final status with the last pods and events it observed; a Spark run that Kubernetes refuses to start, such as for a ResourceQuota or LimitRange, now shows the reason in the dialog and in its `stderr.log`.
+- [API] [FRONTEND] Fixed Superset and Trino member and dataset sharing operations running in projects that don't have those services, and queued Superset operations of such projects retrying forever.
+- [API] [FRONTEND] Fixed the logs of a project whose Kubernetes namespace was created beforehand under another name (`hopsworks.variables.kube_skip_namespace_creation`), deployment logs included, going to OpenSearch indices the project can't read; they are now named after the project.
+- [API] [FRONTEND] Fixed project creation sometimes failing and rolling back on a group that "already exists".
+- [API] [FRONTEND] Fixed a feature group deleted while its feature usage was being refreshed coming back as an empty feature group, which made deleting the feature logs of a feature view fail and left its log feature group behind.
+- [API] Removed the Python client's dependency on pyjks, so it installs on Windows.
+- [API] Fixed `hopsworks.login()` and Kafka inserts failing with `FileNotFoundError` on Windows, where the Python client used `/tmp`.
+- [FRONTEND] Fixed **Make a copy** of a job overwriting the job whose name the copy was given.
+- [FRONTEND] Added **File**, **Main class** and **Default arguments** to **Make a copy** of a job, prefilled from the job, so that a copy can run another program.
+- [FRONTEND] Fixed **Make a copy** of a job with environment variables failing with HTTP 400, and **Export** of such a job writing its environment variables in a form the job API does not accept.
+- [FRONTEND] Fixed a Jupyter server that had just started failing requests on clusters with more than one Hopsworks instance.
+- [HELM] Addressed vulnerabilities in Filebeat log shipping.
+  Because of a security fix, if several Hopsworks deployments share the cluster, set `olk.filebeat.namespaceSelector` in each of them ([values][docs-values-olk-filebeat-namespace-selector]).
+- [HELM] Fixed Filebeat sending every container log on a node again after each restart, pod re-creation or `helm upgrade`, which could fill OpenSearch with duplicates until it stopped ingesting.
+  The first Filebeat start after the upgrade sends each node's current logs once more.
+- [HELM] Added pinning the Kafka bootstrap and each broker LoadBalancer Service to its own MetalLB address, with `kafka.cluster.kafka.externalLoadBalancer.bootstrapAnnotations` and `brokerAnnotations` ([values][docs-values-kafka-broker-annotations]).
+- [HELM] Added pinning the node ports of the external data services when their load balancer is unmanaged, with their `nodePort` values (`bootstrapNodePort` and `startingNodePort` for Kafka).
+- Addressed vulnerabilities in the Payara, Hopsworks, Hopsworks CA, Hopsworks database migration, Superset, Grafana, Prometheus, Prometheus config reloader, Prometheus node exporter, Alertmanager, Pushgateway, Prometheus adapter, kube-state-metrics, OpenSearch Dashboards, OpenSearch metrics exporter, Logstash, Trino, Consul and remote shuffle service images, and in the MySQL and Redis of Superset.
+- Fixed the Superset Redis being OOM-killed every few hours by zombie processes its health probes left behind.
 - Changed the RonDB REST server to size its buffer pool from its memory limit, return idle buffers after 15 minutes and opt out of transparent huge pages, so that its memory stays bounded.
+- Fixed the `TooManyShards` alert never firing; a cluster above 90% of its shard limit starts alerting after the upgrade.
 
 ### Breaking changes
 
-- [API] A batch REST request with more than 4096 operations, or a batch feature vector request with more than 4096 entries, is now rejected by the RonDB REST server with HTTP 413, where it accepted any number; split larger batches, or raise `rondb.rondb.rdrs.internal.maxOperationsPerBatchRequest`.
+- [API] A batch REST request with more than 4096 operations, or a batch feature vector request with more than 4096 entries, is now rejected by the RonDB REST server with HTTP 413, where only the 1 MiB request body limit bounded it; split larger batches, or raise `rondb.rondb.rdrs.internal.maxOperationsPerBatchRequest`.
 - [API] A primary key read of a BLOB or TEXT value larger than 2 MiB now fails that operation with HTTP 413, and a feature vector with such a value fails with error 22 `Feature value too large.`, where the RonDB REST server returned it; raise `rondb.rondb.rdrs.internal.maxBlobTextValueBytes` (`0` for no limit) if you store larger values.
 - [HELM] Remove `rondb.rondb.rdrs.internal.bufferSize`, `gomaxprocs` and `maxAllocatedBuffers` from your values, which the chart ignored, or `helm upgrade` fails before changing anything.
+- [HELM] Prometheus is upgraded from 2.51 to 3.15 and Alertmanager from 0.27 to 0.34; check custom alert rules and scrape configs against the [Prometheus 3 migration guide](https://prometheus.io/docs/prometheus/latest/migration/), and remove `auto-gomemlimit` and `auto-gomaxprocs` from `prometheus.prometheus.server.extraArgs.enable-feature` if your values set them.
+  Back up the Prometheus server volume before upgrading: Prometheus 2.51 can't read the data 3 writes, so `helm rollback` alone doesn't bring the old server back; see `README.md` in the 5.0 chart.
 - [HELM] If you pin `rondb.rondb.images.rondb.tag` to a version older than 26.02.12, set `rondb.rondb.rdrs.internal.bufferShrinkAfterS: null` before upgrading, or upgrade the image: the chart now sets `Internal.BufferShrinkAfterS`, which RonDB REST server images before 26.02.12 reject, and they then don't start.
+- [HELM] If you pin `hopsworks.image.admin.tag`, pin it to 5.0.14 or later: earlier Hopsworks images can't read the responses of the Alertmanager 0.34 that the chart now deploys, where they read those of 0.27; see `README.md` in the 5.0 chart.
+- [HELM] Grafana is upgraded from 10.2 to 12.4, which no longer loads AngularJS panel plugins, though it converts the old core graph, table and singlestat panels; check dashboards you mount through `grafana.grafana.dashboardsConfigMaps` against the [Grafana 12 breaking changes](https://grafana.com/docs/grafana/latest/whatsnew/whats-new-in-v12/whats-new-in-v12-0/#breaking-changes).
+
+### Upgraded components
+
+| Component | 5.0.14 | 5.0.15 |
+| --------- | ------ | ------ |
+| Alertmanager | v0.27.0 | 0.34.2-alpine-h2.0 |
+| Base environment images | 5.0.11 | 5.0.12 |
+| Consul | 1.16.3 | 1.16.4-alpine-h1 |
+| Grafana | 10.2.2-h7.1 | 12.4.14-h0.1 |
+| kube-state-metrics | v2.12.0 | 2.20.0-alpine-h2.1 |
+| Logstash | 7.17.9.6 | 7.17.29.8 |
+| MySQL Connector/J | 8.0.21.0 | 8.0.21.2 |
+| OpenSearch Dashboards | 1.3.6.8 | 1.3.6.10 |
+| OpenSearch metrics exporter | v1.7.0 | 1.11.0-alpine-h2.1 |
+| Payara | 6.2024.12-jdk17.8.1 | 6.2024.12-jdk17.8.3 |
+| Prometheus | v2.51.2 | 3.15.1-alpine-h2.0 |
+| Prometheus adapter | v0.12.0 | 0.12.0-alpine-h2.1 |
+| Prometheus config reloader | v0.70.0 | 0.93.1-alpine-h2.1 |
+| Pushgateway | v1.8.0 | 1.11.3-alpine-h2.1 |
+| Remote shuffle service (Apache Uniffle) | 0.10.8.2 | 0.10.8.3 |
+| Remote shuffle service init image | 0.9.1 | 0.9.3 |
+| RonDB | 26.02.11 | 26.02.13 |
+| Superset | 6.0.0p3.5 | 6.0.0p4.7 |
+| Superset init image | 0.14.0-alpine-h1.1 | 0.14.0-alpine-h2.1 |
+| Superset MySQL | 8.4.11-ubuntu24.04-h5 | 8.4.13-ubuntu24.04-h1 |
+| Superset MySQL metrics exporter | 0.20.0-alpine-h1.1 | 0.20.0-alpine-h2.1 |
+| Superset MySQL volume permissions image | 12-alpine-h1.1 | 12-alpine-h2.1 |
+| Superset Redis | 7.4.11-alpine-h2 | 7.4.11-alpine-h4 |
+| Superset Redis metrics exporter | 1.90.0-alpine-h1.1 | 1.90.0-alpine-h2.1 |
+| Trino | 480.1-v2 | 480.1-v3 |
 
 ### Configuration changes
 
 - [HELM] Changed the memory request and limit of the RonDB REST server pods (`rondb.rondb.resources.requests.memory.rdrsMiB`, `rondb.rondb.resources.limits.memory.rdrsMiB`) from 100 MiB and 500 MiB to 2 GiB; check node capacity before the upgrade.
   Large batches, wide rows or feature views with many feature groups can fill the RonDB REST server's buffer pool, which then answers HTTP 503, also to concurrent requests, and raising `maxOperationsPerBatchRequest` doesn't enlarge it: raise both values above 2 GiB for such workloads, or send smaller batches or fewer at once.
+- [HELM] Removed `auto-gomemlimit,auto-gomaxprocs` from `prometheus.prometheus.server.extraArgs.enable-feature`, which Prometheus 3 rejects; `auto-gomemlimit.ratio` stays.
+- [HELM] Changed `prometheus.prometheus-adapter.image.repository` to `docker.hops.works/prometheus/prometheus-adapter`, also in `values.airgap.yaml`, and set `prometheus.prometheus.kube-state-metrics.image.repository` to `prometheus/kube-state-metrics` and `olk.prometheus-elasticsearch-exporter.image.repository` to `prometheus/elasticsearch-exporter`; if you mirror images or override these repositories, mirror the new images.
+- [HELM] Changed the Consul image in `values.consul.yaml`, the values of a separately installed Consul such as on OpenShift, and in `values.airgap.yaml` to `1.16.4-alpine-h1`; upgrade a separately installed Consul with the 5.0.15 `values.consul.yaml` to get the new image.
+- [HELM] Changed the default of `olk.prometheus-elasticsearch-exporter.es.cluster_settings` to `true`, which the `TooManyShards` alert needs.
+- [HELM] Fixed the values schema rejecting `hopsworks.variables.loadbalancer_external_domain_namenode` and `hopsworks.variables.loadbalancer_external_domain_datanode`.
 - [HELM] Added the RonDB REST server settings the chart didn't expose, under `rondb.rondb.rdrs`, such as its buffer pool, its request, BLOB and batch size limits, its rate limit and its use of transparent huge pages.
+- [HELM] Added `nodePort` values to pin the node ports of unmanaged external load balancers: ArrowFlight, OpenSearch, the HopsFS NameNode and DataNodes, Trino, the Hive Metastore, Kafka (`bootstrapNodePort`, `startingNodePort`) and the RonDB MySQL and REST servers.
+- [HELM] Added `kafka.cluster.kafka.externalLoadBalancer.bootstrapAnnotations` and `brokerAnnotations`, the annotations of the Kafka bootstrap Service and of each broker's Service, merged over `annotations`.
+- [HELM] Added `olk.filebeat.namespaceSelector`, a label selector that project and satellite namespaces must also match for Filebeat to ship their logs.
 
 ## 5.0.14 { #hopsworks-5-0-14 }
 
@@ -749,3 +814,5 @@ No upgrade steps are listed for this release.
 
 [docs-env-clone-upgrades]: https://docs.hopsworks.ai/5.0/user_guides/projects/python/python_env_clone/#concerning-upgrades
 [docs-model-server]: https://docs.hopsworks.ai/5.0/user_guides/mlops/serving/predictor/#model-server
+[docs-values-kafka-broker-annotations]: https://docs.hopsworks.ai/5.0/setup_installation/common/helm_chart_values/kafka/#helm.kafka.cluster.kafka.externalLoadBalancer.brokerAnnotations
+[docs-values-olk-filebeat-namespace-selector]: https://docs.hopsworks.ai/5.0/setup_installation/common/helm_chart_values/olk/#helm.olk.filebeat.namespaceSelector
