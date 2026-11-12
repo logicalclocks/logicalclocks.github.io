@@ -329,7 +329,7 @@ In a topic's offsets, an administrator can move partitions of one consumer group
 The confirmation lists each partition with its min, current and max offset and the new offset.
 Hopsworks then sets the new offset as the partition's `desired_offset` in `onlinefs.kafka_offsets`, the start and the end as Kafka has them at that moment.
 The OnlineFS consumer that holds the partition looks for a new offset every 10 seconds, between batches, and moves the partition there with no restart: it saves the new offset, clears `desired_offset`, and resumes the partition from it.
-The page reads the topic's offsets again every 5 seconds.
+The page reads the topic's offsets again every 5 seconds while its browser tab is visible, and says when the next read is.
 Under its current offset, a partition shows `Moving to <offset>` until OnlineFS moved it, then `Moved to <offset> by <time>`, the end of the first read that showed the move, until the page is closed.
 After a move back, OnlineFS can catch up before that read, so the current offset may already be at the max offset again.
 
