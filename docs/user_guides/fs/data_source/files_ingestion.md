@@ -96,6 +96,8 @@ For an ADLS, SFTP or Google Drive data source only the second is offered, since 
 9. Under `Advanced`:
     - **Files per page**: how many objects a listing request returns, `100` by default.
     - **Fail on first error**: stop the run at the first file that fails instead of continuing with the others.
+    - **Transform script**: an optional Python file of the project that runs on every file before it is stored; see [Transforming files](#transforming-files).
+      **Keep the original files**, shown once a script is chosen, also stores each file as it is in the source.
     - **Job name**: `<data source>_<dataset>_files` by default, with every character outside letters, digits and underscore replaced by `_`.
     - **Alerts**: an alert receiver notified when a run fails.
 
@@ -112,7 +114,7 @@ The job is also started unless you turn `Start the job after creation` off.
 ### The job page
 
 The job appears in the `Jobs` view like any other ingestion job, and its page shows the data source, prefix, patterns and dataset it copies into.
-`Edit` changes the prefix, patterns, mirroring, indexing, size cap, schedule and resources; the data source and the dataset of a job cannot change, so create another job to copy into a different dataset.
+`Edit` changes the prefix, patterns, mirroring, indexing, size cap, transform script, schedule and resources; the data source and the dataset of a job cannot change, so create another job to copy into a different dataset.
 
 <!-- TODO screenshot files_ingestion_job.png to capture; uncomment once the file exists:
 <figure markdown>
@@ -122,6 +124,7 @@ The job appears in the `Jobs` view like any other ingestion job, and its page sh
 -->
 
 Each execution row shows the counters of the run: files listed (after the include and exclude patterns), copied, updated, skipped as unchanged, deleted, failed, oversized and unsupported, and the bytes copied.
+A run of a job with a transform script also shows the files it transformed and the files the script dropped.
 The `Audit` link of a run that changed something opens its audit CSV in the file browser; see [State and audit files](#state-and-audit-files).
 The execution logs show every file the run touched and the error of each file that failed.
 
@@ -172,6 +175,8 @@ job = s3.ingest_files(
     name=None,  # job name, default "<data source>_<dataset>_files"
     fail_on_first_error=False,
     files_per_page=100,
+    transform_script=None,  # e.g. "Resources/transform.py", see Transforming files
+    keep_original=False,  # with a script: also store the file as it is in the source
 )
 
 execution = job.run(await_termination=True)
@@ -198,6 +203,7 @@ job.delete(delete_files=False, delete_index=False)
 `prefix` is a folder relative to the root of the bucket or container, to the SFTP root path or to the Drive folder, as in the UI, and the patterns are relative to the prefix.
 `update` re-saves the job; a job's data source and dataset cannot change.
 `index` accepts a feature group name only while the job had no index; afterwards turning it on uses the name chosen then.
+`transform_script` and `keep_original` can be given to `update` too; `transform_script=None` removes the transform.
 
 !!! api "API reference"
 
@@ -227,6 +233,7 @@ hops datasource ingest-files acme_docs --dataset acme_docs_handbook \
 
 The command creates the job, prints its name and, unless `--no-run`, starts a run and prints its execution id.
 `--include` and `--exclude` repeat; `--index` names the feature group `files_<dataset>` and `--index-name` chooses another name; `--name` sets the job name.
+`--transform-script Resources/transform.py` runs a [transform script](#transforming-files) on every file, and `--keep-original` with it also stores the files as they are in the source.
 `hops datasource files-jobs acme_docs` lists the files ingestion jobs of the data source.
 Runs, schedules, logs and deletion of the job are managed with the `hops job` commands, as for any job.
 
@@ -276,6 +283,90 @@ A partial run fails its execution so that the alert receiver is notified and the
 A run that is killed, or that loses its credentials when an IAM role session expires, leaves no partial file in the dataset, since copies are renamed into place only when complete, and leaves its lease to expire.
 The manifest is written whole at the end of a run, so the files such a run copied are compared by size and modification date again on the next run and found unchanged.
 
+## Transforming files
+
+By default a file is stored exactly as it is in the data source.
+A job with a transform script runs your Python code on every file after it is downloaded and verified and before anything of it is in the dataset, for example to redact text, to convert a format or an encoding, to decompress, or to leave out files by their content.
+
+### The script
+
+The script is a `.py` file in the project, uploaded like any other file, for example to `Resources`.
+It defines one subclass of `HopsFileTransformer`:
+
+```python
+# Resources/transform.py
+import os
+
+from dlt.destinations.impl.hopsworks_fg import HopsFileTransformer
+
+
+class RedactText(HopsFileTransformer):
+    def transform(self, path: str, context: dict) -> str | None:
+        if context["file_name"].startswith("~"):
+            return None  # store nothing of this file
+        name = os.path.splitext(context["file_name"])[0] + ".txt"
+        out = os.path.join(context["work_dir"], name)
+        with open(path, errors="replace") as src, open(out, "w") as dst:
+            dst.write(src.read().replace("CONFIDENTIAL", "***"))
+        return out
+```
+
+`path` is the downloaded file on the local disk of the job.
+The method returns one of:
+
+- the path of a new file written under `context["work_dir"]`; its name becomes the name of the stored file, so a transform can change the extension;
+- `path` itself, when the file was changed in place or is to be stored as it is;
+- `None`, to store no output for this file.
+
+`context` describes the file:
+
+| Key | Content |
+| --- | --- |
+| `relative_path`, `file_name` | the path relative to the prefix, and its last part |
+| `source_url` | the object in the data source |
+| `size_bytes`, `modified_at`, `mime_type` | as listed by the data source |
+| `etag`, `source_id`, `source_content_type`, `created_at` | the source metadata of [the file index](#the-file-index), when the data source provides it |
+| `connector`, `source_type`, `dataset`, `job_name`, `execution_id` | the job and the run |
+| `keep_original` | whether the job keeps the original files |
+| `work_dir` | a scratch directory of this file, removed after the file is stored |
+
+The base class is imported from the job's environment, so the import fails in a notebook or a terminal; that is expected, since the script is only ever loaded by the job.
+A library the script imports must be installed in the environment the job runs in: clone `dlthub-ingestion-pipeline`, install it there and choose the clone as the job's environment.
+
+### Where the files land
+
+| | Original file | Output of the script |
+| --- | --- | --- |
+| **Keep the original files** off (the default) | not stored | `<dataset>/<folder of the file>/<returned name>`, which is the path of the source file when the name is unchanged |
+| **Keep the original files** on | `<dataset>/<relative path>`, as without a script | `<dataset>/_transformed/<folder of the file>/<returned name>` |
+
+So with the script above, `a/report.docx` is stored as `a/report.txt`, or, with the originals kept, as `a/report.docx` and `_transformed/a/report.txt`.
+
+When the originals are kept, `path` is the stored original itself: read it, and write the output under `work_dir`.
+Returning `path` or `None` then stores no separate output.
+When they are not kept, a file the script returns `None` for is counted as `dropped` and nothing of it is stored; it is not downloaded again until it changes in the source.
+
+Two source files must not produce the same stored path, as `a.docx` and `a.pdf` both would with the script above.
+The second one fails with `output path ... is already used by ...`; give such outputs different names, for example by keeping the source extension in the name.
+
+### Changes and failures
+
+- **A file changed in the source** is downloaded and transformed again, like a plain copy; the skip rule compares the source file, not the output.
+- **A changed script**, whether another file is chosen or the same file is edited, processes every file again on the next run.
+  With the originals kept, the run reads them from the dataset and downloads nothing.
+  Without them, every file is downloaded again.
+- **Removing the script** turns the copies back into plain ones on the next run and deletes the outputs.
+- **Turning `Keep the original files` on** downloads the files again to store the originals.
+  Turning it off leaves the originals that are already stored where they are.
+- **A script that raises** fails that file only, with `transform failed: <error>` among the failed files, and the run continues and ends as `partial`.
+  Without originals nothing of the file is stored; with originals the original is stored and the next run transforms it again without a download.
+- **A script that cannot be loaded**, because the file is missing, does not import, or defines no `HopsFileTransformer`, fails the run before it lists anything, and the dataset is left as it was.
+
+[Mirroring deletions](#mirroring-deletions) removes the original and the output of a file that is gone from the source.
+
+The script runs once per file, one file at a time, inside the copy.
+Keep it to work that is cheap per file; parsing documents, chunking and embedding are better done by a separate job that reads [the file index](#the-file-index), which keeps the copy fast and repeatable.
+
 ## Mirroring deletions
 
 With `Mirror deletions` on, a run that completed its listing without any failed file deletes from the dataset every file whose source object is gone from the prefix or no longer matches the patterns, and counts them as `deleted`.
@@ -307,7 +398,7 @@ DataSources/<data source>/files/<dataset>/
 | --- | --- | --- |
 | `owner.json` | Hopsworks, when the job is created | The job that copies into this dataset: `jobId`, `jobName`, `connectorId`, `connectorName`, `datasetName`, `createdAt`. A second files job on the same dataset is refused while it exists. |
 | `lease.json` | the run | `executionId`, `pod`, `startedAt` and `heartbeat` of the run that holds the dataset; see [How a run works](#how-a-run-works). |
-| `manifest.jsonl` | the run | One JSON object per file in the dataset: `file_id` (SHA-1 of the source URL), `source_url`, `relative_path`, `hopsfs_path`, `file_name`, `file_type`, `mime_type`, `size_bytes`, `modified_at`, `etag` (entity tag in the data source, empty for SFTP), `source_id`, `source_content_type`, `created_at`, `content_hash` (SHA-256 of the copy), `execution_id` and `copied_at` of the run that copied it. Replaced atomically at the end of each run. |
+| `manifest.jsonl` | the run | One JSON object per file in the dataset: `file_id` (SHA-1 of the source URL), `source_url`, `relative_path`, `hopsfs_path`, `file_name`, `file_type`, `mime_type`, `size_bytes`, `modified_at`, `etag` (entity tag in the data source, empty for SFTP), `source_id`, `source_content_type`, `created_at`, `content_hash` (SHA-256 of the copy), `execution_id` and `copied_at` of the run that copied it. With a [transform script](#transforming-files) there is still one object per source file, with `original_path` and `output_path` naming the files stored for it, `source_size_bytes`, and `transform_hash`, the SHA-256 of the script; `hopsfs_path`, `file_name`, `size_bytes` and `content_hash` then describe the output. Replaced atomically at the end of each run. |
 | `<execution id>_files_stats.json` | the run, also when it fails | The outcome of the run, described below. |
 | `audit/date=<YYYY-MM-DD>/<HHMMSS>Z_<execution id>.csv` | the run, when it changed something | One row per changed file, described below. |
 
@@ -327,6 +418,8 @@ The stats file holds the counters shown in the UI and returned by `files_progres
   "failed": 1,
   "oversized": 4,
   "unsupported": 0,
+  "transformed": 0,
+  "dropped": 0,
   "bytesCopied": 123456,
   "listingComplete": true,
   "deletionsSkipped": true,
@@ -351,7 +444,8 @@ execution_id,op,kind,path,src_path
 4711,oversized,file,video/f.mp4,s3://acme-docs/handbook/2026/video/f.mp4
 ```
 
-`op` is `copied`, `updated`, `deleted`, `failed`, `oversized` or `unsupported`, `kind` is always `file`, `path` is the path relative to the dataset root and `src_path` the source URL.
+`op` is `copied`, `updated`, `deleted`, `failed`, `oversized`, `unsupported`, `transformed` or `dropped`, `kind` is always `file`, `path` is the path relative to the dataset root and `src_path` the source URL.
+A `transformed` row names the output of a [transform script](#transforming-files) when it is stored under another path than the source file's.
 
 The `date=` directories are Hive-style partitions, so a filter on `date` reads only the matching days.
 From a Python job, with DuckDB from the `python-feature-pipeline` environment:
@@ -395,10 +489,12 @@ Hopsworks creates it with the job, offline only and without statistics, with `fi
 | `source_id` | the identifier of the file in the data source: the file ID of Google Drive, the generation of GCS, the version ID of ADLS |
 | `source_content_type` | the content type recorded in the data source |
 | `created_at` | the creation time in the data source |
+| `original_hopsfs_path` | for a job with a [transform script](#transforming-files) that keeps the originals: the file as it is in the source, while `hopsfs_path`, `file_name`, `file_type`, `size_bytes` and `content_hash` describe the output of the script; null otherwise |
 | `execution_id`, `indexed_at` | the run that last wrote the row, and when |
 | `ingestion_date` | the partition: the UTC day the file was first indexed, which is the day it was copied in, or for a file already in the dataset, the day indexing was turned on |
 
 The table holds no file content; the file is in the dataset at `hopsfs_path`.
+A file a transform script stored nothing of has no row.
 
 After mirroring, each run compares the manifest with the table:
 
@@ -430,7 +526,7 @@ Claude and the other coding agents in a terminal load the `hops-files-search` sk
   [SharePoint](creation/sharepoint.md), Gmail and Outlook have their own sync jobs.
 - The listing is full on every run, and files are copied one at a time, so a prefix with millions of objects or a very large total size is better split into several jobs with narrower prefixes.
 - A run on an IAM-role S3 data source cannot outlast `dlt_files_credentials_duration_seconds`.
-- Files are copied as they are.
+- Files are copied as they are, or as a [transform script](#transforming-files) returns them, one output per source file.
   Turning tabular files into feature groups is not part of this job; use an [external feature group](../feature_group/create_external.md) over the path or the [table ingestion flow][ingest-data-with-dlthub] instead.
 - Browsing the source for a prefix is not available for ADLS, SFTP and Google Drive; type the prefix.
 - One job per dataset: a dataset that one job copies into cannot be the target of another, whatever its data source.
