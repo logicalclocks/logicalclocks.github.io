@@ -49,9 +49,9 @@ An Oracle data source that authenticates with a wallet is delivered the second w
 
 No credential is ever sent to the browser, and rotating one stays a single operation on the secret rather than an edit of every catalog that uses it.
 
-An Oracle data source with [provided credentials][data-source-provided-credentials] is the exception: its catalog stores no login, and each query logs in with the querying member's own credentials, sent as Trino extra credentials.
+An Oracle data source with [provided credentials][data-source-provided-credentials] is the exception: its catalog names the data source, and the query engine gets the owner's own username and password for it when the catalog is published.
 Such a catalog is always a [private catalog][private-catalogs] of the member who creates it, and each member creates their own.
-The SQL runner and the Python client send them for you; other Trino clients must send them themselves.
+Every Trino client reads it as its owner, Superset included.
 Creating such a catalog requires your own credentials for the data source, and its connection test runs as you.
 See [Trino catalogs on a data source with provided credentials][data-source-provided-credentials-trino].
 
