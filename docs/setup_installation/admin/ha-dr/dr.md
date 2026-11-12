@@ -408,7 +408,7 @@ OnlineFS reads each partition of a recreated topic from its start instead of res
   On such a Kafka, stop OnlineFS after the restore, delete the rows of `onlinefs.kafka_offsets` and start OnlineFS again, so that it reads every online topic from its start.
 - An offset set in [Kafka offsets][onlinefs-offsets-admin] that OnlineFS had not applied at the backup comes back with `onlinefs.kafka_offsets`.
   OnlineFS clears it on a new cluster without moving the partition, since it was set for a topic Kafka no longer has.
-  After an in-place restore it applies within about 10 seconds; set the partition's offset again if it should not.
+  After an in-place restore it applies at OnlineFS's next look, every 10 seconds; set the partition's offset again if it should not.
 
 ### In-Place Restore { #in-place-restore }
 
