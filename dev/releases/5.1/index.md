@@ -392,7 +392,7 @@ Follow [Before every upgrade][docs-upgrade-before] and [5.0.x to 5.1.x][docs-upg
 | BuildKit | v0.14.1 | v0.32.2 |
 | cert-manager | v1.11.1 | v1.21.1 |
 | Certificates operator | 0.3.2 | 0.4.0 |
-| Consul | 1.16.3 | 1.16.4-alpine-h1 |
+| Consul | 1.16.3 | 1.16.4-alpine-h1 (also in [5.0.15][hopsworks-5-0-15]) |
 | consul-k8s | 1.3.1 | 1.8.16 |
 | Docker registry | 2.8.3 | 3.1.1 |
 | Filebeat | 8.15.0 | 8.19.21 |
