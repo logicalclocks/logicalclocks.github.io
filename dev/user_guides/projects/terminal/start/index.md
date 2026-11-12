@@ -34,3 +34,5 @@ When the terminal starts, the key is set as the provider's own variable (for exa
 - `copilot` keeps its GitHub login.
 
 A provider with no saved key disables **Start** until you save one or pick **Subscription**.
+
+**Hopsworks** runs the coding agents on a vLLM deployment of the project and needs no key, see [Coding agents][coding-agents-terminal].

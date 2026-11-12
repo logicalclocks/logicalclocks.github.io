@@ -313,6 +313,7 @@
 - [Evaluation](https://docs.hopsworks.ai/latest/user_guides/agents/evaluation/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/evaluation/index.md))
 - [Monitoring](https://docs.hopsworks.ai/latest/user_guides/agents/monitoring/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/monitoring/index.md))
 - [Failure Analysis](https://docs.hopsworks.ai/latest/user_guides/agents/failure_analysis/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/failure_analysis/index.md))
+- [Coding Agents](https://docs.hopsworks.ai/latest/user_guides/agents/coding_agents/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/coding_agents/index.md))
 - [Migration 3.X to 4.0](https://docs.hopsworks.ai/latest/user_guides/migration/40_migration/) ([md](https://docs.hopsworks.ai/latest/user_guides/migration/40_migration/index.md))
 
 ## Administration

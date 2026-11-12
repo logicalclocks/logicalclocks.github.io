@@ -148,7 +148,7 @@ A Data Owner can turn the LLM Gateway off for the project or for one deployment,
 An administrator can set token and request limits on the LLM Gateway, per project, per user and per deployment, as described under [Rate limits and token quotas][llm-gateway-rate-limits].
 The limits that apply to a project are shown, read-only, in the project settings, and a request over a limit gets `429`.
 
-When an administrator has turned [tracing][llm-gateway-tracing] on, members with the role Data Owner or Data Scientist see the project's request traces under LLM Gateway Traces in the project settings, with a filter on the deployment, and one deployment's traces in its Overview.
+When an administrator has turned [tracing][llm-gateway-tracing] on, members with the role Data Owner or Data Scientist see the project's request traces under LLM Gateway in the project settings, with a filter on the deployment, and one deployment's traces in its Overview.
 Prompts and responses are not stored in them unless an administrator turned that on too.
 
 ## Refreshing External User Groups
