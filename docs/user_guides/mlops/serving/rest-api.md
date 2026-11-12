@@ -152,11 +152,9 @@ On a cluster where the [LLM Gateway][llm-gateway] is enabled, all the vLLM deplo
 The `model` of each request is the name of the deployment it goes to.
 Every deployment also stays on its own path.
 
-The LLM Gateway also serves the Anthropic Messages API.
-Its base URL is `<inference endpoint>/v1/<project>/v1/anthropic`, which `ms.get_anthropic_url()` returns and Claude Code takes as `ANTHROPIC_BASE_URL`.
-Requests go to `<base URL>/v1/messages`, that is `<inference endpoint>/v1/<project>/v1/anthropic/v1/messages`.
-A vLLM deployment serves it on its own path too, verified from vLLM v0.28.0: the base URL is `<inference endpoint>/v1/<project>/<deployment>` and requests go to `<inference endpoint>/v1/<project>/<deployment>/v1/messages`.
-See [Use coding agents with Hopsworks LLMs][serving-coding-agents].
+The LLM Gateway also serves the Anthropic Messages API, with the base URL `<inference endpoint>/v1/<project>/v1/anthropic` that `ms.get_anthropic_url()` returns.
+A vLLM deployment serves it on its own path too, with the base URL `<inference endpoint>/v1/<project>/<deployment>`, verified from vLLM v0.28.0.
+Requests go to `<base URL>/v1/messages`, and Claude Code takes the base URL as `ANTHROPIC_BASE_URL`, see [Coding agents][coding-agents].
 
 !!! info "Deployments the LLM Gateway does not serve"
 

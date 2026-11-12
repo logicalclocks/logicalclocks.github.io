@@ -460,9 +460,10 @@ Clients keep their endpoint, Knative-mode deployments stay on Istio, and no depl
     - Every Standard-mode deployment answers through the usual endpoint, with both URL shapes.
     - The Knative-mode deployments are unchanged.
 
-Once a deployment has moved, the Gateway drops request headers whose names contain an underscore, such as `session_id`, where Istio passed them on.
-The request still succeeds, but a predictor or transformer script that reads such a header no longer receives it.
-Send the value in a header whose name uses hyphens instead.
+!!! warning "Headers with underscores"
+    Once a deployment has moved, the Gateway drops request headers whose names contain an underscore, such as `session_id`, which Istio passed on.
+    The request still succeeds, but a predictor or transformer script that reads such a header no longer receives it.
+    Send the value in a header whose name uses hyphens instead.
 
 ### Search index rebuild { #upgrade-53-search-reindex }
 

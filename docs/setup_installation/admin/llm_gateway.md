@@ -12,13 +12,12 @@ A client sends every request to the same URL and picks the deployment with the r
 <inference endpoint>/v1/<project>/v1/completions
 <inference endpoint>/v1/<project>/v1/embeddings
 <inference endpoint>/v1/<project>/v1/models
+<inference endpoint>/v1/<project>/v1/anthropic/v1/messages
 ```
 
 `<project>` is the project's namespace, and the project name works wherever it works for deployments.
 `GET .../v1/models` lists the project's started LLM deployments.
-The Anthropic Messages API is served under `/v1/<project>/v1/anthropic/`, for example `/v1/<project>/v1/anthropic/v1/messages` and `/v1/<project>/v1/anthropic/v1/models`, and the LLM Gateway translates it to the OpenAI API of the vLLM deployment.
-Its `count_tokens` operation answers `422`.
-See [Use coding agents with Hopsworks LLMs][serving-coding-agents].
+The `anthropic/` prefix serves the Anthropic Messages API, translated to the OpenAI API of the vLLM deployment, for clients such as [Claude Code][coding-agents]; its `count_tokens` operation answers `422`.
 It runs on top of [Envoy Gateway][envoy-gateway], and the Hopsworks backend adds and removes its routes as deployments start and stop.
 
 --8<-- "setup_installation/admin/llm_gateway/request-flow.html"
@@ -132,9 +131,8 @@ Every listing, `GET .../v1/models` under any prefix, and every other path are re
 `model-serving-authenticator` makes the check on the request body, which the AI Gateway sends to it up to its 50Mi buffer limit (`kserve.envoyGateway.aiGateway.bufferLimit`).
 
 Requests authenticate with `Authorization: Bearer <api key>` or `ApiKey <api key>`, or with `x-api-key: <api key>` when no `Authorization` header is sent.
-A request with both headers is accepted when they carry the same key and refused with `401` when they differ; an `x-api-key` that is not a Hopsworks API key is not checked.
-On the LLM Gateway route the `authorization` and `x-api-key` headers are removed from the request after the check, so they do not reach the model server.
-On its own path, a deployment that is not vLLM receives both headers as sent.
+When both are sent, an `x-api-key` that holds a Hopsworks API key must match the one in `Authorization`, or the request is refused with `401`.
+Any other `x-api-key` value is left to the client and not checked.
 
 ## Reserved deployment names { #llm-gateway-reserved-names }
 
