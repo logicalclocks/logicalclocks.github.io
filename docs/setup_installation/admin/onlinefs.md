@@ -328,8 +328,8 @@ In a topic's offsets, an administrator can move partitions of one consumer group
 
 The confirmation lists each partition with its min, current and max offset and the new offset.
 Hopsworks then sets the new offset as the partition's `desired_offset` in `onlinefs.kafka_offsets`, the start and the end as Kafka has them at that moment.
-The OnlineFS consumer that holds the partition moves it there within about 10 seconds, with no restart: it saves the new offset, clears `desired_offset`, and resumes the partition from it.
-The topic's offsets, which the page reads again every 5 seconds, then show the new current offset, and OnlineFS catching up from it.
+The OnlineFS consumer that holds the partition looks for a new offset every 10 seconds, between batches, and moves the partition there with no restart: it saves the new offset, clears `desired_offset`, and resumes the partition from it.
+The page reads the topic's offsets again every 5 seconds; after a move back, OnlineFS can catch up before the page shows the new current offset.
 
 - Ingestion of other partitions and topics goes on.
 - The `RONDB` and `VECTORDB` groups move separately.
@@ -339,7 +339,7 @@ The topic's offsets, which the page reads again every 5 seconds, then show the n
 - The offline feature store is not affected.
 
 Setting another offset for a partition before OnlineFS moved it replaces the first, also when two administrators set one at the same time.
-OnlineFS clears a desired offset without moving the partition when the topic was deleted and created again since it was set, or when Kafka no longer has the offset, as when it deleted older records meanwhile, and logs a warning.
+OnlineFS clears a desired offset without moving the partition when the topic was deleted and created again since it was set, once OnlineFS has seen the new topic at its metadata refresh, or when Kafka no longer has the offset, as when it deleted older records meanwhile, and logs a warning.
 A partition no OnlineFS consumer holds, as in a group whose thread number is 0, moves when a consumer gets it.
 Hopsworks logs who set which offsets; OnlineFS logs each move.
 
