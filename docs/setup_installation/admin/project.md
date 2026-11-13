@@ -57,22 +57,9 @@ The values specified will be set during project creation and administrators will
 
 ### Compute
 
-Compute quotas represents the amount of compute a project can use to run Spark applications as well as Tez queries.
-Quota is expressed as number of seconds a container of size 1 CPU and 1GB of RAM can run for.
-
-If the Hopsworks cluster is connected to a Kubernetes cluster, Python jobs, Jupyter notebooks and KServe models are not subject to the compute quota.
-Currently, Hopsworks does not support defining quotas for compute scheduled on the connected Kubernetes cluster.
-
-By default, the compute quota is disabled.
-Administrators can change this default by changing the following configuration in the [Configuration](../admin/variables.md) UI and/or the cluster definition:
-
-```yaml
-hopsworks:
-    yarn_default_payment_type: [NOLIMIT to disable the quota, PREPAID to enable it]
-    yarn_default_quota: [default quota in seconds]
-```
-
-The values specified will be set during project creation and administrators will be able to customize each project using this UI.
+Hopsworks jobs and notebooks run on Kubernetes.
+The former YARN time quota and prepaid billing settings are no longer used.
+Configure Kubernetes resource limits and scheduling for the project's workloads instead.
 
 ### Kafka Topics
 
