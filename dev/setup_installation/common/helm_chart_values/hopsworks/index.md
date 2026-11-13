@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794565687` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794569435` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -3222,7 +3222,6 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         tensorboard_max_last_accessed: '1140000'
         tensorboard_max_reload_threads: '1'
         tensorflow_version: 2.20.0
-        testconnector_image_version: '1.0'
         tf_spark_connector_version: ''
         trino_default_catalog: delta
         trino_events_cleaner_batch_size: '100'
@@ -4938,9 +4937,6 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.tensorflow_version` <a class="headerlink" href="#helm.hopsworks.variables.tensorflow_version" title="Permanent link">#</a> { #helm.hopsworks.variables.tensorflow_version }
 :   Type `string`, default `"2.20.0"`.
-
-`hopsworks.variables.testconnector_image_version` <a class="headerlink" href="#helm.hopsworks.variables.testconnector_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.testconnector_image_version }
-:   Type `string`, default `"1.0"`.
 
 `hopsworks.variables.tf_spark_connector_version` <a class="headerlink" href="#helm.hopsworks.variables.tf_spark_connector_version" title="Permanent link">#</a> { #helm.hopsworks.variables.tf_spark_connector_version }
 :   Type `string`, default `""`.
