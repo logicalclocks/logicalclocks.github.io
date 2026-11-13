@@ -329,6 +329,7 @@ nav:
               - Kafka 4 and KRaft upgrade notes: setup_installation/admin/kafka4.md
               - Kueue outside the Hopsworks namespace: setup_installation/admin/kueue_external.md
           - Monitoring:
+              - Prometheus Scope and Memory: setup_installation/admin/monitoring/prometheus.md
               - Services Dashboards: setup_installation/admin/monitoring/grafana.md
               - Export metrics: setup_installation/admin/monitoring/export-metrics.md
               - Services Logs: setup_installation/admin/monitoring/services-logs.md
