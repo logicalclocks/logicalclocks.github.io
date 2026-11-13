@@ -424,7 +424,7 @@ For online serving, spawning the worker pool during the first request would add 
         fv.init_serving(training_dataset_version=1, n_processes=2)
 
         # Served using the pool of two workers spawned at init time.
-        vector = fv.get_feature_vector(entry={"id": 1})
+        vector = fv.get_feature_vector(serving_keys={"id": 1})
         ```
 
 The worker pool start method defaults to `fork` on Linux and `spawn` on macOS and Windows. Set the `HOPSWORKS_TF_POOL_START_METHOD` environment variable to `fork`, `forkserver`, or `spawn` to override it.
