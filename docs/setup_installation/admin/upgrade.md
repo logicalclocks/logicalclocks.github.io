@@ -350,7 +350,7 @@ From the 5.2.x patch release that carries this fix, and in 5.3, a Helm upgrade a
 On a cluster whose Strimzi CRDs serve only `v1`, which is the case for a cluster installed on 5.2, earlier 5.2 releases left the two `KafkaNodePool` resources as they were on every Helm upgrade.
 A change of the replicas, storage, resources, JVM options or placement of the brokers or controllers had no effect, and a deleted pool did not come back.
 The `kafka-kraft-migration` pre-upgrade hook now applies both pools on every Helm upgrade.
-Under ArgoCD the pools are part of the rendered application, so they were not affected.
+Under ArgoCD, and with Helm when `global._hopsworks.mode` is set, the pools are part of the release and are applied with it, so they were not affected, and the hook still leaves them to the release.
 
 - **The first upgrade with the fix applies what your values say.**
   That includes settings that earlier upgrades ignored, and it overwrites a change made to a pool by hand, such as a replica count set with `kubectl`, because the hook applies every field the chart renders.
@@ -366,7 +366,7 @@ Under ArgoCD the pools are part of the rendered application, so they were not af
   Helm owns the fields it set at install, and keeps owning each one whose value no upgrade has changed since, so such a field stays on the pool.
   Check the pool after removing a setting, and remove the field from the pool by hand if it is still there.
 - **`kafka.migrationJob.enabled` stays on.**
-  The hook is the only thing that applies node pool settings during a Helm upgrade, so with the switch off, pool changes are not applied.
+  The hook is the only thing that applies node pool settings during a Helm upgrade without `global._hopsworks.mode`, so with the switch off, pool changes are not applied.
 - **The upgrade fails when the pools cannot be applied.**
   When the hook cannot read the `KafkaNodePool` CRD or the pools, or the cluster rejects the apply, the upgrade fails on the `kafka-kraft-migration` hook, where it used to continue without applying anything.
   The log of the hook has the error:
