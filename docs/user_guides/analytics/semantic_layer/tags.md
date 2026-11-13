@@ -40,7 +40,7 @@ The examples use two tag schemas: `ownership`, an object with `owner` and `certi
     ```
 
 `tag set` takes the value as JSON, or as a plain string when it does not parse as JSON.
-Data owners and data scientists attach and remove tags; every member of the project reads them.
+Data owners and data scientists attach and remove tags, and observers read them; feature store restricted members are refused, as for every semantic layer request.
 The semantic project's overview in the UI has a **Tags** card to add, edit and remove them.
 
 Tags can also be attached when the semantic project is created, in the same request:

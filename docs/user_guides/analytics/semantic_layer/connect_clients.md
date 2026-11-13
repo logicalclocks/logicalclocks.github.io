@@ -330,7 +330,7 @@ Any replica of the gateway serves a handle, so a client can fetch from another r
 
 | API | Most rows | When a result is larger |
 | --- | --- | --- |
-| Arrow Flight SQL: dbt-sl-sdk queries, ADBC, JDBC | 1,000,000 | The result stops at 1,000,000 rows, with no signal: treat a result of exactly that many rows as cut. |
+| Arrow Flight SQL: dbt-sl-sdk queries, ADBC, JDBC, BI tables | 1,000,000 | The call fails after the first 1,000,000 rows with `INVALID_ARGUMENT: the result has more than 1000000 rows (MAX_ROWS) and was cut; add a limit or filters`, so a client that reads the whole result gets the error, not the rows. |
 | REST, JSON | 100,000 | The result stops there, with `truncated: true` and the `X-Semantic-Truncated: true` header. |
 | REST, Arrow | 1,000,000 | The result stops there; `X-Semantic-Truncated: true` is set when the cut is known before the first rows are sent, and `X-Semantic-Max-Rows` gives the cap. |
 

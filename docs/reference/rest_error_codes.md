@@ -438,6 +438,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 150128 | `PROJECT_OWNER_TRANSFER_IN_PROGRESS` | 409 CONFLICT | An ownership transfer of this project is still in progress. Try again once it has finished. |
 | 150129 | `TEAM_ROLE_CHANGE_IN_PROGRESS` | 409 CONFLICT | The role is being changed by someone else, try again. |
 | 150130 | `ROLE_NOT_ASSIGNABLE` | 403 FORBIDDEN | Your role cannot give this role, or change this member's role: it has permissions your role does not. |
+| 150131 | `MEMBER_OWNS_SEMANTIC_PROJECTS` | 409 CONFLICT | The member owns semantic projects, which must be transferred to another data owner first. |
 
 ## UserErrorCode
 

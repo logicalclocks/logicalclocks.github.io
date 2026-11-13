@@ -135,7 +135,9 @@ The names, labels, descriptions and definitions of metrics, dimensions and saved
 
 - An administrator turns the semantic layer on with the Helm value `global._hopsworks.semanticLayer.enabled: true`, which installs the semantic gateway and adds **Semantic Layer** to the project sidebar, see [Semantic Layer administration][semantic-admin].
   While it is off, the semantic layer endpoints answer 404 `SEMANTIC_LAYER_DISABLED`.
-- Data owners and data scientists of a project create, compile, promote and delete semantic projects; every member can list them and query their metrics.
+- Data owners and data scientists of a project create, compile, promote and delete semantic projects, edit their definitions and tags, and query their metrics.
+  Observers list and read semantic projects and query their metrics.
+  Feature store restricted members are refused every semantic layer request with 403 `SEMANTIC_LAYER_FORBIDDEN`, since a semantic project reads every feature of a feature group.
 - Only data owners run [metric exports][semantic-exports] by hand, and an export's job runs as the semantic project's [owner][semantic-builds-owner], who must be a data owner.
 - An API key needs the `FEATURESTORE` scope for semantic projects and builds.
   Everything the gateway answers, from listing metrics to running a query, also needs the `TRINO` scope, since the gateway connects to Trino as the key's user.

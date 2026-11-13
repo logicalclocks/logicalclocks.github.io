@@ -25,6 +25,7 @@ A result is cached under a key made of:
 - the request as the surface received it, and any SQL around a dbt JDBC call;
 - the row cap of the answer;
 - the caller's Trino user, `<project>__<user>`, so two users never share an entry;
+- the revision of the cluster's Trino access rules, so a row filter, column mask or denied column that is added, changed or removed starts with no entries;
 - the time of the latest commit of every feature group the query reads, the time spine included;
 - for an answer read from an [export][semantic-exports-serving], the commit of the export's feature group.
 
@@ -33,13 +34,14 @@ A replica keeps up to 256 MiB of results, each for up to 300 seconds, and drops 
 
 ## What invalidates a result { #semantic-result-cache-invalidation }
 
-Before it answers from the cache, the gateway asks Hopsworks, with the caller's credential, for each feature group the build reads: the time of its latest commit, and whether the project can still read it.
+Before it answers from the cache, the gateway asks Hopsworks, with the caller's credential, for the revision of the Trino access rules, and for each feature group the build reads: the time of its latest commit, and whether the project can still read it.
 
 | Change | Effect |
 | --- | --- |
 | A write that records a commit on a feature group, such as `fg.insert(df)` | The commit time changes the key, so the next query runs on Trino. |
 | A newly served build, after a compile or a promote | The build id changes the key. |
 | A feature group deleted, or no longer shared with the project | The query runs on Trino, which refuses it or reads what the project can still read. |
+| A Trino row filter, column mask or denied column added, changed or removed | The rules revision changes the key, so the next query runs on Trino under the new rules. |
 | A member removed from the project | The member's queries are refused. |
 | 300 seconds since the result was cached | The entry is dropped. |
 
@@ -51,6 +53,7 @@ A replica reuses Hopsworks' answer on commits and access for 30 seconds per call
 | --- | --- |
 | A new commit on a feature group the query reads | 30 seconds |
 | A share revoked, or a feature group deleted | 30 seconds |
+| A Trino access rule changed | 30 seconds |
 | A member removed, or a role changed | 60 seconds |
 
 A query that runs on Trino reads the data and the access of that moment, as without a cache.
@@ -60,7 +63,7 @@ A query that runs on Trino reads the data and the access of that moment, as with
 - A query over a feature group shared with the project with only some of its features: the shared features can change without a commit, so Hopsworks reports it as not readable for the cache, and every such query runs on Trino.
 - A query over a feature group without commits, such as one without time travel or an external feature group: it has no commit time to key on.
 - A result larger than 8 MiB: it streams to the client and is not kept.
-- A query while Hopsworks cannot answer for commits and access: it runs on Trino.
+- A query while Hopsworks cannot answer for commits, access or the Trino rules revision: it runs on Trino.
 - The runs of [metric exports][semantic-exports], which always read the data as it is.
 
 A JSON answer of the REST `query` endpoint says in its `X-Semantic-Cache` header whether the cache answered it:
@@ -104,7 +107,7 @@ DE                 75.5
 | `cache.maxBytes` | `268435456` | The results a replica keeps, in bytes. |
 | `cache.ttlSeconds` | `300` | How long a result is served from the cache. |
 | `cache.entryMaxBytes` | `8388608` | The largest result the cache keeps. |
-| `cache.dataVersionSeconds` | `30` | How long a replica reuses Hopsworks' answer on commits and access, which bounds how long a cached result outlives a commit or a revoked share. |
+| `cache.dataVersionSeconds` | `30` | How long a replica reuses Hopsworks' answer on commits, access and the Trino rules revision, which bounds how long a cached result outlives a commit, a revoked share or a changed rule. |
 
 The gateway's metrics port reports the cache:
 

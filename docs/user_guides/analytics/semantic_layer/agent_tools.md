@@ -30,6 +30,7 @@ The API key needs the `FEATURESTORE` and `TRINO` scopes for the semantic layer t
 | `list_metrics` | READ | `semantic_project`, `tag` (optional) | CSV of the metrics: name, type, label, description and tags. `tag` keeps the metrics that set that tag schema. |
 | `list_saved_queries` | READ | `semantic_project` | CSV of the [saved queries][semantic-saved-queries-agent]: name, label, description, metrics and group-bys. |
 | `list_exports` | READ | `semantic_project` | CSV of the [exports][semantic-exports-list]: name, saved query, feature group, version, schedule (empty for an export run on demand only), lookback, enabled, last status, last run, last rows and last message. |
+| `list_query_history` | READ | `semantic_project`, then `limit`, 20 by default, `status` and `user` (optional) | CSV of the [query history][semantic-query-history], newest first: started at, user, surface, status, duration, rows, cache outcome, error, request and execution id. A Data Owner's server reads every member's records, and `user` picks one member's. |
 | `get_dimensions` | READ | `semantic_project`, `metrics` | CSV of the dimensions the metrics can be grouped by: name, type, grains and entity path. |
 | `get_entities` | READ | `semantic_project`, `metrics` (optional) | CSV of the entities. |
 | `get_dimension_values` | READ | `semantic_project`, `dimension`, `metrics` and `limit` (optional) | CSV of the distinct values of a dimension. |
@@ -37,7 +38,7 @@ The API key needs the `FEATURESTORE` and `TRINO` scopes for the semantic layer t
 | `query_saved_query` | READ | `semantic_project`, `name`, then `group_by`, `where` and `limit` (optional) | CSV of the rows of a saved query; `group_by` and `limit` replace its own, `where` adds to its filters. 100 rows unless `limit` says otherwise. |
 | `get_metrics_compiled_sql` | READ | The arguments of `query_metrics` | The SQL the query compiles to. |
 | `get_semantic_project_tags` | READ | `semantic_project` | The semantic project's tags, name and value. |
-| `validate_semantic_project` | WRITE | `semantic_project` | The build's status and its issues. |
+| `validate_semantic_project` | READ | `semantic_project` | The status the definitions would compile to, `VALID` or `INVALID`, and their issues; no build is made. |
 | `compile_semantic_project` | WRITE | `semantic_project` | The build id, its status and its issues. |
 | `create_dashboard_from_metrics` | WRITE | `semantic_project`, `metrics`, then `group_by` and `title` (optional) | The id, title and URL of a Superset dashboard of the metrics, see [Dashboards in Superset][semantic-superset-create-agent]. |
 
@@ -45,8 +46,8 @@ Group-bys and filters take the forms of [Query metrics][semantic-query-metrics]:
 The CSV of `query_metrics` and `query_saved_query` is capped in length, so a large result needs a `limit` or a filter.
 A metric that needs `metric_time`, such as a cumulative metric with a window, needs it in `group_by`, see [Metric types][semantic-metric-types-requirements].
 
-`validate_semantic_project` and `compile_semantic_project` both compile the definitions and report the build.
-Validating compiles, as compiling does: files that have not changed return their existing build.
+`validate_semantic_project` checks the definitions as they are in HopsFS, as a compile would, and stores nothing: the build that answers queries stays the one it was.
+`compile_semantic_project` makes them a build: files that have not changed return their existing build.
 In `FOLLOW` mode the resulting `VALID` build answers queries at once, which undoes a promote of an older build; in `PINNED` mode only promoted builds are served, see [Serving modes][semantic-overview-serving-modes].
 
 ## Coding agents { #semantic-agent-tools-skill }

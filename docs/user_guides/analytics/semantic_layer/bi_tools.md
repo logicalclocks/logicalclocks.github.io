@@ -127,7 +127,7 @@ is the metric query `metrics=[revenue]`, `group_by=[customer__country, order__or
 | `SELECT` | Group-by columns, metric columns, the aggregates above around a metric column, `*`, and aliases. `SELECT DISTINCT` over group-bys returns their distinct values. |
 | Time | `DATE_TRUNC('<grain>', x)` and Tableau's `DATE_TRUNC(CAST(x AS DATE), '<grain>')` over a time column, to that grain or a coarser one whose periods each hold whole periods of the column (a `week` column truncates only to `week`); `EXTRACT(<part> FROM x)` with `YEAR`, `QUARTER`, `MONTH`, `DAY`, `ISODOW` or `DOY`, the date parts `year`, `quarter`, `month`, `day`, `dow` and `doy`, from a column whose periods each fall in one period of the part (`MONTH` from a `month` column, not `DAY`). |
 | `CAST` | Only casts that keep every value: `DATE` to `TIMESTAMP`; `TIMESTAMP` to `DATE` for a column at day grain or coarser; `TINYINT`, `SMALLINT` and `INTEGER` to a wider integer, to `DOUBLE`, or to `DECIMAL(p, 0)` with enough digits; `BIGINT` to `DECIMAL(p, 0)` with `p` of at least 19; `VARCHAR(n)` to `VARCHAR(m)` with `m` of at least `n`, or to `VARCHAR`; a column to its own type. |
-| `WHERE` | Comparisons, `IN`, `NOT IN`, `BETWEEN`, `LIKE`, `IS NULL` and `IS NOT NULL` over group-bys and literals, joined with `AND`, `OR` and `NOT`. Literals are PostgreSQL style, such as `DATE '2026-01-01'` and `TIMESTAMP '2026-01-01 00:00:00'`. |
+| `WHERE` | Comparisons, `IN`, `NOT IN`, `BETWEEN`, `LIKE`, `IS NULL` and `IS NOT NULL` over group-bys and literals, joined with `AND`, `OR` and `NOT`; `ILIKE` and `NOT ILIKE` with a string pattern, which run as `LOWER(<column>) LIKE` the pattern in lower case, as Superset's filter search sends them. Literals are PostgreSQL style, such as `DATE '2026-01-01'` and `TIMESTAMP '2026-01-01 00:00:00'`. |
 | `GROUP BY` | Group-by columns and the time expressions above, by expression, alias or position. |
 | `HAVING` | Comparisons, `IN`, `BETWEEN`, `LIKE`, `IS NULL` and `IS NOT NULL` over metric columns, with or without an aggregate, and over group-bys. A metric only in `HAVING` is computed and not returned. |
 | `ORDER BY` | Columns, aggregates, aliases and positions, `ASC` or `DESC`; `NULLS LAST` is the order already. A metric only in `ORDER BY` is computed and not returned. |
@@ -136,7 +136,7 @@ is the metric query `metrics=[revenue]`, `group_by=[customer__country, order__or
 - Names match without regard to case; quote an identifier with `"`.
 - `HAVING` runs before `LIMIT`, in the metric query, so a limited result holds the groups that pass the `HAVING`.
 - `WHERE 1=0` and `LIMIT 0`, the schema probes of BI tools, are answered from the table's columns without running a query.
-- A statement runs as a metric query: it uses the [result cache][semantic-result-cache], its rows stop at the row cap of [Limits][semantic-connect-limits], and its time values are UTC wall time, see [Timestamps][semantic-connect-timestamps].
+- A statement runs as a metric query: it uses the [result cache][semantic-result-cache], it fails when its result is over the row cap of [Limits][semantic-connect-limits], and its time values are UTC wall time, see [Timestamps][semantic-connect-timestamps].
   It is recorded in the [query history][semantic-query-history] with the surface `BI`, and is never answered from an [export][semantic-exports-serving].
 
 ## What is refused { #semantic-bi-refused }
@@ -216,8 +216,8 @@ An administrator turns it on with a host name, such as `semantic.example.com`.
 | Environment ID | The semantic project's id, `7`. |
 | Token | The API key. |
 
-- dbt's Tableau connector does not check the server certificate.
-  dbt's Power BI connector checks it against the Windows trust store, so the layout's TLS Secret needs a certificate Windows trusts.
+- Use dbt's Tableau connector on a network you trust.
+  dbt's Power BI connector checks the server certificate against the Windows trust store, so the layout's TLS Secret needs a certificate Windows trusts.
 - The connectors list the `metrics` table and one table per saved query; dbt Cloud names its `metrics` table `ALL`.
 - Tableau sends every metric as `SUM(<metric>)`, which [means the metric][semantic-bi-metric-columns].
 - dbt's Power BI connector works in DirectQuery mode only.

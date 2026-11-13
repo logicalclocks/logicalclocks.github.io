@@ -168,7 +168,7 @@ in
 
 The URL takes `metrics`, `groupBy` and `orderBy` comma-separated or repeated (`-name` sorts descending), `where` repeated, `limit`, `offset`, `savedQuery`, `cache`, `useExports` and `format`; any other parameter is refused, see [Query over REST][semantic-query-rest].
 
-A CSV answer holds at most the gateway's JSON row cap, 100,000 rows by default.
+A CSV answer holds at most the gateway's JSON row cap, 100,000 rows by default, and 64 MiB counted as JSON text; a larger answer is refused with 413 `SEMANTIC_LAYER_INVALID_QUERY`, see [Limits][semantic-query-limits].
 A cut answer carries the header `X-Semantic-Truncated: true`, which Excel does not show: a query that may return more rows needs a `limit`, a coarser grain or fewer group-bys.
 
 ## dbt's Excel add-in { #semantic-excel-dbt-addin }

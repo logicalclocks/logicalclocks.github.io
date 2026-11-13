@@ -40,7 +40,7 @@ The gateway's Service, `semantic-gateway`, has four ports:
 | Port | Name | Serves |
 | --- | --- | --- |
 | 18443 | `public` | REST and GraphQL, behind the Ingresses. |
-| 18444 | `internal` | Compile and validation requests from Payara; the NetworkPolicy admits only the Payara pods. |
+| 18444 | `internal` | Hopsworks' compile and validation requests; not for clients. |
 | 18445 | `metrics` | Prometheus metrics, in the release namespace. |
 | 18446 | `flight` | Arrow Flight SQL. The Service keeps this port when `flightPort`, the port of the container and of the external load balancer, changes. |
 
@@ -91,16 +91,21 @@ Under `semantic-gateway:`:
 | `queryTimeoutSeconds` | `300` | Seconds a query runs on Trino before the gateway cancels it. The Ingress read timeouts must not be shorter. |
 | `queryConcurrency` | `16` | Queries a replica runs at once; a query that finds no slot within 30 seconds gets 503. |
 | `maxRows`, `maxJsonRows` | `1000000`, `100000` | Rows of an Arrow result and of a JSON result. |
+| `maxJsonBytes` | `67108864` | Bytes of a JSON or CSV result, counted as JSON text; a larger result is refused with 413. See [Memory][semantic-admin-memory]. |
 | `sessionCacheSeconds` | `60` | Seconds a replica keeps a caller's session before it asks Hopsworks again. |
 | `buildCacheEntries` | `100` | Compiled builds a replica keeps in memory. |
 | `flightPort` | `18446` | The Arrow Flight SQL port of the gateway and of its external load balancer; change `hopsworks.variables.semantic_gateway_flight_port` with it. Superset and other clients inside the cluster keep using port 18446 of the Service. |
+| `flight.threads`, `flight.queuedCalls` | `64`, `256` | Arrow Flight SQL calls a replica runs at once, and calls that wait for a thread; a call past both is refused. |
+| `flight.maxMessageBytes`, `flight.maxHeaderBytes` | `4194304`, `65536` | The largest request message and the largest header list of an Arrow Flight SQL call. |
 | `biTables.enabled` | `true` | Serve semantic projects as tables over Flight SQL, see [Connect BI tools][semantic-bi-admin]. Experimental. |
+| `graphql.maxFields` | `500` | Fields of one GraphQL operation, each alias counted; a larger operation is refused before it runs. |
+| `cors.allowedOrigins` | `[]` | Browser origins whose pages may call the GraphQL API, see [Connect BI tools][semantic-bi-admin]. |
 | `handleTtlSeconds` | `3600` | Seconds a Flight ticket or prepared statement stays valid. |
 | `cache.maxBytes`, `cache.ttlSeconds`, `cache.entryMaxBytes`, `cache.dataVersionSeconds` | `268435456`, `300`, `8388608`, `30` | The [result cache][semantic-result-cache-admin]. |
 | `arrowMemoryLimitBytes` | `null` | Arrow buffers a replica's queries hold at once; null is half the JVM heap. |
 | `signingKey.existingSecret` | `null` | The Secret with the handle signing key, see [The signing key][semantic-connect-admin-signing-key]. |
 | `externalLoadBalancer.*` | | The Flight SQL load balancer: `enabled`, `class`, `annotations`, `managed`, `nodePort`, `nodeSelector`, `hostname`. |
-| `networkPolicy.enabled` | `true` | Restrict the gateway's traffic to Payara, Trino and DNS, and its internal and metrics ports to Payara and the release namespace. |
+| `networkPolicy.enabled` | `true` | The gateway's NetworkPolicy, which limits the gateway's traffic and who reaches each of its ports. Keep it on, on a CNI that enforces NetworkPolicies. |
 | `image.registry`, `image.repository`, `image.tag`, `image.pullPolicy` | `null`, `hopsworks/semantic-gateway`, `null`, `null` | The gateway image; the tag defaults to the chart's version. |
 | `nodeSelector`, `tolerations`, `topologySpreadConstraint` | empty | Scheduling; the global values apply when empty. |
 

@@ -48,7 +48,7 @@ The gateway's metrics port counts sent records in `semantic_query_records_sent_t
 | Role in the project | Reads |
 | --- | --- |
 | Data Owner | Every member's records, and one member's with the `user` filter. |
-| Data Scientist | Their own records; the `user` filter is ignored. |
+| Data Scientist, Observer | Their own records; the `user` filter is ignored. |
 
 ## Read the history { #semantic-query-history-read }
 
@@ -84,7 +84,7 @@ The gateway's metrics port counts sent records in `semantic_query_records_sent_t
 | `--status` | `status` | `SUCCEEDED`, `FAILED` or `CANCELLED`; repeat the option, or pass a list, for several. |
 | `--user` | `user` | A member's user name; Data Owners only. |
 
-`hops semantic history sales --json` prints every field.
+`hops semantic history sales --json` prints every field, and the [`list_query_history`][semantic-agent-tools-list] tool of the MCP server lists the records for an agent, as CSV, 20 by default.
 `query_history` returns a pandas DataFrame with one row per record, the fields in snake case, `started_at` and `finished_at` as UTC timestamps.
 
 In the UI, the **Query history** card of the semantic project's overview lists the records, newest first, with **Started**, **User** for Data Owners, **Query**, **Surface**, **Status**, **Duration**, **Rows** and **Cache**.
@@ -132,7 +132,7 @@ curl -H "Authorization: ApiKey $HOPSWORKS_API_KEY" \
 | `from`, `to` | ISO-8601 instants on the start time; `from` is inclusive. |
 
 Records come newest first.
-Data Owners and Data Scientists read the endpoint; an API key needs the `FEATURESTORE` scope.
+Data Owners, Data Scientists and Observers read the endpoint; an API key needs the `FEATURESTORE` scope.
 An invalid filter or cursor answers 400 `SEMANTIC_LAYER_ILLEGAL_ARGUMENT`.
 
 ## Retention { #semantic-query-history-retention }

@@ -160,7 +160,7 @@ On Superset 7.0, the chart runs Superset's MCP service, which the `hops superset
 | Object | Purpose |
 | --- | --- |
 | Deployment and Service `hopsworks-superset-mcp` | `superset mcp run` on port 5008, with the Superset image and configuration, reached in the cluster as `app.superset-mcp.service.<domain>:5008`. |
-| Secret `superset-mcp-jwt` | The HS256 key Hopsworks signs a ten-minute token with on each call, for the caller's Superset user in the project. The service accepts only these tokens and applies that user's roles. |
+| Secret `superset-mcp-jwt` | The key Hopsworks signs the service's tokens with, each for the caller's Superset user in the project. The service applies that user's roles. |
 
 The chart creates the secret on install and keeps it on upgrade.
 Where the chart is rendered without cluster access, as under ArgoCD (`global._hopsworks.mode` other than `auto`), set `superset.mcp.jwtSecret`; without it the chart renders no MCP objects.

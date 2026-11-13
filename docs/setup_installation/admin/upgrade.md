@@ -358,6 +358,19 @@ On a 6.0.0p4 MySQL database holding Superset's examples (12 dashboards, 123 char
   With the semantic layer enabled, each Data owner and Data scientist of a project with Superset and a semantic project gets one Superset database connection, which reads the metrics of the project's semantic projects, see [Dashboards in Superset](../../user_guides/analytics/semantic_layer/dashboards.md).
   Set `hopsworks.variables.superset_semantic_enabled: "false"` to keep that off.
 
+### Semantic layer { #upgrade-semantic-layer }
+
+5.3 adds the semantic layer, off by default.
+Before turning it on with `global._hopsworks.semanticLayer.enabled: true`:
+
+- **Room in `ts_1`.**
+  The query history is the table `hopsworks.semantic_query` in RonDB's disk tablespace `ts_1`, which feature groups with disk columns share, and keeps each query for 30 days at about 13,000 bytes.
+  Check the free space of `ts_1` and add a data file when the history will need it, see [Query history storage][semantic-admin-history-storage].
+- **The 5.3 library in `python-feature-pipeline`.**
+  Metric export jobs run in each project's `python-feature-pipeline` environment, and fail before they write with an older Hopsworks library there, see [Who runs an export][semantic-exports-owner].
+- **Memory for the gateway.**
+  Each of the two semantic gateway replicas takes 4 GiB, see [Memory][semantic-admin-memory].
+
 ### Kueue outside the Hopsworks namespace { #upgrade-kueue-external }
 
 Required for a cluster that runs the Kueue bundled with Hopsworks (`global._hopsworks.kueue.enabled=true`); a cluster without Kueue needs nothing.

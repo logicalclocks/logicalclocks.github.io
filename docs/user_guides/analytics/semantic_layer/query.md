@@ -93,7 +93,7 @@ US,62.875,27.875
 | `--explain` | Print the SQL instead of running it. |
 | `--no-cache` | Run the query on Trino even when the [result cache][semantic-result-cache] holds it. |
 
-`hops semantic sql` takes the same options except `-o` and `--explain`, and prints the SQL without running it.
+`hops semantic sql` takes the same options except `-o`, `--explain` and `--no-cache`, and prints the SQL without running it.
 A monthly query with `--end-time 2026-02-01` includes all of February, since the bound is truncated to the month.
 NULLs sort last.
 
@@ -262,12 +262,13 @@ Every response carries the `buildId` that answered and whether it is `stale`; an
 | --- | --- | --- |
 | Rows of an Arrow result | 1,000,000 | The result stops there; the Python client logs a warning when a result fills the cap. |
 | Rows of a JSON result | 100,000 | The result stops there and sets `truncated`. |
+| Size of a JSON or CSV result | 64 MiB, counted as JSON text | 413 `SEMANTIC_LAYER_INVALID_QUERY`: `the result is larger than 67108864 bytes as JSON (MAX_JSON_BYTES); add a limit or filters, or ask for it as Arrow (Accept: application/vnd.apache.arrow.stream)`. |
 | Query time | 300 seconds | 504 `SEMANTIC_LAYER_TIMEOUT`. |
 | Queries running at once, per gateway replica | 16 | A query waits up to 30 seconds for a slot, then gets 503 `SEMANTIC_LAYER_BUSY`. |
 | Request body | 1 MiB | The request is refused. |
 | Rows in the UI workbench | 1,000 | The limit field accepts no more. |
 
-The `semantic-gateway` Helm values `maxRows`, `maxJsonRows`, `queryTimeoutSeconds` and `queryConcurrency` change the first four limits.
+The `semantic-gateway` Helm values `maxRows`, `maxJsonRows`, `maxJsonBytes`, `queryTimeoutSeconds` and `queryConcurrency` change the first five limits, see [Semantic gateway values][semantic-admin-gateway-values].
 Add a `limit`, a filter or fewer group-bys to stay under the row caps.
 The limits of GraphQL and Arrow Flight SQL are in [Connect dbt clients][semantic-connect-limits].
 
@@ -280,8 +281,15 @@ The limits of GraphQL and Arrow Flight SQL are in [Connect dbt clients][semantic
 | `SEMANTIC_LAYER_EXECUTION_FAILED` | 502 | Trino refused or failed the generated SQL; its message follows. | `hops semantic sql` shows the SQL. |
 | `SEMANTIC_LAYER_FORBIDDEN` | 403 | Not a member of the project, or an API key without the `FEATURESTORE` and `TRINO` scopes. | Add the member or the scopes. |
 | `SEMANTIC_LAYER_NOT_FOUND` | 404 | No semantic project with that id, or no saved query of that name. | `hops semantic list`, `hops semantic saved-queries <name>`. |
+| `SEMANTIC_LAYER_UNAUTHENTICATED` | 401 | No `Authorization` header, a malformed one, or a credential Hopsworks refuses. | Send the API key as `ApiKey <api key>` or `Bearer <api key>`. |
+| `SEMANTIC_LAYER_TIMEOUT` | 504 | The query ran longer than the query time of [Limits][semantic-query-limits]. | Add a `limit` or filters, or fewer group-bys. |
+| `SEMANTIC_LAYER_BUSY` | 503 | Every query slot of the gateway replica stayed taken for 30 seconds, or its Arrow buffers are full. | Run the query again. |
+| `SEMANTIC_LAYER_UNAVAILABLE` | 503, 502 | The gateway could not reach Hopsworks, 503, or Hopsworks answered with an error, 502. | Run the query again once Hopsworks answers. |
+| `SEMANTIC_LAYER_INVALID_BUILD` | 502 | The gateway could not load the build that answers queries. | The gateway's log has the cause. |
+| `SEMANTIC_LAYER_INTERNAL` | 500 | The gateway failed. | The gateway's log has the cause. |
 
 In Python, each is a `SemanticLayerException` with the code in `error_code`.
+A replica keeps a caller's session for 60 seconds, so while Hopsworks restarts, as during an upgrade, queries keep running until the sessions they need are older than that, and then answer `SEMANTIC_LAYER_UNAVAILABLE` until Hopsworks is back.
 
 !!! api "API reference"
 
