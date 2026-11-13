@@ -931,7 +931,6 @@ Do not hand-edit the tables below; regenerate them instead.
 | 270216 | `FILE_DELETION_ERROR` | 400 BAD_REQUEST | Failed to delete file |
 | 270217 | `FILE_READ_ERROR` | 400 BAD_REQUEST | Failed to read file |
 | 270218 | `DOCKER_FULLNAME_ERROR` | 400 BAD_REQUEST | Failed to retrieve full docker image name |
-| 270219 | `CONNECTION_CHECKER_LAUNCH_ERROR` | 400 BAD_REQUEST | Failed to launch process to start docker container for testing connection |
 | 270220 | `CONNECTION_CHECKER_ERROR` | 400 BAD_REQUEST | Failure in testing connection for storage connector |
 | 270221 | `ERROR_CREATING_ONLINE_FEATURESTORE_KAFKA_OFFSET_TABLE` | 500 INTERNAL_SERVER_ERROR | An error occurred when trying to create the kafka offset table for an online feature store |
 | 270222 | `ERROR_CONSTRUCTING_VALIDATION_REPORT_DIRECTORY_PATH` | 500 INTERNAL_SERVER_ERROR | An error occurred while constructing validation report directory path |
