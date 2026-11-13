@@ -159,7 +159,7 @@ It writes your answers into the draft, which the form shows as it changes, and n
 What you type in the form goes to Claude Code with your next message.
 Say in the chat that you want to create the system, and Claude Code checks the required answers and the page creates it, as **Create** does; **Back** and **Create** are at the top right of the page.
 The form's chat tab in the Terminal closes once the system is created.
-**From Template** lists the factories without the description: **ML System** holds **Batch ML system**, **Real-time ML system**, **Batch and streaming ML system** and **Agentic system**, **Analytics** the analytics layer factories, and each has a **Blueprints** submenu of its examples, each opening its factory's form filled in.
+**From Template** lists the factories without the description: **ML System** holds **Batch ML system**, **Real-time ML system**, **Batch and streaming ML system**, **Agentic system** and **Ontology and text-to-SQL**, **Analytics** the analytics layer factories, and each has a **Blueprints** submenu of its examples, each opening its factory's form filled in.
 The cogwheel opens **Manage factories**.
 **Existing Systems**, shown once a factory has built a system, lists the project's systems for every member: each with its factory, type, status, phases done, owner and last update, and an open folder for the ones whose code you can open, a lock for the ones you cannot, and a link for the ones in a Git repository; the box above it filters the list.
 **Login to GitHub** runs `github-login` in a Terminal tab; the page shows whether the terminal's GitHub CLI is logged in, which the build needs to create the repository.
@@ -365,11 +365,217 @@ ingestion:
 
 The chat stays open while it builds: it shows the rows each table loaded, with the dropped and pseudonymized columns as they are, and asks whether they are right before it schedules the job, builds the dashboard and verifies a run against the source's row counts.
 
+### Build an ontology and text-to-SQL app
+
+The `ontology` factory builds an ontology of the tables in the project's SQL data sources, and an app that answers questions about their data by writing and running SQL.
+Its jobs read the sources' metadata (schemas, tables, columns, keys and views) into a catalog, and an LLM compiles the catalog into business terms: concepts such as Customer or Invoice Line, with descriptions and synonyms, mapped to tables, columns, joins and SQL expressions.
+Members review and edit the terms in the app, and its chat answers a question with the SQL it ran and the rows it returned.
+
+**From Template > ML System > Ontology and text-to-SQL** opens the factory's form, and **From Template > ML System > Blueprints > Example: sales database** opens it filled in for the sales example.
+From a terminal:
+
+```bash
+hops factory run ontology                        # answer the form's questions in the terminal
+hops factory run ontology --preset wwi-example   # the sales example, named sales-ontology
+```
+
+Both start Claude Code on `/hops-factory-ontology <name>` in the system's directory, which builds the system phase by phase.
+A project can hold several ontology systems, and each one builds:
+
+| Part | Name |
+| --- | --- |
+| Python environment: a clone of `python-feature-pipeline` with Auto-Ontology installed | `ontology-<commit>`, where `<commit>` is the first 8 characters of the Auto-Ontology commit it installs |
+| App: the HTTP API, the web UI and the chat | `<name>`, a custom app in that environment |
+| App tables: the catalog, the ontology, conversations and settings | `<table prefix><table>`, in the project's online database |
+| Jobs, in that environment | `<name>-ingest`, `<name>-compile`, `<name>-embed`, `<name>-reset`, `<name>-import` |
+| Online feature groups, each with an embedding index | `<name_>_data_objects` (tables and columns), `<name_>_semantic` (the ontology) |
+| Models in the Model Registry, imported from Hugging Face | `Nemotron_3_5_Embed_1B_BF16`, `NVIDIA_Nemotron_3_5_Lightning_30B_A3B_FP8` |
+| vLLM deployments | `nemotronembed`, `nemotronllm` |
+
+`<name_>` is the name with hyphens replaced by underscores, and `<table prefix>` is the app's table prefix.
+The environment, the models and the deployments are shared by the project's ontology systems: a second system reuses those the first one made, and a system with an external model makes neither that model nor its deployment.
+Deleting a system keeps the environment.
+Each embedding index holds vectors of the dimension chosen in the form, compared by cosine similarity.
+The system's directory holds `ontology.yaml`, the system's configuration and the only file written from the answers, and the launchers of the app (`app.py`) and of the jobs (`jobs/`), which run the Auto-Ontology runtime installed in the system's environment.
+
+#### Before you build an ontology
+
+- **Data sources**: each source is a data source of the project with SHARED credentials, of type MySQL, PostgreSQL or ClickHouse ([SQL][how-to-set-up-an-sql-data-source]), [Snowflake][how-to-set-up-a-snowflake-data-source] or Databricks ([Unity Catalog][how-to-set-up-a-unity-catalog-data-source]).
+  The build refuses a source with PROVIDED credentials, because those answer with one member's credentials while the app and the jobs serve every member.
+  Two sources cannot read the same database.
+- **A GPU, for local models**: the LLM and the embedding model run as two vLLM deployments that share one GPU, each requesting one `nvidia.com/gpu`.
+  This needs the NVIDIA device plugin on the GPU node configured for time-slicing with `replicas: 2` and `renameByDefault: false`; neither the Helm chart nor Hopsworks configures it.
+  The LLM takes 80% of the GPU's memory and the embedding model 12%, and the LLM's checkpoint, which the build downloads from Hugging Face, is about 32 GB.
+  A Hugging Face token is needed only when Hugging Face asks for a login or a license acceptance.
+- **External models, instead of a GPU**: an OpenAI-compatible endpoint for the LLM, the embedding model, or both, set in the form's **Models** section.
+  Their URLs, model names and keys are saved as your [account environment variables][account-level-environment-variables] `LLM_URL`, `LLM_MODEL`, `LLM_API_KEY`, `EMBEDDING_URL`, `EMBEDDING_MODEL` and `EMBEDDING_API_KEY`, never in `system.yaml`.
+  Hopsworks sets a member's account variables in every job and app that member starts, and a scheduled run starts as its job's creator.
+  The embeddings endpoint must return vectors of the dimension chosen in the form.
+- **`hopsable_proxy_enabled`, for the CLI and MCP**: `hops ontology` and the MCP tools reach the app with a proxy token, which Hopsworks mints only when the cluster variable `hopsable_proxy_enabled` is `true` (`hopsworks.variables.hopsable_proxy_enabled` in the Helm values, `false` by default); otherwise it refuses the token with error code `120012`.
+  The app's pages in Hopsworks do not need it.
+- **A Data owner**: a Data owner builds the system: the sales example creates tables, which a Data scientist cannot, and deleting a system's assets needs a Data owner.
+
+#### The ontology form
+
+- **Basics**: **Name**, which is also the system's directory, the app's name, the prefix of its jobs, feature groups and tables, and, as `hops-<name>`, its new GitHub repository; **Create new GitHub repo**; and **Who asks questions, and about what?**, such as "sales managers ask about orders, customers and stock levels", from which the build draws its test questions.
+- **Data sources**: one entry per source, with **Data source name**, **Schemas**, an optional comma-separated allowlist (empty reads every schema the credentials can read), and **Table name pattern**, an optional regular expression a table's name must match.
+- **Models**, collapsed: **LLM**, Nemotron 3.5 Lightning 30B (FP8) served in the project with vLLM (the default) or an OpenAI-compatible endpoint; **Embedding model**, Nemotron 3.5 Embed 1B served in the project with vLLM (the default) or an OpenAI-compatible endpoint; **Embedding dimension**, 2048 (the default) or 1024, which halves the vector index's memory; the endpoints, model names and keys of external models; and the **Hugging Face token**.
+- **Schedule**, collapsed: when ingest and compile run, **Every day** (the default, at 02:00 and 03:00 UTC), **Every week** (Mondays at the same times) or **Only when started by hand or from the app**; and **Detect personal data**, off by default, which tags the columns that hold personal data and leaves their sample values out of the catalog and the embeddings.
+
+The build runs these phases:
+
+| Phase | What the build does |
+| --- | --- |
+| Check the sources and write ontology.yaml | Checks that every source exists, has a supported type and SHARED credentials, and that an external model's account variables are set, then writes `ontology.yaml` |
+| Python environment with Auto-Ontology | Clones `python-feature-pipeline` and installs Auto-Ontology into the clone, or reuses the environment another ontology system made |
+| Import the models and deploy them with vLLM | Imports each local model from Hugging Face at a pinned revision and deploys it, or reuses what another ontology system made; skipped when both models are external |
+| Ontology app | Creates and starts the app, which creates its tables |
+| Jobs, and ingest the sources' metadata | Creates the five jobs, schedules ingest and compile, and runs ingest |
+| Compile the ontology | Runs compile and embed, then checks that every table has a term, except a table whose columns are all foreign keys, and that every ontology row has its vector in `<name_>_semantic` |
+| Verify | Asks three questions drawn from **Who asks questions, and about what?**, or the sales example's five, records each answer, its SQL and its time in `system.yaml`, and runs `hops factory system status` |
+
+Compiling sends many LLM calls: on one GPU it takes tens of minutes for a few dozen tables.
+
+`--preset wwi-example`, or **Blueprints > Example: sales database**, builds the system `sales-ontology` over generated data.
+Its first phase runs a script that creates six tables, `sales_state_provinces`, `sales_cities`, `sales_customers`, `sales_products`, `sales_orders` and `sales_order_lines`, in the project's online database, fills them from a fixed seed, and creates the MySQL data source `sales_mysql` over them with SHARED credentials, the system's only source.
+The tables carry the `sales_` prefix because a member can create tables only in the project's online database, not in a database of their own.
+Its last phase asks five questions and compares each answer with the one the data gives:
+
+| Question | Answer |
+| --- | --- |
+| How many orders were placed in March 2025? | 14 |
+| What was the total revenue of delivered orders? | 107467.00 |
+| Which state has the most customers, and how many? | Georgia, with 7 |
+| Which products have fewer than 20 units in stock? | Build your own robot kit, Office desk toy, Ride on toy sedan car |
+| Which salesperson brought in the most revenue from delivered orders, and how much? | Archer Lamble, with 33722.00 |
+
+#### Roles in the ontology app
+
+The Hopsworks app proxy signs the caller's name into every request, and the app reads the caller's role from the project's members, cached for 60 seconds.
+
+| Project role | In the app |
+| --- | --- |
+| Data owner | Everything: chat, edits to the catalog and the ontology, saved analyses, **Analytics** and **Settings** |
+| Data scientist | Chat, edits to the catalog and the ontology, and saved analyses |
+| Observer, Feature store restricted | The catalog, the terms, tags and saved analyses, read-only and without sample values; no chat |
+| Not a member | Refused |
+
+Observers and Feature store restricted members get no chat because the chat runs SQL on the data sources, and no sample values because they cannot preview data sources in Hopsworks.
+Only Data owners and Data scientists can mint the proxy token, so only they can use `hops ontology` and the MCP tools; an API key needs the `JOB` scope.
+The app, and the jobs it starts, run as the member who last started or redeployed the app.
+
+#### Use an ontology
+
+The app is the system's **App** view on its Factory page, served at `/hopsworks-api/pythonapp/<project>/<name>/`; `hops app url <name>` prints its address, and **Start app** starts the system's deployments and then the app.
+Its pages:
+
+- **Chat**: ask a question in plain language; the answer shows the SQL that ran, the rows and, when the result has one, a chart.
+  Conversations are saved per member, and a follow-up question resolves against its conversation's earlier questions.
+- **Discovery**: search the catalog and the ontology.
+  Members without chat open the app here.
+- **Terms**: the business terms with their descriptions, synonyms, columns and SQL expressions, to review and edit.
+- **Analysis**: saved SQL analyses, which the chat uses as examples.
+- **Exploration**: the graph of the terms and the joins between them.
+- **Data**: the catalog of databases, schemas, tables and columns.
+- **Analytics**, for Data owners: the questions asked in the last 30 days, and who asked them.
+- **Settings**, for Data owners: **Sources**, **Tags**, **Rules**, **PII Settings**, **Semantic Input**, **Semantic Compilation**, **Agent Settings** and **Import / Export**.
+
+**Sources** lists the data sources the ontology reads, with their schemas and table filter.
+**Add Source** takes a data source's name, optional schemas and an optional table filter, connects to the source once, and starts the ingest job for it.
+It refuses, with HTTP 422, a source of an unsupported type, one with PROVIDED credentials, and one that reads a database another source already reads, and, with HTTP 502, one it cannot reach.
+**Remove** starts the reset job, which deletes what was ingested from that source: its catalog, its part of the ontology, and their vectors.
+The `sources` of `ontology.yaml` seed a new system only: once the app has a source, **Sources** is the record, so a source removed there stays removed.
+
+**Semantic Compilation** has **Enable Semantic Compilation**: the compile job compiles only while it is on, and switching it on starts a compile run.
+A new system starts with it on, from `semantic_compilation: true` in its `ontology.yaml`; the `pii_detection` and `distinct_value_probing` answers set **PII Settings** and **Semantic Input** the same way, and a later change in **Settings** stays.
+**Reset** there deletes the ontology of every database and compiles it again.
+An edit in the app re-embeds the edited object, so it shows in the catalog and in the vector search at once; an edit whose embedding fails is embedded again by the next compile or embed run.
+**Import / Export** exports the catalog and the ontology as YAML, in the native format or Apache Ossie's, and imports such a file.
+
+The app answers at most four questions at a time; past that it answers HTTP 429 with `Retry-After`.
+The chat runs only single `SELECT` or `WITH` statements, with the source's credentials, and on MySQL, PostgreSQL and ClickHouse in a read-only session.
+
+From a terminal:
+
+```bash
+hops ontology status sales-ontology                                      # can it answer, and what stops it; exits 1 when it cannot
+hops ontology ask sales-ontology "Which state has the most customers, and how many?"   # the answer, its SQL and up to 100 rows
+hops ontology ask sales-ontology "How many orders did they place?" --conversation-id <uuid>  # a follow-up in a saved conversation
+```
+
+`hops ontology ask` prints each step the agent takes as it takes it, then the answer, its SQL and up to 100 rows, and says how many rows the query returned when it returned more.
+With `--json` it prints `answer`, `sql`, `rows`, `row_count`, `truncated`, `reasoning` and `chart` instead.
+Without `--conversation-id` a question is answered on its own: no history, nothing saved and no chart.
+It waits 900 seconds for the answer, which `--timeout` changes.
+
+`hops ontology status` prints the app's state, whether it is serving, its URL, whether the ontology is compiled, whether a source is configured to run SQL on, whether a database is ingested, and the ingested databases, then a `blocker:` line for each thing that stops the system from answering:
+
+- **The app is `<state>`; start it with `hops app start <name>`**: read `hops app logs <name>` when it does not start.
+- **No database is ingested yet**: run `hops job run <name>-ingest --wait`; its log names the source that failed.
+- **The ontology is not compiled yet**: switch on **Enable Semantic Compilation** in the app's **Settings**, which starts a compile run, or run the compile job with `--force`.
+- **No data source is configured**: add one with **Add Source** on the app's **Sources** page.
+
+When an answer comes back empty, `hops ontology status` separates a system that is not ready from a question the ontology does not cover.
+
+The Hopsworks MCP server, `hopsworks-mcp`, which ships with the `hopsworks` library, has the same reads as tools; each takes the system's name as `system`:
+
+| Tool | Returns |
+| --- | --- |
+| `check_readiness` | Whether the system can answer, and what stops it |
+| `search_terms` | The terms whose name contains a string |
+| `get_term` | One term, with its description, synonyms and related terms |
+| `get_term_columns` | The columns a term maps to |
+| `get_term_sql_attributes` | The SQL expressions under a term, such as a margin or a ratio |
+| `get_sql_attribute` | One SQL expression, with its term and its purpose |
+| `describe_table` | One table, with its columns, the terms that reference it and the SQL expressions over it |
+| `check_answerable` | How well the ontology covers the entities of a question, without running the agent |
+| `ask_question` | The answer, its SQL and up to 100 rows; it takes tens of seconds and reports each step as progress |
+
+#### Ontology jobs
+
+The five jobs run in the system's `ontology-<commit>` environment with 2 cores, 4096 MB and no GPU.
+Their default arguments name the system's configuration, `--config <dir>/ontology.yaml`, where `<dir>` is the system's directory relative to the project, such as `Users/<user>/sales-ontology`.
+One job works on the ontology at a time: a job that starts while another runs fails with `another ontology pipeline job is running`.
+
+- `<name>-ingest [--source <data source>]` reads the sources' metadata into the catalog and embeds the tables and columns into `<name_>_data_objects`, then starts the compile job when compilation is switched on.
+  `--source` ingests one source.
+  It runs on its schedule, and **Add Source** starts it for the new source; it exits 1 when a source fails.
+- `<name>-compile [--force]` compiles the catalog into terms, joins and SQL expressions, and embeds them into `<name_>_semantic`.
+  It compiles only while **Enable Semantic Compilation** is on, and `--force` compiles regardless.
+  It runs on its schedule, after ingest, and when compilation is switched on, and exits 1 when the compilation fails.
+- `<name>-embed [--database <database>]` embeds every ontology row whose text changed since it was last embedded, of one database with `--database`.
+  It fails when a row is left without its vector.
+- `<name>-reset --semantic [--database <database>]` deletes the ontology and its vectors, of one database with `--database`, and compiles it again; **Reset** starts it.
+  `<name>-reset --all --database <database>` deletes a database's catalog, ontology and vectors; **Remove** on **Sources** starts it.
+- `<name>-import --file <path> [--merge]` imports an export, native or Apache Ossie YAML, from a file in the project, for a file too large to upload on **Import / Export**, and embeds it.
+  The file's definitions replace the existing ones, and `--merge` keeps the ones the file does not mention.
+
+An execution runs with the arguments it is given instead of the job's default arguments, so arguments given by hand repeat `--config`:
+
+```bash
+hops job run sales-ontology-ingest --wait   # the default arguments
+hops job run sales-ontology-ingest --wait --args "--config Users/<user>/sales-ontology/ontology.yaml --source sales_mysql"
+```
+
+A scheduled run starts as its job's creator, which `system.yaml` records for each job.
+
+#### Delete an ontology
+
+**Delete** on the system's page, or `hops factory system delete <name> --assets`, deletes the app with its tables, the jobs, the two feature groups and the system's directory; it needs a Data owner.
+The models and the deployments the project's ontology systems share are kept while another system names them.
+A deployment's description names the system that created it, so it is deleted with that system when no other system names it, and otherwise stays until you delete it with `hops deployment delete <deployment>`.
+A model's description names the Hugging Face commit it came from and no system, so the models are kept; `hops model delete <model> --version <version>` deletes one.
+The data sources the system reads, the sales example's tables, and the vLLM configurations in `Resources/ontology-vllm` are kept.
+
+```bash
+hops factory system delete sales-ontology --assets   # the app and its tables, the jobs, the feature groups and the directory
+```
+
 ### Create your own factory
 
 A factory is a YAML definition: the questions of its creation form, the phases of its build, and the instructions Claude Code follows to build what the answers describe.
 The project's own factories are listed under **From Template** with the built-in ones of their kind, each opening the form it generates.
-The nine built-in factories, `ml-batch`, `ml-realtime`, `ml-streaming`, `ml-agent`, `analytics-bronze`, `analytics-silver`, `analytics-gold`, `analytics-pipeline` and `analytics-ingestion`, are read-only; clone one to change it.
+The ten built-in factories, `ml-batch`, `ml-realtime`, `ml-streaming`, `ml-agent`, `ontology`, `analytics-bronze`, `analytics-silver`, `analytics-gold`, `analytics-pipeline` and `analytics-ingestion`, are read-only; clone one to change it.
 A form has no conditions: every question of a section is shown, and a section with defaults can be collapsed to a summary of its answers with **Edit**.
 
 **Factory > Manage factories** lists every factory with its version and how many systems it built.
