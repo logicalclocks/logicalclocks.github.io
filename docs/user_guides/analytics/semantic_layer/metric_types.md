@@ -142,6 +142,7 @@ metric_time__month,revenue_per_order
 
 `numerator` and `denominator` are metric names, or mappings with a `name` and any of `filter`, `alias` and an [offset][semantic-metric-types-offsets].
 The two metrics are aggregated at the query's group-bys before the division, so a ratio is never an average of ratios.
+A ratio is a `DOUBLE`, whatever the types of the two metrics.
 
 ## Derived metrics { #semantic-metric-types-derived }
 
@@ -172,6 +173,9 @@ DE,7.75
 SE,35.0625
 US,27.875
 ```
+
+An `expr` that divides two integers, such as `orders / customers` over two counts, gives a fraction, a `DOUBLE`; a `CAST` the `expr` writes, such as `CAST(orders / customers AS BIGINT)`, sets the type instead.
+A division of decimals follows Trino's rule for the type of a decimal quotient.
 
 ### Offsets { #semantic-metric-types-offsets }
 
@@ -239,6 +243,8 @@ metric_time__month,revenue,revenue_first_month_of_quarter
 - The offset input reads the time spine: each period of the spine joins the value of the period the offset names, so April 2026 has the revenue of March and no revenue of its own.
 - Metrics in one query are joined on their group-bys, and a metric without a value in a group is empty there: `revenue_change_mom` is empty in January and April, where one of its inputs is.
 - A derived or ratio metric with an offset input needs `metric_time` in every query.
+- A filter on `metric_time` alone, such as `{{ TimeDimension('metric_time', 'day') }} >= '2026-02-01'`, filters the periods of the time spine, not the rows the offset reads: each queried period that holds a period the filter keeps has one value, read at the offset.
+  A filter at a finer grain than the query's, such as a day filter on a monthly query, keeps the months that hold a kept day.
 - When the input at an offset is a cumulative metric, a query's time range also bounds the periods that metric is computed for, as in MetricFlow: the first offset's worth of the range has no rows, since the values it reads fall before the range. Start the range one offset earlier to get them.
 
 ## Cumulative metrics { #semantic-metric-types-cumulative }
@@ -605,6 +611,7 @@ A metric or saved query whose definition has one compiles with an `UNSUPPORTED` 
 - An input at an offset that is itself a ratio or derived metric, in a query whose grain cannot express the offset, such as an offset of 2 days in a monthly query.
 - An input at an offset window in a custom granularity, such as `1 fiscal_quarter`, that is itself a ratio or derived metric.
 - A `Metric()` filter that applies to an input at an offset that is itself a ratio or derived metric.
+- A filter that combines `metric_time` with another group-by, one of them not a group-by of the query, on an input at an offset that is itself a ratio or derived metric.
 - Two custom granularities of the time spine in one query.
 - A custom granularity as a metric's `time_granularity`.
 - A window in microseconds or nanoseconds.

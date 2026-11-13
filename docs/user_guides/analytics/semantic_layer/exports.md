@@ -65,6 +65,7 @@ A compile checks every export, and each problem is an issue at the export's file
 | `EXPORT_LOOKBACK` | `ERROR` | A lookback that is not `<count> <granularity>` with a count of at least 1, or a saved query that does not group by `metric_time` at a grain, the column the window is cut on. |
 | `EXPORT_KEYS` | `ERROR` | A saved query without group-bys: they are the feature group's primary key and event time. |
 | `EXPORT_SETTINGS` | `ERROR` | A `config.meta.hopsworks.exports` that does not map export names to settings, or that has settings for a name that is not an export of the saved query. |
+| `EXPORT_SERVING` | `WARNING` | A saved query whose rows can depend on when it runs, through `CURRENT_DATE`, `now()` or a function the compiler does not know, such as a UDF: its exports are refreshed, and never answer queries. |
 
 ## The feature group { #semantic-exports-feature-group }
 
@@ -292,7 +293,8 @@ X-Semantic-Cache: miss
 All of these hold:
 
 - The export has no `lookback`, so each run replaces every row.
-- Its saved query has no `limit`, `order_by` or group limit, and no filter or time range relative to the current date or time.
+- Its saved query has no `limit`, `order_by` or group limit, no filter or time range relative to the current date or time, and calls no function whose value depends on when it runs, such as `CURRENT_DATE`, `now()` or `random()`, and no function the compiler does not know, such as a UDF.
+  The build warns of such a saved query with `EXPORT_SERVING`.
 - The query asks for the saved query's rows: the same metrics, the same group-bys at the same grains, and the same filters and time range, whether it names the saved query or spells the same query out.
   It may add `having`, `order_by` and `limit` over the saved query's columns, and nothing else: an extra filter is applied before the metrics are computed, so it is not a filter on the export's rows.
 - The saved query's definition, its SQL on the build that answers the query, is the one the export's last run read.

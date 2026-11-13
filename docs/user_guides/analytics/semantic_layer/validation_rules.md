@@ -49,6 +49,9 @@ Every issue is an `ERROR` unless the table says `WARNING`.
 | `RULE` | Level | Reports |
 | --- | --- | --- |
 | `TOO_MANY_FILES`, `FILE_TOO_LARGE`, `FILES_TOO_LARGE` | `ERROR` | More than 1000 files under the root path, a file over 1 MiB, or files over 32 MiB in all, see [Project layout][semantic-define-layout]. |
+| `TOO_MANY` | `ERROR` | More elements of one kind than a semantic project may define, see [Limits][semantic-validation-limits], at the first element over the limit; nothing after it is read. |
+| `TOO_MANY_ISSUES` | `ERROR`, `WARNING` | More than 1,000 errors or 1,000 warnings: the first 1,000 of each are listed, then one issue says how many more were found. An `ERROR` also when the issues take more room than a build stores, 4 MiB; the leading issues are kept and the build is `INVALID`. |
+| `ANSWER_TOO_LARGE` | `ERROR` | The compile's answer, which holds the definition files and every issue found in them, is larger than 64 MiB, or 8 MiB for the editor's validation. Fix the definitions that repeat an error, or split them over more than one semantic project. |
 | `YAML_SYNTAX` | `ERROR` | A file that does not parse as YAML or JSON. |
 | `YAML_DUPLICATE_KEY` | `WARNING` | A key twice in one mapping; the last value is used. |
 | `UNKNOWN_KEY` | `WARNING` | A top-level key the format does not define. |
@@ -67,6 +70,7 @@ Every issue is an `ERROR` unless the table says `WARNING`.
 | `TIME_SPINE` | `ERROR` | A metric that needs a time spine none is bound for, see [Without a time spine][semantic-time-spine-missing]. A `WARNING` for a declared time spine that does not bind. |
 | `METRIC` | `ERROR` | A metric that the planner cannot plan, with the planner's reason, such as an exact percentile on Trino. |
 | `SAVED_QUERY` | `ERROR` | A saved query that the planner cannot plan, with the planner's reason. |
+| `NAME_TOO_LONG` | `ERROR` | A metric or saved query name longer than 255 characters. |
 | `UNSUPPORTED` | `WARNING` | A metric or saved query of a shape the planner refuses, see [Limits][semantic-metric-types-limits]; its queries are refused, and the build serves the others. |
 | `METRIC_TAGS_NOT_A_MAP`, `METRIC_TAG_UNKNOWN_SCHEMA`, `METRIC_TAG_INVALID_VALUE`, `METRIC_TAG_MANDATORY_MISSING` | `ERROR` | A metric's tags, see [Tag a metric][semantic-tags-metrics]. |
 | `SAVED_QUERY_TAGS_NOT_A_MAP`, `SAVED_QUERY_TAG_UNKNOWN_SCHEMA`, `SAVED_QUERY_TAG_INVALID_VALUE` | `ERROR` | A saved query's tags, checked as a metric's are. |
@@ -77,7 +81,27 @@ Every issue is an `ERROR` unless the table says `WARNING`.
 | `EXPORT_LOOKBACK` | `ERROR` | A `lookback` that is not `<count> <granularity>` with a count of at least 1, such as `7 days`, or an export with a lookback whose saved query does not group by `metric_time` at a grain. |
 | `EXPORT_KEYS` | `ERROR` | An export of a saved query without group-bys. |
 | `EXPORT_SETTINGS` | `ERROR` | A `config.meta.hopsworks.exports` that does not map export names to settings, or that names an export the saved query does not have. |
+| `EXPORT_SERVING` | `WARNING` | A saved query with exports whose rows can depend on when it runs, through `CURRENT_DATE`, `now()` or a function the compiler does not know, such as a UDF, in a filter or expression: its exports are refreshed, and never [answer queries][semantic-exports-serving-rules]. |
 
 The `EXPORT_*` rules check the [metric exports][semantic-exports-validation] of saved queries.
+
+## Limits { #semantic-validation-limits }
+
+A semantic project defines at most, over all its files:
+
+| Element | Most |
+| --- | --- |
+| Semantic models | 1,000 |
+| Entities | 10,000 |
+| Dimensions | 20,000 |
+| Measures | 10,000 |
+| Metrics | 10,000 |
+| Saved queries | 1,000 |
+| Exports | 1,000 |
+| Time spines | 100 |
+
+The first element over a limit is a `TOO_MANY` error at its file and line, and the compile reads nothing after it.
+A compile lists at most 1,000 errors and 1,000 warnings, and stops once it has found more than 1,000 errors; a build's error and warning counts count every issue found, and can be larger than the list.
+The files under the root path are limited too, see [Project layout][semantic-define-layout].
 
 `hops semantic build <name> <id>`, `SemanticProject.get_build(id).issues` and **View issues** on the **Builds** card list a build's issues.

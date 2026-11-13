@@ -85,7 +85,7 @@ US,62.875,27.875
 | `--metrics` | Metric names, comma-separated or repeated. |
 | `--saved-query` | A [saved query][semantic-saved-queries] to run in place of `--metrics`. |
 | `--group-by` | Group-bys, comma-separated or repeated. |
-| `--where` | A filter in the call syntax, repeated for `AND`: `--where "{{ Dimension('customer__country') }} = 'SE'"`. |
+| `--where` | A filter, repeated for `AND`: `--where "{{ Dimension('customer__country') }} = 'SE'"`, see [Filters][semantic-query-filters]. |
 | `--order-by` | Metric or group-by names; a leading `-` sorts descending. |
 | `--limit` | The most rows to return. |
 | `--start-time`, `--end-time` | Bounds on `metric_time`, both inclusive, each truncated to the query's time grain. |
@@ -121,7 +121,7 @@ sql = sales.sql(metrics=["revenue"], group_by=["metric_time__month"])
 
 | Argument | Meaning |
 | --- | --- |
-| `where` | Text filters in the call syntax, combined with `AND`. |
+| `where` | Text filters, combined with `AND`, see [Filters][semantic-query-filters]. |
 | `filters` | Structured filters, `(group_by, op, value)`, with `op` one of `=`, `!=`, `<`, `<=`, `>`, `>=`, `IN`, `NOT IN`, `IS NULL`, `IS NOT NULL` and `LIKE`. The values are bound as literals and never parsed as SQL. |
 | `having` | Filters on metric values, `(metric, op, value)`. |
 | `order_by` | Metric or group-by names; a leading `-` sorts descending. |
@@ -135,6 +135,29 @@ sql = sales.sql(metrics=["revenue"], group_by=["metric_time__month"])
 A group-by can also be a dict, `{"name": "metric_time", "grain": "month"}` or `{"name": "metric_time", "date_part": "dow"}`.
 Results come back as an Arrow stream when `pyarrow` is installed, which keeps the column types, and as JSON otherwise.
 The client works from outside the cluster with an API key, through the same host as `hopsworks.login()`.
+
+### Filters { #semantic-query-filters }
+
+A text filter is a SQL condition over group-bys.
+It names a group-by with a call, `{{ Dimension('customer__country') }}`, `{{ TimeDimension('metric_time', 'month') }}` or `{{ Entity('customer') }}`, or by its column name alone, `customer__country` or `metric_time__month`, which means the same group-by:
+
+```bash
+hops semantic query sales --metrics revenue --group-by customer__country \
+  --where "customer__country IN ('SE', 'DE')" --order-by -revenue
+```
+
+```text
+customer__country  revenue
+-----------------  -------
+SE                 190.75
+DE                 75.5
+```
+
+- A filter reads the group-bys it names and nothing else: a name that is not a group-by, such as a feature's, and a qualified name, such as `orders.amount`, are refused with `SEMANTIC_LAYER_INVALID_QUERY`.
+- A group-by in a filter need not be a group-by of the query: a filter on `order__status` keeps the rows of that status, whatever the query groups by.
+- `{{ TimeDimension('metric_time') }}` without a grain takes the grain `metric_time` would have as a group-by of the query, the same for every metric of the query.
+- String values take any Unicode text, such as `'Malmö'`, `'Łódź'` or `'東京'`, in text filters, structured filters and metric filters alike.
+- A filter on a metric's value is a `having`, or a [`Metric()` filter][semantic-metric-types-metric-filters].
 
 ### Query without metrics { #semantic-query-no-metrics }
 

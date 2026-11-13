@@ -97,13 +97,18 @@ semantic_models:
 Each `expr` is checked against the feature group's features at compile time, so a typo in a feature name is an error at its line instead of a failed query.
 Names are lower-cased when compiled.
 
-| `agg` | Notes |
-| --- | --- |
-| `sum`, `min`, `max`, `average` | |
-| `count` | Counts the rows where `expr` is not null. |
-| `count_distinct` | |
-| `sum_boolean` | Counts the rows where `expr` is true. |
-| `percentile` | Needs `agg_params.percentile`, strictly between 0 and 1, and `agg_params.use_approximate_percentile: true`. |
+| `agg` | Result type | Notes |
+| --- | --- | --- |
+| `sum` | `BIGINT` for an integer `expr`, `DECIMAL(38, s)` for a `DECIMAL(p, s)`, else the type of `expr` | |
+| `min`, `max` | The type of `expr` | |
+| `average` | `DOUBLE` for an integer `expr`, else the type of `expr` | |
+| `count` | `BIGINT` | Counts the rows where `expr` is not null. |
+| `count_distinct` | `BIGINT` | |
+| `sum_boolean` | `BIGINT` | Counts the rows where `expr` is true. |
+| `percentile` | `DOUBLE` | Needs `agg_params.percentile`, strictly between 0 and 1, and `agg_params.use_approximate_percentile: true`. |
+
+A decimal keeps up to 38 digits.
+The result type is the type of the metric's column in every answer: in Arrow, in JSON and in the [BI tables][semantic-bi-columns].
 
 Trino computes only approximate continuous percentiles, so a metric over a `median` measure, or over an exact `percentile`, is a `METRIC` error at compile, and one over a percentile with both `use_approximate_percentile` and `use_discrete_percentile` compiles with an `UNSUPPORTED` warning and its queries are refused.
 Write a median as a `percentile` measure with `percentile: 0.5` and `use_approximate_percentile: true`.
