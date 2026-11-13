@@ -415,6 +415,19 @@ For **Python model deployments**, you can provide a server configuration file to
 
 For **vLLM deployments**, the server configuration file is ==required== and is used to configure the vLLM server. For example, you can use this configuration file to specify the chat template or LoRA modules to be loaded by the vLLM server. See all available parameters in the [official documentation](https://docs.vllm.ai/en/v0.28.0/serving/openai_compatible_server.html).
 
+For **vLLM deployments** used by coding agents, the file also enables tool calling, with `enable_auto_tool_choice` and the `tool_call_parser` of the model family:
+
+```yaml
+enable_auto_tool_choice: true
+tool_call_parser: qwen3_coder
+```
+
+When Hopsworks generates the file, from a Hugging Face import or the configuration generator, it adds both keys for the model families it knows and keeps any value the file already sets.
+For an existing file or another model family, set them yourself; [Coding agents][coding-agents-deployment] lists the parser of each family.
+
+vLLM pods get a memory-backed `/dev/shm`, which the model server uses to pass data between processes, for example with tensor parallelism.
+It counts against the pod's memory limit, and the predictor's `shmSize` setting does not size it, so leave room for it in the memory resources.
+
 !!! warning "Configuration file format"
     The configuration file can be of any format, except in **vLLM deployments** for which a YAML file (`.yml`/`.yaml`) is ==required==.
     When a predictor script is provided, any format is allowed as users can load it as necessary.

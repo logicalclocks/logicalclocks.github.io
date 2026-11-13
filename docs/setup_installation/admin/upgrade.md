@@ -460,6 +460,16 @@ Clients keep their endpoint, Knative-mode deployments stay on Istio, and no depl
     - Every Standard-mode deployment answers through the usual endpoint, with both URL shapes.
     - The Knative-mode deployments are unchanged.
 
+!!! warning "Headers with underscores"
+    Once a deployment has moved, the Gateway drops request headers whose names contain an underscore, such as `session_id`, which Istio passed on.
+    The request still succeeds, but a predictor or transformer script that reads such a header no longer receives it.
+    Send the value in a header whose name uses hyphens instead.
+
+### Search index rebuild { #upgrade-53-search-reindex }
+
+After the upgrade, the `post-upgrade-opensearch-reindex-job` hook indexes the existing data sources, which 5.3 adds to search, and datasets, which a cluster upgraded from 5.1 may lack, without emptying the index.
+No action is needed unless `hopsworks.opensearchReindex.enabled` is `false` or the hook's log reports a run already in progress: then request a reindex with `scope=ADDITIVE` through the [REST API][search-index-rebuild] once no run is in progress.
+
 ### LLM Gateway { #upgrade-llm-gateway }
 
 The [LLM Gateway][llm-gateway] is new in 5.3 and off by default.
@@ -480,6 +490,16 @@ Before enabling, as listed under [How to enable it][llm-gateway-enable]:
 Enable with one `helm upgrade`: no predictive pod, Knative pod or `kserve-ingress-gateway` pod restarts, and the AI Gateway's Envoy pods roll once when the first route attaches.
 Data Owners can then turn the LLM Gateway off per project and per deployment, both on by default.
 Disable with one upgrade with `aiGateway.enabled: false`, as described under [Turn it off][llm-gateway-disable], which also lists what a `helm rollback` leaves behind and how to remove it.
+
+### Security response headers { #upgrade-security-headers }
+
+Hopsworks now sets [security response headers][security-headers] itself, including a Content-Security-Policy that the UI enforces.
+An upgrade needs no action.
+The policy allows what the Hopsworks UI loads from the Hopsworks origin only.
+If the UI calls model deployments on another host or port, or another site frames the UI, add that origin to `hopsworks.payara.securityHeaders.extraSources`, as described under [Model deployments on another host or port][security-headers-inference] and [Embedding Hopsworks in another site][security-headers-embedding].
+A page the policy breaks shows a `Content-Security-Policy` error in the browser console; set `cspMode: report-only` while [finding what it needs][security-headers-troubleshooting].
+
+Pages are no longer served from the browser's offline cache, so a page needs the cluster to be reachable.
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 

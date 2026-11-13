@@ -436,6 +436,8 @@ Do not hand-edit the tables below; regenerate them instead.
 | 150126 | `PROJECT_OWNER_TRANSFER_PROJECT_NOT_READY` | 409 CONFLICT | The project is being created or removed, so its owner cannot be changed. |
 | 150127 | `PROJECT_OWNER_TRANSFER_INCOMPLETE` | 500 INTERNAL_SERVER_ERROR | The owner was changed, but not every follow-up step completed. The new owner or an administrator finishes them by transferring the project to the new owner again. |
 | 150128 | `PROJECT_OWNER_TRANSFER_IN_PROGRESS` | 409 CONFLICT | An ownership transfer of this project is still in progress. Try again once it has finished. |
+| 150129 | `TEAM_ROLE_CHANGE_IN_PROGRESS` | 409 CONFLICT | The role is being changed by someone else, try again. |
+| 150130 | `ROLE_NOT_ASSIGNABLE` | 403 FORBIDDEN | Your role cannot give this role, or change this member's role: it has permissions your role does not. |
 
 ## UserErrorCode
 
@@ -929,7 +931,6 @@ Do not hand-edit the tables below; regenerate them instead.
 | 270216 | `FILE_DELETION_ERROR` | 400 BAD_REQUEST | Failed to delete file |
 | 270217 | `FILE_READ_ERROR` | 400 BAD_REQUEST | Failed to read file |
 | 270218 | `DOCKER_FULLNAME_ERROR` | 400 BAD_REQUEST | Failed to retrieve full docker image name |
-| 270219 | `CONNECTION_CHECKER_LAUNCH_ERROR` | 400 BAD_REQUEST | Failed to launch process to start docker container for testing connection |
 | 270220 | `CONNECTION_CHECKER_ERROR` | 400 BAD_REQUEST | Failure in testing connection for storage connector |
 | 270221 | `ERROR_CREATING_ONLINE_FEATURESTORE_KAFKA_OFFSET_TABLE` | 500 INTERNAL_SERVER_ERROR | An error occurred when trying to create the kafka offset table for an online feature store |
 | 270222 | `ERROR_CONSTRUCTING_VALIDATION_REPORT_DIRECTORY_PATH` | 500 INTERNAL_SERVER_ERROR | An error occurred while constructing validation report directory path |
@@ -1439,6 +1440,24 @@ Do not hand-edit the tables below; regenerate them instead.
 | 580008 | `MOUNTABLE_SECRET_INVALID_ARCHIVE` | 400 BAD_REQUEST | The uploaded archive could not be expanded into a mountable secret |
 | 580009 | `MOUNTABLE_SECRETS_STORE_MISSING` | 503 SERVICE_UNAVAILABLE | The mountable secret store does not exist on this cluster |
 | 580010 | `MOUNTABLE_SECRET_PROJECT_DELETED` | 410 GONE | The project was deleted while the mountable secret was being uploaded |
+
+## ProjectRoleErrorCode
+
+| Code | Name | HTTP status | Message |
+| --- | --- | --- | --- |
+| 590000 | `PROJECT_ROLE_NOT_FOUND` | 404 NOT_FOUND | Project role not found |
+| 590001 | `PROJECT_ROLE_ALREADY_EXISTS` | 409 CONFLICT | A project role with this name already exists |
+| 590002 | `PROJECT_ROLE_IN_USE` | 409 CONFLICT | The project role is in use: members holding it block changes and deletion, group mappings giving it block deletion |
+| 590003 | `PROJECT_ROLE_VERSION_CONFLICT` | 409 CONFLICT | The project role was changed by someone else |
+| 590004 | `PROJECT_ROLE_INVALID_NAME` | 400 BAD_REQUEST | Invalid project role name |
+| 590005 | `PROJECT_ROLE_INVALID_BASE` | 400 BAD_REQUEST | A project role must be based on Data owner or Data scientist |
+| 590006 | `PROJECT_ROLE_INVALID_PERMISSION` | 400 BAD_REQUEST | Invalid permission for this project role |
+| 590007 | `PROJECT_ROLES_NOT_ENABLED` | 400 BAD_REQUEST | Custom project roles are not enabled |
+| 590008 | `PROJECT_ROLE_INVALID_DESCRIPTION` | 400 BAD_REQUEST | Invalid project role description |
+| 590009 | `PROJECT_ROLE_UNKNOWN` | 400 BAD_REQUEST | The role is neither a built-in nor a custom project role |
+| 590010 | `PROJECT_ROLE_BUSY` | 409 CONFLICT | The project role is being assigned or changed by someone else, try again |
+| 590011 | `PROJECT_ROLE_VERSION_REQUIRED` | 400 BAD_REQUEST | The version of the project role being changed is required |
+| 590012 | `PROJECT_ROLE_REMOVES_NOTHING` | 400 BAD_REQUEST | A project role must remove at least one permission from its base role |
 
 ## SchemaRegistryErrorCode
 
