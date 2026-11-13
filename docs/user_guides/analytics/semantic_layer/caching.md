@@ -14,10 +14,9 @@ The cache holds the results of the queries that run on Trino, from every surface
 | Surface | Cached |
 | --- | --- |
 | REST | `query`, as JSON and as Arrow, and `dimension-values`: the Python client, the `hops` CLI, the query workbench in the UI and the agent tools. |
-| Arrow Flight SQL | `semantic_layer.query(...)` and `semantic_layer.dimension_values(...)`: dbt-sl-sdk queries, ADBC and JDBC. |
-| GraphQL | `createQuery` and `createDimensionValuesQuery`. |
+| Arrow Flight SQL | `semantic_layer.query(...)` and `semantic_layer.dimension_values(...)`: dbt-sl-sdk queries, ADBC and JDBC, and SQL over the [BI tables][semantic-bi-tools], which Superset charts send. |
 
-Listings of metrics, dimensions, entities and saved queries, and the SQL of a query, come from the build without running anything, so they are not cached.
+Listings of metrics, dimensions, entities and saved queries, and the SQL of a query, over REST, Arrow Flight SQL and GraphQL, come from the build without running anything, so they are not cached.
 
 A result is cached under a key made of:
 
@@ -83,7 +82,6 @@ Each surface takes an option that runs the query on Trino and leaves the cache a
 | Python | `sales.query(..., read_cache=False)` |
 | CLI | `hops semantic query sales --metrics revenue --no-cache` |
 | REST | `"cache": false` in the `query` or `dimension-values` body |
-| GraphQL | `createQuery(..., readCache: false)` |
 | dbt's JDBC dialect | `{{ semantic_layer.query(..., read_cache=False) }}` |
 | dbt-sl-sdk | `client.query(..., read_cache=False)` |
 

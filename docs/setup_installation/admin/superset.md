@@ -90,7 +90,7 @@ Superset in Hopsworks includes several pre-configured roles:
 Each Hopsworks project user has a dedicated Superset role with the naming pattern `HW_role_<project_name>__<username>_superset` that controls access to that project's data sources.
 These roles are automatically created and managed by Hopsworks to maintain proper access control and data isolation.
 
-With the semantic layer enabled, the role of a Data owner or Data scientist also has access to that member's semantic connections, one per semantic project, named `Semantic_<semantic project>__<project_name>__<username>_superset`, as described in [Dashboards in Superset][semantic-superset-access].
+With the semantic layer enabled, the role of a Data owner or Data scientist also has access to that member's semantic connection of the project, named `Semantic__<project_name>__<username>_superset`, as described in [Dashboards in Superset][semantic-superset-access].
 
 ## Database Connections
 
@@ -106,7 +106,7 @@ Navigate to **Settings** → **Database connections** in the Superset interface 
 
 ### Connection Types
 
-Each project member has up to two database connections to the Feature Store, created based on Feature Store configuration, and one per semantic project of the project:
+Each project member has up to two database connections to the Feature Store, created based on Feature Store configuration, and one to the semantic layer while the project has a semantic project:
 
 #### Online Feature Store Connection (MySQL)
 
@@ -128,9 +128,9 @@ Each project member has up to two database connections to the Feature Store, cre
 
 #### Semantic Layer Connection (Arrow Flight SQL)
 
-- **Naming pattern**: `Semantic_<semantic project>__<project_name>__<username>_superset`
+- **Naming pattern**: `Semantic__<project_name>__<username>_superset`
 - **Backend**: The semantic gateway, over Arrow Flight SQL
-- **Purpose**: Access to the metrics and saved queries of a semantic project, as tables
+- **Purpose**: Access to the metrics and saved queries of the project's semantic projects, as tables, with one schema per semantic project
 - **Use cases**: Dashboards from metrics, charts and SQL Lab queries on metrics
 - **Created when**: The project has a semantic project and [`superset_semantic_enabled`](#superset_semantic_enabled) is on, for each Data owner and Data scientist; see [Dashboards in Superset][semantic-superset-access]
 
@@ -230,7 +230,7 @@ In **Cluster Settings**, choose **Configuration** under _Infrastructure_ in the 
 - **Description**: Enable or disable the members' semantic connections in Superset and dashboards from metrics
 - **Default**: `true`
 - **Values**: `true` or `false`
-- Takes effect only while the semantic layer and Superset are enabled; see [Dashboards in Superset][semantic-superset-admin].
+- Takes effect only while the semantic layer and Superset are enabled; turned off, the members' semantic keys and connections are removed within ten minutes, see [Dashboards in Superset][semantic-superset-admin].
 
 #### superset_user_roles
 

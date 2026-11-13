@@ -8,7 +8,6 @@ A metric query names metrics, the group-bys to split them by, and optional filte
 The semantic layer generates the SQL from the current build and runs it on Trino as the caller, or answers a repeated query from its [result cache][semantic-result-cache].
 The examples query the `sales` semantic project from [Compile and builds][semantic-compile-builds].
 dbt Semantic Layer clients, such as dbt-sl-sdk and the Arrow Flight SQL JDBC driver, query the same metrics, see [Connect dbt clients][semantic-connect-clients], and so do BI tools, through tables, see [Connect BI tools][semantic-bi-tools].
-A query can also run on your own Spark session, see [Query metrics on Spark][semantic-spark].
 
 ## Group-by names { #semantic-query-names }
 
@@ -132,8 +131,6 @@ sql = sales.sql(metrics=["revenue"], group_by=["metric_time__month"])
 | `dataframe_type` | `pandas` (default), `polars`, `pyarrow`, or `python` for a list of dicts. |
 | `saved_query` | A [saved query][semantic-saved-queries] to run in place of `metrics`. |
 | `read_cache` | `False` runs the query on Trino even when the [result cache][semantic-result-cache] holds it; `True` by default. |
-| `engine` | `trino` (default), or `spark` to run the query on your Spark session and get a PySpark DataFrame, see [Query metrics on Spark][semantic-spark]. |
-| `spark` | The Spark session for `engine="spark"`; the active one by default. |
 
 A group-by can also be a dict, `{"name": "metric_time", "grain": "month"}` or `{"name": "metric_time", "date_part": "dow"}`.
 Results come back as an Arrow stream when `pyarrow` is installed, which keeps the column types, and as JSON otherwise.
@@ -219,7 +216,6 @@ curl -X POST -H "Authorization: ApiKey $HOPSWORKS_API_KEY" \
 The query body takes `metrics`, `savedQuery`, `groupBy`, `where`, `filters`, `having`, `timeRange`, `orderBy`, `limit`, `offset` and `groupLimit`, in the camel case of the Python arguments, and `minMaxOnly` and `applyGroupBy` for a [query without metrics][semantic-query-no-metrics].
 `"cache": false` in a `query` or `dimension-values` body skips the [result cache][semantic-result-cache].
 `"useExports": false` in a `query` body computes the rows from the sources even when an [export][semantic-exports-serving] holds them.
-`"engine": "SPARK"` in a `sql` body answers Spark SQL and the views it reads, see [Over REST][semantic-spark-rest]; `query` runs on Trino only.
 A JSON result carries `columns`, `rows`, `rowCount`, `truncated` and `sql`.
 A CSV result, with `format=csv` or `Accept: text/csv`, is a header row of the column names and a line per row, with timestamps as `yyyy-MM-dd HH:mm:ss` and an empty field for null.
 On `GET`, `metrics`, `groupBy` and `orderBy` are comma-separated or repeated, and given empty (`groupBy=`) to give a saved query none; `where` is repeated; `limit`, `offset`, `savedQuery`, `cache` and `useExports` (`true` or `false`) take one value; and `format=csv` asks for CSV.

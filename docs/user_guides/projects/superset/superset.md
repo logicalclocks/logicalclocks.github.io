@@ -148,7 +148,7 @@ Charts are individual visualization components that can be added to dashboards.
 4. Choose a visualization type (e.g., Bar Chart, Line Chart, Pie Chart, Table)
 5. Click **Create new chart**
 
-With the semantic layer, a dataset on one of your semantic connections charts the metrics of a semantic project; see [Dashboards in Superset][semantic-superset-charts].
+With the semantic layer, a dataset on your semantic connection, in a semantic project's schema, charts the metrics of that semantic project; see [Dashboards in Superset][semantic-superset-charts].
 
 ### Configuring Charts
 

@@ -25,9 +25,33 @@ The examples use the `sales` semantic project of [Define metrics][semantic-defin
 | Tables | `metrics`, and one table per saved query, named as the saved query |
 
 - Every table has the type `VIEW`; a tool that lists only `TABLE` objects finds none.
-- A caller sees only the schema of the environment id it connects with.
+- A caller sees only the schema of the environment id it connects with, or, connected to a Hopsworks project, the schemas of [its semantic projects][semantic-bi-project-scope].
 - The tables have no primary or foreign keys.
 - They are the tables of the semantic project's current build, and a [prepared statement][semantic-connect-handles] keeps the build it was prepared on.
+
+### One connection for a Hopsworks project { #semantic-bi-project-scope }
+
+A client that sends the header `projectid: <Hopsworks project id>` in place of `environmentid` connects to every semantic project of that project at once, which is how Superset connects:
+
+| Level | Name |
+| --- | --- |
+| Catalog | `semantic_layer` |
+| Schema | One per semantic project of the project, named as the semantic project: `sales` |
+| Tables | In each schema, `metrics` and one table per saved query |
+
+- A statement names its tables with their schema, `"sales"."metrics"`, and reads the tables of one schema.
+  It runs as a metric query of that semantic project, which the result cache, the query history and the limits count it under.
+- A semantic project without a valid build has a schema and no tables, and a project without semantic projects has no schemas.
+- Creating or deleting a semantic project changes the schemas, and needs no change to the connection.
+- Statements in [dbt's JDBC dialect][semantic-connect-dialect] need `environmentid`.
+- A call with both headers, or neither, is refused with `UNAUTHENTICATED`.
+
+| Statement | Refused with |
+| --- | --- |
+| A table without its schema | `name the statement's table with its schema, the semantic project, as "<schema>"."<table>"; the schemas are [...]` |
+| Tables of two schemas | `a statement reads the tables of one schema, not of [...]; the schemas are [...]` |
+| A schema that is not a semantic project of the project | `no schema <name>; the schemas are [...]` |
+| A `{{ semantic_layer.<call>(...) }}` | `with the projectid header the gateway answers SQL over the BI tables; send environmentid, the semantic project's id, for a {{ semantic_layer.<call>(...) }} statement` |
 
 ### Columns of `metrics` { #semantic-bi-columns }
 
@@ -99,7 +123,7 @@ is the metric query `metrics=[revenue]`, `group_by=[customer__country, order__or
 
 | Clause | Accepted |
 | --- | --- |
-| `FROM` | One table: `metrics`, `"7".metrics`, `semantic_layer."7".metrics` or a saved query's table, with an optional alias; or one derived table that only renames the columns of one table. |
+| `FROM` | One table: `metrics`, `"7".metrics`, `semantic_layer."7".metrics` or a saved query's table, or `"sales".metrics` when [connected to a Hopsworks project][semantic-bi-project-scope], with an optional alias; or one derived table that only renames the columns of one table. |
 | `SELECT` | Group-by columns, metric columns, the aggregates above around a metric column, `*`, and aliases. `SELECT DISTINCT` over group-bys returns their distinct values. |
 | Time | `DATE_TRUNC('<grain>', x)` and Tableau's `DATE_TRUNC(CAST(x AS DATE), '<grain>')` over a time column, to that grain or a coarser one whose periods each hold whole periods of the column (a `week` column truncates only to `week`); `EXTRACT(<part> FROM x)` with `YEAR`, `QUARTER`, `MONTH`, `DAY`, `ISODOW` or `DOY`, the date parts `year`, `quarter`, `month`, `day`, `dow` and `doy`, from a column whose periods each fall in one period of the part (`MONTH` from a `month` column, not `DAY`). |
 | `CAST` | Only casts that keep every value: `DATE` to `TIMESTAMP`; `TIMESTAMP` to `DATE` for a column at day grain or coarser; `TINYINT`, `SMALLINT` and `INTEGER` to a wider integer, to `DOUBLE`, or to `DECIMAL(p, 0)` with enough digits; `BIGINT` to `DECIMAL(p, 0)` with `p` of at least 19; `VARCHAR(n)` to `VARCHAR(m)` with `m` of at least `n`, or to `VARCHAR`; a column to its own type. |
@@ -235,7 +259,7 @@ nginx annotations apply to a whole Ingress, so the layout is two Ingresses on `h
 | Ingress | Path | Routes to |
 | --- | --- | --- |
 | `<release>-semantic-layer-dbt-flight` | `/arrow.flight.protocol.FlightService/`, implementation specific, the path type ingress-nginx's path validation allows a dot in | The gateway's Flight port over gRPC with TLS, with gRPC read and send timeouts of `timeoutSeconds`. |
-| `<release>-semantic-layer-dbt-graphql` | `/api/graphql`, exact | The gateway's GraphQL handler at `/semantic-layer/api/graphql`, over HTTPS, hashed by the `Authorization` header so the polls of a query reach the replica that holds its result. |
+| `<release>-semantic-layer-dbt-graphql` | `/api/graphql`, exact | The gateway's GraphQL handler at `/semantic-layer/api/graphql`, over HTTPS. |
 
 `<release>` is the full name of the `hopsworks` release, `hopsworks` by default.
 Point the host's DNS name at the ingress controller.

@@ -19,10 +19,9 @@ The semantic layer is a Hopsworks service with two parts:
 | The gateway serves | To | Guide |
 | --- | --- | --- |
 | REST, JSON, Arrow and CSV | The Python client, the `hops` CLI, the query workbench in the UI, the agent tools, Superset, Excel's From Web | [Query metrics][semantic-query-metrics], [Excel and ODBC][semantic-excel-odbc] |
-| GraphQL, dbt's Semantic Layer API | dbt-sl-sdk, GraphQL clients | [Connect dbt clients][semantic-connect-clients] |
-| Arrow Flight SQL, dbt's JDBC dialect | dbt-sl-sdk, ADBC, the Arrow Flight SQL JDBC driver | [Connect dbt clients][semantic-connect-clients] |
-| Arrow Flight SQL, tables | DBeaver, JDBC and ODBC tools, Excel, dbt's Tableau and Power BI connectors | [Connect BI tools][semantic-bi-tools], [Excel and ODBC][semantic-excel-odbc] |
-| Spark SQL and the feature groups it reads | Your Spark session, with `engine="spark"` | [Query metrics on Spark][semantic-spark] |
+| GraphQL, dbt's Semantic Layer API: metadata and `compileSql` | dbt-sl-sdk's metadata calls, GraphQL clients | [Connect dbt clients][semantic-connect-clients] |
+| Arrow Flight SQL, dbt's JDBC dialect | dbt-sl-sdk queries, ADBC, the Arrow Flight SQL JDBC driver | [Connect dbt clients][semantic-connect-clients] |
+| Arrow Flight SQL, tables | Superset, DBeaver, JDBC and ODBC tools, Excel, dbt's Tableau and Power BI connectors | [Connect BI tools][semantic-bi-tools], [Excel and ODBC][semantic-excel-odbc] |
 
 Around the queries:
 
@@ -107,11 +106,10 @@ In `FOLLOW` mode a promote of an older valid build rolls back until the next val
 4. The rows come back as an Arrow stream or as JSON.
 
 The Python client, the `hops` CLI, the UI and the agent tools all query through the gateway, from inside and outside the cluster.
-dbt Semantic Layer clients query it over GraphQL and Arrow Flight SQL, see [Connect dbt clients][semantic-connect-clients], and BI tools read it as tables, see [Connect BI tools][semantic-bi-tools].
+dbt Semantic Layer clients read metadata over GraphQL and run queries over Arrow Flight SQL, see [Connect dbt clients][semantic-connect-clients], and BI tools read it as tables, see [Connect BI tools][semantic-bi-tools].
 A saved query's exports write its rows into feature groups on a schedule, and the gateway answers the saved query from them while they hold its exact rows, see [Metric exports][semantic-exports].
-With `engine="spark"`, the gateway hands the SQL to your Spark session instead of running it, see [Query metrics on Spark][semantic-spark].
 The gateway records every query it runs in the [query history][semantic-query-history].
-Superset charts query through the gateway too, over Arrow Flight SQL on a database connection of each member, with that member's access, see [Who can see what][semantic-superset-access].
+Superset charts query through the gateway too, over Arrow Flight SQL on one database connection of each member per Hopsworks project, see [Who can see what][semantic-superset-access].
 The semantic layer reads the offline feature store.
 
 ## Prerequisites { #semantic-overview-prerequisites }

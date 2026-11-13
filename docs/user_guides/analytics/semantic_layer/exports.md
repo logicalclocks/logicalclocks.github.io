@@ -307,9 +307,7 @@ A run records what it read and wrote only when the export has no lookback, every
 | --- | --- |
 | REST `query`: Python, the CLI, the UI, the agent tools | Yes, with the headers below. |
 | Arrow Flight SQL: dbt-sl-sdk, ADBC, JDBC with dbt's JDBC dialect | Yes, without headers; not with SQL around the call or metric aliases. |
-| GraphQL `createQuery` | Yes, without headers. |
 | SQL over the [BI tables][semantic-bi-tools] | No. |
-| [`engine="spark"`][semantic-spark] | No. |
 
 - The [query history][semantic-query-history] records `servedFrom: export:<export>` for each answer read from an export, on every surface.
 - The [result cache][semantic-result-cache] keys an answer from an export by the export's commit as well as the sources'.

@@ -355,7 +355,7 @@ On a 6.0.0p4 MySQL database holding Superset's examples (12 dashboards, 123 char
   A new `hopsworks-superset-mcp` Deployment serves the `hops superset` chart and dashboard commands, with a signing key in the Secret `superset-mcp-jwt`.
   Under ArgoCD, set `superset.mcp.jwtSecret`, or the service is not deployed; see [MCP service](superset.md#superset-mcp-service).
 - **Semantic layer dashboards.**
-  With the semantic layer enabled, each Data owner and Data scientist of a project with Superset gets a Superset database connection per semantic project, which reads its metrics, see [Dashboards in Superset](../../user_guides/analytics/semantic_layer/dashboards.md).
+  With the semantic layer enabled, each Data owner and Data scientist of a project with Superset and a semantic project gets one Superset database connection, which reads the metrics of the project's semantic projects, see [Dashboards in Superset](../../user_guides/analytics/semantic_layer/dashboards.md).
   Set `hopsworks.variables.superset_semantic_enabled: "false"` to keep that off.
 
 ### Kueue outside the Hopsworks namespace { #upgrade-kueue-external }

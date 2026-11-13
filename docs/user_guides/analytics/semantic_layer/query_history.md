@@ -1,5 +1,5 @@
 ---
-description: The query history of a semantic project, what each record holds, who reads which records, how to read them from the CLI, Python, the UI, REST and GraphQL, and how long they are kept.
+description: The query history of a semantic project, what each record holds, who reads which records, how to read them from the CLI, Python, the UI and REST, and how long they are kept.
 ---
 
 # Query History { #semantic-query-history }
@@ -15,12 +15,11 @@ One record per execution attempt of a query that runs, or would run, on Trino:
 | Surface | Recorded |
 | --- | --- |
 | `REST` | `query` and `dimension-values`: the Python client, the `hops` CLI, the query workbench in the UI, the agent tools and [export][semantic-exports] runs. |
-| `GRAPHQL` | `createQuery` and `createDimensionValuesQuery`. |
 | `FLIGHT` | Statements in [dbt's JDBC dialect][semantic-connect-dialect] that run a query: dbt-sl-sdk queries, ADBC and JDBC. |
 | `BI` | SQL over the [BI tables][semantic-bi-tools], which Superset charts send too. |
 
 - Queries that fail to plan, fail on Trino, or are cancelled are recorded too, with their error.
-- Listings of metrics, dimensions and saved queries, requests for the SQL of a query, schema probes such as `WHERE 1=0`, and GraphQL polls are not recorded.
+- Listings of metrics, dimensions and saved queries, requests for the SQL of a query, schema probes such as `WHERE 1=0`, and every GraphQL request are not recorded.
 - A query answered from the [result cache][semantic-result-cache] is recorded, with the cache outcome `hit`.
 - A record holds no credential and no header.
 
@@ -28,8 +27,7 @@ One record per execution attempt of a query that runs, or would run, on Trino:
 | --- | --- |
 | `executionId` | The gateway's id of the execution, a UUID. |
 | `user` | The user name of the caller. |
-| `surface` | `REST`, `GRAPHQL`, `FLIGHT` or `BI`. |
-| `engine` | `TRINO`. |
+| `surface` | `REST`, `FLIGHT` or `BI`. |
 | `buildId` | The build that planned the query. |
 | `status` | `SUCCEEDED`, `FAILED` or `CANCELLED`. |
 | `error` | The error of a failed or cancelled query. |
@@ -51,8 +49,6 @@ The gateway's metrics port counts sent records in `semantic_query_records_sent_t
 | --- | --- |
 | Data Owner | Every member's records, and one member's with the `user` filter. |
 | Data Scientist | Their own records; the `user` filter is ignored. |
-
-GraphQL's `queryRecords` returns the caller's own records, whatever the role.
 
 ## Read the history { #semantic-query-history-read }
 
@@ -108,7 +104,6 @@ curl -H "Authorization: ApiKey $HOPSWORKS_API_KEY" \
       "executionId": "3f8c2a52-6a1e-4c2f-9d7b-0c5e2b1d9a41",
       "user": "meb10000",
       "surface": "FLIGHT",
-      "engine": "TRINO",
       "buildId": 34,
       "status": "FAILED",
       "error": "unknown group-by order__state",
@@ -132,7 +127,7 @@ curl -H "Authorization: ApiKey $HOPSWORKS_API_KEY" \
 | `limit` | 1 to 1000 records, 50 by default. |
 | `cursor` | The `nextCursor` of the previous page; `nextCursor` is null on the last page. |
 | `status` | `SUCCEEDED`, `FAILED` or `CANCELLED`, comma-separated. |
-| `surface` | `REST`, `GRAPHQL`, `FLIGHT` or `BI`. |
+| `surface` | `REST`, `FLIGHT` or `BI`. |
 | `user` | A member's user name; Data Owners only. |
 | `from`, `to` | ISO-8601 instants on the start time; `from` is inclusive. |
 
@@ -140,46 +135,18 @@ Records come newest first.
 Data Owners and Data Scientists read the endpoint; an API key needs the `FEATURESTORE` scope.
 An invalid filter or cursor answers 400 `SEMANTIC_LAYER_ILLEGAL_ARGUMENT`.
 
-### Over GraphQL { #semantic-query-history-graphql }
-
-`queryRecords` follows the shape of dbt's Semantic Layer API, and returns the caller's own records:
-
-```graphql
-query {
-  queryRecords(environmentId: 7, pageNum: 1, pageSize: 20, statuses: [FAILED]) {
-    totalItems
-    items {
-      queryId
-      status
-      startTime
-      endTime
-      error
-      connectionDetails
-      queryDetails {
-        ... on SemanticLayerQueryDetails {
-          params { type metrics { name } groupBy { name grain } savedQuery }
-        }
-      }
-    }
-  }
-}
-```
-
-- `queryId` is the execution id; `startTime` and `endTime` filter on the start time as ISO-8601 instants.
-- `status` is `SUCCESSFUL` for `SUCCEEDED`, and `FAILED` for `FAILED` and `CANCELLED`, a cancelled query's `error` being `cancelled`.
-- `connectionDetails` is JSON with the surface, engine, build, cache outcome, rows, the export served from, and the Trino query id.
-- `params.type` is `METRICS` for a metric query and `DIMENSION_VALUES` for the values of a group-by.
-- `queryDetails` is null once the record's details are removed, see [Retention][semantic-query-history-retention].
-
 ## Retention { #semantic-query-history-retention }
 
-An hourly job on Hopsworks applies two cluster settings, see [Cluster Configuration][cluster-configuration]:
+Hopsworks keeps each record for 30 days after its query started.
+The 30 days are a time to live in the definition of the table, `hopsworks.semantic_query`: RonDB stops returning a record when its time is up, and purges it.
+An administrator changes the time to live in RonDB, see [Query history storage][semantic-admin-history-storage].
+
+An hourly job on Hopsworks removes the details of older records, under two cluster settings, see [Cluster Configuration][cluster-configuration]:
 
 | Variable | Default | Effect |
 | --- | --- | --- |
-| `semantic_query_delete_after_days` | `30` | Records that started earlier are deleted. |
-| `semantic_query_strip_details_after_days` | `7` | Records that started earlier lose `request`, `sql` and `error`; who ran the query, its status, rows and duration stay until the record is deleted. |
-| `semantic_query_cleaner_batch_size` | `1000` | Records the job deletes or strips per statement. |
+| `semantic_query_strip_details_after_days` | `7` | Records that started earlier lose `request`, `sql` and `error`; who ran the query, its status, rows and duration stay until the record expires. |
+| `semantic_query_cleaner_batch_size` | `1000` | Records the job strips per statement. |
 
 Deleting a semantic project, its project, or a user deletes their records.
 Hopsworks keeps the records in RonDB's disk tablespace, see [Query history storage][semantic-admin-history-storage].
@@ -188,6 +155,5 @@ Hopsworks keeps the records in RonDB's disk tablespace, see [Query history stora
 
     - <code class="doc-symbol doc-symbol-class"></code> [`SemanticProject`][hopsworks_common.semantic_layer.SemanticProject]
         - <code class="doc-symbol doc-symbol-method"></code> [`query_history`][hopsworks_common.semantic_layer.SemanticProject.query_history]
-    - <code class="doc-symbol doc-symbol-docs"></code> [dbt Semantic Layer GraphQL API](https://docs.getdbt.com/docs/dbt-cloud-apis/sl-graphql)
 
     <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>

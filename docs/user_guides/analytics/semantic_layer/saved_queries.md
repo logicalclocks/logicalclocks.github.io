@@ -315,7 +315,7 @@ The other errors are those of [a dashboard of metrics][semantic-superset-errors]
 
 ## The Superset table of a saved query { #semantic-saved-queries-superset-table }
 
-Each saved query of a semantic project is a table on your [semantic connection][semantic-superset-connections] in Superset, named as the saved query, such as `revenue_by_country`, next to the `metrics` table.
+Each saved query of a semantic project is a table on your [semantic connection][semantic-superset-connections] in Superset, in the semantic project's schema, named as the saved query, such as `revenue_by_country`, next to the `metrics` table.
 A chart on a dataset of it can pick:
 
 - the saved query's metrics, and no others, each as `SUM(<metric>)`;

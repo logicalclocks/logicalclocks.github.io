@@ -247,7 +247,6 @@ nav:
               - Tags: user_guides/analytics/semantic_layer/tags.md
               - Query Metrics: user_guides/analytics/semantic_layer/query.md
               - Saved Queries: user_guides/analytics/semantic_layer/saved_queries.md
-              - Query Metrics on Spark: user_guides/analytics/semantic_layer/spark.md
               - Result Cache: user_guides/analytics/semantic_layer/caching.md
               - Query History: user_guides/analytics/semantic_layer/query_history.md
               - Connect dbt Clients: user_guides/analytics/semantic_layer/connect_clients.md

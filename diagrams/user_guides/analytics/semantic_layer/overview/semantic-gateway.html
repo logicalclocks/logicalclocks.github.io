@@ -1,5 +1,5 @@
 <figure class="hops-diagram hops-viz hops-viz-static">
-<svg viewBox="0 0 800 340" role="img" aria-label="How the semantic layer serves a metric query. Python, the CLI and the UI call the semantic gateway over REST, dbt clients over GraphQL and Arrow Flight SQL, and BI tools over Arrow Flight SQL tables. The gateway reads the caller's session and the build from Hopsworks, which stores the builds, and posts the query history back to it. It runs the SQL it plans on Trino as the caller, over the feature groups, or reads the result from an export feature group. With engine spark, it hands the SQL to the caller's Spark session, which reads the feature groups itself." xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 800 340" role="img" aria-label="How the semantic layer serves a metric query. Python, the CLI and the UI call the semantic gateway over REST, dbt clients over GraphQL for metadata and Arrow Flight SQL for queries, and BI tools and Superset over Arrow Flight SQL tables. The gateway reads the caller's session and the build from Hopsworks, which stores the builds, and posts the query history back to it. It runs the SQL it plans on Trino as the caller, over the feature groups, or reads the result from an export feature group." xmlns="http://www.w3.org/2000/svg">
   <defs>
     <marker id="sg-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/></marker>
     <marker id="sg-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
@@ -17,8 +17,6 @@
   <path class="viz-edge" d="M352 148 L352 116" marker-start="url(#sg-knob)" marker-end="url(#sg-arrow)"/>
   <path class="viz-edge" d="M440 174 L504 174" marker-start="url(#sg-knob)" marker-end="url(#sg-arrow)"/>
   <path class="viz-edge" d="M584 200 L584 240" marker-start="url(#sg-knob)" marker-end="url(#sg-arrow)"/>
-  <path class="viz-edge" d="M352 200 L352 242" marker-start="url(#sg-knob)" marker-end="url(#sg-arrow)"/>
-  <path class="viz-edge" d="M440 262 L504 262" marker-start="url(#sg-knob)" marker-end="url(#sg-arrow)"/>
 
   <g>
     <rect class="viz-node" x="16" y="72" width="160" height="52" rx="4"/>
@@ -54,10 +52,6 @@
     <rect class="viz-node" x="504" y="240" width="160" height="52" rx="4"/>
     <text class="viz-node-title" x="584" y="262" text-anchor="middle">Feature groups</text>
     <text class="viz-node-subtitle" x="584" y="280" text-anchor="middle">Delta, exports</text>
-  </g>
-  <g>
-    <rect class="viz-node viz-ghost" x="264" y="242" width="176" height="40" rx="4"/>
-    <text class="viz-node-title" x="352" y="266" text-anchor="middle">Spark session</text>
   </g>
 </svg>
 </figure>

@@ -4,8 +4,8 @@ description: How to build Superset dashboards from the metrics of a semantic pro
 
 # Dashboards in Superset { #semantic-superset-dashboards }
 
-Superset reads metrics over Arrow Flight SQL, through a database connection of your own for each semantic project: the connection shows the semantic project as a `metrics` table and one table per saved query, the [BI tables][semantic-bi-tables].
-A chart on a dataset of those tables names metrics and group-bys, which the semantic layer answers as a metric query that runs with your own access.
+Superset reads metrics over Arrow Flight SQL, through one database connection of your own per Hopsworks project: the connection shows each semantic project of the project as a schema, with a `metrics` table and one table per saved query, the [BI tables][semantic-bi-tables].
+A chart on a dataset of those tables names metrics and group-bys, which the semantic layer answers as a metric query.
 Hopsworks keeps the connections in step with the project, builds a dashboard from a semantic project's metrics, and opens a metric in Superset's Explore view.
 The examples use the `sales` semantic project from [Define metrics][semantic-define-metrics].
 
@@ -20,7 +20,7 @@ The examples use the `sales` semantic project from [Define metrics][semantic-def
 
 ## What a dashboard holds { #semantic-superset-layout }
 
-A dashboard from metrics reads a dataset of the `metrics` table on your connection to the semantic project, and holds, top to bottom:
+A dashboard from metrics reads a dataset of the `metrics` table in the semantic project's schema on your connection, and holds, top to bottom:
 
 - a big number with a trendline of the first metric, beside a line chart of the first metric;
 - a line chart of each further metric over `metric_time`, two to a row;
@@ -132,7 +132,7 @@ Coding agents that run the `hops` CLI build dashboards with `hops semantic dashb
 
 ## Open a metric in Explore { #semantic-superset-explore }
 
-In a metric's sheet, **Open in Superset** opens Superset's Explore view in a new tab, with a line chart of the metric over `metric_time` on the dataset of the `metrics` table on your connection, at the grain a dashboard would use.
+In a metric's sheet, **Open in Superset** opens Superset's Explore view in a new tab, with a line chart of the metric over `metric_time` on the dataset of the semantic project's `metrics` table on your connection, at the grain a dashboard would use.
 Nothing is saved in Superset until you save the chart there.
 
 ```python
@@ -147,23 +147,23 @@ print(sales.explore_url("revenue"))
 The URL has the form `https://<hopsworks host>/hopsworks-api/superset/explore/?form_data=<chart>&projectId=<project id>`, where `<chart>` is the URL-encoded chart definition.
 An Explore link fails for the same reasons as a dashboard, see [Errors][semantic-superset-errors].
 
-## Your semantic connections { #semantic-superset-connections }
+## Your semantic connection { #semantic-superset-connections }
 
-Each Data owner and Data scientist of a project has one Superset database connection per semantic project of the project:
+Each Data owner and Data scientist of a project with at least one semantic project has one Superset database connection to the semantic layer for the project:
 
 | Property | Value |
 | --- | --- |
-| Name | `Semantic_<semantic project>__<superset user>`, where the Superset user is `<project>__<username>_superset`, such as `Semantic_sales__demo__meb10000_superset`. |
-| Schema | The semantic project's id, such as `7`. |
-| Tables | `metrics`, and one table per saved query, named as the saved query, see [The tables][semantic-bi-tables]. |
+| Name | `Semantic__<superset user>`, where the Superset user is `<project>__<username>_superset`, such as `Semantic__demo__meb10000_superset`. |
+| Schemas | One per semantic project of the project, named as the semantic project, such as `sales`. |
+| Tables | In each schema, `metrics`, and one table per saved query, named as the saved query, see [The tables][semantic-bi-tables]. |
 | SQL Lab | The connection is listed in SQL Lab. |
 
-**Settings** > **Database connections** lists your connections, next to your Trino connection.
-A query on a connection runs on Trino as your own Trino user, `<project>__<username>`, so it reads only the data you can read.
+**Settings** > **Database connections** lists your connection, next to your Trino connection.
+Creating or deleting a semantic project changes the schemas of the connection, not the connection.
 
 ## Build charts on the tables { #semantic-superset-charts }
 
-Create a dataset on your connection, with the semantic project's id as the schema and `metrics` or a saved query as the table, see [Creating Datasets][creating-datasets].
+Create a dataset on your connection, with the semantic project's name as the schema and `metrics` or a saved query as the table, see [Creating Datasets][creating-datasets].
 A dashboard from metrics creates the dataset of the tables it charts, and reuses it afterwards.
 Create a chart on the dataset as on any other, see [Creating Charts][creating-charts].
 
@@ -182,7 +182,7 @@ A ratio or a count of distinct customers is right at every grain, since the sema
 
 A [saved query's table][semantic-saved-queries-superset-table] has only the saved query's metrics and group-bys, and its rows are under the saved query's filters.
 
-SQL Lab runs the same statements on the connection, see [The SQL][semantic-bi-sql] for what the tables accept.
+SQL Lab runs the same statements on the connection, with each table named with its schema, such as `SELECT customer__country, SUM(revenue) FROM "sales"."metrics" GROUP BY customer__country`; see [The SQL][semantic-bi-sql] for what the tables accept.
 
 ## Who can see what { #semantic-superset-access }
 
@@ -190,20 +190,22 @@ Hopsworks keeps these per member and project:
 
 | Object | Name | What it does |
 | --- | --- | --- |
-| Database connection | `Semantic_<semantic project>__<superset user>` | One per semantic project of the project, for each Data owner and Data scientist. The member's own Superset role, `HW_role_<superset user>`, has access to it, as to the member's Trino connection. |
-| API key | `superset-semantic-<project>` | An API key of the member, with the `FEATURESTORE` and `TRINO` scopes, kept as the member's secret `superset_semantic_<project>`. Every semantic connection of the member in the project sends its queries with it, and Superset stores it encrypted. |
+| Database connection | `Semantic__<superset user>` | One per Data owner and Data scientist of a project with a semantic project. The member's own Superset role, `HW_role_<superset user>`, has access to it, as to the member's Trino connection. |
+| API key | `superset-semantic-<project>` | An API key of the member, with the `FEATURESTORE` and `TRINO` scopes, kept as the member's secret `superset_semantic_<project>`. The member's semantic connection sends its queries with it, and Superset stores it encrypted. |
 
-Members with another role have no semantic connection.
+Feature store restricted members keep their Superset account and Trino connection, and have no semantic connection.
+Observers have no Superset account.
 
-Hopsworks brings the connections in line with the project when a member is added, removed or changes role, when a semantic project is created or deleted, and every ten minutes.
+Hopsworks brings the connections in line with the project when a member is added, removed or changes role, when the project's first semantic project is created or its last one deleted, and every ten minutes.
 Creating a dashboard or an Explore link creates the caller's connection first when it is missing.
 
 | Event | Effect |
 | --- | --- |
-| A semantic project is created | A connection to it for each Data owner and Data scientist. |
-| A semantic project is deleted | Its connections are deleted. With the last semantic project of the project, each member's key and secret are deleted too. |
-| A member is removed, or gets a role other than Data owner or Data scientist | The member's key and secret are deleted, and their connections, except one that holds datasets, which Superset keeps with the revoked key. The Superset account of a removed member is deleted, or deactivated when it created datasets, charts or dashboards, which Superset keeps. |
-| A member's key is deleted, or loses a scope | Hopsworks creates a new key and writes it into the member's connections. |
+| The project's first semantic project is created | A connection for each Data owner and Data scientist. |
+| Another semantic project is created or deleted | Its schema appears or goes; the connections stay as they are. |
+| The project's last semantic project is deleted | The connections, and each member's key and secret, are deleted. |
+| A member is removed, or gets a role other than Data owner or Data scientist | The member's key and secret are deleted, and so is their connection, except one that holds datasets, which Superset keeps with the revoked key. The Superset account of a removed member is deleted, or deactivated when it created datasets, charts or dashboards, which Superset keeps. |
+| A member's key is deleted, or loses a scope | Hopsworks creates a new key and writes it into the member's connection. |
 | The project is deleted | The connections, keys and secrets are deleted. |
 
 A chart runs with the access of the member whose connection its dataset is on.
@@ -242,7 +244,8 @@ In Python, each is a `SemanticLayerException` with the numeric code in `error_co
 
 The `superset_semantic_enabled` cluster setting, `true` by default, turns on the members' semantic connections in Superset, the dashboard and Explore requests, and the buttons in the UI.
 It takes effect only while the semantic layer and Superset are enabled.
-Set to `false`, Hopsworks stops keeping the connections in step and refuses dashboard and Explore requests with 503; the connections, datasets and dashboards already in Superset stay.
+Set to `false`, or with the semantic layer or Superset turned off, Hopsworks refuses dashboard and Explore requests with 503, and within ten minutes deletes every member's semantic key and secret and the semantic connections.
+A connection that holds datasets stays, with its key revoked, so its charts fail; the datasets, charts and dashboards stay in Superset.
 Superset pods reach the gateway's Arrow Flight SQL port inside the cluster, see [What runs where][semantic-admin-components].
 Change it under **Cluster Settings** > **Configuration**, see [Cluster Configuration][cluster-configuration].
 

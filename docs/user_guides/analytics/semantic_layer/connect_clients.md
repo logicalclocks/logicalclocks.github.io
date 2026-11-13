@@ -1,10 +1,10 @@
 ---
-description: How to connect dbt Semantic Layer clients to a Hopsworks semantic project, dbt-sl-sdk, the Arrow Flight SQL JDBC driver, ADBC and GraphQL, and the limits of each.
+description: How to connect dbt Semantic Layer clients to a Hopsworks semantic project, dbt-sl-sdk, the Arrow Flight SQL JDBC driver and ADBC for queries, GraphQL for metadata, and the limits of each.
 ---
 
 # Connect dbt Semantic Layer Clients { #semantic-connect-clients }
 
-The semantic gateway serves the two APIs of dbt's Semantic Layer: GraphQL, and Arrow Flight SQL with dbt's JDBC dialect.
+The semantic gateway serves the two APIs of dbt's Semantic Layer: Arrow Flight SQL with dbt's JDBC dialect, which runs queries, and GraphQL, which answers metadata and the SQL of a query.
 A client written for dbt's Semantic Layer connects with a host, an API key, and an environment id, which in Hopsworks is the id of a semantic project.
 Every query runs on Trino as the API key's user, as a query from Python or the CLI does, see [How a query runs][semantic-overview-query-path].
 BI tools and SQL clients that browse tables read the same port as tables, see [Connect BI tools][semantic-bi-tools].
@@ -16,7 +16,7 @@ The Hopsworks host is `hopsworks.example.com`, and the load balancer of the Flig
 
 | API | Address | Used by |
 | --- | --- | --- |
-| GraphQL | `https://<hopsworks host>/semantic-layer/api/graphql` | dbt-sl-sdk for metadata, GraphQL clients |
+| GraphQL | `https://<hopsworks host>/semantic-layer/api/graphql` | dbt-sl-sdk for metadata and `compile_sql`, GraphQL clients |
 | Arrow Flight SQL | `grpc+tls://<flight host>:18446` | dbt-sl-sdk for queries, ADBC, the Arrow Flight SQL JDBC driver, [BI tools][semantic-bi-tools] |
 | Both, dbt's layout | `https://<layout host>/api/graphql` and `grpc+tls://<layout host>:443` | dbt's Tableau and Power BI connectors, and tools that take a dbt host, when an administrator turns on the [dbt-compatible endpoint layout][semantic-bi-dbt-layout] |
 
@@ -40,9 +40,9 @@ Hopsworks hands out what a client needs, apart from the API key.
 
     ```text
     Environment id: 7
-    GraphQL:        https://hopsworks.example.com/semantic-layer/api/graphql
-    ADBC:           grpc+tls://semantic.hopsworks.example.com:18446
-    JDBC:           jdbc:arrow-flight-sql://semantic.hopsworks.example.com:18446?environmentId=7
+    GraphQL (metadata, compileSql): https://hopsworks.example.com/semantic-layer/api/graphql
+    ADBC (queries): grpc+tls://semantic.hopsworks.example.com:18446
+    JDBC (queries): jdbc:arrow-flight-sql://semantic.hopsworks.example.com:18446?environmentId=7
     CA certificate: /tmp/hopsworks_semantic_119_7_ca.pem
     export DBT_SL_GRAPHQL_URL_FORMAT='https://{server_host}/semantic-layer/api/graphql'
     export DBT_SL_ADBC_URL_FORMAT=grpc+tls://semantic.hopsworks.example.com:18446
@@ -146,9 +146,10 @@ print(table.to_pandas())
   With a private CA, ADBC reads it from `SSL_CERT_FILE` and the GraphQL client from `REQUESTS_CA_BUNDLE`, which the `eval` sets.
   Each variable replaces the client's default trust store, so the file must also hold the CA of the Hopsworks host's certificate when another CA issued it.
 - `client.query(..., read_cache=False)` runs the query on Trino even when the gateway's [result cache][semantic-result-cache] holds it.
-- The SDK's other calls are answered too: `dimensions`, `entities`, `measures`, `saved_queries`, `dimension_values`, `compile_sql`, `cancel_query` and `query(saved_query=...)`.
+- `query`, `query(saved_query=...)` and `dimension_values` run over ADBC; `metrics`, `dimensions`, `entities`, `measures`, `saved_queries` and `compile_sql` are answered over GraphQL.
+- dbt-sl-sdk's GraphQL client used on its own, `SyncGraphQLClient`, reads metadata and `compile_sql`; its `create_query` and `query` are refused, see [GraphQL][semantic-connect-graphql].
 
-The GraphQL API follows the operations of dbt-sl-sdk 0.13.4, and the examples use it with `adbc-driver-flightsql` 1.13.0.
+The GraphQL API follows the metadata operations of dbt-sl-sdk 0.13.4, and the examples use it with `adbc-driver-flightsql` 1.13.0.
 
 ## Arrow Flight SQL JDBC driver { #semantic-connect-jdbc }
 
@@ -278,47 +279,32 @@ A statement that does not parse, or names another relation, fails with `the SQL 
 
 ## GraphQL { #semantic-connect-graphql }
 
-The GraphQL API is dbt's, with every operation dbt-sl-sdk 0.13.4 sends, plus the paginated listings, `metricsForDimensions`, `queryableGranularities` and `createDimensionValuesQuery`.
+The GraphQL API is dbt's, for metadata and the SQL of a query: the operations dbt-sl-sdk 0.13.4 sends for them, plus the paginated listings and `queryableGranularities`.
+Queries run over Arrow Flight SQL, with [ADBC][semantic-connect-adbc], the [JDBC driver][semantic-connect-jdbc] or dbt-sl-sdk, or over [REST][semantic-query-rest].
 
 | Kind | Operations |
 | --- | --- |
-| Query | `environmentInfo`, `metrics`, `metricsPaginated`, `metricsForDimensions`, `dimensions`, `dimensionsPaginated`, `measures`, `entities`, `entitiesPaginated`, `savedQueries`, `savedQueriesPaginated`, `queryableGranularities`, `query`, `queryRecords` |
-| Mutation | `createQuery`, `compileSql`, `createDimensionValuesQuery`, `cancelQuery` |
+| Query | `environmentInfo`, `metrics`, `metricsPaginated`, `dimensions`, `dimensionsPaginated`, `measures`, `entities`, `entitiesPaginated`, `savedQueries`, `savedQueriesPaginated`, `queryableGranularities` |
+| Mutation | `compileSql` |
 
 Every operation takes `environmentId`, the semantic project's id.
-`createQuery` answers with a query id at once, and the query runs in the background; poll `query` with the id until its `status` is `SUCCESSFUL` or `FAILED`:
+`compileSql` answers the SQL of a query without running it:
 
 ```bash
 curl -s -X POST "https://hopsworks.example.com/semantic-layer/api/graphql" \
   -H "Authorization: Bearer $HOPSWORKS_API_KEY" -H "Content-Type: application/json" \
-  -d '{"query": "mutation($metrics: [MetricInput!], $groupBy: [GroupByInput!]) { createQuery(environmentId: 7, metrics: $metrics, groupBy: $groupBy) { queryId } }",
+  -d '{"query": "mutation($metrics: [MetricInput!], $groupBy: [GroupByInput!]) { compileSql(environmentId: 7, metrics: $metrics, groupBy: $groupBy) { sql } }",
        "variables": {"metrics": [{"name": "revenue"}], "groupBy": [{"name": "customer__country"}]}}'
 ```
 
 ```json
-{"data": {"createQuery": {"queryId": "eJyrVipLLSrOzM9TslIyNDJQ0lFQSi0..."}}}
+{"data": {"compileSql": {"sql": "SELECT ..."}}}
 ```
 
-```bash
-curl -s -X POST "https://hopsworks.example.com/semantic-layer/api/graphql" \
-  -H "Authorization: Bearer $HOPSWORKS_API_KEY" -H "Content-Type: application/json" \
-  -d '{"query": "query($id: String!) { query(environmentId: 7, queryId: $id, pageNum: 1) { status error totalPages jsonResult(orient: RECORDS, encoded: false) } }",
-       "variables": {"id": "eJyrVipLLSrOzM9TslIyNDJQ0lFQSi0..."}}'
-```
-
-```json
-{"data": {"query": {"status": "SUCCESSFUL", "error": null, "totalPages": 1,
-  "jsonResult": "[{\"customer__country\":\"SE\",\"revenue\":190.75},{\"customer__country\":\"DE\",\"revenue\":75.5},{\"customer__country\":\"US\",\"revenue\":125.75}]"}}}
-```
-
-- `status` is `PENDING`, `COMPILED`, `RUNNING`, `SUCCESSFUL` or `FAILED`; a failed query carries its reason in `error`.
-- A page holds 1024 rows: `totalPages` says how many there are, and `pageNum` picks one.
-- `arrowResult` is the page as a base64 Arrow IPC stream.
-  `jsonResult` is the page as pandas' `to_json` writes it, in the `orient` asked for, `TABLE` by default, base64 encoded unless `encoded: false`.
-- `createQuery` takes `metrics`, `groupBy`, `where`, `orderBy`, `limit`, `savedQuery` and `readCache`; `readCache: false` skips the [result cache][semantic-result-cache].
-- `cancelQuery` stops the query, which then reads `FAILED` with `the query was cancelled`.
-- `compileSql` answers the SQL of a query without running it.
-- `queryRecords` lists the caller's own recent queries, see [Query history over GraphQL][semantic-query-history-graphql].
+- `compileSql` takes `metrics`, `groupBy`, `where`, `orderBy`, `limit` and `savedQuery`; it also takes `readCache`, as dbt's clients send it, which has no effect.
+- `createQuery`, `query`, `createDimensionValuesQuery`, `cancelQuery`, `queryRecords` and `metricsForDimensions` are not in the schema, and a request for one answers a GraphQL validation error.
+  `semantic_layer.metrics_for_dimensions(...)` of [dbt's JDBC dialect][semantic-connect-dialect] lists the metrics of group-bys over Arrow Flight SQL.
+- An operation selects at most 500 fields, each alias counted; a larger one is refused before it runs.
 - A refused request answers with HTTP 200 and an `errors` entry whose `extensions.code` is the gateway's error code, such as `SEMANTIC_LAYER_INVALID_QUERY`; a refused API key is `User is not authorized`.
 
 ## Timestamps { #semantic-connect-timestamps }
@@ -329,33 +315,27 @@ The Arrow Flight SQL JDBC driver 19.0.0 shows them shifted by the client JVM's o
 
 ## Query handles { #semantic-connect-handles }
 
-A Flight SQL ticket, a prepared statement and a GraphQL query id are signed handles that carry the query, the build it was planned on, the user and the semantic project.
-Any replica of the gateway serves a Flight SQL handle, so a client can fetch from another replica than the one that planned the statement.
+A Flight SQL ticket and a prepared statement are signed handles that carry the query, the build it was planned on, the user and the semantic project.
+Any replica of the gateway serves a handle, so a client can fetch from another replica than the one that planned the statement.
 
 | Handle | Valid for | When it ends |
 | --- | --- | --- |
 | Flight SQL ticket, prepared statement | 1 hour after it was issued | `UNAUTHENTICATED: the query handle expired, prepare the statement again`. |
 | Flight SQL handle whose build was deleted | | `NOT_FOUND: the query handle expired, prepare the statement again`; a semantic project keeps its 20 newest builds. |
-| GraphQL query result | 10 minutes after the query ended; a replica short of room forgets the oldest ended queries first | `FAILED` with `the query result expired, run the query again`. |
 
 - A prepared statement answers from the build it was prepared on, even after a newer build answers queries, so its columns do not change under a client.
-- A handle used by another user, or with another environment id, is refused: `UNAUTHENTICATED` over Flight SQL, and an error with the code `SEMANTIC_LAYER_UNAUTHENTICATED` over GraphQL.
-- A GraphQL result is held by the gateway replica that ran the query.
-  The Hopsworks ingress sends every request with the same `Authorization` header to the same replica, so polls find it; a poll that reaches another replica answers `FAILED` with `the query result expired, run the query again`.
+- A handle used by another user, or with another environment id, is refused with `UNAUTHENTICATED`.
 
 ## Limits { #semantic-connect-limits }
 
 | API | Most rows | When a result is larger |
 | --- | --- | --- |
 | Arrow Flight SQL: dbt-sl-sdk queries, ADBC, JDBC | 1,000,000 | The result stops at 1,000,000 rows, with no signal: treat a result of exactly that many rows as cut. |
-| GraphQL | 1,000,000, and 64 MiB per result | The query is `FAILED`: `the result has more than 1000000 rows (MAX_ROWS); add a limit or filters, or read it over Arrow Flight`, or `the result is larger than 67108864 bytes (GRAPHQL_RESULT_MAX_BYTES)`. |
 | REST, JSON | 100,000 | The result stops there, with `truncated: true` and the `X-Semantic-Truncated: true` header. |
 | REST, Arrow | 1,000,000 | The result stops there; `X-Semantic-Truncated: true` is set when the cut is known before the first rows are sent, and `X-Semantic-Max-Rows` gives the cap. |
 
 - Every API shares the query slots of a gateway replica, 16 by default, and the query time, 300 seconds, of [Query metrics][semantic-query-limits].
   Through the dbt-compatible layout, nginx also ends a call after `hopsworks.semanticLayer.dbtCompatibleLayout.timeoutSeconds`, 300 by default, see [The dbt-compatible endpoint layout][semantic-bi-dbt-layout].
-  A GraphQL query takes a slot while it runs.
-- A replica holds at most 512 MiB of GraphQL results, forgetting the oldest ended queries to make room, and 256 GraphQL queries waiting for a slot; when running queries fill the results, or the wait is full, a new query is `FAILED` and asks to retry shortly.
 - A replica's Arrow buffers are bounded, half the JVM heap by default; a query that finds them full fails with 503 `SEMANTIC_LAYER_BUSY`, or `UNAVAILABLE` over Flight SQL.
 - A statement whose handle would be larger than 64 KiB is refused with `the statement is too large`.
 
@@ -413,14 +393,11 @@ Handles signed with the old key keep working until they expire, after `handleTtl
 | `semantic-gateway` value | Default | Meaning |
 | --- | --- | --- |
 | `flightPort` | `18446` | The Flight SQL port. |
-| `handleTtlSeconds` | `3600` | How long a Flight SQL ticket, prepared statement or GraphQL query id stays valid. |
-| `graphql.resultMaxBytes` | `67108864` | The largest GraphQL result a replica stores; a larger one fails its query. |
-| `graphql.storeMaxBytes` | `536870912` | The GraphQL results a replica stores in all. |
-| `graphql.resultTtlSeconds` | `600` | How long a GraphQL result stays stored for polling. |
+| `handleTtlSeconds` | `3600` | How long a Flight SQL ticket or prepared statement stays valid. |
 | `arrowMemoryLimitBytes` | `null` | The Arrow buffers a replica's queries hold at once; null is half the JVM heap. |
-| `maxRows` | `1000000` | The rows of an Arrow result, over Flight SQL, GraphQL and REST. |
+| `maxRows` | `1000000` | The rows of an Arrow result, over Flight SQL and REST. |
 
-`hopsworks.semanticLayer.graphqlIngress.annotations` sets the annotations of the GraphQL Ingress; keep `nginx.ingress.kubernetes.io/upstream-hash-by: "$http_authorization"`, which sends the polls of a GraphQL query to the replica that holds its result.
+`hopsworks.semanticLayer.graphqlIngress.annotations` sets the annotations of the GraphQL Ingress.
 The [result cache][semantic-result-cache-admin] has its own values, and [Semantic Layer administration][semantic-admin] lists every value of the service.
 [The dbt-compatible endpoint layout][semantic-bi-dbt-layout] serves both APIs on port 443 of one host, for dbt's Tableau and Power BI connectors.
 
