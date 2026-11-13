@@ -85,6 +85,7 @@ nav:
                   - Unity Catalog: user_guides/fs/data_source/creation/unity_catalog.md
                   - SAP HANA: user_guides/fs/data_source/creation/sap_hana.md
                   - Hopsworks: user_guides/fs/data_source/creation/hopsworks.md
+                  - Google Sheets: user_guides/fs/data_source/creation/google_sheets.md
                   - Gmail: user_guides/fs/data_source/creation/gmail.md
                   - Outlook: user_guides/fs/data_source/creation/outlook.md
                   - SharePoint: user_guides/fs/data_source/creation/sharepoint.md

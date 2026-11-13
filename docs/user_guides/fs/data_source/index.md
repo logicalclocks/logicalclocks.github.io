@@ -90,6 +90,14 @@ Cloud agnostic storage systems:
 
     [:octicons-arrow-right-24: Configure](creation/crm_sales_analytics.md)
 
+- :simple-googlesheets:{ .lg .middle style="color:#34A853" } **Google Sheets**
+
+    ---
+
+    Copy the tabs of a Google spreadsheet into feature groups with a service account.
+
+    [:octicons-arrow-right-24: Configure][data-source-google-sheets]
+
 - :simple-gmail:{ .lg .middle style="color:#EA4335" } **Gmail**
 
     ---

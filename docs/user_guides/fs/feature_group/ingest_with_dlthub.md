@@ -33,9 +33,9 @@ This ingestion flow supports multiple data sources:
 - SQL-like sources can either create an external feature group or ingest data into a new feature group.
 - The SQL family currently includes Snowflake, BigQuery, Redshift, generic JDBC (MySQL, PostgreSQL, Oracle, SQL Server), and SAP HANA.
 - A [Hopsworks][data-source-hopsworks] source copies a feature group from another Hopsworks cluster, with full or incremental loads.
-- CRM and REST API sources use the ingestion path only.
+- CRM, [Google Sheets][data-source-google-sheets] and REST API sources use the ingestion path only.
 - Incremental loading is available for SQL and REST API sources.
-- CRM sources currently use full-load ingestion.
+- CRM and Google Sheets sources currently use full-load ingestion.
 
 ## Step 1: Open the Data Source and start Feature Group creation
 
@@ -50,6 +50,8 @@ Once the ingest option is selected, the column table gains a `Partition key` col
 </figure>
 
 For CRM sources, choose the source resource, click `Fetch Schema` and then configure the feature schema for the new feature group the same way.
+
+For Google Sheets sources, enter the spreadsheet ID if the data source has none, click `Discover sheets`, and select the tabs to ingest; each tab becomes a resource whose schema you fetch like a CRM resource.
 
 For REST API sources, first configure the endpoint before fetching the schema.
 
@@ -111,10 +113,10 @@ At this stage you can:
 When you are ready, click `Next: Configure Ingestion Job`.
 
 !!! note
-    `Create External Feature Group` is not supported for CRM and REST connectors.
+    `Create External Feature Group` is not supported for CRM, Google Sheets and REST connectors.
 
 !!! note
-    For CRM and REST sources, schema fetching reads only a small sample of records from the source.
+    For CRM, Google Sheets and REST sources, schema fetching reads only a small sample of records from the source.
     Hopsworks uses this sample to infer the feature-group schema before you create the ingestion job.
 
 ## Step 3: Configure the dltHub ingestion job
