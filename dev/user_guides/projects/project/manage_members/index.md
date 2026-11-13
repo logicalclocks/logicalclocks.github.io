@@ -77,6 +77,7 @@ They can:
 A cluster administrator can define custom roles, each a Data owner or a Data scientist with some permissions removed, as described in [Custom Project Roles][custom-project-roles].
 They are listed under _Custom roles_ in the role picker, and the members list shows a member's custom role by name, with its base role in the tooltip.
 A member holding a custom role is refused what the role removed, with a message naming the permission.
+In the UI, the buttons for what the role removed are disabled, and their tooltip names the permission.
 
 You can give only roles that fit inside your own role, and change only members whose role fits inside your own.
 
