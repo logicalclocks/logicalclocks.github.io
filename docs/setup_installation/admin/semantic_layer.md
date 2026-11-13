@@ -88,7 +88,7 @@ Under `semantic-gateway:`:
 | `podDisruptionBudget.enabled`, `podDisruptionBudget.minAvailable` | `true`, `1` | Keep replicas available through voluntary disruptions, with more than one replica. |
 | `resources` | requests `500m`, `4Gi`; limits `2`, `4Gi` | Resources of the gateway container, see [Memory][semantic-admin-memory]. |
 | `jvmOptions` | `-XX:MaxRAMPercentage=50` | JVM options, as `JAVA_TOOL_OPTIONS`. |
-| `queryTimeoutSeconds` | `300` | Seconds a query runs on Trino before the gateway cancels it. The Ingress read timeouts must not be shorter. |
+| `queryTimeoutSeconds` | `300` | Seconds a query runs on Trino before the gateway cancels it. The Ingress read timeouts must be at least this plus the 30 seconds a query may wait for a slot. |
 | `queryConcurrency` | `16` | Queries a replica runs at once; a query that finds no slot within 30 seconds gets 503. |
 | `maxRows`, `maxJsonRows` | `1000000`, `100000` | Rows of an Arrow result and of a JSON result. |
 | `maxJsonBytes` | `67108864` | Bytes of a JSON or CSV result, counted as JSON text; a larger result is refused with 413. See [Memory][semantic-admin-memory]. |
@@ -113,9 +113,9 @@ Under `hopsworks.semanticLayer`:
 
 | Value | Default | Meaning |
 | --- | --- | --- |
-| `ingress.annotations` | HTTPS backend, 300 second timeouts | Annotations of the Ingress for `/semantic-layer/`. Keep the read timeout at least `semantic-gateway.queryTimeoutSeconds`. |
+| `ingress.annotations` | HTTPS backend, 360 second read and send timeouts | Annotations of the Ingress for `/semantic-layer/`. Keep the read timeout at least `semantic-gateway.queryTimeoutSeconds` plus 30. |
 | `graphqlIngress.annotations` | as above | Annotations of the Ingress for `/semantic-layer/api/graphql`. |
-| `dbtCompatibleLayout.enabled`, `.host`, `.tlsSecret`, `.timeoutSeconds` | `false`, `""`, `null`, `300` | [The dbt-compatible endpoint layout][semantic-bi-dbt-layout]. |
+| `dbtCompatibleLayout.enabled`, `.host`, `.tlsSecret`, `.timeoutSeconds` | `false`, `""`, `null`, `360` | [The dbt-compatible endpoint layout][semantic-bi-dbt-layout]. |
 
 ## Memory { #semantic-admin-memory }
 
@@ -143,9 +143,9 @@ A gateway whose heap runs out exits, and Kubernetes restarts the pod.
 | `httpResponseTimeoutSeconds` | `null` | Seconds an answer may take, from the end of the request to the last byte sent, the query included. Null is twice `queryTimeoutSeconds` plus the 30 seconds a query waits for a slot, plus 240: 900 at the defaults. The gateway refuses to start with a value below `queryTimeoutSeconds` plus 30. |
 | `shutdownGraceSeconds` | `45` | Seconds the requests in flight get to finish when the pod is stopped. |
 
-When a pod is stopped, as in a rolling update or a scale-down, the gateway stops accepting connections and Arrow Flight SQL calls, lets the requests in flight finish for `shutdownGraceSeconds`, sends the query history it holds, and exits.
+When a pod is stopped, as in a rolling update or a scale-down, it keeps serving for 5 seconds while it leaves the Service's endpoints; then the gateway stops accepting connections and Arrow Flight SQL calls, lets the requests in flight finish for `shutdownGraceSeconds`, sends the query history it holds for up to 10 seconds, and exits.
 A request still running then loses its connection, and a client sends it again to reach another replica.
-Keep the pod's `terminationGracePeriodSeconds` longer than `shutdownGraceSeconds` plus 10 seconds for the history.
+The chart sets the pod's `terminationGracePeriodSeconds` to `shutdownGraceSeconds` plus 30, which covers all three.
 A gateway that cannot open one of its ports when it starts exits, so a pod that runs is serving on every port.
 
 ## Cluster variables { #semantic-admin-variables }

@@ -244,7 +244,7 @@ hopsworks:
       enabled: true
       host: semantic.example.com
       tlsSecret: semantic-example-com-tls
-      timeoutSeconds: 300
+      timeoutSeconds: 360
 ```
 
 | `hopsworks.semanticLayer.dbtCompatibleLayout` value | Default | Meaning |
@@ -252,7 +252,7 @@ hopsworks:
 | `enabled` | `false` | Render the two Ingresses below. Needs `global._hopsworks.semanticLayer.enabled`. |
 | `host` | `""` | The host name the connectors are given; required when `enabled`. dbt's Power BI connector accepts only names that contain `.com`. |
 | `tlsSecret` | `null` | A `kubernetes.io/tls` Secret with the certificate and key for `host`. Null serves the ingress controller's default certificate. |
-| `timeoutSeconds` | `300` | Seconds nginx waits on a Flight call or a GraphQL request. Keep it at least `semantic-gateway.queryTimeoutSeconds`, or nginx ends long queries first. |
+| `timeoutSeconds` | `360` | Seconds nginx waits on a Flight call or a GraphQL request. Keep it at least `semantic-gateway.queryTimeoutSeconds` plus the 30 seconds a query may wait for a slot, or nginx ends long queries first. |
 
 nginx annotations apply to a whole Ingress, so the layout is two Ingresses on `host`, both with `tlsSecret`:
 

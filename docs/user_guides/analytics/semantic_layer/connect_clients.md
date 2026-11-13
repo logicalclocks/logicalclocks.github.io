@@ -335,7 +335,7 @@ Any replica of the gateway serves a handle, so a client can fetch from another r
 | REST, Arrow | 1,000,000 | The result stops there; `X-Semantic-Truncated: true` is set when the cut is known before the first rows are sent, and `X-Semantic-Max-Rows` gives the cap. |
 
 - Every API shares the query slots of a gateway replica, 16 by default, and the query time, 300 seconds, of [Query metrics][semantic-query-limits].
-  Through the dbt-compatible layout, nginx also ends a call after `hopsworks.semanticLayer.dbtCompatibleLayout.timeoutSeconds`, 300 by default, see [The dbt-compatible endpoint layout][semantic-bi-dbt-layout].
+  Through the dbt-compatible layout, nginx also ends a call after `hopsworks.semanticLayer.dbtCompatibleLayout.timeoutSeconds`, 360 by default, see [The dbt-compatible endpoint layout][semantic-bi-dbt-layout].
 - A replica's Arrow buffers are bounded, half the JVM heap by default; a query that finds them full fails with 503 `SEMANTIC_LAYER_BUSY`, or `UNAVAILABLE` over Flight SQL.
 - A statement whose handle would be larger than 64 KiB is refused with `the statement is too large`.
 
