@@ -308,6 +308,7 @@ nav:
           - Custom Project Roles: setup_installation/admin/project_roles.md
           - Configure Alerts: setup_installation/admin/alert.md
           - IAM Role Chaining: setup_installation/admin/roleChaining.md
+          - Private CA Trust: setup_installation/admin/private_ca.md
           - Configure Project Mapping: setup_installation/admin/configure-project-mapping.md
           - Airflow 3 operator notes: setup_installation/admin/airflow3.md
           - Search Index: setup_installation/admin/search_index.md
