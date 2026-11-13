@@ -68,7 +68,7 @@ A compile checks every export, and each problem is an issue at the export's file
 
 ## The feature group { #semantic-exports-feature-group }
 
-The export's first run creates the feature group, as the semantic project's creator, and records its id.
+The export's first run creates the feature group, as the semantic project's owner, and records its id.
 For `revenue_by_country_daily`:
 
 | Feature | Type | Role |
@@ -125,15 +125,18 @@ A run writes nothing when the result reaches the gateway's row cap, `TRUNCATED`,
 
 Each export has a Python job, `semantic-export-<semantic project id>-<export>`, that Hopsworks creates in the `python-feature-pipeline` environment and keeps in step with the export:
 
-- The job runs as the semantic project's creator, who must be a Data Owner of the project, as creating feature groups needs, and whose project role must allow _Semantic layer: Run exports_.
-  While the creator is not, or a custom project role removes that permission, the export has no job and its status is `OWNER_NOT_DATA_OWNER`.
+- The job runs as the semantic project's [owner][semantic-builds-owner], who must be a Data Owner of the project, as creating feature groups needs, and whose project role must allow _Semantic layer: Run exports_.
+  The owner is the member who registered the semantic project, until a Data Owner transfers it to another Data Owner.
+  While the owner is not a Data Owner, has left the project, or has a custom project role that removes that permission, the export has no job and its status is `OWNER_NOT_DATA_OWNER`.
 - Its script is `SemanticExports/semantic_export.py`, in a dataset that only Data Owners can edit.
 - Its schedule is the export's: runs that the schedule missed are not made up, and runs of one export never overlap.
 - Hopsworks updates the job right after a build with changed exports starts answering queries, and checks every job every two minutes.
 - An export the served build no longer defines loses its job, and its feature group stays; so does a deleted semantic project.
+- A transfer of the semantic project replaces the jobs with jobs of the new owner at once, with the same names and schedules.
+  Removing the owner from the project hands the semantic project over in the same request, see [When the owner leaves the project][semantic-builds-owner-removal].
 
-Data Owners and Data Scientists who can edit the YAML can change an export's saved query, target feature group and schedule, and those changes run as the creator.
-The job reads with the creator's access, under the Trino row filters, column masks and denied columns that apply to the creator, and writes only the export's own feature group.
+Data Owners and Data Scientists who can edit the YAML can change an export's saved query, target feature group and schedule, and those changes run as the owner.
+The job reads with the owner's access, under the Trino row filters, column masks and denied columns that apply to the owner, and writes only the export's own feature group.
 
 The job needs the Hopsworks 5.3 library in the `python-feature-pipeline` environment; with an older one, the run fails before writing and the job's log says `update the python-feature-pipeline environment to 5.3`.
 
@@ -182,7 +185,7 @@ A saved query's sheet lists its exports with their feature groups and statuses u
 | `FAILED` | The saved query or the write failed; the message holds the error. | Fix the cause and run again. |
 | `TRUNCATED` | The saved query returned as many rows as the gateway's row cap, so the run wrote nothing. | Narrow the saved query with a filter, fewer group-bys or a coarser grain, or raise the `semantic-gateway` value `maxRows`. |
 | `TARGET_EXISTS` | A feature group of the target's name and version exists that the export did not create, so the run wrote nothing. | See [Target exists][semantic-exports-target-exists]. |
-| `OWNER_NOT_DATA_OWNER` | The semantic project's creator is not a Data Owner, or their custom project role removes _Semantic layer: Run exports_, so the export has no job. | Give the creator the Data Owner role, or a custom role that keeps _Run exports_, or have such a member create the semantic project. |
+| `OWNER_NOT_DATA_OWNER` | The semantic project has no owner, or its owner is not a Data Owner of the project or has a custom project role that removes _Semantic layer: Run exports_, so the export has no job. | [Transfer the semantic project][semantic-builds-owner-transfer] to a Data Owner whose role allows _Run exports_, or give the owner such a role. |
 | `JOB_ERROR` | Hopsworks could not create or update the job; the message says why, and it tries again every two minutes. | Fix the cause, such as a job of the export's name that the export did not create. |
 | `DISABLED` | The definition sets `enabled: false`: the job has no schedule and runs are refused. | |
 

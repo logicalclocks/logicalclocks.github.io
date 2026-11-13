@@ -47,6 +47,7 @@ The name is unique in the Hopsworks project, and is made of lowercase letters, d
 | Format | `AUTO` (default), `DBT`, `NATIVE` or `MANIFEST_JSON` |
 | Deployment mode | `FOLLOW` (default) or `PINNED`, see [Serving modes][semantic-overview-serving-modes] |
 | Git repository | The Hopsworks git repository that holds the root path, filled in from the path |
+| Owner | The Data owner its export jobs run as: the member who registers it, until a Data owner transfers it, see [The owner of a semantic project][semantic-builds-owner] |
 
 `DBT` reads dbt project YAML, `NATIVE` reads MetricFlow YAML, and `MANIFEST_JSON` reads a dbt `semantic_manifest.json`.
 With `AUTO`, a `dbt_project.yml` at the root selects `DBT`, otherwise a `semantic_manifest.json` selects `MANIFEST_JSON`, and anything else is read as `NATIVE`.
@@ -117,6 +118,6 @@ The semantic layer reads the offline feature store.
 - An administrator turns the semantic layer on with the Helm value `global._hopsworks.semanticLayer.enabled: true`, which installs the semantic gateway and adds **Semantic Layer** to the project sidebar, see [Semantic Layer administration][semantic-admin].
   While it is off, the semantic layer endpoints answer 404 `SEMANTIC_LAYER_DISABLED`.
 - Data owners and data scientists of a project create, compile, promote and delete semantic projects; every member can list them and query their metrics.
-- Only data owners run [metric exports][semantic-exports] by hand, and an export's job runs as the semantic project's creator, who must be a data owner.
+- Only data owners run [metric exports][semantic-exports] by hand, and an export's job runs as the semantic project's [owner][semantic-builds-owner], who must be a data owner.
 - An API key needs the `FEATURESTORE` scope for semantic projects and builds.
   Everything the gateway answers, from listing metrics to running a query, also needs the `TRINO` scope, since the gateway connects to Trino as the key's user.

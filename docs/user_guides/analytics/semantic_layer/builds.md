@@ -202,6 +202,92 @@ hops semantic delete sales
 A new root path or format compiles again in the background.
 `delete` asks for confirmation unless given `--yes`, deletes the builds and leaves the YAML files in place.
 
+## The owner of a semantic project { #semantic-builds-owner }
+
+A semantic project has an owner: the member its [export][semantic-exports-owner] jobs run as.
+The member who registers a semantic project is its first owner, and stays recorded as its creator.
+The owner runs nothing else: a metric query runs as the member who sends it, see [How a query runs][semantic-overview-query-path].
+
+The owner is a Data owner of the project whose project role allows _Semantic layer: Run exports_.
+While the owner is not, or has left the project, the exports have no jobs and their status is `OWNER_NOT_DATA_OWNER`, until a Data owner transfers the semantic project.
+
+### Transfer ownership { #semantic-builds-owner-transfer }
+
+A Data owner whose project role allows _Semantic layer: Create & edit_ hands a semantic project to another Data owner of the project, whose role allows _Semantic layer: Run exports_.
+The current owner is not asked, so a semantic project whose owner has left can be handed over too.
+Hopsworks recreates the export jobs as the new owner at once, with their schedules.
+
+=== "UI"
+
+    Open the semantic project's overview.
+    **Owner** shows the owner, next to **Creator**, with **Transfer ownership**, which Data owners see.
+    Pick the **New owner** among the Data owners of the project and click **Transfer ownership**.
+    The **Exports** card offers **Transfer ownership** too, while an export's status is `OWNER_NOT_DATA_OWNER`.
+
+=== "CLI"
+
+    ```bash
+    hops semantic transfer-ownership sales carol@example.com
+    ```
+
+    ```text
+    Hand semantic project sales over from meb10000 to carol@example.com? Its export jobs will run as carol@example.com. [y/N]: y
+    Semantic project sales is now owned by meb10002.
+    ```
+
+    `--yes` skips the question, and `--json` prints the semantic project.
+    `hops semantic show sales` prints the owner on its `owner` row.
+
+=== "Python"
+
+    ```python
+    import hopsworks
+
+
+    project = hopsworks.login()
+    sales = project.get_semantic_layer_api().get_project("sales")
+    sales.transfer_ownership("carol@example.com")
+    print(sales.owner, sales.creator)
+    ```
+
+    ```text
+    meb10002 meb10000
+    ```
+
+=== "REST"
+
+    ```bash
+    curl -X PUT -H "Authorization: ApiKey $HOPSWORKS_API_KEY" \
+      -H "Content-Type: application/json" -d '{"email": "carol@example.com"}' \
+      "https://hopsworks.example.com/hopsworks-api/api/project/119/semantic/projects/7/owner"
+    ```
+
+    The answer is the semantic project, whose `owner` is the new owner's user name.
+
+A refused transfer changes nothing:
+
+| Error | Status | Meaning |
+| --- | --- | --- |
+| `SEMANTIC_LAYER_ILLEGAL_ARGUMENT` | 400 | The new owner is not a Data owner of the project whose role allows _Semantic layer: Run exports_: `carol@example.com cannot own semantic project sales: the owner must be a data owner of project demo whose project role allows Semantic layer: Run exports.` |
+| `PROJECT_ROLE_FORBIDDEN` | 403 | The caller is not a Data owner of the project. A custom role that removes _Semantic layer: Create & edit_ is refused with a message that names the permission. |
+
+### When the owner leaves the project { #semantic-builds-owner-removal }
+
+Removing a member from the project hands the semantic projects they own over in the same request:
+
+1. to the Data owner named to take over the member's files, `new_file_owner` in Python or the choice in the UI's remove dialog, when that Data owner may own them;
+2. otherwise to the Data owner who removes the member, when they may.
+
+When neither may, the removal is refused and nothing changes, with 409 `MEMBER_OWNS_SEMANTIC_PROJECTS` and a message that names the semantic projects:
+
+```text
+bob@example.com owns semantic project sales of project demo. Transfer it to a data owner whose project role allows Semantic layer: Run exports first, or name such a data owner as newFileOwner.
+```
+
+Transfer them first, or pick another Data owner to take the member's files.
+A member who leaves the project themselves goes through the same check, so a member who owns semantic projects names a Data owner to take their files, or transfers the semantic projects before leaving.
+A removal by a group mapping is never refused: the longest-serving Data owner who may own them takes the semantic projects, or nobody does, and the exports show `OWNER_NOT_DATA_OWNER` until a Data owner transfers them.
+
 !!! api "API reference"
 
     - <code class="doc-symbol doc-symbol-method"></code> [`Project.get_semantic_layer_api`][hopsworks_common.project.Project.get_semantic_layer_api]
@@ -214,6 +300,7 @@ A new root path or format compiles again in the background.
         - <code class="doc-symbol doc-symbol-method"></code> [`get_build`][hopsworks_common.semantic_layer.SemanticProject.get_build]
         - <code class="doc-symbol doc-symbol-method"></code> [`promote`][hopsworks_common.semantic_layer.SemanticProject.promote]
         - <code class="doc-symbol doc-symbol-method"></code> [`update`][hopsworks_common.semantic_layer.SemanticProject.update]
+        - <code class="doc-symbol doc-symbol-method"></code> [`transfer_ownership`][hopsworks_common.semantic_layer.SemanticProject.transfer_ownership]
     - <code class="doc-symbol doc-symbol-class"></code> [`SemanticBuild`][hopsworks_common.semantic_layer.SemanticBuild]
     - <code class="doc-symbol doc-symbol-class"></code> [`SemanticIssue`][hopsworks_common.semantic_layer.SemanticIssue]
 
