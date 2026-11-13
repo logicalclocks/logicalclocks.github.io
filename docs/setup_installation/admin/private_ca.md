@@ -122,7 +122,7 @@ All values are listed in [Kyverno values][helm-values-hw-kyverno].
     ```bash
     replicas=$(kubectl -n hopsworks get deployment hopsworks-instance -o jsonpath='{.spec.replicas}')
     kubectl -n hopsworks scale deployment hopsworks-instance --replicas=0
-    kubectl -n hopsworks rollout status deployment hopsworks-instance
+    kubectl -n hopsworks wait pod -l app=hopsworks-instance --for=delete --timeout=10m
     kubectl -n hopsworks scale deployment hopsworks-instance --replicas="$replicas"
     kubectl -n hopsworks rollout status deployment hopsworks-instance
     ```
@@ -138,7 +138,18 @@ All values are listed in [Kyverno values][helm-values-hw-kyverno].
 
 ## Rotate the CA { #private-ca-rotation }
 
-Replace `ca-pemstore` in the Hopsworks namespace.
-The policy keeps the copies in the project namespaces in step with it.
-Workloads read the bundle when they start, so the change reaches the ones started afterwards.
-The Hopsworks server needs the admin server restarted, `kubectl -n hopsworks rollout restart deployment/hopsworks-admin`, then the instances scaled to 0 and back as in [Apply][private-ca-apply].
+1. Replace `ca-pemstore` in the Hopsworks namespace.
+   The policy keeps the copies in the project namespaces in step with it.
+2. If the new chain has a different number of intermediate CAs, its `private-ca-<n>.crt` keys change.
+   Set `items` to list exactly the keys of the new ConfigMap, and upgrade Hopsworks with it.
+   A pod created while an entry names a key the ConfigMap lacks waits in `ContainerCreating` until the two match.
+3. Restart the admin server, and wait for it, so that it imports the new certificates before the instances copy its truststore:
+
+    ```bash
+    kubectl -n hopsworks rollout restart deployment/hopsworks-admin
+    kubectl -n hopsworks rollout status deployment/hopsworks-admin
+    ```
+
+4. Scale the instances to 0 and back, and restart the Arrow Flight server and any running notebook servers, as in steps 4 and 5 of [Apply][private-ca-apply].
+
+Other workloads read the bundle when they start, so the change reaches the ones started afterwards.
