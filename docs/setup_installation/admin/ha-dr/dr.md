@@ -394,6 +394,56 @@ olk:
                 indices: "-myindex"
 ```
 
+#### OnlineFS offsets after the restore { #restore-onlinefs-offsets }
+
+The RonDB backup holds the Kafka offsets OnlineFS saved, in the `kafka_offsets` table of each project's online feature store, but Kafka on the new cluster starts without the topics of the backed-up cluster and creates each online topic again when it is first written to.
+OnlineFS resumes each partition of a recreated topic at its restored offset, so the records written to the new topic below that offset never reach the online feature store.
+A partition whose restored offset is past the end of the new topic when OnlineFS first reads it is read from its start, because the chart sets `auto.offset.reset=earliest`, so whether records are lost depends on how much was written to the topic by then.
+
+After the restore, and before data is written to the online feature store again, stop OnlineFS, clear the offsets and start OnlineFS again, which then reads every online topic from its start.
+OnlineFS is stopped first because a running OnlineFS pod saves the offsets it holds again until it stops.
+Under ArgoCD with self-heal on, ArgoCD scales OnlineFS back up while the script runs and undoes the stop.
+Turn self-heal off for the Hopsworks Application before the script, and on again once the script has finished:
+
+```sh
+kubectl patch application <application> -n <argocd-namespace> --type merge \
+  -p '{"spec":{"syncPolicy":{"automated":{"selfHeal":false}}}}'
+```
+
+```sh
+kubectl patch application <application> -n <argocd-namespace> --type merge \
+  -p '{"spec":{"syncPolicy":{"automated":{"selfHeal":true}}}}'
+```
+
+If the script stops on a failure, keep self-heal off until a run of it has finished.
+
+Run the commands as a script with `bash`, which stops at the first command that fails and leaves OnlineFS stopped, so that ingestion does not resume with the restored offsets.
+The script prints the replica count of OnlineFS before it stops it; to run it again after a failure, set `REPLICAS` to that count, since OnlineFS then has none:
+
+```sh
+set -euo pipefail
+NAMESPACE=hopsworks
+ROOT_PW=$(kubectl get secret mysql-users-secrets -n "$NAMESPACE" -o jsonpath='{.data.root}' | base64 -d)
+mysql_root() {
+  kubectl exec mysqlds-0 -n "$NAMESPACE" -c mysqld -- env MYSQL_PWD="$ROOT_PW" mysql -uroot -N -e "$1"
+}
+REPLICAS=${REPLICAS:-$(kubectl get deployment/onlinefs-deployment -n "$NAMESPACE" -o jsonpath='{.spec.replicas}')}
+if [ "$REPLICAS" -lt 1 ]; then
+  echo "OnlineFS has no replicas: set REPLICAS to its replica count before the earlier run" >&2
+  exit 1
+fi
+echo "OnlineFS replicas: $REPLICAS"
+kubectl scale deployment/onlinefs-deployment -n "$NAMESPACE" --replicas=0
+kubectl wait --for=delete pod -l app=onlinefs -n "$NAMESPACE" --timeout=600s
+DATABASES=$(mysql_root "SELECT table_schema FROM information_schema.tables WHERE table_name = 'kafka_offsets'")
+for db in $DATABASES; do
+  mysql_root "DELETE FROM \`$db\`.kafka_offsets"
+done
+kubectl scale deployment/onlinefs-deployment -n "$NAMESPACE" --replicas="$REPLICAS"
+```
+
+Data written before the offsets were cleared is written to the online feature store again, from the start of each topic.
+
 ### In-Place Restore
 
 !!! Note
