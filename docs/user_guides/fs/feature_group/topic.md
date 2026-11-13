@@ -103,6 +103,11 @@ Topics count against the project's Kafka topic quota, which an administrator can
 When the cluster is configured to use an [external Kafka cluster][external-kafka-cluster], Hopsworks creates the topic there too, unless it already exists, in which case it is used as it is.
 The `kafka_connector` data source of the project needs permission to create topics for that, as described in that guide.
 
+## OnlineFS offsets { #onlinefs-project-offsets }
+
+OnlineFS saves, for each partition of an online topic, the offset it resumes from.
+Cluster administrators see these offsets, and can move them, in `Cluster Settings` → `OnlineFS`, as described in [Kafka offsets][onlinefs-offsets-admin].
+
 ## API Reference
 
 [`FeatureGroup`][hsfs.feature_group.FeatureGroup]

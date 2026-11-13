@@ -394,7 +394,23 @@ olk:
                 indices: "-myindex"
 ```
 
-### In-Place Restore
+#### OnlineFS offsets after the restore { #restore-onlinefs-offsets }
+
+The RonDB backup holds the Kafka offsets OnlineFS saved, in `onlinefs.kafka_offsets`, each with the ID of the topic it was saved for.
+Kafka on the new cluster starts without the topics of the backed-up cluster, creates each online topic again when it is first written to, and gives it a new ID.
+OnlineFS reads each partition of a recreated topic from its start instead of resuming at the restored offset, so the offsets need no step after the restore, and no record written to the new topics is skipped.
+
+- Until OnlineFS saves an offset for a recreated topic, [Kafka offsets][onlinefs-offsets-admin] in `Cluster Settings` → `OnlineFS` shows no current offset for its partitions, which OnlineFS reads from their min offset, and says that Kafka has no topic of this name while Kafka has not created it yet.
+- After an [in-place restore][in-place-restore], Kafka keeps its topics and their IDs, and OnlineFS resumes at the restored offsets: it writes the records that arrived since the backup again, which brings the restored online feature store up to date with them.
+- Each OnlineFS pod runs its `offsets-schema` step when it starts, which leaves the restored table as it is.
+  If the step fails, the pod does not start, as described in [If the offsets-schema step fails][upgrade-onlinefs-offsets-failures].
+- On a Kafka that gives its topics no IDs, OnlineFS cannot tell a recreated topic from the earlier one and resumes at the restored offsets.
+  On such a Kafka, stop OnlineFS after the restore, delete the rows of `onlinefs.kafka_offsets` and start OnlineFS again, so that it reads every online topic from its start.
+- An offset set in [Kafka offsets][onlinefs-offsets-admin] that OnlineFS had not applied at the backup comes back with `onlinefs.kafka_offsets`.
+  OnlineFS clears it on a new cluster without moving the partition, since it was set for a topic Kafka no longer has.
+  After an in-place restore it applies at OnlineFS's next look, every 10 seconds; set the partition's offset again if it should not.
+
+### In-Place Restore { #in-place-restore }
 
 !!! Note
     In-place restore is available from Hopsworks version 4.8.0.
