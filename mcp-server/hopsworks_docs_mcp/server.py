@@ -1,39 +1,47 @@
 """Read-only MCP server exposing the Hopsworks documentation to AI agents.
 
-The server indexes the local ``docs/`` Markdown tree (the same source that
-builds ``docs.hopsworks.ai``) and exposes retrieval tools only. It never
-mutates the docs, never makes outbound network calls, and confines all reads
-to the docs directory. There is no write path.
+The server indexes the docs Markdown (the same source that builds
+``docs.hopsworks.ai``) and exposes retrieval tools only. It never mutates the
+docs, never makes outbound network calls, and confines all reads to the docs
+directories. There is no write path.
 
-Two transports, chosen by the ``MCP_TRANSPORT`` env var:
+Two layouts, chosen by the environment:
 
-- ``stdio`` (default) — the usual local transport::
+- ``HOPSWORKS_DOCS_ROOT`` (hosted): a directory holding the site's mike
+  ``versions.json`` and one checkout of the docs repo per version, named after
+  the version (``5.1/docs``, ``5.0/docs``, ``dev/docs``). Every tool takes a
+  ``version`` argument and defaults to the version aliased ``latest``. An
+  external sync loop (``docker-entrypoint.sh``) keeps the tree current.
+- ``HOPSWORKS_DOCS_DIR`` (local): a single ``docs/`` directory, served as
+  ``HOPSWORKS_DOCS_VERSION`` (default ``latest``). If unset, the server walks up
+  from this file to find a ``docs/`` directory next to ``mkdocs.yml``.
 
-    HOPSWORKS_DOCS_DIR=/path/to/docs uv run --with mcp \\
-        python -m hopsworks_docs_mcp
+Page URLs are built on ``HOPSWORKS_DOCS_SITE`` (default
+``https://docs.hopsworks.ai/``) plus the version path, so they resolve on the
+versioned site.
 
-- ``streamable-http`` — a long-running HTTP endpoint (used for the hosted
-  ``mcp.hopsworks.ai`` deployment). Served by uvicorn on ``MCP_HOST``/
-  ``MCP_PORT`` behind a per-IP rate limit.
-
-If ``HOPSWORKS_DOCS_DIR`` is unset the server walks up from this file to find a
-``docs/`` directory that sits next to ``mkdocs.yml``. When the hosted deployment
-keeps that directory in sync with ``main`` (an external ``git pull`` loop), set
-``MCP_REINDEX_INTERVAL`` to have the server rebuild its index on change without
-a restart.
+Two transports, chosen by ``MCP_TRANSPORT``: ``stdio`` (default) and
+``streamable-http`` (the hosted ``mcp.hopsworks.ai`` endpoint, served by
+uvicorn on ``MCP_HOST``/``MCP_PORT`` behind a per-IP rate limit). Set
+``MCP_REINDEX_INTERVAL`` to rebuild the indexes when the docs on disk change,
+without a restart.
 """
 
 from __future__ import annotations
 
+import contextlib
+import json
 import os
 import threading
 import time
+from dataclasses import dataclass
 from pathlib import Path
 
 from mcp.server.mcpserver import MCPServer
 from mcp.types import ToolAnnotations
 
-from .index import DocsIndex
+from .index import DocsIndex, Page
+
 
 # Every tool here is read-only: no writes, no side effects, safe to retry.
 _READ_ONLY = ToolAnnotations(read_only_hint=True, idempotent_hint=True)
@@ -41,14 +49,32 @@ _READ_ONLY = ToolAnnotations(read_only_hint=True, idempotent_hint=True)
 # Cap tool output so a single call cannot flood an agent's context.
 _MAX_CHARS = 12_000
 
+_SITE = os.environ.get("HOPSWORKS_DOCS_SITE", "https://docs.hopsworks.ai/").rstrip("/")
 
-def _find_docs_dir() -> Path:
+
+@dataclass
+class _Version:
+    """One documentation version: its mike name, aliases and index."""
+
+    name: str
+    aliases: list[str]
+    hidden: bool
+    docs_dir: Path
+    signature: tuple[int, float]
+    index: DocsIndex
+
+
+def _signature(docs_dir: Path) -> tuple[int, float]:
+    """Cheap change signal: the ``*.md`` count and newest mtime."""
+    mtimes = [p.stat().st_mtime for p in docs_dir.rglob("*.md")]
+    return (len(mtimes), max(mtimes, default=0.0))
+
+
+def _find_local_docs_dir() -> Path:
     env = os.environ.get("HOPSWORKS_DOCS_DIR")
     if env:
         path = Path(env).expanduser().resolve()
-        if not (path / "..").resolve().joinpath("mkdocs.yml").exists() and not any(
-            path.glob("*.md")
-        ):
+        if not any(path.rglob("*.md")):
             raise SystemExit(f"HOPSWORKS_DOCS_DIR={path} has no Markdown files")
         return path
     here = Path(__file__).resolve()
@@ -57,39 +83,98 @@ def _find_docs_dir() -> Path:
         if (parent / "mkdocs.yml").exists() and candidate.is_dir():
             return candidate
     raise SystemExit(
-        "Could not locate docs/. Set HOPSWORKS_DOCS_DIR to the docs directory."
+        "Could not locate docs/. Set HOPSWORKS_DOCS_DIR to the docs directory, "
+        "or HOPSWORKS_DOCS_ROOT to a versioned docs tree."
     )
 
 
-class _RefreshableIndex:
-    """Holds the current :class:`DocsIndex`, rebuildable in place.
+class _Library:
+    """The documentation versions this server can answer from.
 
-    Tool code reads ``_index.pages`` / ``_index.search`` unchanged: attribute
-    access falls through to the inner index. A background watcher can call
-    :meth:`refresh` to atomically swap in a freshly built index when the docs
-    on disk change, so the hosted endpoint follows ``main`` without a restart.
+    In the hosted layout the versions and the ``latest`` alias come from the
+    site's own ``versions.json``, so the server follows the published site with
+    no version list of its own. :meth:`refresh` rereads it and rebuilds only the
+    versions whose Markdown changed; lookups see either the old or the new map,
+    never a half-built one.
     """
 
-    def __init__(self, docs_dir: Path) -> None:
-        self._dir = docs_dir
-        self._inner = DocsIndex(docs_dir)
+    def __init__(self) -> None:
+        root = os.environ.get("HOPSWORKS_DOCS_ROOT")
+        self._root = Path(root).expanduser().resolve() if root else None
+        self._local = None if self._root else _find_local_docs_dir()
+        self._versions: dict[str, _Version] = {}
+        self._lock = threading.Lock()
+        self.refresh()
+        if not self._versions:
+            raise SystemExit(f"No documentation versions found under {self._root}")
 
-    def __getattr__(self, name: str):
-        # Only reached for names not set on the wrapper itself (_dir, _inner).
-        return getattr(self._inner, name)
+    def _entries(self) -> list[tuple[str, list[str], bool, Path]]:
+        if self._local is not None:
+            name = os.environ.get("HOPSWORKS_DOCS_VERSION", "latest")
+            return [(name, [], False, self._local)]
+        raw = json.loads((self._root / "versions.json").read_text(encoding="utf-8"))
+        out = []
+        for entry in raw:
+            docs_dir = self._root / entry["version"] / "docs"
+            if docs_dir.is_dir():
+                hidden = bool(entry.get("properties", {}).get("hidden", False))
+                out.append(
+                    (entry["version"], entry.get("aliases", []), hidden, docs_dir)
+                )
+        return out
 
     def refresh(self) -> None:
-        self._inner = DocsIndex(self._dir)
+        with self._lock:
+            current = self._versions
+            fresh: dict[str, _Version] = {}
+            for name, aliases, hidden, docs_dir in self._entries():
+                signature = _signature(docs_dir)
+                old = current.get(name)
+                if old is not None and old.signature == signature:
+                    index = old.index
+                else:
+                    index = DocsIndex(docs_dir, site_url=f"{_SITE}/{name}/")
+                fresh[name] = _Version(
+                    name, aliases, hidden, docs_dir, signature, index
+                )
+            self._versions = fresh
+
+    def all(self) -> list[_Version]:
+        return list(self._versions.values())
+
+    def default(self) -> _Version:
+        versions = self._versions
+        for v in versions.values():
+            if "latest" in v.aliases:
+                return v
+        return next(v for v in versions.values() if not v.hidden)
+
+    def resolve(self, version: str) -> _Version | str:
+        """Return the version, or an error message naming the valid ones."""
+        want = version.strip()
+        if not want or want == "latest":
+            return self.default()
+        versions = self._versions
+        if want in versions:
+            return versions[want]
+        for v in versions.values():
+            if want in v.aliases:
+                return v
+        names = ", ".join(v.name for v in versions.values())
+        return (
+            f'No documentation version "{want}". Available: {names}. Use list_versions.'
+        )
 
 
-_docs_dir = _find_docs_dir()
-_index = _RefreshableIndex(_docs_dir)
+_library = _Library()
 mcp = MCPServer(
     "hopsworks-docs",
     instructions=(
         "Read-only access to the Hopsworks documentation. Start with search_docs "
         "when you don't know the page id, then get_page or get_section. page_id is "
-        "the path under docs/ without .md, e.g. concepts/fs/feature_group/fg_overview."
+        "the path under docs/ without .md, e.g. concepts/fs/feature_group/fg_overview. "
+        "Every tool answers from the latest release unless you pass version, "
+        'e.g. version="5.0"; list_versions shows what exists.'
     ),
 )
 
@@ -100,8 +185,37 @@ def _clip(text: str) -> str:
     return text[:_MAX_CHARS] + f"\n\n… [truncated at {_MAX_CHARS} chars]"
 
 
+def _page(v: _Version, page_id: str) -> Page | None:
+    return v.index.pages.get(page_id.strip().strip("/"))
+
+
+def _no_page(v: _Version, page_id: str) -> str:
+    return (
+        f'No page with id "{page_id}" in version {v.name}. '
+        "Use search_docs or list_pages."
+    )
+
+
 @mcp.tool(annotations=_READ_ONLY)
-def search_docs(query: str, limit: int = 5) -> str:
+def list_versions() -> str:
+    """List the documentation versions this server can answer from.
+
+    Every other tool defaults to the latest release; pass one of these names
+    as their version argument to read the docs of an older release, or "dev"
+    for the unreleased next version.
+
+    Returns each version with its aliases.
+    """
+    lines = ["Documentation versions (newest first):\n"]
+    for v in _library.all():
+        tags = [*v.aliases, *(["unreleased"] if v.hidden else [])]
+        suffix = f" ({', '.join(tags)})" if tags else ""
+        lines.append(f"- {v.name}{suffix}: {len(v.index.pages)} pages")
+    return "\n".join(lines)
+
+
+@mcp.tool(annotations=_READ_ONLY)
+def search_docs(query: str, limit: int = 5, version: str = "") -> str:
     """Search the Hopsworks documentation and return the best-matching pages.
 
     Use this first when you don't already know the exact page id. It ranks
@@ -113,16 +227,21 @@ def search_docs(query: str, limit: int = 5) -> str:
         query: natural-language or keyword query, e.g. "online feature store
             latency" or "create an external feature group".
         limit: maximum results (1-20, default 5).
+        version: documentation version, e.g. "5.0" or "dev". Empty or
+            "latest" = the latest release. See list_versions.
 
     Returns a ranked list; each item shows the page_id to pass to get_page.
 
     Example: search_docs("kafka storage connector", 3).
     """
+    v = _library.resolve(version)
+    if isinstance(v, str):
+        return v
     limit = max(1, min(20, limit))
-    hits = _index.search(query, limit)
+    hits = v.index.search(query, limit)
     if not hits:
-        return f'No documentation page matched "{query}".'
-    lines = [f'{len(hits)} result(s) for "{query}":\n']
+        return f'No documentation page matched "{query}" in version {v.name}.'
+    lines = [f'{len(hits)} result(s) for "{query}" in version {v.name}:\n']
     for page, score, snippet in hits:
         lines.append(f"- page_id: {page.page_id}")
         lines.append(f"  title: {page.title}")
@@ -133,7 +252,7 @@ def search_docs(query: str, limit: int = 5) -> str:
 
 
 @mcp.tool(annotations=_READ_ONLY)
-def get_page(page_id: str) -> str:
+def get_page(page_id: str, version: str = "") -> str:
     """Return the full raw Markdown of one documentation page by its id.
 
     Use this once you know the page id (from search_docs or list_pages). The
@@ -143,19 +262,26 @@ def get_page(page_id: str) -> str:
 
     Args:
         page_id: canonical page id (no leading slash, no .md).
+        version: documentation version, e.g. "5.0" or "dev". Empty or
+            "latest" = the latest release. See list_versions.
 
     Returns the page's Markdown source, or an error listing near matches.
     """
-    page = _index.pages.get(page_id.strip().strip("/"))
+    v = _library.resolve(version)
+    if isinstance(v, str):
+        return v
+    page = _page(v, page_id)
     if page is None:
-        near = [p for p in _index.pages if page_id.strip("/") in p][:5]
+        near = [p for p in v.index.pages if page_id.strip("/") in p][:5]
         hint = ("\nDid you mean:\n" + "\n".join(near)) if near else ""
-        return f'No page with id "{page_id}". Use search_docs or list_pages.{hint}'
-    return _clip(f"# {page.title}\nurl: {page.url}\n\n{page.markdown}")
+        return _no_page(v, page_id) + hint
+    return _clip(
+        f"# {page.title}\nversion: {v.name}\nurl: {page.url}\n\n{page.markdown}"
+    )
 
 
 @mcp.tool(annotations=_READ_ONLY)
-def list_sections(page_id: str) -> str:
+def list_sections(page_id: str, version: str = "") -> str:
     """List the section headings and their anchors for one page.
 
     Use this to see a page's structure before pulling a single section with
@@ -164,23 +290,28 @@ def list_sections(page_id: str) -> str:
 
     Args:
         page_id: canonical page id (see get_page).
+        version: documentation version, e.g. "5.0" or "dev". Empty or
+            "latest" = the latest release. See list_versions.
 
     Returns each heading with its level and anchor.
     """
-    page = _index.pages.get(page_id.strip().strip("/"))
+    v = _library.resolve(version)
+    if isinstance(v, str):
+        return v
+    page = _page(v, page_id)
     if page is None:
-        return f'No page with id "{page_id}". Use search_docs or list_pages.'
+        return _no_page(v, page_id)
     sections = page.sections()
     if not sections:
         return f'Page "{page_id}" has no sub-headings; use get_page.'
-    lines = [f"Sections of {page_id}:\n"]
+    lines = [f"Sections of {page_id} (version {v.name}):\n"]
     for s in sections:
         lines.append(f"- [{'#' * s.level}] {s.title}  (anchor: {s.anchor})")
     return "\n".join(lines)
 
 
 @mcp.tool(annotations=_READ_ONLY)
-def get_section(page_id: str, anchor: str) -> str:
+def get_section(page_id: str, anchor: str, version: str = "") -> str:
     """Return one section of a page by its anchor.
 
     Use this to fetch a targeted part of a long page (the anchor comes from
@@ -190,22 +321,29 @@ def get_section(page_id: str, anchor: str) -> str:
     Args:
         page_id: canonical page id (see get_page).
         anchor: section anchor, with or without a leading '#'.
+        version: documentation version, e.g. "5.0" or "dev". Empty or
+            "latest" = the latest release. See list_versions.
 
     Returns the heading and the prose beneath it up to the next heading.
     """
-    page = _index.pages.get(page_id.strip().strip("/"))
+    v = _library.resolve(version)
+    if isinstance(v, str):
+        return v
+    page = _page(v, page_id)
     if page is None:
-        return f'No page with id "{page_id}". Use search_docs or list_pages.'
+        return _no_page(v, page_id)
     want = anchor.strip().lstrip("#")
     for s in page.sections():
         if s.anchor == want:
-            return _clip(f"# {s.title}\n{page.url}#{s.anchor}\n\n{s.body}")
+            return _clip(
+                f"# {s.title}\nversion: {v.name}\n{page.url}#{s.anchor}\n\n{s.body}"
+            )
     available = ", ".join(s.anchor for s in page.sections()) or "(none)"
     return f'No anchor "{want}" on {page_id}. Available: {available}'
 
 
 @mcp.tool(annotations=_READ_ONLY)
-def list_pages(prefix: str = "") -> str:
+def list_pages(prefix: str = "", version: str = "") -> str:
     """List documentation page ids, optionally filtered by a path prefix.
 
     Use this to browse the doc map or to enumerate a subsection (e.g. prefix
@@ -214,16 +352,22 @@ def list_pages(prefix: str = "") -> str:
 
     Args:
         prefix: path prefix under docs/, e.g. "concepts/mlops". Empty = all.
+        version: documentation version, e.g. "5.0" or "dev". Empty or
+            "latest" = the latest release. See list_versions.
 
     Returns matching page ids with their titles.
     """
+    v = _library.resolve(version)
+    if isinstance(v, str):
+        return v
     prefix = prefix.strip().strip("/")
-    ids = sorted(pid for pid in _index.pages if pid.startswith(prefix))
+    pages = v.index.pages
+    ids = sorted(pid for pid in pages if pid.startswith(prefix))
     if not ids:
-        return f'No pages under prefix "{prefix}".'
-    lines = [f"{len(ids)} page(s):\n"]
+        return f'No pages under prefix "{prefix}" in version {v.name}.'
+    lines = [f"{len(ids)} page(s) in version {v.name}:\n"]
     for pid in ids:
-        lines.append(f"- {pid}: {_index.pages[pid].title}")
+        lines.append(f"- {pid}: {pages[pid].title}")
     return _clip("\n".join(lines))
 
 
@@ -288,32 +432,22 @@ class RateLimitMiddleware:
         await send({"type": "http.response.body", "body": b"Rate limit exceeded.\n"})
 
 
-def _start_reindex_watcher(index: _RefreshableIndex, docs_dir: Path, interval: int) -> None:
-    """Rebuild the index when the Markdown on disk changes.
+def _start_reindex_watcher(library: _Library, interval: int) -> None:
+    """Rebuild changed versions when the docs on disk change.
 
-    Cheap, git-agnostic change signal: the file count and newest mtime across
-    ``*.md``. An external ``git pull`` that updates any page bumps the newest
-    mtime; a merge that adds or removes pages changes the count.
+    The sync loop adds, removes or updates version checkouts; each tick rereads
+    ``versions.json`` and reindexes only the versions whose Markdown count or
+    newest mtime moved.
     """
 
-    def signature() -> tuple[int, float]:
-        mtimes = [p.stat().st_mtime for p in docs_dir.rglob("*.md")]
-        return (len(mtimes), max(mtimes, default=0.0))
-
-    def loop(last: tuple[int, float]) -> None:
+    def loop() -> None:
         while True:
             time.sleep(interval)
-            try:
-                current = signature()
-                if current != last:
-                    index.refresh()
-                    last = current
-            except Exception:  # noqa: BLE001 - a transient FS read must not kill the watcher
-                pass
+            # A transient FS read must not kill the watcher.
+            with contextlib.suppress(Exception):
+                library.refresh()
 
-    threading.Thread(
-        target=loop, args=(signature(),), daemon=True, name="reindex"
-    ).start()
+    threading.Thread(target=loop, daemon=True, name="reindex").start()
 
 
 def main() -> None:
@@ -321,7 +455,7 @@ def main() -> None:
 
     interval = int(os.environ.get("MCP_REINDEX_INTERVAL", "0"))
     if interval > 0:
-        _start_reindex_watcher(_index, _docs_dir, interval)
+        _start_reindex_watcher(_library, interval)
 
     if transport == "streamable-http":
         import uvicorn
