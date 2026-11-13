@@ -190,6 +190,22 @@ OpenSearch stays on 3.8.0.
 An upgrade from 5.2.0 or 5.2.1 also gets the [changes from 5.2.2][upgrade-changes-from-522].
 An upgrade from 5.2.0 also crosses two changes of 5.2.1, described under 5.1.x to 5.2.x: [Feature groups shared with a subset of their features][upgrade-trino-subset-shares], and the OpenSearch [Security configuration][opensearch-security-configuration], which addresses a vulnerability.
 
+### Removal of legacy YARN jobs { #upgrade-yarn-removal }
+
+5.3 removes the unsupported YARN and Flink job types from Hopsworks.
+The schema migration deletes their job definitions, schedules, and execution records, and also deletes YARN-managed execution records belonging to Spark or PySpark jobs.
+Supported job definitions and their Kubernetes execution history are preserved.
+Archived tag history for deleted jobs is retained with closing events.
+Export any legacy job definitions or execution metadata you need before upgrading; restoring deleted records requires the pre-upgrade database backup.
+HopsFS and metadata DAL YARN tables are unchanged.
+External Flink feature-store clients are unaffected.
+
+Upgrade the backend, frontend, and Helm chart together.
+The old YARN quota and payment fields remain accepted in client requests but have no effect.
+Legacy job UI and log aggregation retry endpoints return an unsupported-action error; clients should use execution monitoring URLs and normal log retrieval.
+Old Helm values for `max_status_poll_retry`, `flink_version`, `docker_mounts`, `yarn_default_quota`, `yarn_default_payment_type`, and `rmyarn_user` are accepted but ignored.
+The `yarnapp` runtime user and `yarn_app_uid` setting still serve Kubernetes workloads and must be retained.
+
 ### Additional upgrade prerequisites { #upgrade-additional-prerequisites }
 
 The identity running Helm or syncing ArgoCD must have permission to manage `ValidatingAdmissionPolicy` and `ValidatingAdmissionPolicyBinding` resources in the `admissionregistration.k8s.io` API group.
