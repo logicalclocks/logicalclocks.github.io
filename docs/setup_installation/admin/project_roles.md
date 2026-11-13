@@ -185,6 +185,7 @@ The role editor lists them below the permission table.
 ### What a removed permission does
 
 - A request that needs the permission is refused, in the UI, the Python client and the REST API alike.
+- In the UI, the buttons and menu items that need the permission are disabled, and their tooltip names it.
 - Jupyter servers, jobs and deployments that were already running keep running.
   Starting new ones is refused.
 - A scheduled job runs as the member who created it.
