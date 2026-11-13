@@ -344,6 +344,44 @@ What changes for users and operators ([details](kueue_external.md#what-changes))
 - Disk limits need Kueue to leave `ephemeral-storage` out of its quota checks, which the upgrade script sets up.
   It stops before changing the cluster when it cannot read the queues, or when disk is budgeted but some ClusterQueues do not cover it ([Disk limits][kueue-disk-limits]).
 
+### Kafka node pool settings apply on every upgrade { #upgrade-kafka-node-pools }
+
+From the 5.2.x patch release that carries this fix, and in 5.3, a Helm upgrade applies the Kafka node pool settings in your values again.
+On a cluster whose Strimzi CRDs serve only `v1`, which is the case for a cluster installed on 5.2, earlier 5.2 releases left the two `KafkaNodePool` resources as they were on every Helm upgrade.
+A change of the replicas, storage, resources, JVM options or placement of the brokers or controllers had no effect, and a deleted pool did not come back.
+The `kafka-kraft-migration` pre-upgrade hook now applies both pools on every Helm upgrade.
+Under ArgoCD, and with Helm when `global._hopsworks.mode` is set, the pools are part of the release and are applied with it, so they were not affected, and the hook still leaves them to the release.
+
+- **The first upgrade with the fix applies what your values say.**
+  That includes settings that earlier upgrades ignored, and it overwrites a change made to a pool by hand, such as a replica count set with `kubectl`, because the hook applies every field the chart renders.
+  Compare the live pools with your values before upgrading:
+
+    ```sh
+    kubectl get kafkanodepools -n hopsworks -o yaml
+    ```
+
+  Strimzi replaces the Kafka pods one by one for a change of placement, resources or JVM options, and adds brokers for a higher replica count.
+- **A setting removed from the values can stay on a pool.**
+  The hook applies the pools server-side as the field manager `kafka-kraft-migration`, and Kubernetes removes a field that the values no longer set only when that manager is its only owner.
+  Helm owns the fields it set at install, and keeps owning each one whose value no upgrade has changed since, so such a field stays on the pool.
+  Check the pool after removing a setting, and remove the field from the pool by hand if it is still there.
+- **`kafka.migrationJob.enabled` stays on.**
+  The hook is the only thing that applies node pool settings during a Helm upgrade without `global._hopsworks.mode`, so with the switch off, pool changes are not applied.
+- **The upgrade fails when the pools cannot be applied.**
+  When the hook cannot read the `KafkaNodePool` CRD or the pools, or the cluster rejects the apply, the upgrade fails on the `kafka-kraft-migration` hook, where it used to continue without applying anything.
+  The log of the hook has the error:
+
+    ```sh
+    kubectl logs -n hopsworks job/kafka-kraft-migration
+    ```
+
+- **When the hook leaves the pools alone.**
+  When `v1beta2` has been removed from the `KafkaNodePool` CRD while a pool still carries ownership records written at that version, the cluster rejects every server-side apply to that pool.
+  The hook then applies nothing, and its log says `Not applying the node pools in this upgrade` and names the pools.
+  Pool changes are applied by the first upgrade after those records are cleared.
+  The `strimzi-crd-upgrade` hook clears them later in the same upgrade when it is enabled (`kafka.crdUpgradeJob.enabled`), the chart runs the Strimzi operator (`kafka.strimzi-kafka-operator.enabled`), and every Strimzi CRD stores only `v1`.
+  Otherwise whoever manages the Strimzi CRDs has to clear them, and until then every upgrade leaves the pools as they are.
+
 ### Bring your own Kafka: Hopsworks creates and deletes topics { #upgrade-byok-topics }
 
 From 5.3, with `enable_bring_your_own_kafka`, Hopsworks creates and deletes the topics it needs on the [external Kafka][external-kafka-cluster], as it does on the bundled one.
