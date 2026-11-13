@@ -208,8 +208,8 @@ Creating a dashboard or an Explore link creates the caller's connection first wh
 | A member's key is deleted, or loses a scope | Hopsworks creates a new key and writes it into the member's connection. |
 | The project is deleted | The connections, keys and secrets are deleted. |
 
-A chart runs with the access of the member whose connection its dataset is on.
-Charts you build on your connection run on Trino as you, as metric queries from Python, the CLI, the query workbench and the agent tools do, see [How a query runs][semantic-overview-query-path].
+A chart runs with the access of the member whose connection its dataset is on, not of the member who views it.
+Charts you build on your connection run on Trino as you, as metric queries from Python, the CLI, the query workbench and the agent tools do, see [Who a query runs as][semantic-overview-identity].
 
 A dashboard from metrics belongs to the member who created it: Hopsworks builds it through that member's own Superset account, on datasets of that member's connection, so Superset makes them the editor of the dashboard and of its charts.
 A dashboard shared in the project, with another project or made public shows its author's view of the data to every viewer, as a shared dashboard on a Trino connection does, see [Sharing Dashboards][sharing-dashboards].

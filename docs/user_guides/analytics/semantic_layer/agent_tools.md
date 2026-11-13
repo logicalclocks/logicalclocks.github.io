@@ -20,7 +20,7 @@ hopsworks-mcp --transport stdio --hopsworks_host my.hopsworks.ai --project demo 
 
 Without `--transport stdio`, the server listens over HTTP on `127.0.0.1:8000`; `--host` and `--port` change the address, and a non-loopback address needs `--auth-token`.
 The tools act on the project the server is logged in to, from the start options or the `login` tool.
-The API key needs the `FEATURESTORE` and `TRINO` scopes for the semantic layer tools, since queries run on Trino as the key's user.
+The API key needs the `FEATURESTORE` and `TRINO` scopes for the semantic layer tools, since their queries run as the key's user, see [Who a query runs as][semantic-overview-identity].
 
 ## Tools { #semantic-agent-tools-list }
 

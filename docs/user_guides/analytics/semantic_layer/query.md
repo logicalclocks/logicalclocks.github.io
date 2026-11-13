@@ -5,7 +5,7 @@ description: How to find metrics and query them by dimension and time grain from
 # Query Metrics { #semantic-query-metrics }
 
 A metric query names metrics, the group-bys to split them by, and optional filters, ordering and a row limit.
-The semantic layer generates the SQL from the current build and runs it on Trino as the caller, or answers a repeated query from its [result cache][semantic-result-cache].
+The semantic layer generates the SQL from the current build and runs it on Trino as the caller, or answers it from its [result cache][semantic-result-cache] or from an [export][semantic-exports-serving], see [Who a query runs as][semantic-overview-identity].
 The examples query the `sales` semantic project from [Compile and builds][semantic-compile-builds].
 dbt Semantic Layer clients, such as dbt-sl-sdk and the Arrow Flight SQL JDBC driver, query the same metrics, see [Connect dbt clients][semantic-connect-clients], and so do BI tools, through tables, see [Connect BI tools][semantic-bi-tools].
 
@@ -207,7 +207,7 @@ The query workbench takes:
 - **Limit**, from 1 to 1,000 rows, 100 by default.
 
 **Run** shows the rows under **Results**, and **Show SQL** shows the generated SQL under **SQL** without running it.
-The rows are read on Trino as you.
+The rows are read on Trino as you, unless the result cache or an export answers the query.
 
 ## Query over REST { #semantic-query-rest }
 

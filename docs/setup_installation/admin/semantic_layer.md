@@ -31,7 +31,7 @@ Queries run on Trino, so Trino must be installed too.
 | --- | --- | --- |
 | Control plane | Hopsworks (Payara) | Semantic projects and their builds, sessions for the gateway, the definitions editor, tags, metric exports and their jobs, the query history and its cleaner. Its tables are in the `hopsworks` database in RonDB, and the compiled definitions of each build are files in the project's directory in HopsFS, which only Hopsworks reads and writes and which go with the project. |
 | Semantic gateway | The Deployment `semantic-gateway`, 2 replicas by default | Compiles the definitions for the control plane, plans metric queries, runs them on Trino as the caller, and serves REST, GraphQL, Arrow Flight SQL, the BI tables and the result cache. It keeps no state of its own beyond memory. |
-| Trino | The `trino` chart | Runs the SQL the gateway plans, as the caller's own Trino user. |
+| Trino | The `trino` chart | Runs the SQL the gateway plans, as the caller's own Trino user, see [Who a query runs as][semantic-overview-identity]. |
 | Export jobs | Python jobs in each project, in the `python-feature-pipeline` environment | Write saved queries into feature groups, see [Metric exports][semantic-exports]. |
 | Superset | The `superset` chart | Dashboards from metrics: each member's database connection of a project reads the gateway's Arrow Flight SQL port inside the cluster, at `semantic-gateway.<namespace>.svc.cluster.local:18446`, see [Dashboards in Superset][semantic-superset-dashboards]. |
 

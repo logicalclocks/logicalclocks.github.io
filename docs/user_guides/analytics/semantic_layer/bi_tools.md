@@ -5,7 +5,7 @@ description: How BI tools and SQL clients read a semantic project as tables over
 # Connect BI Tools { #semantic-bi-tools }
 
 Over Arrow Flight SQL, the semantic gateway shows each semantic project as tables: a `metrics` table with every group-by and every metric as columns, and one table per [saved query][semantic-saved-queries].
-A BI tool or SQL client that browses tables lists them, and the gateway translates the SQL it sends over them into one metric query, which runs on Trino as the caller, as every metric query does.
+A BI tool or SQL client that browses tables lists them, and the gateway translates the SQL it sends over them into one metric query of the caller, see [Who a query runs as][semantic-overview-identity].
 Statements in [dbt's JDBC dialect][semantic-connect-dialect], `{{ semantic_layer.<call>(...) }}`, keep working on the same port; a statement without such a call is read as SQL over the tables.
 
 The examples use the `sales` semantic project of [Define metrics][semantic-define-metrics], with id 7, and the Flight SQL host `semantic.hopsworks.example.com` of [Connect dbt clients][semantic-connect-clients].

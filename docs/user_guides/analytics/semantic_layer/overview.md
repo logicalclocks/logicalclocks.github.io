@@ -103,7 +103,7 @@ In `FOLLOW` mode a promote of an older valid build rolls back until the next val
 
 1. A client sends the query to the semantic gateway, with the caller's own credential: an API key, or the session of the UI.
 2. The gateway generates the SQL for the query from the current build.
-3. The SQL runs on Trino as the caller's own Trino user, `<project>__<user>`, so a query reads only the data that member can read, unless the gateway's [result cache][semantic-result-cache] holds the result of the same query by the same user over the same feature group commits.
+3. The SQL runs on Trino as the caller's own Trino user, `<project>__<user>`, so a query reads only the data that member can read; [Who a query runs as][semantic-overview-identity] lists the answers that are not computed for the caller.
 4. The rows come back as an Arrow stream or as JSON.
 
 The Python client, the `hops` CLI, the UI and the agent tools all query through the gateway, from inside and outside the cluster.
@@ -112,6 +112,24 @@ A saved query's exports write its rows into feature groups on a schedule, and th
 The gateway records every query it runs in the [query history][semantic-query-history].
 Superset charts query through the gateway too, over Arrow Flight SQL on one database connection of each member per Hopsworks project, see [Who can see what][semantic-superset-access].
 The semantic layer reads the offline feature store.
+
+### Who a query runs as { #semantic-overview-identity }
+
+A metric query a member sends over REST, Arrow Flight SQL or the BI tables runs on Trino as that member's own Trino user, `<project>__<user>`, under the access and the Trino rules that apply to that member.
+That covers the Python client, the `hops` CLI, the query workbench in the UI, dbt-sl-sdk, ADBC, JDBC, ODBC, BI tools and the charts you build on your own Superset connection.
+An agent tool queries as the user the MCP server is logged in as.
+GraphQL runs no query: it answers metadata and the SQL of a query.
+
+These answers are not computed for the member who asks:
+
+| Answer | Computed |
+| --- | --- |
+| A chart on a dataset of another member's Superset connection, such as a chart of a dashboard shared with you | As the member whose connection the dataset is on, usually the dashboard's author, see [Who can see what][semantic-superset-access]. |
+| A run of a metric export | As the semantic project's [owner][semantic-builds-owner]. |
+| A query answered from an export | As the owner, when the export last ran. The read of the export's feature group runs on Trino as the member who asks, and an export answers only while no Trino row filter, column mask or denied column applies to its sources or its feature group, see [When an export answers][semantic-exports-serving-rules]. |
+| A query answered from the result cache | Earlier, by the same member's own query over the same feature group commits and Trino rules; nothing runs, see [Result cache][semantic-result-cache]. |
+
+The names, labels, descriptions and definitions of metrics, dimensions and saved queries come from the build, without Trino, for every member who may read the semantic project.
 
 ## Prerequisites { #semantic-overview-prerequisites }
 

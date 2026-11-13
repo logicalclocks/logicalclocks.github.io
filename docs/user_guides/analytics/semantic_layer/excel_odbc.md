@@ -9,7 +9,7 @@ Excel and other ODBC tools read metrics in two ways:
 - **ODBC:** the Apache Arrow Flight SQL ODBC driver connects to the semantic gateway's Arrow Flight SQL port and shows each semantic project as [tables][semantic-bi-tables], which plain SQL queries.
 - **REST as CSV:** a `GET` of the [query endpoint][semantic-query-rest] with the query in the URL answers CSV, which Excel reads with no driver: through **From Web** on Windows, and through the [Power Query template][semantic-excel-power-query] elsewhere.
 
-Both authenticate with an API key with the `FEATURESTORE` and `TRINO` scopes, and both run each query as a metric query on Trino, as the caller.
+Both authenticate with an API key with the `FEATURESTORE` and `TRINO` scopes, and both run each query as a metric query of the key's user, see [Who a query runs as][semantic-overview-identity].
 
 ## The ODBC driver { #semantic-odbc-driver }
 

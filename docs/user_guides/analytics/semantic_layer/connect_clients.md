@@ -6,7 +6,7 @@ description: How to connect dbt Semantic Layer clients to a Hopsworks semantic p
 
 The semantic gateway serves the two APIs of dbt's Semantic Layer: Arrow Flight SQL with dbt's JDBC dialect, which runs queries, and GraphQL, which answers metadata and the SQL of a query.
 A client written for dbt's Semantic Layer connects with a host, an API key, and an environment id, which in Hopsworks is the id of a semantic project.
-Every query runs on Trino as the API key's user, as a query from Python or the CLI does, see [How a query runs][semantic-overview-query-path].
+A query runs on Trino as the API key's user, as a query from Python or the CLI does, unless the result cache or an export answers it, see [Who a query runs as][semantic-overview-identity].
 BI tools and SQL clients that browse tables read the same port as tables, see [Connect BI tools][semantic-bi-tools].
 
 The examples use the `sales` semantic project of [Define metrics][semantic-define-metrics], with id 7, in the project with id 119.
