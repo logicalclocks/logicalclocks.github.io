@@ -92,9 +92,10 @@ For an ADLS, SFTP or Google Drive data source only the second is offered, since 
    **Feature group** names it; empty means `files_<dataset>`.
 6. **Maximum file size** in MB; larger files are skipped and reported. Empty or `0` copies every file.
 7. **Schedule**: an optional schedule for recurring runs, as for any [scheduled job](../../projects/jobs/schedule_job.md): a [Quartz cron expression](https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html) in UTC, seconds first, so `0 0 2 ? * *` runs daily at 02:00.
-8. **Memory** and **CPU cores** of the job, `2048` MB and `1` core by default; the job copies one file at a time, so memory matters more than cores.
+8. **Memory** and **CPU cores** of the job, `2048` MB and `1` core by default; downloads wait on the network most of the time, so memory matters more than cores.
 9. Under `Advanced`:
     - **Files per page**: how many objects a listing request returns, `100` by default.
+    - **Parallel downloads**: how many files are downloaded at the same time, `4` by default and at most `16`; see [Parallel downloads](#parallel-downloads).
     - **Fail on first error**: stop the run at the first file that fails instead of continuing with the others.
     - **Transform script**: an optional Python file of the project that runs on every file before it is stored; see [Transforming files](#transforming-files).
       **Keep the original files**, shown once a script is chosen, also stores each file as it is in the source.
@@ -175,6 +176,7 @@ job = s3.ingest_files(
     name=None,  # job name, default "<data source>_<dataset>_files"
     fail_on_first_error=False,
     files_per_page=100,
+    copy_workers=4,  # files downloaded at the same time, 1 to 16
     transform_script=None,  # e.g. "Resources/transform.py", see Transforming files
     keep_original=False,  # with a script: also store the file as it is in the source
 )
@@ -233,6 +235,7 @@ hops datasource ingest-files acme_docs --dataset acme_docs_handbook \
 
 The command creates the job, prints its name and, unless `--no-run`, starts a run and prints its execution id.
 `--include` and `--exclude` repeat; `--index` names the feature group `files_<dataset>` and `--index-name` chooses another name; `--name` sets the job name.
+`--copy-workers` sets how many files are downloaded at the same time.
 `--transform-script Resources/transform.py` runs a [transform script](#transforming-files) on every file, and `--keep-original` with it also stores the files as they are in the source.
 `hops datasource files-jobs acme_docs` lists the files ingestion jobs of the data source.
 Runs, schedules, logs and deletion of the job are managed with the `hops job` commands, as for any job.
@@ -259,7 +262,7 @@ A run goes through these steps.
    A file over the size cap is counted as `oversized`, listed in the audit file, and not copied until it shrinks or the cap is raised.
    A file that cannot be copied at all, such as a Google-native document, a symbolic link on an SFTP server or a Google Drive file whose name contains a slash, is counted as `unsupported`, listed in the audit file and left out; it does not fail the run.
    An archived S3 object, in the `GLACIER` or `DEEP_ARCHIVE` storage class, is reported as `unsupported` the same way; restore it in S3 before a run can copy it.
-   Any other file is downloaded one at a time, written next to its destination as a temporary file and renamed into place once complete, so readers of the dataset never see a partial file; it is counted as `copied` when new and `updated` when it replaced an earlier copy.
+   Any other file is downloaded, several at a time, into a temporary file outside the dataset and renamed into place once complete, so readers of the dataset never see a partial file; it is counted as `copied` when new and `updated` when it replaced an earlier copy.
    When the data source provides a checksum of the file, the download is verified against it before the rename: GCS, Google Drive, S3 objects uploaded in a single part, and ADLS files that have a content MD5 set.
    The copy keeps the path relative to the prefix, so `handbook/2026/a/b.pdf` under prefix `handbook/2026/` lands at `<dataset>/a/b.pdf`.
 4. **Failures**.
@@ -364,8 +367,25 @@ The second one fails with `output path ... is already used by ...`; give such ou
 
 [Mirroring deletions](#mirroring-deletions) removes the original and the output of a file that is gone from the source.
 
-The script runs once per file, one file at a time, inside the copy.
+The script runs once per file, one file at a time, inside the copy; [parallel downloads](#parallel-downloads) fetch the files ahead of it, they do not run it in parallel.
 Keep it to work that is cheap per file; parsing documents, chunking and embedding are better done by a separate job that reads [the file index](#the-file-index), which keeps the copy fast and repeatable.
+
+## Parallel downloads
+
+A run downloads `4` files at the same time by default; **Parallel downloads** in the UI, `copy_workers` in the Python client and `--copy-workers` in the CLI set a number from `1` to `16`.
+Only the downloads run in parallel.
+Deciding whether a file is skipped, running the transform script, moving the file into the dataset and recording it all happen in the order of the listing, one file at a time, so a run stores the same files with any setting.
+
+| Situation | Setting |
+| --- | --- |
+| Many small files | Raise it; the time per file is mostly the round trip to the source. |
+| A few large files | Leave it; the network or the source's bandwidth is the limit, not the number of downloads. |
+| The source throttles or answers with rate-limit errors, as Google Drive does under load | Lower it. |
+| An SFTP server that limits the sessions of one user | Lower it, or set `1`. |
+
+On SFTP and Google Drive every parallel download uses its own connection to the source, in addition to the one that lists the files.
+When the source refuses an additional connection the job logs a warning and downloads those files one at a time over the connection it has; no file fails because of it.
+Downloaded files wait in the job's temporary directory until their turn, at most twice the setting at any time, and count towards the project's storage quota while they wait.
 
 ## Mirroring deletions
 
@@ -524,7 +544,7 @@ Claude and the other coding agents in a terminal load the `hops-files-search` sk
 
 - Only S3, GCS, ADLS, SFTP and Google Drive data sources are supported.
   [SharePoint](creation/sharepoint.md), Gmail and Outlook have their own sync jobs.
-- The listing is full on every run, and files are copied one at a time, so a prefix with millions of objects or a very large total size is better split into several jobs with narrower prefixes.
+- The listing is full on every run, so a prefix with millions of objects or a very large total size is better split into several jobs with narrower prefixes.
 - A run on an IAM-role S3 data source cannot outlast `dlt_files_credentials_duration_seconds`.
 - Files are copied as they are, or as a [transform script](#transforming-files) returns them, one output per source file.
   Turning tabular files into feature groups is not part of this job; use an [external feature group](../feature_group/create_external.md) over the path or the [table ingestion flow][ingest-data-with-dlthub] instead.
