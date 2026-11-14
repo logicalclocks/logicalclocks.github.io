@@ -262,6 +262,7 @@ A run goes through these steps.
    A file over the size cap is counted as `oversized`, listed in the audit file, and not copied until it shrinks or the cap is raised.
    A file that cannot be copied at all, such as a Google-native document, a symbolic link on an SFTP server or a Google Drive file whose name contains a slash, is counted as `unsupported`, listed in the audit file and left out; it does not fail the run.
    An archived S3 object, in the `GLACIER` or `DEEP_ARCHIVE` storage class, is reported as `unsupported` the same way; restore it in S3 before a run can copy it.
+   A copy made before a file became `unsupported` stays in the dataset, also when deletions are mirrored, for as long as the file is still in the source.
    Any other file is downloaded, several at a time, into a temporary file outside the dataset and renamed into place once complete, so readers of the dataset never see a partial file; it is counted as `copied` when new and `updated` when it replaced an earlier copy.
    When the data source provides a checksum of the file, the download is verified against it before the rename: GCS, Google Drive, S3 objects uploaded in a single part, and ADLS files that have a content MD5 set.
    The copy keeps the path relative to the prefix, so `handbook/2026/a/b.pdf` under prefix `handbook/2026/` lands at `<dataset>/a/b.pdf`.
