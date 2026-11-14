@@ -7,6 +7,7 @@ They build on top of [tags][tags-guide] and are used to enforce governance rules
 
 A mandatory tag is a tag schema that has been marked as required for one or more artifact types.
 The supported artifact types are feature groups, feature views, training datasets, data sources, models and deployments.
+Semantic projects and their metrics take mandatory tags too, described in [Semantic Layer Tags][semantic-tags-mandatory].
 
 ## Prerequisites
 

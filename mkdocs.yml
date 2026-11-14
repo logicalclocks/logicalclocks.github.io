@@ -234,6 +234,28 @@ nav:
               - Query Engine: user_guides/projects/trino/query_engine.md
               - Trino Catalogs: user_guides/projects/trino/catalogs.md
               - Sharing: user_guides/projects/trino/sharing.md
+          - Semantic Layer:
+              - user_guides/analytics/semantic_layer/index.md
+              - Overview: user_guides/analytics/semantic_layer/overview.md
+              - Get Started: user_guides/analytics/semantic_layer/get_started.md
+              - Ecommerce Blueprint: user_guides/analytics/semantic_layer/ecommerce_blueprint.md
+              - Define Metrics: user_guides/analytics/semantic_layer/define_metrics.md
+              - Metric Types: user_guides/analytics/semantic_layer/metric_types.md
+              - Time Spine: user_guides/analytics/semantic_layer/time_spine.md
+              - Edit Definitions in the UI: user_guides/analytics/semantic_layer/editor.md
+              - Compile and Builds: user_guides/analytics/semantic_layer/builds.md
+              - Validation Rules: user_guides/analytics/semantic_layer/validation_rules.md
+              - Tags: user_guides/analytics/semantic_layer/tags.md
+              - Query Metrics: user_guides/analytics/semantic_layer/query.md
+              - Saved Queries: user_guides/analytics/semantic_layer/saved_queries.md
+              - Result Cache: user_guides/analytics/semantic_layer/caching.md
+              - Query History: user_guides/analytics/semantic_layer/query_history.md
+              - Connect dbt Clients: user_guides/analytics/semantic_layer/connect_clients.md
+              - Connect BI Tools: user_guides/analytics/semantic_layer/bi_tools.md
+              - Excel and ODBC: user_guides/analytics/semantic_layer/excel_odbc.md
+              - Metric Exports: user_guides/analytics/semantic_layer/exports.md
+              - Dashboards in Superset: user_guides/analytics/semantic_layer/dashboards.md
+              - Agent Tools: user_guides/analytics/semantic_layer/agent_tools.md
           - Superset: user_guides/projects/superset/superset.md
       - MLOps:
           - user_guides/mlops/index.md
@@ -356,6 +378,7 @@ nav:
           - Service Operations: setup_installation/admin/operationLogs.md
           - Query Engine (Trino): setup_installation/admin/trino.md
           - Superset: setup_installation/admin/superset.md
+          - Semantic Layer: setup_installation/admin/semantic_layer.md
           - GPU Scheduling with Run:ai: setup_installation/admin/run_ai.md
           - Triton Inference Server: setup_installation/admin/triton.md
       - Helm Chart Values Reference:

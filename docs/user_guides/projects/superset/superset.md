@@ -148,6 +148,8 @@ Charts are individual visualization components that can be added to dashboards.
 4. Choose a visualization type (e.g., Bar Chart, Line Chart, Pie Chart, Table)
 5. Click **Create new chart**
 
+With the semantic layer, a dataset on your semantic connection, in a semantic project's schema, charts the metrics of that semantic project; see [Dashboards in Superset][semantic-superset-charts].
+
 ### Configuring Charts
 
 The chart editor provides:
@@ -175,6 +177,61 @@ Dashboards combine multiple charts into interactive visualization reports.
 3. Drag and drop charts from the chart list onto the dashboard
 4. Resize and arrange charts as needed
 5. Click **Save** to publish the dashboard
+
+## Charts and Dashboard Edits from the CLI { #superset-cli-mcp }
+
+On Superset 7.0, the `hops` CLI creates charts and changes dashboards through Superset's MCP service.
+Superset checks a chart's config against the dataset and runs its query before it saves the chart.
+The commands run inside the cluster, in a terminal, a Jupyter server or a job, as a Data Owner or Data Scientist of the project; observers cannot use them.
+Each call runs as your Superset user in the project, with its roles.
+
+List the chart types and the fields each one needs, then print one type's full config schema with examples:
+
+```bash
+hops superset chart types
+hops superset chart types xy
+```
+
+Create a chart from a dataset's id or UUID:
+
+```bash
+hops superset chart generate --dataset 12 --type xy --kind line \
+  --x day --y "SUM(amount)" --group-by category --name "Amount per day"
+```
+
+```text
+✓ Created Superset chart 31 "Amount per day": https://<hopsworks>/hopsworks-api/superset/explore/?slice_id=31
+```
+
+| Option | Meaning |
+| --- | --- |
+| `--type` | `xy`, `table`, `pie`, `big_number`, `pivot_table`, `mixed_timeseries`, `gauge`, `treemap_v2`, `histogram`, `box_plot`, `waterfall` or `handlebars`. |
+| `--kind` | Kind of an `xy` chart: `line` (default), `bar`, `area` or `scatter`. |
+| `--x`, `--y`, `--group-by` | X-axis column, metrics and series columns of an `xy` chart. |
+| `--columns` | Columns of a `table` chart. |
+| `--metric`, `--dimension` | Metric of a `pie` or `big_number` chart, and slice column of a `pie` chart. |
+| `--time-grain` | Time grain of an `xy` chart: `P1D`, `P1W`, `P1M`, `PT1H`. |
+| `--filter` | A filter, repeatable: `'country = SE'`, `'amount > 100'`, `'region IN EU,US'`, `'email IS NULL'`. A quoted value stays a string, such as `"postal_code = '00123'"`; an unquoted one is a number when it reads as one. |
+| `--config` | The full config as JSON or `@file`; the options above override its fields. |
+| `--preview` | Leave the chart unsaved and print an Explore link to it. |
+
+A metric is an aggregate over a column (`SUM(amount)` with `SUM`, `COUNT`, `AVG`, `MIN`, `MAX`, `COUNT_DISTINCT` or `MEDIAN`), a saved metric's name, or any other SQL expression.
+`--y`, `--columns`, `--group-by` and `IN` lists split on commas outside parentheses and quotes, so `--y 'SUM(COALESCE(amount, 0)),revenue'` is two metrics.
+A column the dataset does not have fails the command with an error that names it, and nothing is saved.
+
+Change only the given fields of a dashboard, by id or slug:
+
+```bash
+hops superset dashboard update 7 --title "Sales, weekly" --refresh 600 --published
+```
+
+`dashboard update` also takes `--description`, `--slug`, `--cross-filters/--no-cross-filters`, `--filter-bar vertical|horizontal` and `--tags` (tag ids, the full list), and `--css`, `--metadata` (merged into the dashboard's JSON metadata) and `--position` (the layout JSON), each as text or `@file`.
+
+The Python SDK has the same calls on `project.get_superset_api()`: `generate_chart(dataset_id, config, name=None, save=True)`, `chart_type_schema(chart_type)` and `patch_dashboard(dashboard_id, **fields)`.
+
+!!! note
+    A chart created this way has no saved query context until it is opened and saved once in Superset.
+    It renders in Explore and on dashboards, but the chart data REST endpoint (`/api/v1/chart/<id>/data/`) refuses it until then.
 
 ## Sharing and Collaboration
 

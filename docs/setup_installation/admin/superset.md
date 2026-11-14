@@ -90,6 +90,8 @@ Superset in Hopsworks includes several pre-configured roles:
 Each Hopsworks project user has a dedicated Superset role with the naming pattern `HW_role_<project_name>__<username>_superset` that controls access to that project's data sources.
 These roles are automatically created and managed by Hopsworks to maintain proper access control and data isolation.
 
+With the semantic layer enabled, the role of a Data owner or Data scientist also has access to that member's semantic connection of the project, named `Semantic__<project_name>__<username>_superset`, as described in [Dashboards in Superset][semantic-superset-access].
+
 ## Database Connections
 
 Superset uses database connections to access data from the Hopsworks Feature Store.
@@ -104,7 +106,7 @@ Navigate to **Settings** → **Database connections** in the Superset interface 
 
 ### Connection Types
 
-Hopsworks projects can have up to two database connections, created based on Feature Store configuration:
+Each project member has up to two database connections to the Feature Store, created based on Feature Store configuration, and one to the semantic layer while the project has a semantic project:
 
 #### Online Feature Store Connection (MySQL)
 
@@ -124,6 +126,14 @@ Hopsworks projects can have up to two database connections, created based on Fea
 - **Multi-catalog**: Enabled.
   The connection is created with Superset's **Allow changing catalogs** option turned on, so users can pick any Trino catalog (`hive`, `delta`, `iceberg`, `hudi`) from the **Catalog** selector in SQL Lab and when adding a dataset, rather than being limited to the one set in [`trino_default_catalog`][trino_default_catalog].
 
+#### Semantic Layer Connection (Arrow Flight SQL)
+
+- **Naming pattern**: `Semantic__<project_name>__<username>_superset`
+- **Backend**: The semantic gateway, over Arrow Flight SQL
+- **Purpose**: Access to the metrics and saved queries of the project's semantic projects, as tables, with one schema per semantic project
+- **Use cases**: Dashboards from metrics, charts and SQL Lab queries on metrics
+- **Created when**: The project has a semantic project and [`superset_semantic_enabled`](#superset_semantic_enabled) is on, for each Data owner and Data scientist; see [Dashboards in Superset][semantic-superset-access]
+
 ### Connection Properties
 
 Database connections support various capabilities indicated in the connections list:
@@ -142,6 +152,27 @@ Manual connection management is typically not required, but administrators can:
 - Monitor connection usage and performance
 - Test connection availability
 - Modify advanced connection settings if needed
+
+## MCP Service { #superset-mcp-service }
+
+On Superset 7.0, the chart runs Superset's MCP service, which the `hops superset chart generate`, `chart types` and `dashboard update` commands call (see [Charts and dashboard edits from the CLI](../../user_guides/projects/superset/superset.md#superset-cli-mcp)).
+
+| Object | Purpose |
+| --- | --- |
+| Deployment and Service `hopsworks-superset-mcp` | `superset mcp run` on port 5008, with the Superset image and configuration, reached in the cluster as `app.superset-mcp.service.<domain>:5008`. |
+| Secret `superset-mcp-jwt` | The key Hopsworks signs the service's tokens with, each for the caller's Superset user in the project. The service applies that user's roles. |
+
+The chart creates the secret on install and keeps it on upgrade.
+Where the chart is rendered without cluster access, as under ArgoCD (`global._hopsworks.mode` other than `auto`), set `superset.mcp.jwtSecret`; without it the chart renders no MCP objects.
+Without the secret, Hopsworks answers the token request with `503` and the error `MCP_UNAVAILABLE`, and the commands report Superset MCP as unavailable.
+
+| Value | Default | Meaning |
+| --- | --- | --- |
+| `superset.mcp.enabled` | `true` | Run the MCP service. |
+| `superset.mcp.replicas` | `1` | Replicas of the service. |
+| `superset.mcp.port` | `5008` | Port the service's container listens on. The Service, which the SDK and the CLI call, stays on 5008. |
+| `superset.mcp.jwtSecret` | `null` | Signing key; generated when null and the chart can read the cluster. |
+| `superset.mcp.resources` | requests `100m`, `1Gi`; limits `1`, `2Gi` | Container resources. |
 
 ## Configuration
 
@@ -193,6 +224,13 @@ In **Cluster Settings**, choose **Configuration** under _Infrastructure_ in the 
 - **Default**: `180000`
 - **Format**: Integer
 - Raise this if long running SQL Lab queries are cut off by the proxy.
+
+#### superset_semantic_enabled
+
+- **Description**: Enable or disable the members' semantic connections in Superset and dashboards from metrics
+- **Default**: `true`
+- **Values**: `true` or `false`
+- Takes effect only while the semantic layer and Superset are enabled; turned off, the members' semantic keys and connections are removed within ten minutes, see [Dashboards in Superset][semantic-superset-admin].
 
 #### superset_user_roles
 
