@@ -47,6 +47,27 @@ A provider can carry several hosts, so add one row per host you need to authenti
 
 Click `Save Configuration` to save the configuration.
 
+#### Log in with GitHub instead of a token
+
+For `github.com` you can log in through your browser instead of creating a personal access token.
+The option is shown when your administrator has configured it (see below).
+
+1. Tick the `GitHub` checkbox and click `Log in with GitHub`.
+2. Hopsworks shows a one-time code.
+   Click `Open GitHub's device page`, which also copies the code, paste the code on the GitHub page and authorize the request.
+3. Hopsworks notices the authorization within a few seconds and saves the login as the `github.com` host of the GitHub provider, with your GitHub login as the username.
+
+The login is stored the same way as a personal access token, so everything that uses your Git provider credential uses it: Git operations on repositories, jobs, apps and agent deployments started from a Git repository, Jupyter and the terminal.
+It replaces a token saved earlier for `github.com`.
+Other GitHub hosts, GitLab and BitBucket are configured with a token.
+
+!!! notice "Administrator setup"
+    The login needs a GitHub OAuth app.
+    Register one under your GitHub organization (`Settings` > `Developer settings` > `OAuth Apps`), tick `Enable Device Flow`, and set its client ID as the cluster configuration variable `github_device_login_client_id` (`variables.github_device_login_client_id` in the values of the `hopsworks` Helm chart).
+    No client secret is needed.
+    The login requests the `repo` and `workflow` scopes.
+    If GitHub is reached through the proxy set in `git_github_https_proxy`, the login uses that proxy too.
+
 ### Step 3: Provider is configured
 
 The configured provider should now be marked as configured.
