@@ -74,7 +74,7 @@ The default roles can only be changed by a Data owner who can do so in the proje
 
 <p align="center">
   <figure>
-    <img src="../../../assets/images/aws-role/role-mappings.png" alt="Add resource role to project mapping.">
+    <img src="../../../assets/images/guides/integrations/aws-role/role-mappings.png" alt="Add resource role to project mapping.">
     <figcaption>Add resource role to project mapping.</figcaption>
   </figure>
 </p>
@@ -84,7 +84,7 @@ Any member of a project can then go to the project settings page to see which ro
 
 <p align="center">
   <figure>
-    <img src="../../../assets/images/aws-role/project-cloud-roles.png" alt="Resource role mapped to project.">
+    <img src="../../../assets/images/guides/integrations/aws-role/project-cloud-roles.png" alt="Resource role mapped to project.">
     <figcaption>Resource role mapped to project.</figcaption>
   </figure>
 </p>
