@@ -171,10 +171,11 @@ The deployment's create and edit forms have a **Share with other projects** sett
 The deployment's Overview shows the state on its LLM Gateway card with read-only badges:
 
 - **Enabled** or **Disabled**, whether the LLM Gateway serves the deployment;
-- the sharing state: **Shared with all projects**, **Shared with N projects** followed by one badge per project name, or **Not shared with other projects**.
+- the sharing state: **Shared with all projects**, **Shared with N projects** followed by one badge per project name, or **Not shared with any project**.
 
 Project members see the badges, and only Data Owners change the setting.
-The setting is hidden when the deployment is not served by the LLM Gateway or when an administrator turned sharing off for the cluster, see [Access to the LLM Gateway][llm-gateway-access].
+The setting is disabled, with the reason shown under it, when the deployment is not served by the LLM Gateway or when an administrator turned sharing off for the cluster, see [Access to the LLM Gateway][llm-gateway-access].
+The Overview then shows no sharing badge.
 
 With the Python client, `Deployment` reads and changes the same state:
 
@@ -191,6 +192,7 @@ print(deployment.shared_with)  # {'all_projects': False, 'projects': [...]}
 
 A new LLM deployment is shared with all projects by default.
 A deployment created before the upgrade that introduced sharing stays project-only until a Data Owner shares it.
+If the LLM Gateway did not serve it, turning the LLM Gateway on for it with the REST API or `set_llm_gateway(True)` shares it with all projects, as for a new deployment; the edit form saves the sharing it shows instead.
 A choice a Data Owner made, including switching **All projects** off, is kept when the deployment leaves and joins the LLM Gateway again.
 
 !!! api "API reference"

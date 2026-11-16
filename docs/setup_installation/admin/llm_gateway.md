@@ -140,7 +140,7 @@ The cluster variable `serving_sharing_enabled` controls the feature:
 
 | Variable | Default | Effect |
 | --- | --- | --- |
-| `serving_sharing_enabled` | `true` | When `false`, no deployment is shared, the Sharing card is hidden, the Terminal lists no shared deployment and the sharing API answers error code `240078` |
+| `serving_sharing_enabled` | `true` | When `false`, no deployment is shared, the **Share with other projects** setting of the deployment forms is disabled, the Overview shows no sharing badge, the Terminal lists no shared deployment and the sharing API answers error code `240078` |
 
 Change it in [Cluster Configuration][cluster-configuration].
 The Hopsworks Helm chart seeds it once, so an upgrade keeps the value an administrator set.
