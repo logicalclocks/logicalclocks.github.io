@@ -2,41 +2,41 @@
 </code></pre></div> <p>Also, create the corresponding container:</p> <div class=highlight><pre><span></span><code>az<span class=w> </span>storage<span class=w> </span>container<span class=w> </span>create<span class=w> </span>--account-name<span class=w> </span><span class=nv>$STORAGE_ACCOUNT_NAME</span><span class=w> </span>--name<span class=w> </span><span class=nv>$CONTAINER_NAME</span>
 </code></pre></div> <h3 id=step-12-create-an-azure-container-registry-acr>Step 1.2: Create an Azure Container Registry (ACR)<a class=headerlink href=#step-12-create-an-azure-container-registry-acr title="Permanent link">#</a></h3> <p>Create an ACR to store the images used by Hopsworks:</p> <div class=highlight><pre><span></span><code>az<span class=w> </span>acr<span class=w> </span>create<span class=w> </span>--resource-group<span class=w> </span><span class=nv>$RESOURCE_GROUP</span><span class=w> </span>--name<span class=w> </span><span class=nv>$CONTAINER_REGISTRY_NAME</span><span class=w> </span>--sku<span class=w> </span>Basic<span class=w> </span>--location<span class=w> </span><span class=nv>$REGION</span>
 
-<span class=nb>export</span><span class=w> </span><span class=nv>ACR_ID</span><span class=o>=</span><span class=sb>`</span>az<span class=w> </span>acr<span class=w> </span>show<span class=w> </span>--name<span class=w> </span><span class=nv>$CONTAINER_REGISTRY_NAME</span><span class=w> </span>--resource-group<span class=w> </span><span class=nv>$RESOURCE_GROUP</span><span class=w> </span>--query<span class=w> </span><span class=s2>&quot;id&quot;</span><span class=w> </span>--output<span class=w> </span>tsv<span class=sb>`</span>
+<span class=nb>export</span><span class=w> </span><span class=nv>ACR_ID</span><span class=o>=</span><span class=sb>`</span>az<span class=w> </span>acr<span class=w> </span>show<span class=w> </span>--name<span class=w> </span><span class=nv>$CONTAINER_REGISTRY_NAME</span><span class=w> </span>--resource-group<span class=w> </span><span class=nv>$RESOURCE_GROUP</span><span class=w> </span>--query<span class=w> </span><span class=s2>"id"</span><span class=w> </span>--output<span class=w> </span>tsv<span class=sb>`</span>
 </code></pre></div> <h3 id=step-13-create-a-user-assigned-managed-identity>Step 1.3: Create a User-Assigned Managed Identity<a class=headerlink href=#step-13-create-a-user-assigned-managed-identity title="Permanent link">#</a></h3> <p>Create a user-assigned managed identity to grant AKS access to the storage account and container registry:</p> <div class=highlight><pre><span></span><code>az<span class=w> </span>identity<span class=w> </span>create<span class=w> </span>--name<span class=w> </span><span class=nv>$UA_IDENTITY_NAME</span><span class=w> </span>--resource-group<span class=w> </span><span class=nv>$RESOURCE_GROUP</span>
 
 <span class=nb>export</span><span class=w> </span><span class=nv>UA_IDENTITY_PRINCIPAL_ID</span><span class=o>=</span><span class=sb>`</span>az<span class=w> </span>identity<span class=w> </span>show<span class=w> </span>--name<span class=w> </span><span class=nv>$UA_IDENTITY_NAME</span><span class=w> </span>--resource-group<span class=w> </span><span class=nv>$RESOURCE_GROUP</span><span class=w> </span>--query<span class=w> </span>principalId<span class=w> </span>--output<span class=w> </span>tsv<span class=sb>`</span>
 <span class=nb>export</span><span class=w> </span><span class=nv>UA_IDENTITY_CLIENT_ID</span><span class=o>=</span><span class=sb>`</span>az<span class=w> </span>identity<span class=w> </span>show<span class=w> </span>--name<span class=w> </span><span class=nv>$UA_IDENTITY_NAME</span><span class=w> </span>--resource-group<span class=w> </span><span class=nv>$RESOURCE_GROUP</span><span class=w> </span>--query<span class=w> </span>clientId<span class=w> </span>--output<span class=w> </span>tsv<span class=sb>`</span>
 <span class=nb>export</span><span class=w> </span><span class=nv>UA_IDENTITY_RESOURCE_ID</span><span class=o>=</span><span class=sb>`</span>az<span class=w> </span>identity<span class=w> </span>show<span class=w> </span>--name<span class=w> </span><span class=nv>$UA_IDENTITY_NAME</span><span class=w> </span>--resource-group<span class=w> </span><span class=nv>$RESOURCE_GROUP</span><span class=w> </span>--query<span class=w> </span>id<span class=w> </span>--output<span class=w> </span>tsv<span class=sb>`</span>
-</code></pre></div> <h3 id=step-14-grant-permissions-to-the-user-assigned-managed-identity>Step 1.4: Grant permissions to the User-Assigned Managed Identity<a class=headerlink href=#step-14-grant-permissions-to-the-user-assigned-managed-identity title="Permanent link">#</a></h3> <p>Create a custom role definition with the minimum permissions needed to read and write to the storage account:</p> <div class=highlight><pre><span></span><code><span class=nb>export</span><span class=w> </span><span class=nv>STORAGE_ID</span><span class=o>=</span><span class=sb>`</span>az<span class=w> </span>storage<span class=w> </span>account<span class=w> </span>show<span class=w> </span>--name<span class=w> </span><span class=nv>$STORAGE_ACCOUNT_NAME</span><span class=w> </span>--resource-group<span class=w> </span><span class=nv>$RESOURCE_GROUP</span><span class=w> </span>--query<span class=w> </span><span class=s2>&quot;id&quot;</span><span class=w> </span>--output<span class=w> </span>tsv<span class=sb>`</span>
+</code></pre></div> <h3 id=step-14-grant-permissions-to-the-user-assigned-managed-identity>Step 1.4: Grant permissions to the User-Assigned Managed Identity<a class=headerlink href=#step-14-grant-permissions-to-the-user-assigned-managed-identity title="Permanent link">#</a></h3> <p>Create a custom role definition with the minimum permissions needed to read and write to the storage account:</p> <div class=highlight><pre><span></span><code><span class=nb>export</span><span class=w> </span><span class=nv>STORAGE_ID</span><span class=o>=</span><span class=sb>`</span>az<span class=w> </span>storage<span class=w> </span>account<span class=w> </span>show<span class=w> </span>--name<span class=w> </span><span class=nv>$STORAGE_ACCOUNT_NAME</span><span class=w> </span>--resource-group<span class=w> </span><span class=nv>$RESOURCE_GROUP</span><span class=w> </span>--query<span class=w> </span><span class=s2>"id"</span><span class=w> </span>--output<span class=w> </span>tsv<span class=sb>`</span>
 
-az<span class=w> </span>role<span class=w> </span>definition<span class=w> </span>create<span class=w> </span>--role-definition<span class=w> </span><span class=s1>&#39;{</span>
-<span class=s1>  &quot;Name&quot;: &quot;hopsfs-storage-permissions&quot;,</span>
-<span class=s1>  &quot;IsCustom&quot;: true,</span>
-<span class=s1>  &quot;Description&quot;: &quot;Allow HopsFS to access the storage container&quot;,</span>
-<span class=s1>  &quot;Actions&quot;: [</span>
-<span class=s1>    &quot;Microsoft.Storage/storageAccounts/blobServices/containers/write&quot;,</span>
-<span class=s1>    &quot;Microsoft.Storage/storageAccounts/blobServices/containers/read&quot;,</span>
-<span class=s1>    &quot;Microsoft.Storage/storageAccounts/blobServices/write&quot;,</span>
-<span class=s1>    &quot;Microsoft.Storage/storageAccounts/blobServices/read&quot;,</span>
-<span class=s1>    &quot;Microsoft.Storage/storageAccounts/listKeys/action&quot;</span>
+az<span class=w> </span>role<span class=w> </span>definition<span class=w> </span>create<span class=w> </span>--role-definition<span class=w> </span><span class=s1>'{</span>
+<span class=s1>  "Name": "hopsfs-storage-permissions",</span>
+<span class=s1>  "IsCustom": true,</span>
+<span class=s1>  "Description": "Allow HopsFS to access the storage container",</span>
+<span class=s1>  "Actions": [</span>
+<span class=s1>    "Microsoft.Storage/storageAccounts/blobServices/containers/write",</span>
+<span class=s1>    "Microsoft.Storage/storageAccounts/blobServices/containers/read",</span>
+<span class=s1>    "Microsoft.Storage/storageAccounts/blobServices/write",</span>
+<span class=s1>    "Microsoft.Storage/storageAccounts/blobServices/read",</span>
+<span class=s1>    "Microsoft.Storage/storageAccounts/listKeys/action"</span>
 <span class=s1>  ],</span>
-<span class=s1>  &quot;NotActions&quot;: [],</span>
-<span class=s1>  &quot;DataActions&quot;: [</span>
-<span class=s1>    &quot;Microsoft.Storage/storageAccounts/blobServices/containers/blobs/delete&quot;,</span>
-<span class=s1>    &quot;Microsoft.Storage/storageAccounts/blobServices/containers/blobs/read&quot;,</span>
-<span class=s1>    &quot;Microsoft.Storage/storageAccounts/blobServices/containers/blobs/move/action&quot;,</span>
-<span class=s1>    &quot;Microsoft.Storage/storageAccounts/blobServices/containers/blobs/write&quot;</span>
+<span class=s1>  "NotActions": [],</span>
+<span class=s1>  "DataActions": [</span>
+<span class=s1>    "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/delete",</span>
+<span class=s1>    "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/read",</span>
+<span class=s1>    "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/move/action",</span>
+<span class=s1>    "Microsoft.Storage/storageAccounts/blobServices/containers/blobs/write"</span>
 <span class=s1>  ],</span>
-<span class=s1>  &quot;AssignableScopes&quot;: [</span>
-<span class=s1>    &quot;&#39;</span><span class=nv>$STORAGE_ID</span><span class=s1>&#39;&quot;</span>
+<span class=s1>  "AssignableScopes": [</span>
+<span class=s1>    "'</span><span class=nv>$STORAGE_ID</span><span class=s1>'"</span>
 <span class=s1>  ]</span>
-<span class=s1>}&#39;</span>
+<span class=s1>}'</span>
 
 az<span class=w> </span>role<span class=w> </span>assignment<span class=w> </span>create<span class=w> </span>--role<span class=w> </span>hopsfs-storage-permissions<span class=w> </span>--assignee-object-id<span class=w> </span><span class=nv>$UA_IDENTITY_PRINCIPAL_ID</span><span class=w> </span>--assignee-principal-type<span class=w> </span>ServicePrincipal<span class=w> </span>--scope<span class=w> </span><span class=nv>$STORAGE_ID</span>
-</code></pre></div> <h3 id=step-15-create-service-principal-for-hopsworks-services>Step 1.5: Create Service Principal for Hopsworks services<a class=headerlink href=#step-15-create-service-principal-for-hopsworks-services title="Permanent link">#</a></h3> <p>Create a service principal to grant Hopsworks applications with access to the container registry. For example, Hopsworks uses this service principal to push new Python environments created via the Hopsworks UI.</p> <div class=highlight><pre><span></span><code><span class=nb>export</span><span class=w> </span><span class=nv>SP_PASSWORD</span><span class=o>=</span><span class=sb>`</span>az<span class=w> </span>ad<span class=w> </span>sp<span class=w> </span>create-for-rbac<span class=w> </span>--name<span class=w> </span><span class=nv>$SP_NAME</span><span class=w> </span>--scopes<span class=w> </span><span class=nv>$ACR_ID</span><span class=w> </span>--role<span class=w> </span>AcrPush<span class=w> </span>--years<span class=w> </span><span class=m>1</span><span class=w> </span>--query<span class=w> </span><span class=s2>&quot;password&quot;</span><span class=w> </span>--output<span class=w> </span>tsv<span class=sb>`</span>
-<span class=nb>export</span><span class=w> </span><span class=nv>SP_USER_NAME</span><span class=o>=</span><span class=sb>`</span>az<span class=w> </span>ad<span class=w> </span>sp<span class=w> </span>list<span class=w> </span>--display-name<span class=w> </span><span class=nv>$SP_NAME</span><span class=w> </span>--query<span class=w> </span><span class=s2>&quot;[].appId&quot;</span><span class=w> </span>--output<span class=w> </span>tsv<span class=sb>`</span>
-<span class=nb>export</span><span class=w> </span><span class=nv>SP_RESOURCE_ID</span><span class=o>=</span><span class=sb>`</span>az<span class=w> </span>ad<span class=w> </span>sp<span class=w> </span>list<span class=w> </span>--display-name<span class=w> </span><span class=nv>$SP_NAME</span><span class=w> </span>--query<span class=w> </span><span class=s2>&quot;[].id&quot;</span><span class=w> </span>--output<span class=w> </span>tsv<span class=sb>`</span>
+</code></pre></div> <h3 id=step-15-create-service-principal-for-hopsworks-services>Step 1.5: Create Service Principal for Hopsworks services<a class=headerlink href=#step-15-create-service-principal-for-hopsworks-services title="Permanent link">#</a></h3> <p>Create a service principal to grant Hopsworks applications with access to the container registry. For example, Hopsworks uses this service principal to push new Python environments created via the Hopsworks UI.</p> <div class=highlight><pre><span></span><code><span class=nb>export</span><span class=w> </span><span class=nv>SP_PASSWORD</span><span class=o>=</span><span class=sb>`</span>az<span class=w> </span>ad<span class=w> </span>sp<span class=w> </span>create-for-rbac<span class=w> </span>--name<span class=w> </span><span class=nv>$SP_NAME</span><span class=w> </span>--scopes<span class=w> </span><span class=nv>$ACR_ID</span><span class=w> </span>--role<span class=w> </span>AcrPush<span class=w> </span>--years<span class=w> </span><span class=m>1</span><span class=w> </span>--query<span class=w> </span><span class=s2>"password"</span><span class=w> </span>--output<span class=w> </span>tsv<span class=sb>`</span>
+<span class=nb>export</span><span class=w> </span><span class=nv>SP_USER_NAME</span><span class=o>=</span><span class=sb>`</span>az<span class=w> </span>ad<span class=w> </span>sp<span class=w> </span>list<span class=w> </span>--display-name<span class=w> </span><span class=nv>$SP_NAME</span><span class=w> </span>--query<span class=w> </span><span class=s2>"[].appId"</span><span class=w> </span>--output<span class=w> </span>tsv<span class=sb>`</span>
+<span class=nb>export</span><span class=w> </span><span class=nv>SP_RESOURCE_ID</span><span class=o>=</span><span class=sb>`</span>az<span class=w> </span>ad<span class=w> </span>sp<span class=w> </span>list<span class=w> </span>--display-name<span class=w> </span><span class=nv>$SP_NAME</span><span class=w> </span>--query<span class=w> </span><span class=s2>"[].id"</span><span class=w> </span>--output<span class=w> </span>tsv<span class=sb>`</span>
 
 az<span class=w> </span>role<span class=w> </span>assignment<span class=w> </span>create<span class=w> </span>--role<span class=w> </span>AcrDelete<span class=w> </span>--assignee-object-id<span class=w> </span><span class=nv>$SP_RESOURCE_ID</span><span class=w> </span>--assignee-principal-type<span class=w> </span>ServicePrincipal<span class=w> </span>--scope<span class=w> </span><span class=nv>$ACR_ID</span>
 </code></pre></div> <h3 id=step-16-create-an-aks-kubernetes-cluster>Step 1.6: Create an AKS Kubernetes Cluster<a class=headerlink href=#step-16-create-an-aks-kubernetes-cluster title="Permanent link">#</a></h3> <p>Provision an AKS cluster with a number of nodes:</p> <div class=highlight><pre><span></span><code>az<span class=w> </span>aks<span class=w> </span>create<span class=w> </span>--resource-group<span class=w> </span><span class=nv>$RESOURCE_GROUP</span><span class=w> </span>--name<span class=w> </span><span class=nv>$KUBERNETES_CLUSTER_NAME</span><span class=w> </span>--network-plugin<span class=w> </span>azure<span class=w> </span><span class=se>\</span>
@@ -58,21 +58,21 @@ helm<span class=w> </span>repo<span class=w> </span>update<span class=w> </span>
 </code></pre></div> <h3 id=step-42-create-helm-values-file>Step 4.2: Create helm values file<a class=headerlink href=#step-42-create-helm-values-file title="Permanent link">#</a></h3> <p>Below is a simplifield values.azure.yaml file to get started which can be updated for improved performance and further customisation.</p> <div class=highlight><pre><span></span><code><span class=nt>global</span><span class=p>:</span>
 <span class=w>  </span><span class=nt>_hopsworks</span><span class=p>:</span>
 <span class=w>    </span><span class=nt>storageClassName</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">null</span>
-<span class=w>    </span><span class=nt>cloudProvider</span><span class=p>:</span><span class=w> </span><span class=s>&quot;AZURE&quot;</span>
+<span class=w>    </span><span class=nt>cloudProvider</span><span class=p>:</span><span class=w> </span><span class=s>"AZURE"</span>
 <span class=w>    </span><span class=nt>managedDockerRegistery</span><span class=p>:</span>
 <span class=w>      </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class=w>      </span><span class=nt>domain</span><span class=p>:</span><span class=w> </span><span class=s>&quot;CONTAINER_REGISTRY_NAME.azurecr.io&quot;</span>
-<span class=w>      </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=s>&quot;hopsworks&quot;</span>
+<span class=w>      </span><span class=nt>domain</span><span class=p>:</span><span class=w> </span><span class=s>"CONTAINER_REGISTRY_NAME.azurecr.io"</span>
+<span class=w>      </span><span class=nt>namespace</span><span class=p>:</span><span class=w> </span><span class=s>"hopsworks"</span>
 <span class=w>      </span><span class=nt>credHelper</span><span class=p>:</span>
 <span class=w>        </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-<span class=w>        </span><span class=nt>secretName</span><span class=p>:</span><span class=w> </span><span class=s>&quot;&quot;</span>
+<span class=w>        </span><span class=nt>secretName</span><span class=p>:</span><span class=w> </span><span class=s>""</span>
 
 <span class=w>    </span><span class=nt>minio</span><span class=p>:</span>
 <span class=w>      </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
 
 <span class=nt>hopsworks</span><span class=p>:</span>
 <span class=w>  </span><span class=nt>variables</span><span class=p>:</span>
-<span class=w>    </span><span class=nt>docker_operations_managed_docker_secrets</span><span class=p>:</span><span class=w> </span><span class=nl>&amp;azregcred</span><span class=w> </span><span class=s>&quot;azregcred&quot;</span>
+<span class=w>    </span><span class=nt>docker_operations_managed_docker_secrets</span><span class=p>:</span><span class=w> </span><span class=nl>&amp;azregcred</span><span class=w> </span><span class=s>"azregcred"</span>
 <span class=w>    </span><span class=nt>docker_operations_image_pull_secrets</span><span class=p>:</span><span class=w> </span><span class=nv>*azregcred</span>
 <span class=w>  </span><span class=nt>dockerRegistry</span><span class=p>:</span>
 <span class=w>    </span><span class=nt>preset</span><span class=p>:</span>
@@ -83,12 +83,12 @@ helm<span class=w> </span>repo<span class=w> </span>update<span class=w> </span>
 <span class=nt>hopsfs</span><span class=p>:</span>
 <span class=w>  </span><span class=nt>objectStorage</span><span class=p>:</span>
 <span class=w>    </span><span class=nt>enabled</span><span class=p>:</span><span class=w> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-<span class=w>    </span><span class=nt>provider</span><span class=p>:</span><span class=w> </span><span class=s>&quot;AZURE&quot;</span>
+<span class=w>    </span><span class=nt>provider</span><span class=p>:</span><span class=w> </span><span class=s>"AZURE"</span>
 <span class=w>    </span><span class=nt>azure</span><span class=p>:</span>
 <span class=w>      </span><span class=nt>storage</span><span class=p>:</span>
-<span class=w>        </span><span class=nt>account</span><span class=p>:</span><span class=w> </span><span class=s>&quot;STORAGE_ACCOUNT_NAME&quot;</span>
-<span class=w>        </span><span class=nt>container</span><span class=p>:</span><span class=w> </span><span class=s>&quot;STORAGE_ACCOUNT_CONTAINER_NAME&quot;</span>
-<span class=w>        </span><span class=nt>identityClientId</span><span class=p>:</span><span class=w> </span><span class=s>&quot;UA_IDENTITY_CLIENT_ID&quot;</span>
+<span class=w>        </span><span class=nt>account</span><span class=p>:</span><span class=w> </span><span class=s>"STORAGE_ACCOUNT_NAME"</span>
+<span class=w>        </span><span class=nt>container</span><span class=p>:</span><span class=w> </span><span class=s>"STORAGE_ACCOUNT_CONTAINER_NAME"</span>
+<span class=w>        </span><span class=nt>identityClientId</span><span class=p>:</span><span class=w> </span><span class=s>"UA_IDENTITY_CLIENT_ID"</span>
 </code></pre></div> <h2 id=step-5-deploy-hopsworks>Step 5: Deploy Hopsworks<a class=headerlink href=#step-5-deploy-hopsworks title="Permanent link">#</a></h2> <p>Deploy Hopsworks in the created namespace.</p> <div class=highlight><pre><span></span><code>helm<span class=w> </span>install<span class=w> </span>hopsworks<span class=w> </span>hopsworks/hopsworks<span class=w> </span>--namespace<span class=w> </span>hopsworks<span class=w> </span>--values<span class=w> </span>values.azure.yaml<span class=w> </span>--timeout<span class=o>=</span>600s
 </code></pre></div> <p>Check that Hopsworks is installing on your provisioned AKS cluster.</p> <div class=highlight><pre><span></span><code>kubectl<span class=w> </span>get<span class=w> </span>pods<span class=w> </span>--namespace<span class=o>=</span>hopsworks
 

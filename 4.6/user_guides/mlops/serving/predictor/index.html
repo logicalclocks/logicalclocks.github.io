@@ -10,23 +10,23 @@
 </code></pre></div> <h3 id=step-2-optional-implement-a-predictor-script>Step 2 (Optional): Implement a predictor script<a class=headerlink href=#step-2-optional-implement-a-predictor-script title="Permanent link">#</a></h3> <div class="tabbed-set tabbed-alternate" data-tabs=2:3><input checked=checked id=__tabbed_2_1 name=__tabbed_2 type=radio><input id=__tabbed_2_2 name=__tabbed_2 type=radio><input id=__tabbed_2_3 name=__tabbed_2 type=radio><div class=tabbed-labels><label for=__tabbed_2_1>Predictor</label><label for=__tabbed_2_2>Async Predictor</label><label for=__tabbed_2_3>Predictor (vLLM deployments only)</label></div> <div class=tabbed-content> <div class=tabbed-block> <div class=highlight><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Predictor</span><span class=p>():</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot; Initialization code goes here&quot;&quot;&quot;</span>
-        <span class=c1># Model files can be found at os.environ[&quot;MODEL_FILES_PATH&quot;]</span>
+<span class=w>        </span><span class=sd>""" Initialization code goes here"""</span>
+        <span class=c1># Model files can be found at os.environ["MODEL_FILES_PATH"]</span>
         <span class=c1># self.model = ... # load your model</span>
 
     <span class=k>def</span><span class=w> </span><span class=nf>predict</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>inputs</span><span class=p>):</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot; Serve predictions using the trained model&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>""" Serve predictions using the trained model"""</span>
         <span class=c1># Use the model to make predictions</span>
         <span class=c1># return self.model.predict(inputs)</span>
 </code></pre></div> </div> <div class=tabbed-block> <div class=highlight><pre><span></span><code><span class=k>class</span><span class=w> </span><span class=nc>Predictor</span><span class=p>():</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot; Initialization code goes here&quot;&quot;&quot;</span>
-        <span class=c1># Model files can be found at os.environ[&quot;MODEL_FILES_PATH&quot;]</span>
+<span class=w>        </span><span class=sd>""" Initialization code goes here"""</span>
+        <span class=c1># Model files can be found at os.environ["MODEL_FILES_PATH"]</span>
         <span class=c1># self.model = ... # load your model</span>
 
     <span class=k>async</span> <span class=k>def</span><span class=w> </span><span class=nf>predict</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>inputs</span><span class=p>):</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot; Asynchronously serve predictions using the trained model&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>""" Asynchronously serve predictions using the trained model"""</span>
         <span class=c1># Preform async operations that required</span>
         <span class=c1># result = await some_async_preprocessing(inputs)</span>
 
@@ -47,18 +47,18 @@
 <span class=k>class</span><span class=w> </span><span class=nc>Predictor</span><span class=p>():</span>
 
     <span class=k>def</span><span class=w> </span><span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
-<span class=w>        </span><span class=sd>&quot;&quot;&quot; Initialization code goes here&quot;&quot;&quot;</span>
+<span class=w>        </span><span class=sd>""" Initialization code goes here"""</span>
 
-        <span class=c1># (optional) if any, access the configuration file via os.environ[&quot;CONFIG_FILE_PATH&quot;]</span>
+        <span class=c1># (optional) if any, access the configuration file via os.environ["CONFIG_FILE_PATH"]</span>
         <span class=n>config</span> <span class=o>=</span> <span class=o>...</span>
 
-        <span class=nb>print</span><span class=p>(</span><span class=s2>&quot;Starting vLLM backend...&quot;</span><span class=p>)</span>
+        <span class=nb>print</span><span class=p>(</span><span class=s2>"Starting vLLM backend..."</span><span class=p>)</span>
         <span class=n>engine_args</span> <span class=o>=</span> <span class=n>AsyncEngineArgs</span><span class=p>(</span>
-            <span class=n>model</span><span class=o>=</span><span class=n>os</span><span class=o>.</span><span class=n>environ</span><span class=p>[</span><span class=s2>&quot;MODEL_FILES_PATH&quot;</span><span class=p>],</span>
+            <span class=n>model</span><span class=o>=</span><span class=n>os</span><span class=o>.</span><span class=n>environ</span><span class=p>[</span><span class=s2>"MODEL_FILES_PATH"</span><span class=p>],</span>
             <span class=o>**</span><span class=n>config</span>
         <span class=p>)</span>
 
-        <span class=c1># &quot;self.vllm_engine&quot; is required as the local variable with the vllm engine handler</span>
+        <span class=c1># "self.vllm_engine" is required as the local variable with the vllm engine handler</span>
         <span class=bp>self</span><span class=o>.</span><span class=n>vllm_engine</span> <span class=o>=</span> <span class=n>AsyncLLMEngine</span><span class=o>.</span><span class=n>from_engine_args</span><span class=p>(</span><span class=n>engine_args</span><span class=p>)</span>
 
     <span class=c1>#</span>
@@ -72,7 +72,7 @@
     <span class=c1>#    chat_template: Optional[str] = None,</span>
     <span class=c1>#    tools: Optional[list[ChatCompletionTool]] = None,</span>
     <span class=c1>#) -&gt; ChatPrompt:</span>
-    <span class=c1>#    &quot;&quot;&quot;Converts a prompt or list of messages into a single templated prompt string&quot;&quot;&quot;</span>
+    <span class=c1>#    """Converts a prompt or list of messages into a single templated prompt string"""</span>
 
     <span class=c1>#    prompt = ... # apply chat template on the message to build the prompt</span>
     <span class=c1>#    return ChatPrompt(prompt=prompt)</span>
@@ -80,21 +80,21 @@
     <span class=c1>#async def create_completion(</span>
     <span class=c1>#    self, request: CompletionRequest</span>
     <span class=c1>#) -&gt; Union[Completion, AsyncIterator[Completion]]:</span>
-    <span class=c1>#    &quot;&quot;&quot;Generate responses using the vLLM engine&quot;&quot;&quot;</span>
+    <span class=c1>#    """Generate responses using the vLLM engine"""</span>
     <span class=c1>#    </span>
     <span class=c1>#    generators = self.vllm_engine.generate(...)</span>
     <span class=c1>#</span>
     <span class=c1>#    # Completion: used for returning a single answer (batch)</span>
     <span class=c1>#    # AsyncIterator[Completion]: used for returning a stream of answers</span>
     <span class=c1>#    return ...</span>
-</code></pre></div> </div> </div> </div> <div class="admonition info"> <p class=admonition-title>Jupyter magic</p> <p>In a jupyter notebook, you can add <code>%%writefile my_predictor.py</code> at the top of the cell to save it as a local file.</p> </div> <h3 id=step-3-optional-upload-the-script-to-your-project>Step 3 (Optional): Upload the script to your project<a class=headerlink href=#step-3-optional-upload-the-script-to-your-project title="Permanent link">#</a></h3> <div class="admonition info"> <p class=admonition-title>You can also use the UI to upload your predictor script. See <a href=#step-3-advanced-deployment-form>above</a></p> </div> <div class="tabbed-set tabbed-alternate" data-tabs=3:1><input checked=checked id=__tabbed_3_1 name=__tabbed_3 type=radio><div class=tabbed-labels><label for=__tabbed_3_1>Python</label></div> <div class=tabbed-content> <div class=tabbed-block></div> </div> </div> <div class=highlight><pre><span></span><code><span class=n>uploaded_file_path</span> <span class=o>=</span> <span class=n>dataset_api</span><span class=o>.</span><span class=n>upload</span><span class=p>(</span><span class=s2>&quot;my_predictor.py&quot;</span><span class=p>,</span> <span class=s2>&quot;Resources&quot;</span><span class=p>,</span> <span class=n>overwrite</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
-<span class=n>predictor_script_path</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=s2>&quot;/Projects&quot;</span><span class=p>,</span> <span class=n>project</span><span class=o>.</span><span class=n>name</span><span class=p>,</span> <span class=n>uploaded_file_path</span><span class=p>)</span>
-</code></pre></div> <h3 id=step-4-define-predictor>Step 4: Define predictor<a class=headerlink href=#step-4-define-predictor title="Permanent link">#</a></h3> <div class="tabbed-set tabbed-alternate" data-tabs=4:1><input checked=checked id=__tabbed_4_1 name=__tabbed_4 type=radio><div class=tabbed-labels><label for=__tabbed_4_1>Python</label></div> <div class=tabbed-content> <div class=tabbed-block></div> </div> </div> <div class=highlight><pre><span></span><code><span class=n>my_model</span> <span class=o>=</span> <span class=n>mr</span><span class=o>.</span><span class=n>get_model</span><span class=p>(</span><span class=s2>&quot;my_model&quot;</span><span class=p>,</span> <span class=n>version</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
+</code></pre></div> </div> </div> </div> <div class="admonition info"> <p class=admonition-title>Jupyter magic</p> <p>In a jupyter notebook, you can add <code>%%writefile my_predictor.py</code> at the top of the cell to save it as a local file.</p> </div> <h3 id=step-3-optional-upload-the-script-to-your-project>Step 3 (Optional): Upload the script to your project<a class=headerlink href=#step-3-optional-upload-the-script-to-your-project title="Permanent link">#</a></h3> <div class="admonition info"> <p class=admonition-title>You can also use the UI to upload your predictor script. See <a href=#step-3-advanced-deployment-form>above</a></p> </div> <div class="tabbed-set tabbed-alternate" data-tabs=3:1><input checked=checked id=__tabbed_3_1 name=__tabbed_3 type=radio><div class=tabbed-labels><label for=__tabbed_3_1>Python</label></div> <div class=tabbed-content> <div class=tabbed-block></div> </div> </div> <div class=highlight><pre><span></span><code><span class=n>uploaded_file_path</span> <span class=o>=</span> <span class=n>dataset_api</span><span class=o>.</span><span class=n>upload</span><span class=p>(</span><span class=s2>"my_predictor.py"</span><span class=p>,</span> <span class=s2>"Resources"</span><span class=p>,</span> <span class=n>overwrite</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span>
+<span class=n>predictor_script_path</span> <span class=o>=</span> <span class=n>os</span><span class=o>.</span><span class=n>path</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=s2>"/Projects"</span><span class=p>,</span> <span class=n>project</span><span class=o>.</span><span class=n>name</span><span class=p>,</span> <span class=n>uploaded_file_path</span><span class=p>)</span>
+</code></pre></div> <h3 id=step-4-define-predictor>Step 4: Define predictor<a class=headerlink href=#step-4-define-predictor title="Permanent link">#</a></h3> <div class="tabbed-set tabbed-alternate" data-tabs=4:1><input checked=checked id=__tabbed_4_1 name=__tabbed_4 type=radio><div class=tabbed-labels><label for=__tabbed_4_1>Python</label></div> <div class=tabbed-content> <div class=tabbed-block></div> </div> </div> <div class=highlight><pre><span></span><code><span class=n>my_model</span> <span class=o>=</span> <span class=n>mr</span><span class=o>.</span><span class=n>get_model</span><span class=p>(</span><span class=s2>"my_model"</span><span class=p>,</span> <span class=n>version</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
 
 <span class=n>my_predictor</span> <span class=o>=</span> <span class=n>ms</span><span class=o>.</span><span class=n>create_predictor</span><span class=p>(</span><span class=n>my_model</span><span class=p>,</span>
                                   <span class=c1># optional</span>
-                                  <span class=n>model_server</span><span class=o>=</span><span class=s2>&quot;PYTHON&quot;</span><span class=p>,</span>
-                                  <span class=n>serving_tool</span><span class=o>=</span><span class=s2>&quot;KSERVE&quot;</span><span class=p>,</span>
+                                  <span class=n>model_server</span><span class=o>=</span><span class=s2>"PYTHON"</span><span class=p>,</span>
+                                  <span class=n>serving_tool</span><span class=o>=</span><span class=s2>"KSERVE"</span><span class=p>,</span>
                                   <span class=n>script_file</span><span class=o>=</span><span class=n>predictor_script_path</span>
                                   <span class=p>)</span>
 </code></pre></div> <h3 id=step-5-create-a-deployment-with-the-predictor>Step 5: Create a deployment with the predictor<a class=headerlink href=#step-5-create-a-deployment-with-the-predictor title="Permanent link">#</a></h3> <div class="tabbed-set tabbed-alternate" data-tabs=5:1><input checked=checked id=__tabbed_5_1 name=__tabbed_5 type=radio><div class=tabbed-labels><label for=__tabbed_5_1>Python</label></div> <div class=tabbed-content> <div class=tabbed-block></div> </div> </div> <div class=highlight><pre><span></span><code><span class=n>my_deployment</span> <span class=o>=</span> <span class=n>my_predictor</span><span class=o>.</span><span class=n>deploy</span><span class=p>()</span>

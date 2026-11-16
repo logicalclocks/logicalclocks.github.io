@@ -13,7 +13,7 @@
 
 <span class=c1># Send a few messages</span>
 <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=mi>10</span><span class=p>):</span>
-    <span class=n>producer</span><span class=o>.</span><span class=n>produce</span><span class=p>(</span><span class=s2>&quot;my_topic&quot;</span><span class=p>,</span> <span class=n>json</span><span class=o>.</span><span class=n>dumps</span><span class=p>({</span><span class=s2>&quot;id&quot;</span><span class=p>:</span> <span class=n>i</span><span class=p>,</span> <span class=s2>&quot;data&quot;</span><span class=p>:</span> <span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid1</span><span class=p>())}),</span> <span class=s2>&quot;key&quot;</span><span class=p>)</span>
+    <span class=n>producer</span><span class=o>.</span><span class=n>produce</span><span class=p>(</span><span class=s2>"my_topic"</span><span class=p>,</span> <span class=n>json</span><span class=o>.</span><span class=n>dumps</span><span class=p>({</span><span class=s2>"id"</span><span class=p>:</span> <span class=n>i</span><span class=p>,</span> <span class=s2>"data"</span><span class=p>:</span> <span class=nb>str</span><span class=p>(</span><span class=n>uuid</span><span class=o>.</span><span class=n>uuid1</span><span class=p>())}),</span> <span class=s2>"key"</span><span class=p>)</span>
 
 <span class=c1># Trigger the sending of all messages to the brokers, 10 sec timeout</span>
 <span class=n>producer</span><span class=o>.</span><span class=n>flush</span><span class=p>(</span><span class=mi>10</span><span class=p>)</span>
