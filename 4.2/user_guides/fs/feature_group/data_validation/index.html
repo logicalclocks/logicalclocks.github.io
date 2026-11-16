@@ -5,42 +5,42 @@
 <span class=n>fs</span> <span class=o>=</span> <span class=n>project</span><span class=o>.</span><span class=n>get_feature_store</span><span class=p>()</span>
 </code></pre></div> <p>You will be prompt to paste your API key to connect the notebook to your project. The <code>fs</code> Feature Store entity is now ready to be used to insert or read data from Hopsworks.</p> <h4 id=import-your-data>Import your data<a class=headerlink href=#import-your-data title="Permanent link">#</a></h4> <p>Load your data in a DataFrame using the usual pandas API.</p> <div class=highlight><pre><span></span><code><span class=kn>import</span><span class=w> </span><span class=nn>pandas</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=nn>pd</span>
 
-<span class=n>df</span> <span class=o>=</span> <span class=n>pd</span><span class=o>.</span><span class=n>read_csv</span><span class=p>(</span><span class=s2>&quot;https://repo.hops.works/master/hopsworks-tutorials/data/card_fraud_data/transactions.csv&quot;</span><span class=p>,</span> <span class=n>parse_dates</span><span class=o>=</span><span class=p>[</span><span class=s2>&quot;datetime&quot;</span><span class=p>])</span>
+<span class=n>df</span> <span class=o>=</span> <span class=n>pd</span><span class=o>.</span><span class=n>read_csv</span><span class=p>(</span><span class=s2>"https://repo.hops.works/master/hopsworks-tutorials/data/card_fraud_data/transactions.csv"</span><span class=p>,</span> <span class=n>parse_dates</span><span class=o>=</span><span class=p>[</span><span class=s2>"datetime"</span><span class=p>])</span>
 
 <span class=n>df</span><span class=o>.</span><span class=n>head</span><span class=p>(</span><span class=mi>3</span><span class=p>)</span>
 </code></pre></div> <h3 id=step-2-great-expectation-introduction>Step 2: Great Expectation Introduction<a class=headerlink href=#step-2-great-expectation-introduction title="Permanent link">#</a></h3> <p>To validate the data, we will use the <a href=https://greatexpectations.io/ >Great Expectations</a> library. Below is a short introduction on how to build an Expectation Suite to validate your data. Everything is done using the Great Expectations API so you can re-use any prior knowledge you may have of the library.</p> <h4 id=create-an-expectation-suite>Create an Expectation Suite<a class=headerlink href=#create-an-expectation-suite title="Permanent link">#</a></h4> <p>Create (or import an existing) expectation suite using the Great Expectations library. This suite will hold all the validation tests we want to perform on our data before inserting them into Hopsworks.</p> <div class=highlight><pre><span></span><code><span class=kn>import</span><span class=w> </span><span class=nn>great_expectations</span><span class=w> </span><span class=k>as</span><span class=w> </span><span class=nn>ge</span>
 
 <span class=n>expectation_suite</span> <span class=o>=</span> <span class=n>ge</span><span class=o>.</span><span class=n>core</span><span class=o>.</span><span class=n>ExpectationSuite</span><span class=p>(</span>
-    <span class=n>expectation_suite_name</span><span class=o>=</span><span class=s2>&quot;validate_on_insert_suite&quot;</span>
+    <span class=n>expectation_suite_name</span><span class=o>=</span><span class=s2>"validate_on_insert_suite"</span>
 <span class=p>)</span>
 </code></pre></div> <h4 id=add-expectations-in-the-source-code>Add Expectations in the Source Code<a class=headerlink href=#add-expectations-in-the-source-code title="Permanent link">#</a></h4> <p>Add some expectation to your suite. Each expectation configuration corresponds to a validation test to be run against your data.</p> <div class=highlight><pre><span></span><code><span class=n>expectation_suite</span><span class=o>.</span><span class=n>add_expectation</span><span class=p>(</span>
     <span class=n>ge</span><span class=o>.</span><span class=n>core</span><span class=o>.</span><span class=n>ExpectationConfiguration</span><span class=p>(</span>
-        <span class=n>expectation_type</span><span class=o>=</span><span class=s2>&quot;expect_column_min_to_be_between&quot;</span><span class=p>,</span>
+        <span class=n>expectation_type</span><span class=o>=</span><span class=s2>"expect_column_min_to_be_between"</span><span class=p>,</span>
         <span class=n>kwargs</span><span class=o>=</span><span class=p>{</span>
-            <span class=s2>&quot;column&quot;</span><span class=p>:</span> <span class=s2>&quot;foo_id&quot;</span><span class=p>,</span>
-            <span class=s2>&quot;min_value&quot;</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
-            <span class=s2>&quot;max_value&quot;</span><span class=p>:</span> <span class=mi>1</span>
+            <span class=s2>"column"</span><span class=p>:</span> <span class=s2>"foo_id"</span><span class=p>,</span>
+            <span class=s2>"min_value"</span><span class=p>:</span> <span class=mi>0</span><span class=p>,</span>
+            <span class=s2>"max_value"</span><span class=p>:</span> <span class=mi>1</span>
         <span class=p>}</span>
     <span class=p>)</span>
 <span class=p>)</span>
 
 <span class=n>expectation_suite</span><span class=o>.</span><span class=n>add_expectation</span><span class=p>(</span>
     <span class=n>ge</span><span class=o>.</span><span class=n>core</span><span class=o>.</span><span class=n>ExpectationConfiguration</span><span class=p>(</span>
-        <span class=n>expectation_type</span><span class=o>=</span><span class=s2>&quot;expect_column_value_lengths_to_be_between&quot;</span><span class=p>,</span>
+        <span class=n>expectation_type</span><span class=o>=</span><span class=s2>"expect_column_value_lengths_to_be_between"</span><span class=p>,</span>
         <span class=n>kwargs</span><span class=o>=</span><span class=p>{</span>
-            <span class=s2>&quot;column&quot;</span><span class=p>:</span> <span class=s2>&quot;bar_name&quot;</span><span class=p>,</span>
-            <span class=s2>&quot;min_value&quot;</span><span class=p>:</span> <span class=mi>3</span><span class=p>,</span>
-            <span class=s2>&quot;max_value&quot;</span><span class=p>:</span> <span class=mi>10</span>
+            <span class=s2>"column"</span><span class=p>:</span> <span class=s2>"bar_name"</span><span class=p>,</span>
+            <span class=s2>"min_value"</span><span class=p>:</span> <span class=mi>3</span><span class=p>,</span>
+            <span class=s2>"max_value"</span><span class=p>:</span> <span class=mi>10</span>
         <span class=p>}</span>
     <span class=p>)</span>
 <span class=p>)</span>
 </code></pre></div> <h4 id=using-great-expectations-profiler>Using Great Expectations Profiler<a class=headerlink href=#using-great-expectations-profiler title="Permanent link">#</a></h4> <p>Building Expectation Suite by hand can be a major time commitment when you have dozens of Features. Great Expectations offers <code>Profiler</code> classes to inspect a sample of your data and infers a suitable Expectation Suite that you will be able to register with Hopsworks.</p> <div class=highlight><pre><span></span><code><span class=n>ge_profiler</span> <span class=o>=</span> <span class=n>ge</span><span class=o>.</span><span class=n>profile</span><span class=o>.</span><span class=n>BasicSuiteBuilderProfiler</span><span class=p>()</span>
 <span class=n>expectation_suite_profiler</span><span class=p>,</span> <span class=n>_</span> <span class=o>=</span> <span class=n>ge_profiler</span><span class=o>.</span><span class=n>profile</span><span class=p>(</span><span class=n>ge</span><span class=o>.</span><span class=n>from_pandas</span><span class=p>(</span><span class=n>df</span><span class=p>))</span>
 </code></pre></div> <p>Once you have built an Expectation Suite you are satisfied with, it is time to create your first validation enabled Feature Group.</p> <h3 id=step-3-attach-an-expectation-suite-to-your-feature-group-to-enable-automatic-validation-on-insertion>Step 3: Attach an Expectation Suite to your Feature Group to enable Automatic Validation on Insertion.<a class=headerlink href=#step-3-attach-an-expectation-suite-to-your-feature-group-to-enable-automatic-validation-on-insertion title="Permanent link">#</a></h3> <p>Writing data in Hopsworks is done using Feature Groups. Once a Feature Group is registered in the Feature Store, you can use it to insert your pandas DataFrames. For more information see <a href=../create/ >create Feature Group</a>. To benefit from automatic validation on insertion, attach your newly created Expectation Suite when creating the Feature Group:</p> <div class=highlight><pre><span></span><code><span class=n>fg</span> <span class=o>=</span> <span class=n>fs</span><span class=o>.</span><span class=n>create_feature_group</span><span class=p>(</span>
-  <span class=s2>&quot;fg_with_data_validation&quot;</span><span class=p>,</span>
+  <span class=s2>"fg_with_data_validation"</span><span class=p>,</span>
   <span class=n>version</span><span class=o>=</span><span class=mi>1</span><span class=p>,</span>
-  <span class=n>description</span><span class=o>=</span><span class=s2>&quot;Validated data&quot;</span><span class=p>,</span>
-  <span class=n>primary_key</span><span class=o>=</span><span class=p>[</span><span class=s1>&#39;foo_id&#39;</span><span class=p>],</span>
+  <span class=n>description</span><span class=o>=</span><span class=s2>"Validated data"</span><span class=p>,</span>
+  <span class=n>primary_key</span><span class=o>=</span><span class=p>[</span><span class=s1>'foo_id'</span><span class=p>],</span>
   <span class=n>online_enabled</span><span class=o>=</span><span class=kc>False</span>
   <span class=n>expectation_suite</span><span class=o>=</span><span class=n>expectation_suite</span>
 <span class=p>)</span>

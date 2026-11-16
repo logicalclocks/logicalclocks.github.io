@@ -3,15 +3,15 @@
 <span class=n>project</span> <span class=o>=</span> <span class=n>hopsworks</span><span class=o>.</span><span class=n>login</span><span class=p>()</span>
 
 <span class=n>project_feature_store</span> <span class=o>=</span> <span class=n>project</span><span class=o>.</span><span class=n>get_feature_store</span><span class=p>()</span>
-<span class=n>shared_feature_store</span> <span class=o>=</span> <span class=n>project</span><span class=o>.</span><span class=n>get_feature_store</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=s2>&quot;name_of_shared_feature_store&quot;</span><span class=p>)</span>
+<span class=n>shared_feature_store</span> <span class=o>=</span> <span class=n>project</span><span class=o>.</span><span class=n>get_feature_store</span><span class=p>(</span><span class=n>name</span><span class=o>=</span><span class=s2>"name_of_shared_feature_store"</span><span class=p>)</span>
 </code></pre></div> <h3 id=step-2-fetch-feature-groups>Step 2: Fetch feature groups<a class=headerlink href=#step-2-fetch-feature-groups title="Permanent link">#</a></h3> <div class=highlight><pre><span></span><code><span class=c1># fetch feature group object from shared feature store</span>
 <span class=n>shared_fg</span> <span class=o>=</span> <span class=n>shared_feature_store</span><span class=o>.</span><span class=n>get_feature_group</span><span class=p>(</span>
-    <span class=n>name</span><span class=o>=</span><span class=s2>&quot;shared_fg_name&quot;</span><span class=p>,</span>
-    <span class=n>version</span><span class=o>=</span><span class=s2>&quot;1&quot;</span><span class=p>)</span>
+    <span class=n>name</span><span class=o>=</span><span class=s2>"shared_fg_name"</span><span class=p>,</span>
+    <span class=n>version</span><span class=o>=</span><span class=s2>"1"</span><span class=p>)</span>
 
 <span class=c1># fetch feature group object from project feature store</span>
 <span class=n>fg_a</span> <span class=o>=</span> <span class=n>project_feature_store</span><span class=o>.</span><span class=n>get_or_create_feature_group</span><span class=p>(</span>
-    <span class=n>name</span><span class=o>=</span><span class=s2>&quot;feature_group_name&quot;</span><span class=p>,</span>
+    <span class=n>name</span><span class=o>=</span><span class=s2>"feature_group_name"</span><span class=p>,</span>
     <span class=n>version</span><span class=o>=</span><span class=mi>1</span><span class=p>)</span>
 </code></pre></div> <h3 id=step-3-join-feature-groups>Step 3: Join feature groups<a class=headerlink href=#step-3-join-feature-groups title="Permanent link">#</a></h3> <div class=highlight><pre><span></span><code><span class=c1># join above feature groups</span>
 <span class=n>query</span> <span class=o>=</span> <span class=n>shared_fg</span><span class=o>.</span><span class=n>select_all</span><span class=p>()</span><span class=o>.</span><span class=n>join</span><span class=p>(</span><span class=n>fg_a</span><span class=o>.</span><span class=n>select_all</span><span class=p>())</span>
