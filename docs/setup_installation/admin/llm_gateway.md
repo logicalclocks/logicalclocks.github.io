@@ -110,13 +110,11 @@ Its filter chain checks the API key before anything else, so `GET /v1/models` ne
 
 Project members with an allowed role can use their project's LLM Gateway.
 Members of other projects can use the deployments shared with them, through the owning project's LLM Gateway.
-Switches, all on by default, narrow what it serves:
+Two switches, both on by default, narrow what it serves:
 
 - The project switch turns the LLM Gateway off for a whole project, which then answers `404`.
 - The deployment switch keeps one LLM deployment off the LLM Gateway while the others stay on it.
   The deployment is still reachable on its per-deployment path.
-- The direct access switches, for a project and for a deployment, turn off the per-deployment path of the deployments the LLM Gateway serves.
-  They refuse every direct caller, members and external users included, and the LLM Gateway keeps admitting its callers.
 
 Only the project's Data Owners change these switches.
 A change takes effect without restarting a deployment: the backend adds or removes the project's routes.

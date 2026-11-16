@@ -707,8 +707,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 240076 | `MODEL_VOLUME_CONFIG_UNAVAILABLE` | 503 SERVICE_UNAVAILABLE | The LLM model volume configuration is temporarily unavailable. Retry shortly. |
 | 240077 | `SERVING_SHARING_NOT_SUPPORTED` | 400 BAD_REQUEST | Only a vLLM deployment served by the LLM gateway can be shared with other projects. |
 | 240078 | `SERVING_SHARING_DISABLED` | 400 BAD_REQUEST | Sharing deployments with other projects is disabled on this cluster. |
-| 240079 | `DIRECT_ACCESS_NEEDS_LLM_GATEWAY` | 400 BAD_REQUEST | Direct access can only be turned off for a deployment served by the LLM gateway. |
-| 240080 | `SERVING_SHARING_PROJECT_NOT_FOUND` | 404 NOT_FOUND | The project to share the deployment with does not exist or is the owner of the deployment. |
+| 240079 | `SERVING_SHARING_PROJECT_NOT_FOUND` | 404 NOT_FOUND | The project to share the deployment with does not exist or is the owner of the deployment. |
 
 ## InferenceErrorCode
 

@@ -146,7 +146,6 @@ An external user can use only the deployments granted to them there, with these 
 Listing the project's models, and every other path, is refused with `403`.
 The LLM Gateway serves only the deployments described under [LLM Gateway][rest-api-llm-gateway]; the others stay on their own path.
 A Data Owner can turn the LLM Gateway off for the project or for one deployment, which leaves the deployment's own path as it is.
-A Data Owner can also turn direct access off, see [Turning direct access off][rest-api-direct-access].
 
 ### Sharing with projects { #serving-sharing }
 
@@ -164,13 +163,19 @@ Three mechanisms grant access to a deployment, each to a different kind of calle
 | Sharing with projects | Members of the projects it is shared with | LLM Gateway only |
 
 Data Owners of the owning project decide, per deployment.
-In the deployment's Overview, the **Sharing** card has:
+The deployment's create and edit forms have a **Share with other projects** setting with two options:
 
-- the **All projects** switch, which shares the deployment with every project of the cluster;
-- with the switch off, a list of project names, which shares it with the members of those projects only.
+- **All projects**, which shares the deployment with every project of the cluster;
+- **Selected projects**, with a list of project names, which shares it with the members of those projects only.
 
-Project members see the card, and only Data Owners change it.
-It is hidden when the deployment is not served by the LLM Gateway or when an administrator turned sharing off for the cluster, see [Access to the LLM Gateway][llm-gateway-access].
+The deployment's Overview shows the state on its LLM Gateway card with read-only badges:
+
+- **Enabled** or **Disabled**, whether the LLM Gateway serves the deployment;
+- the sharing state;
+- **Projects:** followed by the project names, when the deployment is shared with selected projects.
+
+Project members see the badges, and only Data Owners change the setting.
+The setting is hidden when the deployment is not served by the LLM Gateway or when an administrator turned sharing off for the cluster, see [Access to the LLM Gateway][llm-gateway-access].
 
 With the Python client, `Deployment` reads and changes the same state:
 
@@ -188,8 +193,6 @@ print(deployment.shared_with)  # {'all_projects': False, 'projects': [...]}
 A new LLM deployment is shared with all projects by default.
 A deployment created before the upgrade that introduced sharing stays project-only until a Data Owner shares it.
 A choice a Data Owner made, including switching **All projects** off, is kept when the deployment leaves and joins the LLM Gateway again.
-
-To keep a deployment reachable only through the LLM Gateway, turn off its [direct access][rest-api-direct-access].
 
 !!! api "API reference"
 

@@ -89,8 +89,8 @@ Claude Code needs vLLM v0.28.0 or later on this route, the first version it was 
 
 The callers differ by route:
 
-- Members of the project use both routes, unless a Data Owner turned off [direct access][rest-api-direct-access] for the deployment or the project.
-- External users whose groups have [external access][serving-external-access] to the deployment use both routes, under the same exception.
+- Members of the project use both routes.
+- External users whose groups have [external access][serving-external-access] to the deployment use both routes.
 - Members of other projects use the owning project's LLM Gateway only, for the deployments [shared][serving-sharing] with their project.
   They send the owning project's namespace in the URL and use their own API key.
 
