@@ -11834,7 +11834,7 @@ The library is available on [PyPi](https://pypi.org/project/hopsworks/) and is i
 
     <p align="center">
         <figure>
-            <img src="../../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
+            <img src="../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
             <figcaption>You find the Hopsworks version at the bottom of the help menu in the top navigation bar</figcaption>
         </figure>
     </p>
@@ -12216,7 +12216,7 @@ For more information about how to use script actions, see [Customize Azure HDIns
 
     <p align="center">
         <figure>
-            <img src="../../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
+            <img src="../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
             <figcaption>You find the Hopsworks version at the bottom of the help menu in the top navigation bar</figcaption>
         </figure>
     </p>
@@ -12368,7 +12368,7 @@ To connect to Hopsworks from the Azure Machine Learning Designer, create a new p
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-1.png" alt="Add an Execute Python Script step">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-1.png" alt="Add an Execute Python Script step">
     <figcaption>Add an Execute Python Script step</figcaption>
   </figure>
 </p>
@@ -12377,7 +12377,7 @@ In the pipeline, add a new `Execute Python Script` step and replace the Python s
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-2.png" alt="Add the code to access the Hopsworks">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-2.png" alt="Add the code to access the Hopsworks">
     <figcaption>Add the code to access the Hopsworks</figcaption>
   </figure>
 </p>
@@ -12437,7 +12437,7 @@ The step is now ready to use:
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-3.png" alt="Select a compute target">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-3.png" alt="Select a compute target">
     <figcaption>Select a compute target</figcaption>
   </figure>
 </p>
@@ -12447,7 +12447,7 @@ For instance, to export the features to a CSV file, create a `Export Data` step:
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-4.png" alt="Add an Export Data step">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-4.png" alt="Add an Export Data step">
     <figcaption>Add an Export Data step</figcaption>
   </figure>
 </p>
@@ -12456,7 +12456,7 @@ Configure the `Export Data` step to write to you data store of choice:
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-5.png" alt="Configure the Export Data step">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-5.png" alt="Configure the Export Data step">
     <figcaption>Configure the Export Data step</figcaption>
   </figure>
 </p>
@@ -12465,7 +12465,7 @@ Connect the to steps by drawing a line between them:
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-6.png" alt="Connect the steps">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-6.png" alt="Connect the steps">
     <figcaption>Connect the steps</figcaption>
   </figure>
 </p>
@@ -12479,7 +12479,7 @@ Finally, submit the pipeline and wait for it to finish:
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-7.png" alt="Execute the pipeline">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-7.png" alt="Execute the pipeline">
     <figcaption>Execute the pipeline</figcaption>
   </figure>
 </p>
@@ -12531,7 +12531,7 @@ The library is available on [PyPi](https://pypi.org/project/hopsworks/) and is i
 
     <p align="center">
         <figure>
-            <img src="../../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
+            <img src="../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
             <figcaption>You find the Hopsworks version at the bottom of the help menu in the top navigation bar</figcaption>
         </figure>
     </p>
@@ -12552,7 +12552,7 @@ To access Hopsworks from Azure Machine Learning, open a Python notebook and proc
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/notebooks/step-1.png" alt="Connecting from an Azure Machine Learning Notebook">
+    <img src="../../../assets/images/guides/integrations/azure/notebooks/step-1.png" alt="Connecting from an Azure Machine Learning Notebook">
     <figcaption>Connecting from an Azure Machine Learning Notebook</figcaption>
   </figure>
 </p>
@@ -20056,7 +20056,7 @@ The Apps page lists each app with its name, owner, state, UI link, uptime, and a
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/apps/apps_list.png" alt="Apps list">
+    <img src="../../../assets/images/guides/apps/apps_list.png" alt="Apps list">
     <figcaption>The Apps page with one app serving</figcaption>
   </figure>
 </p>
@@ -20071,7 +20071,7 @@ The create dialog lets you choose the app type, source, runtime environment, app
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/apps/create_app.png" alt="New App form">
+    <img src="../../../assets/images/guides/apps/create_app.png" alt="New App form">
     <figcaption>The New App form: type, source, app file and resources</figcaption>
   </figure>
 </p>
@@ -20165,7 +20165,7 @@ Most apps follow the same pattern:
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/apps/streamlit_app.png" alt="A Streamlit app served by Hopsworks">
+    <img src="../../../assets/images/guides/apps/streamlit_app.png" alt="A Streamlit app served by Hopsworks">
     <figcaption>A Streamlit dashboard reading a feature group, served through the Hopsworks proxy</figcaption>
   </figure>
 </p>
@@ -20268,7 +20268,7 @@ That means `RUNNING` and `Serving` are not the same thing: `Serving` is the stat
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/apps/app_details.png" alt="App details page">
+    <img src="../../../assets/images/guides/apps/app_details.png" alt="App details page">
     <figcaption>The app details page: lifecycle actions, source, URL and metrics</figcaption>
   </figure>
 </p>
@@ -20450,7 +20450,7 @@ To create your own environment it is recommended to [clone](../../projects/pytho
 
 <p align="center">
   <figure>
-    <img style="max-width: 55%; margin: 0 auto" src="../../../../../assets/images/guides/mlops/serving/deployment_simple_form_py_endp_env.png" alt="Python environment in the deployment form">
+    <img style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_py_endp_env.png" alt="Python environment in the deployment form">
     <figcaption>Select a Python environment for the program</figcaption>
   </figure>
 </p>
@@ -29388,8 +29388,8 @@ Once a mapping is created, project membership is controlled through Hopsworks gr
 See [Cluster Configuration](./variables.md) on how to change variable values in Hopsworks.
 
 <figure>
- <a  href="../../../../assets/images/admin/project-mapping/configuration-variables.png">
-   <img src="../../../../assets/images/admin/project-mapping/configuration-variables.png" alt="Enable Hopsworks mapping" />
+ <a  href="../../../assets/images/admin/project-mapping/configuration-variables.png">
+   <img src="../../../assets/images/admin/project-mapping/configuration-variables.png" alt="Enable Hopsworks mapping" />
  </a>
  <figcaption>Enable Hopsworks mapping</figcaption>
 </figure>
@@ -29397,8 +29397,8 @@ See [Cluster Configuration](./variables.md) on how to change variable values in 
 If you can not find the variable ```hw_group_mapping_sync_enabled``` create it by clicking on **New variable**.
 
 <figure>
- <a  href="../../../../assets/images/admin/project-mapping/configuration-hw-mapping.png">
-   <img src="../../../../assets/images/admin/project-mapping/configuration-hw-mapping.png" alt="Create Hopsworks mapping enabled variable" />
+ <a  href="../../../assets/images/admin/project-mapping/configuration-hw-mapping.png">
+   <img src="../../../assets/images/admin/project-mapping/configuration-hw-mapping.png" alt="Create Hopsworks mapping enabled variable" />
  </a>
  <figcaption>Create Hopsworks group mapping enabled variable</figcaption>
 </figure>
@@ -29410,16 +29410,16 @@ corner of the navigation bar and choosing *Cluster Settings* from the dropdown m
 Choose *Project Mapping* under *Security & Access* in the left sidebar, then create a new mapping by clicking on *Create new mapping*.
 
 <figure>
- <a  href="../../../../assets/images/admin/project-mapping/project-mapping-empty.png">
-   <img src="../../../../assets/images/admin/project-mapping/project-mapping-empty.png" alt="Project mapping tab" />
+ <a  href="../../../assets/images/admin/project-mapping/project-mapping-empty.png">
+   <img src="../../../assets/images/admin/project-mapping/project-mapping-empty.png" alt="Project mapping tab" />
  </a>
  <figcaption>Project mapping</figcaption>
 </figure>
 
 This will take you to the create mapping page shown below
 <figure>
- <a  href="../../../../assets/images/admin/project-mapping/create-hw-mapping.png">
-   <img src="../../../../assets/images/admin/project-mapping/create-hw-mapping.png" alt="Create mapping" />
+ <a  href="../../../assets/images/admin/project-mapping/create-hw-mapping.png">
+   <img src="../../../assets/images/admin/project-mapping/create-hw-mapping.png" alt="Create mapping" />
  </a>
  <figcaption>Create mapping</figcaption>
 </figure>
@@ -29430,8 +29430,8 @@ You can also choose the *Project role* users will be assigned when they are adde
 Finally, click on *Create mapping* and go back to mappings. You should see the newly created mapping(s) as shown below.
 
 <figure>
- <a  href="../../../../assets/images/admin/project-mapping/group-to-project-mappings.png">
-   <img src="../../../../assets/images/admin/project-mapping/group-to-project-mappings.png" alt="Project mappings" />
+ <a  href="../../../assets/images/admin/project-mapping/group-to-project-mappings.png">
+   <img src="../../../assets/images/admin/project-mapping/group-to-project-mappings.png" alt="Project mappings" />
  </a>
  <figcaption>Project mappings</figcaption>
 </figure>
@@ -29441,8 +29441,8 @@ Finally, click on *Create mapping* and go back to mappings. You should see the n
 From the list of mappings click on the edit button (:material-pencil:). This will open a popup that will allow you to change the *group*, *project name*, and *project role* of a mapping.
 
 <figure>
- <a  href="../../../../assets/images/admin/project-mapping/edit-hw-mapping.png">
-   <img src="../../../../assets/images/admin/project-mapping/edit-hw-mapping.png" alt="Edit mapping" />
+ <a  href="../../../assets/images/admin/project-mapping/edit-hw-mapping.png">
+   <img src="../../../assets/images/admin/project-mapping/edit-hw-mapping.png" alt="Edit mapping" />
  </a>
  <figcaption>Edit mapping</figcaption>
 </figure>

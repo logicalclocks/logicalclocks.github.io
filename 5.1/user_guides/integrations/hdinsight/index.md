@@ -39,7 +39,7 @@ For more information about how to use script actions, see [Customize Azure HDIns
 
     <p align="center">
         <figure>
-            <img src="../../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
+            <img src="../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
             <figcaption>You find the Hopsworks version at the bottom of the help menu in the top navigation bar</figcaption>
         </figure>
     </p>

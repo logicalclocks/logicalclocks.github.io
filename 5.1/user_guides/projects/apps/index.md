@@ -22,7 +22,7 @@ The Apps page lists each app with its name, owner, state, UI link, uptime, and a
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/apps/apps_list.png" alt="Apps list">
+    <img src="../../../assets/images/guides/apps/apps_list.png" alt="Apps list">
     <figcaption>The Apps page with one app serving</figcaption>
   </figure>
 </p>
@@ -37,7 +37,7 @@ The create dialog lets you choose the app type, source, runtime environment, app
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/apps/create_app.png" alt="New App form">
+    <img src="../../../assets/images/guides/apps/create_app.png" alt="New App form">
     <figcaption>The New App form: type, source, app file and resources</figcaption>
   </figure>
 </p>
@@ -131,7 +131,7 @@ Most apps follow the same pattern:
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/apps/streamlit_app.png" alt="A Streamlit app served by Hopsworks">
+    <img src="../../../assets/images/guides/apps/streamlit_app.png" alt="A Streamlit app served by Hopsworks">
     <figcaption>A Streamlit dashboard reading a feature group, served through the Hopsworks proxy</figcaption>
   </figure>
 </p>
@@ -234,7 +234,7 @@ That means `RUNNING` and `Serving` are not the same thing: `Serving` is the stat
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/apps/app_details.png" alt="App details page">
+    <img src="../../../assets/images/guides/apps/app_details.png" alt="App details page">
     <figcaption>The app details page: lifecycle actions, source, URL and metrics</figcaption>
   </figure>
 </p>
