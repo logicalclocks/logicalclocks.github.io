@@ -29,13 +29,13 @@ spec:
     - name: default-flavor
       resources:
       - name: cpu
-        nominalQuota: &quot;0&quot;
+        nominalQuota: "0"
       - name: memory
-        nominalQuota: &quot;0&quot;
+        nominalQuota: "0"
       - name: pods
-        nominalQuota: &quot;0&quot;
+        nominalQuota: "0"
       - name: nvidia.com/gpu
-        nominalQuota: &quot;0&quot;
+        nominalQuota: "0"
 </code></pre></div> <p>The <a href=https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/#preemption>preemption</a> and <a href=https://kueue.sigs.k8s.io/docs/concepts/cluster_queue/#flavors-and-resources>nominal quotas</a> are set to the minimal as this queue is designed to have lowest priority in getting resources allocated. If a cluster is underutilized and there are resources available, it can still borrow up to the maximum resources present in the parent cohort, but by design this queue has no dedicated resources. The presumption is that other, more important queues, defined by the cluster administrator will have higher preference in getting resources.</p> <h3 id=local-queues>Local Queues<a class=headerlink href=#local-queues title="Permanent link">#</a></h3> <p><a href=https://kueue.sigs.k8s.io/docs/concepts/local_queue/ >Local Queues</a> are the mechanism to provide access to a queue (cluster queue) to a specific project in Hopsworks (Kubernetes namespace).</p> <p>Every new project gets automatic access to the default Hopsworks queue. An administrator can define the default queue for projects user jobs and system jobs.</p> <p><img alt="Default queue for user and system jobs" src=../../../../assets/images/guides/project/scheduler/default_queue.png></p> <h3 id=cohorts>Cohorts<a class=headerlink href=#cohorts title="Permanent link">#</a></h3> <p><a href=https://kueue.sigs.k8s.io/docs/concepts/cohort/ >Cohorts</a> are groupings of cluster queues that have some meaning together and can share resources. Hopsworks defines a default <code>cluster</code> cohort</p> <div class=highlight><pre><span></span><code>apiVersion: kueue.x-k8s.io/v1alpha1
 kind: Cohort
 metadata:
