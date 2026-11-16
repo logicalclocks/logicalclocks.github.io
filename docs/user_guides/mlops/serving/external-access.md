@@ -171,8 +171,7 @@ The deployment's create and edit forms have a **Share with other projects** sett
 The deployment's Overview shows the state on its LLM Gateway card with read-only badges:
 
 - **Enabled** or **Disabled**, whether the LLM Gateway serves the deployment;
-- the sharing state;
-- **Projects:** followed by the project names, when the deployment is shared with selected projects.
+- the sharing state: **Shared with all projects**, **Shared with N projects** followed by one badge per project name, or **Not shared with other projects**.
 
 Project members see the badges, and only Data Owners change the setting.
 The setting is hidden when the deployment is not served by the LLM Gateway or when an administrator turned sharing off for the cluster, see [Access to the LLM Gateway][llm-gateway-access].
