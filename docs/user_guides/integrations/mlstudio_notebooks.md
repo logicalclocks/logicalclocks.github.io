@@ -29,7 +29,7 @@ pip install hopsworks[python]~=[HOPSWORKS_VERSION]
 
     <p align="center">
         <figure>
-            <img src="../../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
+            <img src="../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
             <figcaption>You find the Hopsworks version inside any of your Project's settings tab on Hopsworks</figcaption>
         </figure>
     </p>
@@ -50,7 +50,7 @@ To access Hopsworks from Azure Machine Learning, open a Python notebook and proc
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/notebooks/step-1.png" alt="Connecting from an Azure Machine Learning Notebook">
+    <img src="../../../assets/images/guides/integrations/azure/notebooks/step-1.png" alt="Connecting from an Azure Machine Learning Notebook">
     <figcaption>Connecting from an Azure Machine Learning Notebook</figcaption>
   </figure>
 </p>
