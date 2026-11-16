@@ -14331,7 +14331,7 @@ The library is available on [PyPi](https://pypi.org/project/hopsworks/) and is i
 
     <p align="center">
         <figure>
-            <img src="../../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
+            <img src="../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
             <figcaption>You find the Hopsworks version at the bottom of the help menu in the top navigation bar</figcaption>
         </figure>
     </p>
@@ -14713,7 +14713,7 @@ For more information about how to use script actions, see [Customize Azure HDIns
 
     <p align="center">
         <figure>
-            <img src="../../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
+            <img src="../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
             <figcaption>You find the Hopsworks version at the bottom of the help menu in the top navigation bar</figcaption>
         </figure>
     </p>
@@ -14865,7 +14865,7 @@ To connect to Hopsworks from the Azure Machine Learning Designer, create a new p
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-1.png" alt="Add an Execute Python Script step">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-1.png" alt="Add an Execute Python Script step">
     <figcaption>Add an Execute Python Script step</figcaption>
   </figure>
 </p>
@@ -14874,7 +14874,7 @@ In the pipeline, add a new `Execute Python Script` step and replace the Python s
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-2.png" alt="Add the code to access the Hopsworks">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-2.png" alt="Add the code to access the Hopsworks">
     <figcaption>Add the code to access the Hopsworks</figcaption>
   </figure>
 </p>
@@ -14934,7 +14934,7 @@ The step is now ready to use:
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-3.png" alt="Select a compute target">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-3.png" alt="Select a compute target">
     <figcaption>Select a compute target</figcaption>
   </figure>
 </p>
@@ -14944,7 +14944,7 @@ For instance, to export the features to a CSV file, create a `Export Data` step:
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-4.png" alt="Add an Export Data step">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-4.png" alt="Add an Export Data step">
     <figcaption>Add an Export Data step</figcaption>
   </figure>
 </p>
@@ -14953,7 +14953,7 @@ Configure the `Export Data` step to write to you data store of choice:
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-5.png" alt="Configure the Export Data step">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-5.png" alt="Configure the Export Data step">
     <figcaption>Configure the Export Data step</figcaption>
   </figure>
 </p>
@@ -14962,7 +14962,7 @@ Connect the to steps by drawing a line between them:
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-6.png" alt="Connect the steps">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-6.png" alt="Connect the steps">
     <figcaption>Connect the steps</figcaption>
   </figure>
 </p>
@@ -14976,7 +14976,7 @@ Finally, submit the pipeline and wait for it to finish:
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/designer/step-7.png" alt="Execute the pipeline">
+    <img src="../../../assets/images/guides/integrations/azure/designer/step-7.png" alt="Execute the pipeline">
     <figcaption>Execute the pipeline</figcaption>
   </figure>
 </p>
@@ -15028,7 +15028,7 @@ The library is available on [PyPi](https://pypi.org/project/hopsworks/) and is i
 
     <p align="center">
         <figure>
-            <img src="../../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
+            <img src="../../../assets/images/hopsworks-version.png" alt="The library version needs to match the major version of Hopsworks">
             <figcaption>You find the Hopsworks version at the bottom of the help menu in the top navigation bar</figcaption>
         </figure>
     </p>
@@ -15049,7 +15049,7 @@ To access Hopsworks from Azure Machine Learning, open a Python notebook and proc
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/integrations/azure/notebooks/step-1.png" alt="Connecting from an Azure Machine Learning Notebook">
+    <img src="../../../assets/images/guides/integrations/azure/notebooks/step-1.png" alt="Connecting from an Azure Machine Learning Notebook">
     <figcaption>Connecting from an Azure Machine Learning Notebook</figcaption>
   </figure>
 </p>
@@ -23331,7 +23331,7 @@ The Apps page lists each app with its name, owner, state, UI link, uptime, and a
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/apps/apps_list.png" alt="Apps list">
+    <img src="../../../assets/images/guides/apps/apps_list.png" alt="Apps list">
     <figcaption>The Apps page with one app serving</figcaption>
   </figure>
 </p>
@@ -23346,7 +23346,7 @@ The create dialog lets you choose the app type, source, runtime environment, app
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/apps/create_app.png" alt="New App form">
+    <img src="../../../assets/images/guides/apps/create_app.png" alt="New App form">
     <figcaption>The New App form: type, source, app file and resources</figcaption>
   </figure>
 </p>
@@ -23444,7 +23444,7 @@ Most apps follow the same pattern:
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/apps/streamlit_app.png" alt="A Streamlit app served by Hopsworks">
+    <img src="../../../assets/images/guides/apps/streamlit_app.png" alt="A Streamlit app served by Hopsworks">
     <figcaption>A Streamlit dashboard reading a feature group, served through the Hopsworks proxy</figcaption>
   </figure>
 </p>
@@ -23752,7 +23752,7 @@ Things to know:
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/apps/app_details.png" alt="App details page">
+    <img src="../../../assets/images/guides/apps/app_details.png" alt="App details page">
     <figcaption>The app details page: lifecycle actions, source, URL and metrics</figcaption>
   </figure>
 </p>
@@ -23987,7 +23987,7 @@ To create your own environment it is recommended to [clone](../../projects/pytho
 
 <p align="center">
   <figure>
-    <img style="max-width: 55%; margin: 0 auto" src="../../../../../assets/images/guides/mlops/serving/deployment_simple_form_py_endp_env.png" alt="Python environment in the deployment form">
+    <img style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_py_endp_env.png" alt="Python environment in the deployment form">
     <figcaption>Select a Python environment for the program</figcaption>
   </figure>
 </p>
@@ -37611,8 +37611,8 @@ Once a mapping is created, project membership is controlled through Hopsworks gr
 See [Cluster Configuration](./variables.md) on how to change variable values in Hopsworks.
 
 <figure>
- <a  href="../../../../assets/images/admin/project-mapping/configuration-variables.png">
-   <img src="../../../../assets/images/admin/project-mapping/configuration-variables.png" alt="Enable Hopsworks mapping" />
+ <a  href="../../../assets/images/admin/project-mapping/configuration-variables.png">
+   <img src="../../../assets/images/admin/project-mapping/configuration-variables.png" alt="Enable Hopsworks mapping" />
  </a>
  <figcaption>Enable Hopsworks mapping</figcaption>
 </figure>
@@ -37620,8 +37620,8 @@ See [Cluster Configuration](./variables.md) on how to change variable values in 
 If you can not find the variable ```hw_group_mapping_sync_enabled``` create it by clicking on **New variable**.
 
 <figure>
- <a  href="../../../../assets/images/admin/project-mapping/configuration-hw-mapping.png">
-   <img src="../../../../assets/images/admin/project-mapping/configuration-hw-mapping.png" alt="Create Hopsworks mapping enabled variable" />
+ <a  href="../../../assets/images/admin/project-mapping/configuration-hw-mapping.png">
+   <img src="../../../assets/images/admin/project-mapping/configuration-hw-mapping.png" alt="Create Hopsworks mapping enabled variable" />
  </a>
  <figcaption>Create Hopsworks group mapping enabled variable</figcaption>
 </figure>
@@ -37633,16 +37633,16 @@ corner of the navigation bar and choosing *Cluster Settings* from the dropdown m
 Choose *Project Mapping* under *Security & Access* in the left sidebar, then create a new mapping by clicking on *Create new mapping*.
 
 <figure>
- <a  href="../../../../assets/images/admin/project-mapping/project-mapping-empty.png">
-   <img src="../../../../assets/images/admin/project-mapping/project-mapping-empty.png" alt="Project mapping tab" />
+ <a  href="../../../assets/images/admin/project-mapping/project-mapping-empty.png">
+   <img src="../../../assets/images/admin/project-mapping/project-mapping-empty.png" alt="Project mapping tab" />
  </a>
  <figcaption>Project mapping</figcaption>
 </figure>
 
 This will take you to the create mapping page shown below
 <figure>
- <a  href="../../../../assets/images/admin/project-mapping/create-hw-mapping.png">
-   <img src="../../../../assets/images/admin/project-mapping/create-hw-mapping.png" alt="Create mapping" />
+ <a  href="../../../assets/images/admin/project-mapping/create-hw-mapping.png">
+   <img src="../../../assets/images/admin/project-mapping/create-hw-mapping.png" alt="Create mapping" />
  </a>
  <figcaption>Create mapping</figcaption>
 </figure>
@@ -37655,8 +37655,8 @@ When several mappings put a user in the same project, the rule in [Give a custom
 Finally, click on *Create mapping* and go back to mappings. You should see the newly created mapping(s) as shown below.
 
 <figure>
- <a  href="../../../../assets/images/admin/project-mapping/group-to-project-mappings.png">
-   <img src="../../../../assets/images/admin/project-mapping/group-to-project-mappings.png" alt="Project mappings" />
+ <a  href="../../../assets/images/admin/project-mapping/group-to-project-mappings.png">
+   <img src="../../../assets/images/admin/project-mapping/group-to-project-mappings.png" alt="Project mappings" />
  </a>
  <figcaption>Project mappings</figcaption>
 </figure>
@@ -37666,8 +37666,8 @@ Finally, click on *Create mapping* and go back to mappings. You should see the n
 From the list of mappings click on the edit button (:material-pencil:). This will open a popup that will allow you to change the *group*, *project name*, and *project role* of a mapping.
 
 <figure>
- <a  href="../../../../assets/images/admin/project-mapping/edit-hw-mapping.png">
-   <img src="../../../../assets/images/admin/project-mapping/edit-hw-mapping.png" alt="Edit mapping" />
+ <a  href="../../../assets/images/admin/project-mapping/edit-hw-mapping.png">
+   <img src="../../../assets/images/admin/project-mapping/edit-hw-mapping.png" alt="Edit mapping" />
  </a>
  <figcaption>Edit mapping</figcaption>
 </figure>
@@ -45389,7 +45389,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -45470,7 +45470,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -46773,7 +46773,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -47639,7 +47639,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -47921,7 +47921,7 @@ Values under `certs-operator` configure the operator that issues the TLS certifi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -48109,7 +48109,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -48442,7 +48442,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -48893,7 +48893,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -49391,7 +49391,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -49809,7 +49809,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -50953,7 +50953,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 
@@ -51223,7 +51223,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -52164,7 +52164,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.dockerImage.packageAuth.caCertsConfigMap` <a class="headerlink" href="#helm.hopsworks.dockerImage.packageAuth.caCertsConfigMap" title="Permanent link">#</a> { #helm.hopsworks.dockerImage.packageAuth.caCertsConfigMap }
 :   Type `string`, default `""`.
-    Optional ConfigMap of trusted CA certificates to install into env-build Docker RUN steps. Each key in the ConfigMap is treated as a .crt / PEM file, bind-mounted into /usr/local/share/ca-certificates/ and installed via `update-ca-certificates` at the start of the RUN. Also exported as REQUESTS_CA_BUNDLE / SSL_CERT_FILE so pip/conda honour it. Leave empty to skip CA injection.
+    Optional ConfigMap of trusted CA certificates, for package mirrors and proxies signed by a private CA. Each key is a PEM file and may hold several certificates. In env-build Docker RUN steps each file is bind-mounted into /usr/local/share/ca-certificates/, installed via `update-ca-certificates` and exported as REQUESTS_CA_BUNDLE / SSL_CERT_FILE. Jupyter servers and terminals get the certificates as a bundle of the system roots plus these CAs in SSL_CERT_FILE (uv, pip, Python ssl), and the CAs alone in NODE_EXTRA_CA_CERTS (npm, Node). REQUESTS_CA_BUNDLE is not set, so plain Python requests calls keep the certifi roots. Every client in those pods that honours these variables trusts the CAs, unless the user sets the variable themselves. For those pods, content that is not a valid certificate, such as a private key, is ignored. Setting or clearing this value takes effect on a server's next start; a changed certificate reaches running servers when one of them in the project next starts. Leave empty to skip CA injection.
 
 `hopsworks.dockerImage.packageAuth.secretName` <a class="headerlink" href="#helm.hopsworks.dockerImage.packageAuth.secretName" title="Permanent link">#</a> { #helm.hopsworks.dockerImage.packageAuth.secretName }
 :   Type `string`, default `""`.
@@ -52172,7 +52172,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.dockerImage.pypi` <a class="headerlink" href="#helm.hopsworks.dockerImage.pypi" title="Permanent link">#</a> { #helm.hopsworks.dockerImage.pypi }
 :   Type `object`, default `{"global_parameters":null,"pythonDownloads":"never"}`.
-    pypi configurations global_parameters:   trusted-host: pypi.org   index-url: "<https://pypi.org/simple>"   extra-index-url: "<https://pypi.org/simple>"   proxy: "<http://proxy:3128>" Written verbatim to pip.conf, and translated into uv's own format in uv.toml because uv reads neither pip.conf nor PIP_INDEX_URL. These keys translate: trusted-host, proxy, index-url, extra-index-url, find-links, no-index, no-cache-dir, cache-dir, keyring-provider, index-strategy, require-hashes, pre. Anything else reaches pip only, and is listed in a comment at the end of uv.toml. timeout, retries, cert and client-cert have no uv equivalent; add trust roots through dockerImage.caCertsConfigMap instead of cert, which uv does honour. index-strategy is uv-only: pip searches every index and takes the highest version, while uv stops at the first index carrying the package. Set it to unsafe-best-match for pip's behaviour, at the cost of uv's dependency-confusion protection.
+    pypi configurations global_parameters:   trusted-host: pypi.org   index-url: "<https://pypi.org/simple>"   extra-index-url: "<https://pypi.org/simple>"   proxy: "<http://proxy:3128>" Written verbatim to pip.conf, and translated into uv's own format in uv.toml because uv reads neither pip.conf nor PIP_INDEX_URL. These keys translate: trusted-host, proxy, index-url, extra-index-url, find-links, no-index, no-cache-dir, cache-dir, keyring-provider, index-strategy, require-hashes, pre. Anything else reaches pip only, and is listed in a comment at the end of uv.toml. timeout, retries, cert and client-cert have no uv equivalent; add trust roots through dockerImage.packageAuth.caCertsConfigMap instead of cert, which env builds, Jupyter servers and terminals pass to uv and pip. index-strategy is uv-only: pip searches every index and takes the highest version, while uv stops at the first index carrying the package. Set it to unsafe-best-match for pip's behaviour, at the cost of uv's dependency-confusion protection.
 
 `hopsworks.dockerImage.pypi.global_parameters` <a class="headerlink" href="#helm.hopsworks.dockerImage.pypi.global_parameters" title="Permanent link">#</a> { #helm.hopsworks.dockerImage.pypi.global_parameters }
 :   Type `string`, default `nil`.
@@ -56591,7 +56591,7 @@ The LLM Gateway's controller ships in the same subchart, and its values, under `
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: `global._hopsworks.envoyGateway.enabled`, [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -57031,7 +57031,7 @@ See [LLM Gateway][llm-gateway] for what the feature installs and what the cluste
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 ## aiGateway { #helm-values-hw-envoy-ai-gateway-aigateway }
 
@@ -57528,7 +57528,7 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -57935,7 +57935,7 @@ With `kueue.enabled=false` Hopsworks uses a Kueue installed outside its release;
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -58321,7 +58321,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -58816,7 +58816,7 @@ Values under `judge` configure Judge, the active cluster arbitrator service.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -58951,7 +58951,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -59841,7 +59841,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -61752,7 +61752,7 @@ Values under `minio` configure MinIO, an S3-compatible object store deployed ins
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) is `true`.
 
@@ -62007,7 +62007,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -62983,7 +62983,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -63493,7 +63493,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -63647,7 +63647,7 @@ Values under `ray` configure the KubeRay operator, which runs the Ray clusters b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.ray.enabled`](global.md#helm.global._hopsworks.ray.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -63794,7 +63794,7 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -66712,7 +66712,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -68297,7 +68297,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -69743,7 +69743,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -70051,7 +70051,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 

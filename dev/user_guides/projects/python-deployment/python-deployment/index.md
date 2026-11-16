@@ -59,7 +59,7 @@ To create your own environment it is recommended to [clone](../../projects/pytho
 
 <p align="center">
   <figure>
-    <img style="max-width: 55%; margin: 0 auto" src="../../../../../assets/images/guides/mlops/serving/deployment_simple_form_py_endp_env.png" alt="Python environment in the deployment form">
+    <img style="max-width: 55%; margin: 0 auto" src="../../../../assets/images/guides/mlops/serving/deployment_simple_form_py_endp_env.png" alt="Python environment in the deployment form">
     <figcaption>Select a Python environment for the program</figcaption>
   </figure>
 </p>

@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794837441` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794845595` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -945,7 +945,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.dockerImage.packageAuth.caCertsConfigMap` <a class="headerlink" href="#helm.hopsworks.dockerImage.packageAuth.caCertsConfigMap" title="Permanent link">#</a> { #helm.hopsworks.dockerImage.packageAuth.caCertsConfigMap }
 :   Type `string`, default `""`.
-    Optional ConfigMap of trusted CA certificates to install into env-build Docker RUN steps. Each key in the ConfigMap is treated as a .crt / PEM file, bind-mounted into /usr/local/share/ca-certificates/ and installed via `update-ca-certificates` at the start of the RUN. Also exported as REQUESTS_CA_BUNDLE / SSL_CERT_FILE so pip/conda honour it. Leave empty to skip CA injection.
+    Optional ConfigMap of trusted CA certificates, for package mirrors and proxies signed by a private CA. Each key is a PEM file and may hold several certificates. In env-build Docker RUN steps each file is bind-mounted into /usr/local/share/ca-certificates/, installed via `update-ca-certificates` and exported as REQUESTS_CA_BUNDLE / SSL_CERT_FILE. Jupyter servers and terminals get the certificates as a bundle of the system roots plus these CAs in SSL_CERT_FILE (uv, pip, Python ssl), and the CAs alone in NODE_EXTRA_CA_CERTS (npm, Node). REQUESTS_CA_BUNDLE is not set, so plain Python requests calls keep the certifi roots. Every client in those pods that honours these variables trusts the CAs, unless the user sets the variable themselves. For those pods, content that is not a valid certificate, such as a private key, is ignored. Setting or clearing this value takes effect on a server's next start; a changed certificate reaches running servers when one of them in the project next starts. Leave empty to skip CA injection.
 
 `hopsworks.dockerImage.packageAuth.secretName` <a class="headerlink" href="#helm.hopsworks.dockerImage.packageAuth.secretName" title="Permanent link">#</a> { #helm.hopsworks.dockerImage.packageAuth.secretName }
 :   Type `string`, default `""`.
@@ -953,7 +953,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.dockerImage.pypi` <a class="headerlink" href="#helm.hopsworks.dockerImage.pypi" title="Permanent link">#</a> { #helm.hopsworks.dockerImage.pypi }
 :   Type `object`, default `{"global_parameters":null,"pythonDownloads":"never"}`.
-    pypi configurations global_parameters:   trusted-host: pypi.org   index-url: "<https://pypi.org/simple>"   extra-index-url: "<https://pypi.org/simple>"   proxy: "<http://proxy:3128>" Written verbatim to pip.conf, and translated into uv's own format in uv.toml because uv reads neither pip.conf nor PIP_INDEX_URL. These keys translate: trusted-host, proxy, index-url, extra-index-url, find-links, no-index, no-cache-dir, cache-dir, keyring-provider, index-strategy, require-hashes, pre. Anything else reaches pip only, and is listed in a comment at the end of uv.toml. timeout, retries, cert and client-cert have no uv equivalent; add trust roots through dockerImage.caCertsConfigMap instead of cert, which uv does honour. index-strategy is uv-only: pip searches every index and takes the highest version, while uv stops at the first index carrying the package. Set it to unsafe-best-match for pip's behaviour, at the cost of uv's dependency-confusion protection.
+    pypi configurations global_parameters:   trusted-host: pypi.org   index-url: "<https://pypi.org/simple>"   extra-index-url: "<https://pypi.org/simple>"   proxy: "<http://proxy:3128>" Written verbatim to pip.conf, and translated into uv's own format in uv.toml because uv reads neither pip.conf nor PIP_INDEX_URL. These keys translate: trusted-host, proxy, index-url, extra-index-url, find-links, no-index, no-cache-dir, cache-dir, keyring-provider, index-strategy, require-hashes, pre. Anything else reaches pip only, and is listed in a comment at the end of uv.toml. timeout, retries, cert and client-cert have no uv equivalent; add trust roots through dockerImage.packageAuth.caCertsConfigMap instead of cert, which env builds, Jupyter servers and terminals pass to uv and pip. index-strategy is uv-only: pip searches every index and takes the highest version, while uv stops at the first index carrying the package. Set it to unsafe-best-match for pip's behaviour, at the cost of uv's dependency-confusion protection.
 
 `hopsworks.dockerImage.pypi.global_parameters` <a class="headerlink" href="#helm.hopsworks.dockerImage.pypi.global_parameters" title="Permanent link">#</a> { #helm.hopsworks.dockerImage.pypi.global_parameters }
 :   Type `string`, default `nil`.
