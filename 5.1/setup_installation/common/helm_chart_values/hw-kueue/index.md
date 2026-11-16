@@ -4,7 +4,7 @@ Values under `hw-kueue` configure Kueue, the job queueing controller, and the qu
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -21,6 +21,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 
     ```yaml
     hw-kueue:
+      enforcePrerequisiteCheck: true
       fullnameOverride: kueue
       hopsworkslib: {}
       imagePullPolicy: Always
@@ -73,6 +74,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         enablePrometheus: false
         enableVisibilityAPF: false
         enableVisibilityServerAuth: true
+        enabled: true
         fullnameOverride: kueue
         kubernetesClusterDomain: cluster.local
         metrics:
@@ -125,6 +127,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 `hw-kueue` <a class="headerlink" href="#helm.hw-kueue" title="Permanent link">#</a> { #helm.hw-kueue }
 :   Type `object`, default `{}`.
     override hw-kueue values
+
+`hw-kueue.enforcePrerequisiteCheck` <a class="headerlink" href="#helm.hw-kueue.enforcePrerequisiteCheck" title="Permanent link">#</a> { #helm.hw-kueue.enforcePrerequisiteCheck }
+:   Type `bool`, default `true`.
+    With kueue.enabled=false, refuse to render while the bundled Kueue or its v1alpha1 storage is still on the cluster (see UPGRADE.md, Kueue outside the Hopsworks namespace). Set false for helm template.
 
 `hw-kueue.fullnameOverride` <a class="headerlink" href="#helm.hw-kueue.fullnameOverride" title="Permanent link">#</a> { #helm.hw-kueue.fullnameOverride }
 :   Type `string`, default `"kueue"`.
@@ -191,6 +197,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         enablePrometheus: false
         enableVisibilityAPF: false
         enableVisibilityServerAuth: true
+        enabled: true
         fullnameOverride: kueue
         kubernetesClusterDomain: cluster.local
         metrics:

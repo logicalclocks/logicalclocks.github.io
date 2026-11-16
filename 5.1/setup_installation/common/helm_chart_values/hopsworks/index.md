@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -57,7 +57,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
       objectStorageEnvInformation: null
       opensearchReindex:
         enabled: true
-      payaraVersion: 6.2025.11-jdk21.1
+      payaraVersion: 6.2025.11-jdk21.4
       payaraconfigmapName: post-boot-commands
       podAnnotations: {}
       podDisruptionBudget:
@@ -277,7 +277,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     Rebuild the featurestore search index after an upgrade, when what the index holds has changed since its last rebuild. The hook keys its request with the index generation, featurestore-index-5.1, which the chart bumps only with a change to what the backend indexes: a generation already rebuilt is answered with that run, so patch upgrades and ArgoCD syncs do not rebuild again, and a cluster that missed the rebuild gets it on its next upgrade. Runs requested by earlier charts carry no key, so the first upgrade with this chart rebuilds once. The rebuild runs in the backend after the upgrade and takes hours on a large cluster, with search incomplete until it finishes; its progress shows under Cluster Settings > Service Operations > OpenSearch Index Commands. A failed hook Job is removed after global._hopsworks.jobs.ttlSecondsAfterFinished in the default mode, or when the hook next renders; with global._hopsworks.mode set, as under ArgoCD, delete post-upgrade-opensearch-reindex-job by hand if you turn this off after a failed attempt.
 
 `hopsworks.payaraVersion` <a class="headerlink" href="#helm.hopsworks.payaraVersion" title="Permanent link">#</a> { #helm.hopsworks.payaraVersion }
-:   Type `string`, default `"6.2025.11-jdk21.1"`.
+:   Type `string`, default `"6.2025.11-jdk21.4"`.
 
 `hopsworks.payaraconfigmapName` <a class="headerlink" href="#helm.hopsworks.payaraconfigmapName" title="Permanent link">#</a> { #helm.hopsworks.payaraconfigmapName }
 :   Type `string`, default `"post-boot-commands"`.
@@ -624,6 +624,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         mysql:
           consulServiceName: mysql
           consulServiceTag: onlinefs
+          ddlConsulServiceName: mysqlddl
           port: 3306
         objectStorage:
           consulServiceName: minio
@@ -646,6 +647,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.dependencies.mysql.consulServiceTag` <a class="headerlink" href="#helm.hopsworks.dependencies.mysql.consulServiceTag" title="Permanent link">#</a> { #helm.hopsworks.dependencies.mysql.consulServiceTag }
 :   Type `string`, default `"onlinefs"`.
+
+`hopsworks.dependencies.mysql.ddlConsulServiceName` <a class="headerlink" href="#helm.hopsworks.dependencies.mysql.ddlConsulServiceName" title="Permanent link">#</a> { #helm.hopsworks.dependencies.mysql.ddlConsulServiceName }
+:   Type `string`, default `"mysqlddl"`.
+    The DDL-dedicated RonDB SQL node (rondb.meta.ddlMySQLd); the database migrations connect here (HWORKS-3550). Set to mysql when the DDL node is disabled
 
 `hopsworks.dependencies.mysql.port` <a class="headerlink" href="#helm.hopsworks.dependencies.mysql.port" title="Permanent link">#</a> { #helm.hopsworks.dependencies.mysql.port }
 :   Type `int`, default `3306`.
@@ -1310,7 +1315,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
       image:
         admin:
           imageName: hopsworks
-          mysqlConnectorVersion: 8.0.21.1
+          mysqlConnectorVersion: 8.0.21.2
           mysqlStorageImageName: hopsworks-mysql-connector
           pullPolicy: IfNotPresent
           tag: null
@@ -1322,11 +1327,11 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           tag: null
         postInstall:
           pullPolicy: IfNotPresent
-          tag: 6.2025.11-jdk21.1
+          tag: 6.2025.11-jdk21.4
         registry: null
         worker:
           pullPolicy: IfNotPresent
-          tag: 6.2025.11-jdk21.1
+          tag: 6.2025.11-jdk21.4
     ```
 
 <div class="hops-values" markdown>
@@ -1335,7 +1340,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"hopsworks"`.
 
 `hopsworks.image.admin.mysqlConnectorVersion` <a class="headerlink" href="#helm.hopsworks.image.admin.mysqlConnectorVersion" title="Permanent link">#</a> { #helm.hopsworks.image.admin.mysqlConnectorVersion }
-:   Type `string`, default `"8.0.21.1"`.
+:   Type `string`, default `"8.0.21.2"`.
 
 `hopsworks.image.admin.mysqlStorageImageName` <a class="headerlink" href="#helm.hopsworks.image.admin.mysqlStorageImageName" title="Permanent link">#</a> { #helm.hopsworks.image.admin.mysqlStorageImageName }
 :   Type `string`, default `"hopsworks-mysql-connector"`.
@@ -1365,7 +1370,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     pull policy for the admin sidecar's payara-node image. admindeployment.yaml already read this key before it was declared here, and its fallback cannot reach global._hopsworks.imagePullPolicy, so the sidecar was pinned to IfNotPresent with no way to override it.
 
 `hopsworks.image.postInstall.tag` <a class="headerlink" href="#helm.hopsworks.image.postInstall.tag" title="Permanent link">#</a> { #helm.hopsworks.image.postInstall.tag }
-:   Type `string`, default `"6.2025.11-jdk21.1"`.
+:   Type `string`, default `"6.2025.11-jdk21.4"`.
 
 `hopsworks.image.registry` <a class="headerlink" href="#helm.hopsworks.image.registry" title="Permanent link">#</a> { #helm.hopsworks.image.registry }
 :   Type `string`, default `nil`.
@@ -1375,7 +1380,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"IfNotPresent"`.
 
 `hopsworks.image.worker.tag` <a class="headerlink" href="#helm.hopsworks.image.worker.tag" title="Permanent link">#</a> { #helm.hopsworks.image.worker.tag }
-:   Type `string`, default `"6.2025.11-jdk21.1"`.
+:   Type `string`, default `"6.2025.11-jdk21.4"`.
 
 </div>
 
@@ -2366,7 +2371,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         audit_log_size_limit: '256000000'
         base_buildkit_image: docker.hops.works/hopsworks/moby/buildkit:v0.32.2-rootless
         base_image_name: hopsworks-base
-        base_image_version: 5.1.2
+        base_image_version: 5.1.3
         cert_mater_delay: 3m
         certs_dir: /srv/hops/certs-dir
         check_nodemanagers_status: ''
@@ -2859,7 +2864,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"hopsworks-base"`.
 
 `hopsworks.variables.base_image_version` <a class="headerlink" href="#helm.hopsworks.variables.base_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.base_image_version }
-:   Type `string`, default `"5.1.2"`.
+:   Type `string`, default `"5.1.3"`.
 
 `hopsworks.variables.cert_mater_delay` <a class="headerlink" href="#helm.hopsworks.variables.cert_mater_delay" title="Permanent link">#</a> { #helm.hopsworks.variables.cert_mater_delay }
 :   Type `string`, default `"3m"`.

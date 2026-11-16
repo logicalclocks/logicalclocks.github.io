@@ -32510,7 +32510,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 ## Common values { #helm-values-common }
 
@@ -32540,20 +32540,20 @@ _Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
 | [`consul`][helm-values-consul] | [`consul` 1.8.16](https://artifacthub.io/packages/helm/hashicorp/consul/1.8.16) | 24 |
 | [`docker-registry`][helm-values-docker-registry] |  | 90 |
 | [`grafana`][helm-values-grafana] | [`grafana` 7.0.17](https://artifacthub.io/packages/helm/grafana/grafana/7.0.17) | 7 |
-| [`hive`][helm-values-hive] |  | 78 |
-| [`hopsfs`][helm-values-hopsfs] |  | 221 |
-| [`hopsworks`][helm-values-hopsworks] |  | 893 |
-| [`hw-kueue`][helm-values-hw-kueue] | [`kueue` 0.12.2](https://github.com/kubernetes-sigs/kueue/blob/v0.12.2/charts/kueue/README.md) | 94 |
+| [`hive`][helm-values-hive] |  | 79 |
+| [`hopsfs`][helm-values-hopsfs] |  | 222 |
+| [`hopsworks`][helm-values-hopsworks] |  | 894 |
+| [`hw-kueue`][helm-values-hw-kueue] | [`kueue` 0.12.2](https://github.com/kubernetes-sigs/kueue/blob/v0.12.2/charts/kueue/README.md) | 95 |
 | [`hw-kyverno`][helm-values-hw-kyverno] |  | 56 |
 | [`judge`][helm-values-judge] |  | 23 |
-| [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 0.45.2](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/0.45.2) | 88 |
+| [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 0.45.2](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/0.45.2) | 90 |
 | [`kserve`][helm-values-kserve] |  | 240 |
 | [`minio`][helm-values-minio] |  | 42 |
 | [`olk`][helm-values-olk] | [`prometheus-elasticsearch-exporter` 5.8.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-elasticsearch-exporter/5.8.0) | 164 |
 | [`onlinefs`][helm-values-onlinefs] |  | 93 |
 | [`prometheus`][helm-values-prometheus] | [`prometheus` 25.20.2](https://artifacthub.io/packages/helm/prometheus-community/prometheus/25.20.2), [`prometheus-adapter` 4.11.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-adapter/4.11.0) | 9 |
 | [`ray`][helm-values-ray] | [`kuberay-operator` 1.4.0](https://artifacthub.io/packages/helm/kuberay-operator/kuberay-operator/1.4.0) | 2 |
-| [`rondb`][helm-values-rondb] | [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) | 464 |
+| [`rondb`][helm-values-rondb] | [`rondb` 26.2.24](https://github.com/logicalclocks/rondb-helm/blob/v26.2.24/values.schema.json) | 498 |
 | [`spark`][helm-values-spark] | [`spark-operator` 2.5.1](https://github.com/kubeflow/spark-operator/blob/v2.5.1/charts/spark-operator-chart/README.md) | 160 |
 | [`superset`][helm-values-superset] | [`mysql` 12.3.5](https://artifacthub.io/packages/helm/bitnami/mysql/12.3.5), [`superset` 0.15.0](https://artifacthub.io/packages/helm/superset/superset/0.15.0) | 16 |
 | [`trino`][helm-values-trino] | [`trino` 1.41.0](https://artifacthub.io/packages/helm/trino/trino/1.41.0) | 31 |
@@ -32587,7 +32587,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 ## General { #helm-values-global-general }
 
@@ -33473,7 +33473,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -34235,7 +34235,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -34515,7 +34515,7 @@ Values under `certs-operator` configure the operator that issues the TLS certifi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -34703,7 +34703,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -35036,7 +35036,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -35485,7 +35485,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -35696,7 +35696,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             verify_email_enabled: false
             viewers_can_edit: false
         image:
-          tag: 12.4.9-h10
+          tag: 12.4.14-h0.1
         nodeSelector: {}
         rbac:
           create: false
@@ -35935,7 +35935,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             verify_email_enabled: false
             viewers_can_edit: false
         image:
-          tag: 12.4.9-h10
+          tag: 12.4.14-h0.1
         nodeSelector: {}
         rbac:
           create: false
@@ -35983,7 +35983,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -36086,6 +36086,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             port: 8182
           mysql:
             consulServiceName: mysql
+            ddlConsulServiceName: mysqlddl
             port: 3306
           namenode:
             consulServiceName: namenode
@@ -36210,6 +36211,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hive.metastore.dependencies.mysql.consulServiceName` <a class="headerlink" href="#helm.hive.metastore.dependencies.mysql.consulServiceName" title="Permanent link">#</a> { #helm.hive.metastore.dependencies.mysql.consulServiceName }
 :   Type `string`, default `"mysql"`.
+
+`hive.metastore.dependencies.mysql.ddlConsulServiceName` <a class="headerlink" href="#helm.hive.metastore.dependencies.mysql.ddlConsulServiceName" title="Permanent link">#</a> { #helm.hive.metastore.dependencies.mysql.ddlConsulServiceName }
+:   Type `string`, default `"mysqlddl"`.
+    The DDL-dedicated RonDB SQL node (rondb.meta.ddlMySQLd); schematool connects here (HWORKS-3550). Set to mysql when the DDL node is disabled
 
 `hive.metastore.dependencies.mysql.port` <a class="headerlink" href="#helm.hive.metastore.dependencies.mysql.port" title="Permanent link">#</a> { #helm.hive.metastore.dependencies.mysql.port }
 :   Type `int`, default `3306`.
@@ -36396,7 +36401,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -36718,6 +36723,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           port: 1186
         mysql:
           consulServiceName: mysql
+          ddlConsulServiceName: mysqlddl
           port: 3306
         objectStorage:
           consulServiceName: minio
@@ -36743,6 +36749,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsfs.dependencies.mysql.consulServiceName` <a class="headerlink" href="#helm.hopsfs.dependencies.mysql.consulServiceName" title="Permanent link">#</a> { #helm.hopsfs.dependencies.mysql.consulServiceName }
 :   Type `string`, default `"mysql"`.
+
+`hopsfs.dependencies.mysql.ddlConsulServiceName` <a class="headerlink" href="#helm.hopsfs.dependencies.mysql.ddlConsulServiceName" title="Permanent link">#</a> { #helm.hopsfs.dependencies.mysql.ddlConsulServiceName }
+:   Type `string`, default `"mysqlddl"`.
+    The DDL-dedicated RonDB SQL node (rondb.meta.ddlMySQLd); the Flyway migrations connect here (HWORKS-3550). Set to mysql when the DDL node is disabled
 
 `hopsfs.dependencies.mysql.port` <a class="headerlink" href="#helm.hopsfs.dependencies.mysql.port" title="Permanent link">#</a> { #helm.hopsfs.dependencies.mysql.port }
 :   Type `int`, default `3306`.
@@ -37535,7 +37545,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -37588,7 +37598,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
       objectStorageEnvInformation: null
       opensearchReindex:
         enabled: true
-      payaraVersion: 6.2025.11-jdk21.1
+      payaraVersion: 6.2025.11-jdk21.4
       payaraconfigmapName: post-boot-commands
       podAnnotations: {}
       podDisruptionBudget:
@@ -37808,7 +37818,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     Rebuild the featurestore search index after an upgrade, when what the index holds has changed since its last rebuild. The hook keys its request with the index generation, featurestore-index-5.1, which the chart bumps only with a change to what the backend indexes: a generation already rebuilt is answered with that run, so patch upgrades and ArgoCD syncs do not rebuild again, and a cluster that missed the rebuild gets it on its next upgrade. Runs requested by earlier charts carry no key, so the first upgrade with this chart rebuilds once. The rebuild runs in the backend after the upgrade and takes hours on a large cluster, with search incomplete until it finishes; its progress shows under Cluster Settings > Service Operations > OpenSearch Index Commands. A failed hook Job is removed after global._hopsworks.jobs.ttlSecondsAfterFinished in the default mode, or when the hook next renders; with global._hopsworks.mode set, as under ArgoCD, delete post-upgrade-opensearch-reindex-job by hand if you turn this off after a failed attempt.
 
 `hopsworks.payaraVersion` <a class="headerlink" href="#helm.hopsworks.payaraVersion" title="Permanent link">#</a> { #helm.hopsworks.payaraVersion }
-:   Type `string`, default `"6.2025.11-jdk21.1"`.
+:   Type `string`, default `"6.2025.11-jdk21.4"`.
 
 `hopsworks.payaraconfigmapName` <a class="headerlink" href="#helm.hopsworks.payaraconfigmapName" title="Permanent link">#</a> { #helm.hopsworks.payaraconfigmapName }
 :   Type `string`, default `"post-boot-commands"`.
@@ -38155,6 +38165,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         mysql:
           consulServiceName: mysql
           consulServiceTag: onlinefs
+          ddlConsulServiceName: mysqlddl
           port: 3306
         objectStorage:
           consulServiceName: minio
@@ -38177,6 +38188,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.dependencies.mysql.consulServiceTag` <a class="headerlink" href="#helm.hopsworks.dependencies.mysql.consulServiceTag" title="Permanent link">#</a> { #helm.hopsworks.dependencies.mysql.consulServiceTag }
 :   Type `string`, default `"onlinefs"`.
+
+`hopsworks.dependencies.mysql.ddlConsulServiceName` <a class="headerlink" href="#helm.hopsworks.dependencies.mysql.ddlConsulServiceName" title="Permanent link">#</a> { #helm.hopsworks.dependencies.mysql.ddlConsulServiceName }
+:   Type `string`, default `"mysqlddl"`.
+    The DDL-dedicated RonDB SQL node (rondb.meta.ddlMySQLd); the database migrations connect here (HWORKS-3550). Set to mysql when the DDL node is disabled
 
 `hopsworks.dependencies.mysql.port` <a class="headerlink" href="#helm.hopsworks.dependencies.mysql.port" title="Permanent link">#</a> { #helm.hopsworks.dependencies.mysql.port }
 :   Type `int`, default `3306`.
@@ -38841,7 +38856,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
       image:
         admin:
           imageName: hopsworks
-          mysqlConnectorVersion: 8.0.21.1
+          mysqlConnectorVersion: 8.0.21.2
           mysqlStorageImageName: hopsworks-mysql-connector
           pullPolicy: IfNotPresent
           tag: null
@@ -38853,11 +38868,11 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           tag: null
         postInstall:
           pullPolicy: IfNotPresent
-          tag: 6.2025.11-jdk21.1
+          tag: 6.2025.11-jdk21.4
         registry: null
         worker:
           pullPolicy: IfNotPresent
-          tag: 6.2025.11-jdk21.1
+          tag: 6.2025.11-jdk21.4
     ```
 
 <div class="hops-values" markdown>
@@ -38866,7 +38881,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"hopsworks"`.
 
 `hopsworks.image.admin.mysqlConnectorVersion` <a class="headerlink" href="#helm.hopsworks.image.admin.mysqlConnectorVersion" title="Permanent link">#</a> { #helm.hopsworks.image.admin.mysqlConnectorVersion }
-:   Type `string`, default `"8.0.21.1"`.
+:   Type `string`, default `"8.0.21.2"`.
 
 `hopsworks.image.admin.mysqlStorageImageName` <a class="headerlink" href="#helm.hopsworks.image.admin.mysqlStorageImageName" title="Permanent link">#</a> { #helm.hopsworks.image.admin.mysqlStorageImageName }
 :   Type `string`, default `"hopsworks-mysql-connector"`.
@@ -38896,7 +38911,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     pull policy for the admin sidecar's payara-node image. admindeployment.yaml already read this key before it was declared here, and its fallback cannot reach global._hopsworks.imagePullPolicy, so the sidecar was pinned to IfNotPresent with no way to override it.
 
 `hopsworks.image.postInstall.tag` <a class="headerlink" href="#helm.hopsworks.image.postInstall.tag" title="Permanent link">#</a> { #helm.hopsworks.image.postInstall.tag }
-:   Type `string`, default `"6.2025.11-jdk21.1"`.
+:   Type `string`, default `"6.2025.11-jdk21.4"`.
 
 `hopsworks.image.registry` <a class="headerlink" href="#helm.hopsworks.image.registry" title="Permanent link">#</a> { #helm.hopsworks.image.registry }
 :   Type `string`, default `nil`.
@@ -38906,7 +38921,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"IfNotPresent"`.
 
 `hopsworks.image.worker.tag` <a class="headerlink" href="#helm.hopsworks.image.worker.tag" title="Permanent link">#</a> { #helm.hopsworks.image.worker.tag }
-:   Type `string`, default `"6.2025.11-jdk21.1"`.
+:   Type `string`, default `"6.2025.11-jdk21.4"`.
 
 </div>
 
@@ -39897,7 +39912,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         audit_log_size_limit: '256000000'
         base_buildkit_image: docker.hops.works/hopsworks/moby/buildkit:v0.32.2-rootless
         base_image_name: hopsworks-base
-        base_image_version: 5.1.2
+        base_image_version: 5.1.3
         cert_mater_delay: 3m
         certs_dir: /srv/hops/certs-dir
         check_nodemanagers_status: ''
@@ -40390,7 +40405,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"hopsworks-base"`.
 
 `hopsworks.variables.base_image_version` <a class="headerlink" href="#helm.hopsworks.variables.base_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.base_image_version }
-:   Type `string`, default `"5.1.2"`.
+:   Type `string`, default `"5.1.3"`.
 
 `hopsworks.variables.cert_mater_delay` <a class="headerlink" href="#helm.hopsworks.variables.cert_mater_delay" title="Permanent link">#</a> { #helm.hopsworks.variables.cert_mater_delay }
 :   Type `string`, default `"3m"`.
@@ -42036,7 +42051,7 @@ Values under `hw-kueue` configure Kueue, the job queueing controller, and the qu
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -42053,6 +42068,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 
     ```yaml
     hw-kueue:
+      enforcePrerequisiteCheck: true
       fullnameOverride: kueue
       hopsworkslib: {}
       imagePullPolicy: Always
@@ -42105,6 +42121,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         enablePrometheus: false
         enableVisibilityAPF: false
         enableVisibilityServerAuth: true
+        enabled: true
         fullnameOverride: kueue
         kubernetesClusterDomain: cluster.local
         metrics:
@@ -42157,6 +42174,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 `hw-kueue` <a class="headerlink" href="#helm.hw-kueue" title="Permanent link">#</a> { #helm.hw-kueue }
 :   Type `object`, default `{}`.
     override hw-kueue values
+
+`hw-kueue.enforcePrerequisiteCheck` <a class="headerlink" href="#helm.hw-kueue.enforcePrerequisiteCheck" title="Permanent link">#</a> { #helm.hw-kueue.enforcePrerequisiteCheck }
+:   Type `bool`, default `true`.
+    With kueue.enabled=false, refuse to render while the bundled Kueue or its v1alpha1 storage is still on the cluster (see UPGRADE.md, Kueue outside the Hopsworks namespace). Set false for helm template.
 
 `hw-kueue.fullnameOverride` <a class="headerlink" href="#helm.hw-kueue.fullnameOverride" title="Permanent link">#</a> { #helm.hw-kueue.fullnameOverride }
 :   Type `string`, default `"kueue"`.
@@ -42223,6 +42244,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         enablePrometheus: false
         enableVisibilityAPF: false
         enableVisibilityServerAuth: true
+        enabled: true
         fullnameOverride: kueue
         kubernetesClusterDomain: cluster.local
         metrics:
@@ -42731,7 +42753,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -43202,7 +43224,7 @@ Values under `judge` configure Judge, the active cluster arbitrator service.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -43337,7 +43359,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -43572,7 +43594,9 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
               consulServiceName: onlinefs
           externalLoadBalancer:
             annotations: {}
+            bootstrapAnnotations: {}
             bootstrapNodePort: null
+            brokerAnnotations: {}
             class: null
             dns: ''
             enabled: null
@@ -43746,9 +43770,17 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
 :   Type `object`, default `{}`.
     load balancer annotations
 
+`kafka.cluster.kafka.externalLoadBalancer.bootstrapAnnotations` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.bootstrapAnnotations" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.bootstrapAnnotations }
+:   Type `object`, default `{}`.
+    Annotations for the bootstrap Service only, merged over annotations; a key set here wins. Pins the bootstrap address with MetalLB, for example metallb.io/loadBalancerIPs: 10.0.0.10.
+
 `kafka.cluster.kafka.externalLoadBalancer.bootstrapNodePort` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.bootstrapNodePort" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.bootstrapNodePort }
 :   Type `string`, default `nil`.
     Explicit nodePort for the bootstrap service when the load balancer is unmanaged (managed: false). Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
+
+`kafka.cluster.kafka.externalLoadBalancer.brokerAnnotations` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.brokerAnnotations" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.brokerAnnotations }
+:   Type `object`, default `{}`.
+    Annotations for one broker's Service, keyed by broker id (0 to replicas - 1) and merged over annotations; a key set here wins. Pins each broker to its own MetalLB address, for example "0": {metallb.io/loadBalancerIPs: 10.0.0.11}. When replicas grows, a new broker without an entry gets only the shared annotations. When it shrinks, delete the entries of the removed brokers in the values file that sets them, or the render fails: a null in a later values file does not remove an entry. Setting an address on a running cluster moves that Service to it. External clients that took their Kafka config from Hopsworks before the move still hold the old broker addresses: restart long-running ones about a minute after the move, once Hopsworks serves the new ones.
 
 `kafka.cluster.kafka.externalLoadBalancer.class` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.class" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.class }
 :   Type `string`, default `nil`.
@@ -44022,7 +44054,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -45426,7 +45458,7 @@ Values under `minio` configure MinIO, an S3-compatible object store deployed ins
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed when [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) is `true`.
 
@@ -45681,7 +45713,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -45709,12 +45741,13 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
         storageClassName: null
       prometheus-elasticsearch-exporter:
         es:
+          cluster_settings: true
           sslSkipVerify: true
           uri: https://elastic_exporter:elastic_exporterpw@{{ include "olk.exporter.opensearchHost" . }}:9200
         image:
           registry: docker.hops.works
           repository: prometheus/elasticsearch-exporter
-          tag: 1.11.0-alpine-h1.1
+          tag: 1.11.0-alpine-h2.1
         nodeSelector: {}
         resources:
           limits:
@@ -45769,12 +45802,13 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
 
         ```yaml
         es:
+          cluster_settings: true
           sslSkipVerify: true
           uri: https://elastic_exporter:elastic_exporterpw@{{ include "olk.exporter.opensearchHost" . }}:9200
         image:
           registry: docker.hops.works
           repository: prometheus/elasticsearch-exporter
-          tag: 1.11.0-alpine-h1.1
+          tag: 1.11.0-alpine-h2.1
         nodeSelector: {}
         resources:
           limits:
@@ -45837,7 +45871,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
         startup_timeout: 5000
         tolerations: []
         topologySpreadConstraint: {}
-        version: 2.19.6.7
+        version: 2.19.6.9
     ```
 
 <div class="hops-values" markdown>
@@ -45923,7 +45957,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
     The default topology spread constraint. If not defined the global topology spread constraint would be used instead.
 
 `olk.dashboard.version` <a class="headerlink" href="#helm.olk.dashboard.version" title="Permanent link">#</a> { #helm.olk.dashboard.version }
-:   Type `string`, default `"2.19.6.7"`.
+:   Type `string`, default `"2.19.6.9"`.
 
 </div>
 
@@ -46199,7 +46233,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
           type: ClusterIP
         tolerations: []
         topologySpreadConstraint: {}
-        version: 7.17.29.6
+        version: 7.17.29.8
         workers: 4
     ```
 
@@ -46308,7 +46342,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
     The default topology spread constraint. If not defined the global topology spread constraint would be used instead.
 
 `olk.logstash.version` <a class="headerlink" href="#helm.olk.logstash.version" title="Permanent link">#</a> { #helm.olk.logstash.version }
-:   Type `string`, default `"7.17.29.6"`.
+:   Type `string`, default `"7.17.29.8"`.
 
 `olk.logstash.workers` <a class="headerlink" href="#helm.olk.logstash.workers" title="Permanent link">#</a> { #helm.olk.logstash.workers }
 :   Type `int`, default `4`.
@@ -46406,7 +46440,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
         topologySpreadConstraint: {}
         transport_port: 9300
         ttlSecondsAfterFinished: null
-        version: 2.19.6.3
+        version: 2.19.6.4
     ```
 
 <div class="hops-values" markdown>
@@ -46632,7 +46666,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
     TTL in seconds for the create-repos Job. Overrides global default.
 
 `olk.opensearch.version` <a class="headerlink" href="#helm.olk.opensearch.version" title="Permanent link">#</a> { #helm.olk.opensearch.version }
-:   Type `string`, default `"2.19.6.3"`.
+:   Type `string`, default `"2.19.6.4"`.
 
 </div>
 
@@ -46648,7 +46682,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Always deployed.
 
@@ -47151,7 +47185,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -47187,7 +47221,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         image:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/prometheus/prometheus-adapter
-          tag: 0.12.0-alpine-h1.1
+          tag: 0.12.0-alpine-h2.1
         nameOverride: hopsworks-prometheus-adapter
         nodeSelector: {}
         prometheus:
@@ -47270,7 +47304,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         image:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/prometheus/prometheus-adapter
-          tag: 0.12.0-alpine-h1.1
+          tag: 0.12.0-alpine-h2.1
         nameOverride: hopsworks-prometheus-adapter
         nodeSelector: {}
         prometheus:
@@ -47311,7 +47345,7 @@ Values under `ray` configure the KubeRay operator, which runs the Ray clusters b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.ray.enabled`](global.md#helm.global._hopsworks.ray.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -47458,13 +47492,13 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Always deployed.
 
 !!! info "Upstream charts"
 
-    - Values under `rondb.rondb` go to [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+    - Values under `rondb.rondb` go to [`rondb` 26.2.24](https://github.com/logicalclocks/rondb-helm/blob/v26.2.24/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
 
 ??? example "Defaults as YAML"
 
@@ -47674,7 +47708,7 @@ Always deployed.
         ```
 
 `rondb.rondb` <a class="headerlink" href="#helm.rondb.rondb" title="Permanent link">#</a> { #helm.rondb.rondb }
-:   Type `object`, passed to the [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+:   Type `object`, passed to the [`rondb` 26.2.24](https://github.com/logicalclocks/rondb-helm/blob/v26.2.24/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
     override rondb values
 
     ??? note "Default"
@@ -47809,7 +47843,7 @@ Always deployed.
 
 ## `rondb` chart values { #helm-values-rondb-rondb }
 
-These are the values of the [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) chart, set under `rondb.rondb`.
+These are the values of the [`rondb` 26.2.24](https://github.com/logicalclocks/rondb-helm/blob/v26.2.24/values.schema.json) chart, set under `rondb.rondb`.
 The defaults are what Hopsworks deploys: the chart's own, with the `rondb` and `rondb.rondb` overrides above applied.
 Where Hopsworks overrides a value, the entry also gives the chart's own default.
 
@@ -48271,7 +48305,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
             name: rondb
             registry: docker.hops.works
             repository: hopsworks
-            tag: 26.02.11
+            tag: 26.02.14
           toolbox:
             name: hwutils
             registry: docker.hops.works
@@ -48333,7 +48367,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 :   Type `string`, default `"hopsworks"`.
 
 `rondb.rondb.images.rondb.tag` <a class="headerlink" href="#helm.rondb.rondb.images.rondb.tag" title="Permanent link">#</a> { #helm.rondb.rondb.images.rondb.tag }
-:   Type `string`, default `"26.02.11"`.
+:   Type `string`, default `"26.02.14"`.
     The version of RonDB to use; This should always be equivalent to .Chart.AppVersion
 
 `rondb.rondb.images.toolbox` <a class="headerlink" href="#helm.rondb.rondb.images.toolbox" title="Permanent link">#</a> { #helm.rondb.rondb.images.toolbox }
@@ -49419,8 +49453,27 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
           externalMetadataCluster:
             mgmds: []
             slotsPerNode: 1
+          featureStore:
+            metadataCachePreloadThreads: null
           hpa:
             additionalMetrics: []
+          internal:
+            bufferPoolSharePercent: null
+            bufferShrinkAfterS: 900
+            disableTransparentHugePages: null
+            maxBlobTextValueBytes: null
+            maxBuffers: null
+            maxHttpReqSize: null
+            maxOperationsPerBatchRequest: null
+            maxOperationsPerNdbExecute: null
+            operationIdMaxSize: null
+            preAllocatedBuffers: null
+            scanRespBufferSize: null
+            scanTimingEnabled: null
+            slowScanBufferSize: null
+            slowScanThresholdUs: null
+          log:
+            level: null
           maxKeepaliveRequests: 0
           probePort:
             enabled: true
@@ -49441,9 +49494,24 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
               initialDelaySeconds: 5
               periodSeconds: 5
               timeoutSeconds: 2
+          rateLimit:
+            enable: null
+            fullApiKey: null
+          rest:
+            idleConnectionTimeoutS: null
+            numThreads: null
+            useCompression: null
+            useSingleTransaction: null
+          rondb:
+            connectionRetries: null
+            connectionRetryDelayInSec: null
+            opRetryInitialDelayInMS: null
+            opRetryJitterInMS: null
+            opRetryOnTransientErrorsCount: null
           security:
             apiKey:
               cacheRefreshIntervalMS: 180000
+              preloadThreads: null
           ttlPurge:
             activeWindow: null
             enable: null
@@ -49471,6 +49539,14 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.rdrs.externalMetadataCluster.slotsPerNode` <a class="headerlink" href="#helm.rondb.rondb.rdrs.externalMetadataCluster.slotsPerNode" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.externalMetadataCluster.slotsPerNode }
 :   Type `integer`, default `1`, minimum `1`, maximum `1`.
 
+`rondb.rondb.rdrs.featureStore` <a class="headerlink" href="#helm.rondb.rondb.rdrs.featureStore" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.featureStore }
+:   Type `object`.
+    Feature store settings of every RDRS pod, rendered as the FeatureStore section of rest_api.json only when a key is set, so RDRS images that predate a key keep starting. When installed through the Hopsworks chart, the path is rondb.rondb.rdrs.featureStore.
+
+`rondb.rondb.rdrs.featureStore.metadataCachePreloadThreads` <a class="headerlink" href="#helm.rondb.rondb.rdrs.featureStore.metadataCachePreloadThreads" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.featureStore.metadataCachePreloadThreads }
+:   Type `integer|null`, default `null`, minimum `1`, maximum `4294967295`.
+    Threads that preload the feature view metadata cache from RonDB in parallel at startup (FeatureStore.FeatureStoreMetadataCache.PreloadThreads); the startup probe passes only once preloading is done. At least 1. RDRS default 3.
+
 `rondb.rondb.rdrs.hpa` <a class="headerlink" href="#helm.rondb.rondb.rdrs.hpa" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.hpa }
 :   Type `object`.
     Horizontal Pod Autoscaler for RDRS
@@ -49478,6 +49554,74 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.rdrs.hpa.additionalMetrics` <a class="headerlink" href="#helm.rondb.rondb.rdrs.hpa.additionalMetrics" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.hpa.additionalMetrics }
 :   Type `array`, default `[]`.
     Additional metrics to use for the HPA. This is useful for custom metrics that are not supported by default.
+
+`rondb.rondb.rdrs.internal` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal }
+:   Type `object`.
+    Request handling, scan diagnostics and memory settings of every RDRS pod, rendered as the Internal section of rest_api.json. Each key is rendered only when set, and the section only when at least one key is set, so RDRS images that predate a key keep starting (they reject unknown keys). DisableTransparentHugePages, MaxHttpReqSize, MaxBuffers, BufferPoolSharePercent, BufferShrinkAfterS, MaxBlobTextValueBytes, MaxOperationsPerBatchRequest and MaxOperationsPerNdbExecute need RDRS 26.02.12 or newer. When a key is null, RDRS uses its own default; for maxBuffers that default (0) derives the cap from the pod's memory limit. The request and response buffer sizes are not settings: RDRS computes them from the RonDB row limits (ReqBufferSize and RespBufferSize were removed from RDRS in RONDB-1144). When installed through the Hopsworks chart, the path is rondb.rondb.rdrs.internal.
+
+`rondb.rondb.rdrs.internal.bufferPoolSharePercent` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.bufferPoolSharePercent" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.bufferPoolSharePercent }
+:   Type `integer|null`, default `null`, minimum `1`, maximum `90`.
+    Share of the pod's memory limit the buffer pools, together with the JSON responses written from them, may use when maxBuffers is derived. RDRS default 50; the rest is left for the JSON parse buffers, the NDB API and the process itself, so keep the memory limit at 2 GiB or more.
+
+`rondb.rondb.rdrs.internal.bufferShrinkAfterS` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.bufferShrinkAfterS" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.bufferShrinkAfterS }
+:   Type `integer|null`, default `900`, minimum `0`, maximum `4294967295`.
+    Seconds of idle time after which buffers above preAllocatedBuffers are unmapped and returned to the OS. 0 disables the shrink. Chart default 900 (15 minutes), so a pool that serves bursts some minutes apart keeps its buffers; this is the one Internal key the chart renders by default. null leaves the RDRS default, 300 (five minutes); RDRS images before 26.02.12 reject the key, so set it to null with them.
+
+`rondb.rondb.rdrs.internal.disableTransparentHugePages` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.disableTransparentHugePages" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.disableTransparentHugePages }
+:   Type `boolean|null`, default `null`.
+    Internal.DisableTransparentHugePages. RDRS 26.02.12 and newer opts its process out of transparent huge pages at startup (prctl PR_SET_THP_DISABLE); false allows THP again. On nodes with transparent_hugepage/enabled=always, khugepaged collapses the sparse memory of an idle RDRS into resident 2 MiB pages until the pod reaches its memory limit and is restarted by its probes, with no traffic and nothing logged. Leave it null unless THP is wanted. Images before 26.02.12 do not opt out and reject the key: leave it null with them and set transparent_hugepage/enabled=madvise on the nodes. RDRS default true.
+
+`rondb.rondb.rdrs.internal.maxBlobTextValueBytes` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.maxBlobTextValueBytes" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.maxBlobTextValueBytes }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Largest BLOB or TEXT value, in stored bytes, that a read returns (Internal.MaxBlobTextValueBytes). A read of a larger value fails with 413 naming the column; in a batch only that operation fails. 0 means no limit. RDRS default 2097152 (2 MiB).
+
+`rondb.rondb.rdrs.internal.maxBuffers` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.maxBuffers" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.maxBuffers }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Cap on the buffers of each kind the pool may hold; a request that needs more is answered 503 "buffer pool exhausted". 0 or null: derived from the pod's memory limit and bufferPoolSharePercent. When non-zero, it must be at least 2 and at least preAllocatedBuffers (RDRS default 128); the chart fails the render otherwise, as rdrs2 would refuse to start.
+
+`rondb.rondb.rdrs.internal.maxHttpReqSize` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.maxHttpReqSize" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.maxHttpReqSize }
+:   Type `integer|null`, default `null`, minimum `256`, maximum `4294967295`.
+    Maximum HTTP body size of a REST request in bytes (Internal.MaxHttpReqSize; RDRS images before 26.02.12 call it maxReqSize); larger bodies are rejected before RDRS parses them. Every worker thread keeps a parse buffer of this size, so rest.numThreads times this value is part of the pod's memory budget. At least 256. RDRS default 1048576 (1 MiB).
+
+`rondb.rondb.rdrs.internal.maxOperationsPerBatchRequest` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.maxOperationsPerBatchRequest" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.maxOperationsPerBatchRequest }
+:   Type `integer|null`, default `null`, minimum `1`, maximum `4294967295`.
+    Largest number of operations one batch request may carry (for a batch feature store request: entries); larger batches are answered 413 before any buffer is taken. Large batches of wide rows can take most of a 2 GiB pod's buffer pool; raise the RDRS memory limit for such workloads. RDRS default 4096.
+
+`rondb.rondb.rdrs.internal.maxOperationsPerNdbExecute` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.maxOperationsPerNdbExecute" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.maxOperationsPerNdbExecute }
+:   Type `integer|null`, default `null`, minimum `50`, maximum `512`.
+    Operations of a batch request RDRS sends to NDB in one execute round; not a cap on the batch request (see maxOperationsPerBatchRequest). Between 50 and 512. RDRS default 128. Replaces BatchMaxSize, which RDRS 26.02.12 and newer no longer reads.
+
+`rondb.rondb.rdrs.internal.operationIdMaxSize` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.operationIdMaxSize" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.operationIdMaxSize }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4096`.
+    Maximum length of an operation ID string in a batch request (Internal.OperationIDMaxSize). At most 4096. RDRS default 256.
+
+`rondb.rondb.rdrs.internal.preAllocatedBuffers` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.preAllocatedBuffers" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.preAllocatedBuffers }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Request and response buffers of each kind mapped at startup and never released by the idle shrink. RDRS default 128.
+
+`rondb.rondb.rdrs.internal.scanRespBufferSize` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.scanRespBufferSize" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.scanRespBufferSize }
+:   Type `integer|null`, default `null`, minimum `1024`, maximum `4294967295`.
+    Initial reservation for the JSON of a scan response, in bytes; the buffer grows when a response exceeds it. At least 1024. RDRS default 262144 (256 KiB).
+
+`rondb.rondb.rdrs.internal.scanTimingEnabled` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.scanTimingEnabled" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.scanTimingEnabled }
+:   Type `boolean|null`, default `null`.
+    Collect scan timing metrics: a per-scan timing breakdown and a circular buffer of slow scans for diagnostics. RDRS default false.
+
+`rondb.rondb.rdrs.internal.slowScanBufferSize` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.slowScanBufferSize" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.slowScanBufferSize }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Number of slow scan entries kept in the circular buffer (needs scanTimingEnabled). RDRS default 1000.
+
+`rondb.rondb.rdrs.internal.slowScanThresholdUs` <a class="headerlink" href="#helm.rondb.rondb.rdrs.internal.slowScanThresholdUs" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.internal.slowScanThresholdUs }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Scans taking longer than this many microseconds are recorded in the slow scan buffer (needs scanTimingEnabled). RDRS default 10000 (10 ms).
+
+`rondb.rondb.rdrs.log` <a class="headerlink" href="#helm.rondb.rondb.rdrs.log" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.log }
+:   Type `object`.
+    Logging of every RDRS pod, rendered as the Log section of rest_api.json. The pod logs to stdout, so the log file keys (FilePath, MaxSizeMb, MaxBackups, MaxAge) are not exposed. When installed through the Hopsworks chart, the path is rondb.rondb.rdrs.log.
+
+`rondb.rondb.rdrs.log.level` <a class="headerlink" href="#helm.rondb.rondb.rdrs.log.level" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.log.level }
+:   Type `enum`, default `null`.
+    Log level (Log.Level), rendered only when set; null leaves RDRS at its own default, warn. Current rdrs2 releases parse the key but do not act on it (logging goes through the NDB event logger at a fixed level). One of: `"panic"`, `"fatal"`, `"error"`, `"warn"`, `"warning"`, `"info"`, `"debug"`, `"trace"`, `null`.
 
 `rondb.rondb.rdrs.maxKeepaliveRequests` <a class="headerlink" href="#helm.rondb.rondb.rdrs.maxKeepaliveRequests" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.maxKeepaliveRequests }
 :   Type `integer`, default `0`, minimum `0`, maximum `4294967295`, example `1000`.
@@ -49547,6 +49691,62 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.rdrs.probes.startup.timeoutSeconds` <a class="headerlink" href="#helm.rondb.rondb.rdrs.probes.startup.timeoutSeconds" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.probes.startup.timeoutSeconds }
 :   Type `integer`, default `2`, minimum `1`.
 
+`rondb.rondb.rdrs.rateLimit` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rateLimit" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rateLimit }
+:   Type `object`.
+    USER rate limiting of the NDB traffic of every RDRS pod (RONDB-978), rendered as the RateLimit section of rest_api.json only when a key is set, so RDRS images that predate it keep starting. The identity is always the Hopsworks API key of the request: RateLimit.Identity has no other legal value and is not exposed. When installed through the Hopsworks chart, the path is rondb.rondb.rdrs.rateLimit.
+
+`rondb.rondb.rdrs.rateLimit.enable` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rateLimit.enable" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rateLimit.enable }
+:   Type `boolean|null`, default `null`.
+    Tag the NDB transactions of REST requests with the request's API key so the data nodes enforce USER rate limits. The data nodes must run with ActivateRateLimits, and an identity without a provisioned USER entity runs unmetered. RDRS default false.
+
+`rondb.rondb.rdrs.rateLimit.fullApiKey` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rateLimit.fullApiKey" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rateLimit.fullApiKey }
+:   Type `boolean|null`, default `null`.
+    Use the full API key as the rate limit identity (RateLimit.FullAPIKey) instead of its prefix. RDRS default false.
+
+`rondb.rondb.rdrs.rest` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rest" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rest }
+:   Type `object`.
+    HTTP server settings of every RDRS pod, rendered into the REST section of rest_api.json next to the chart-managed listener keys (ServerIP, ServerPort, ProbeEnable, ProbePort). Each key is rendered only when set, so RDRS images that predate a key keep starting (they reject unknown keys). rdrs.maxKeepaliveRequests and rdrs.uploadPath are the same kind of key and stay where they are. When installed through the Hopsworks chart, the path is rondb.rondb.rdrs.rest.
+
+`rondb.rondb.rdrs.rest.idleConnectionTimeoutS` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rest.idleConnectionTimeoutS" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rest.idleConnectionTimeoutS }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Seconds a keep-alive connection on the main port may sit idle before RDRS closes it; 0 keeps the built-in 60 second timeout. Complements rdrs.maxKeepaliveRequests for clients that hold connections open but send rarely. Does not apply to the probe port. Requires an RDRS image with REST.IdleConnectionTimeoutS support (releases 26.02.11 and newer on the 26.02 line). RDRS default 0.
+
+`rondb.rondb.rdrs.rest.numThreads` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rest.numThreads" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rest.numThreads }
+:   Type `integer|null`, default `null`, minimum `2`, maximum `991`.
+    Worker threads of the RDRS HTTP server (REST.NumThreads). Each thread holds a JSON parse buffer of internal.maxHttpReqSize bytes (1 MiB by default), so the thread count is part of the pod's memory budget. Between 2 and 991. RDRS default 64.
+
+`rondb.rondb.rdrs.rest.useCompression` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rest.useCompression" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rest.useCompression }
+:   Type `boolean|null`, default `null`.
+    Send responses gzip-compressed. RDRS default true.
+
+`rondb.rondb.rdrs.rest.useSingleTransaction` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rest.useSingleTransaction" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rest.useSingleTransaction }
+:   Type `boolean|null`, default `null`.
+    Run all operations of a batch request in one NDB transaction. RDRS default true.
+
+`rondb.rondb.rdrs.rondb` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rondb" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rondb }
+:   Type `object`.
+    Connection and retry settings of every RDRS pod towards RonDB. The chart renders each set key into BOTH the RonDB (data) and the RonDBMetadataCluster (metadata) sections of rest_api.json, which have the same keys; the management server addresses, connection pool sizes and node IDs of both sections come from rondbConfig and rdrs.externalMetadataCluster. Each key is rendered only when set. When installed through the Hopsworks chart, the path is rondb.rondb.rdrs.rondb.
+
+`rondb.rondb.rdrs.rondb.connectionRetries` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rondb.connectionRetries" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rondb.connectionRetries }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Attempts to connect to the cluster before RDRS gives up. RDRS default 5.
+
+`rondb.rondb.rdrs.rondb.connectionRetryDelayInSec` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rondb.connectionRetryDelayInSec" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rondb.connectionRetryDelayInSec }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Seconds to wait after a failed connection attempt before trying again. RDRS default 5.
+
+`rondb.rondb.rdrs.rondb.opRetryInitialDelayInMS` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rondb.opRetryInitialDelayInMS" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rondb.opRetryInitialDelayInMS }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Delay in milliseconds before the first retry of an operation. RDRS default 500.
+
+`rondb.rondb.rdrs.rondb.opRetryJitterInMS` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rondb.opRetryJitterInMS" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rondb.opRetryJitterInMS }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Random jitter in milliseconds added to each retry delay. RDRS default 100.
+
+`rondb.rondb.rdrs.rondb.opRetryOnTransientErrorsCount` <a class="headerlink" href="#helm.rondb.rondb.rdrs.rondb.opRetryOnTransientErrorsCount" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.rondb.opRetryOnTransientErrorsCount }
+:   Type `integer|null`, default `null`, minimum `0`, maximum `4294967295`.
+    Times an operation that failed with a transient NDB error is retried. RDRS default 3.
+
 `rondb.rondb.rdrs.security` <a class="headerlink" href="#helm.rondb.rondb.rdrs.security" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.security }
 :   Type `object`.
 
@@ -49554,8 +49754,12 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 :   Type `object`.
 
 `rondb.rondb.rdrs.security.apiKey.cacheRefreshIntervalMS` <a class="headerlink" href="#helm.rondb.rondb.rdrs.security.apiKey.cacheRefreshIntervalMS" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.security.apiKey.cacheRefreshIntervalMS }
-:   Type `integer`, default `180000`, minimum `1000`.
+:   Type `integer`, default `180000`, minimum `1000`, maximum `4294967295`.
     How often the API key cache refreshes project associations from the database (in milliseconds). Lower values reduce staleness when project memberships change but increase database load.
+
+`rondb.rondb.rdrs.security.apiKey.preloadThreads` <a class="headerlink" href="#helm.rondb.rondb.rdrs.security.apiKey.preloadThreads" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.security.apiKey.preloadThreads }
+:   Type `integer|null`, default `null`, minimum `1`, maximum `4294967295`.
+    Threads that preload the API key cache from RonDB in parallel at startup (Security.APIKey.PreloadThreads); the startup probe passes only once preloading is done. At least 1. RDRS default 3. Rendered only when set, so RDRS images that predate the key keep starting.
 
 `rondb.rondb.rdrs.ttlPurge` <a class="headerlink" href="#helm.rondb.rondb.rdrs.ttlPurge" title="Permanent link">#</a> { #helm.rondb.rondb.rdrs.ttlPurge }
 :   Type `object`.
@@ -49597,7 +49801,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
               mysqldExportersMiB: 100
               mysqldMiB: 1400
               ndbmtdsMiB: 5000
-              rdrsMiB: 500
+              rdrsMiB: 2048
           requests:
             cpus:
               benchs: 1
@@ -49609,7 +49813,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
               benchsMiB: 100
               mysqldExportersMiB: 50
               mysqldMiB: 650
-              rdrsMiB: 100
+              rdrsMiB: 2048
             storage:
               binlogGiB: 4
               classes:
@@ -49680,7 +49884,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
     It is recommended to keep this above 5GiB, otherwise some memory parts will be configured manually.
 
 `rondb.rondb.resources.limits.memory.rdrsMiB` <a class="headerlink" href="#helm.rondb.rondb.resources.limits.memory.rdrsMiB" title="Permanent link">#</a> { #helm.rondb.rondb.resources.limits.memory.rdrsMiB }
-:   Type `integer`, default `500`.
+:   Type `integer`, default `2048`.
 
 `rondb.rondb.resources.requests` <a class="headerlink" href="#helm.rondb.rondb.resources.requests" title="Permanent link">#</a> { #helm.rondb.rondb.resources.requests }
 :   Type `object`.
@@ -49720,7 +49924,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
     This can usually be kept at the default independent of the load
 
 `rondb.rondb.resources.requests.memory.rdrsMiB` <a class="headerlink" href="#helm.rondb.rondb.resources.requests.memory.rdrsMiB" title="Permanent link">#</a> { #helm.rondb.rondb.resources.requests.memory.rdrsMiB }
-:   Type `integer`, default `100`.
+:   Type `integer`, default `2048`.
 
 `rondb.rondb.resources.requests.storage` <a class="headerlink" href="#helm.rondb.rondb.resources.requests.storage" title="Permanent link">#</a> { #helm.rondb.rondb.resources.requests.storage }
 :   Type `object`.
@@ -50206,7 +50410,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -50287,7 +50491,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `spark` <a class="headerlink" href="#helm.spark" title="Permanent link">#</a> { #helm.spark }
 :   Type `object`, default `{}`.
-    override sparkt values
+    override spark values
 
 `spark.cleanupOnUninstall` <a class="headerlink" href="#helm.spark.cleanupOnUninstall" title="Permanent link">#</a> { #helm.spark.cleanupOnUninstall }
 :   Type `object`, default `{"enabled":true,"ttlSecondsAfterFinished":null}`.
@@ -50499,7 +50703,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         image:
           image: rss
           initImage: hops-rss-init
-          initImageVersion: 0.9.2
+          initImageVersion: 0.9.3
           pullPolicy: Always
         namespaceSelector: ''
         nodeSelector: {}
@@ -50615,7 +50819,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         image:
           image: rss
           initImage: hops-rss-init
-          initImageVersion: 0.9.2
+          initImageVersion: 0.9.3
           pullPolicy: Always
         namespaceSelector: ''
         nodeSelector: {}
@@ -51791,7 +51995,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -51836,7 +52040,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works/superset
           repository: mysql
-          tag: 8.4.11-ubuntu24.04-h5
+          tag: 8.4.13-ubuntu24.04-h1
         metrics:
           enabled: true
           image:
@@ -51844,7 +52048,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             pullPolicy: IfNotPresent
             registry: docker.hops.works/superset
             repository: mysqld-exporter
-            tag: 0.20.0-alpine-h1.1
+            tag: 0.20.0-alpine-h2.1
           resources:
             limits:
               cpu: 100m
@@ -51868,7 +52072,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             pullPolicy: IfNotPresent
             registry: docker.hops.works/superset
             repository: os-shell
-            tag: 12-alpine-h1.1
+            tag: 12-alpine-h2.1
       superset:
         _publicRoleDefaultName: Public
         allowAnonymousAccess: true
@@ -51956,7 +52160,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/hopsworks/superset
-          tag: 6.0.0p4.5
+          tag: 6.0.0p4.7
         init:
           adminUser:
             email: admin@superset.com
@@ -52013,7 +52217,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         initImage:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/superset/dockerize
-          tag: 0.14.0-alpine-h1.1
+          tag: 0.14.0-alpine-h2.1
         postgresql:
           enabled: false
         publicRoleLike: Public
@@ -52065,7 +52269,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           image:
             registry: docker.hops.works/superset
             repository: redis
-            tag: 7.4.11-alpine-h2
+            tag: 7.4.11-alpine-h4
           master:
             configuration: |-
               maxmemory 256mb
@@ -52120,7 +52324,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
               pullPolicy: IfNotPresent
               registry: docker.hops.works/superset
               repository: redis-exporter
-              tag: 1.90.0-alpine-h1.1
+              tag: 1.90.0-alpine-h2.1
             resources:
               limits:
                 cpu: 100m
@@ -52261,7 +52465,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 
 `superset` <a class="headerlink" href="#helm.superset" title="Permanent link">#</a> { #helm.superset }
 :   Type `object`, default `{"mysql":{"enabled":true},"superset":{"redis":{"enabled":true}}}`.
-    override  superset values
+    override superset values
 
 `superset.cleanupOnUninstall` <a class="headerlink" href="#helm.superset.cleanupOnUninstall" title="Permanent link">#</a> { #helm.superset.cleanupOnUninstall }
 :   Type `object`, default `{"enabled":true,"ttlSecondsAfterFinished":null}`.
@@ -52310,7 +52514,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works/superset
           repository: mysql
-          tag: 8.4.11-ubuntu24.04-h5
+          tag: 8.4.13-ubuntu24.04-h1
         metrics:
           enabled: true
           image:
@@ -52318,7 +52522,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             pullPolicy: IfNotPresent
             registry: docker.hops.works/superset
             repository: mysqld-exporter
-            tag: 0.20.0-alpine-h1.1
+            tag: 0.20.0-alpine-h2.1
           resources:
             limits:
               cpu: 100m
@@ -52342,7 +52546,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             pullPolicy: IfNotPresent
             registry: docker.hops.works/superset
             repository: os-shell
-            tag: 12-alpine-h1.1
+            tag: 12-alpine-h2.1
         ```
 
 `superset.superset` <a class="headerlink" href="#helm.superset.superset" title="Permanent link">#</a> { #helm.superset.superset }
@@ -52438,7 +52642,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/hopsworks/superset
-          tag: 6.0.0p4.5
+          tag: 6.0.0p4.7
         init:
           adminUser:
             email: admin@superset.com
@@ -52495,7 +52699,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         initImage:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/superset/dockerize
-          tag: 0.14.0-alpine-h1.1
+          tag: 0.14.0-alpine-h2.1
         postgresql:
           enabled: false
         publicRoleLike: Public
@@ -52547,7 +52751,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           image:
             registry: docker.hops.works/superset
             repository: redis
-            tag: 7.4.11-alpine-h2
+            tag: 7.4.11-alpine-h4
           master:
             configuration: |-
               maxmemory 256mb
@@ -52602,7 +52806,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
               pullPolicy: IfNotPresent
               registry: docker.hops.works/superset
               repository: redis-exporter
-              tag: 1.90.0-alpine-h1.1
+              tag: 1.90.0-alpine-h2.1
             resources:
               limits:
                 cpu: 100m
@@ -52798,7 +53002,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -52925,7 +53129,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 480-v11
+          tag: 480-v12
         initContainers:
           coordinator:
           - command:
@@ -53068,7 +53272,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 
 `trino` <a class="headerlink" href="#helm.trino" title="Permanent link">#</a> { #helm.trino }
 :   Type `object`, default `{}`.
-    override  trino values
+    override trino values
 
 `trino.catalogsConfigmapName` <a class="headerlink" href="#helm.trino.catalogsConfigmapName" title="Permanent link">#</a> { #helm.trino.catalogsConfigmapName }
 :   Type `string`, default `"hopsworks-trino-catalogs"`.
@@ -53190,7 +53394,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 480-v11
+          tag: 480-v12
         initContainers:
           coordinator:
           - command:
@@ -53765,7 +53969,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 480-v11
+          tag: 480-v12
         initContainers:
           coordinator:
           - command:
@@ -54351,7 +54555,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 480-v11
+          tag: 480-v12
         initContainers:
           coordinator:
           - command:
@@ -54645,7 +54849,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
     Repository location of the Trino image, typically `organization/imagename`
 
 `trino.trino.image.tag` <a class="headerlink" href="#helm.trino.trino.image.tag" title="Permanent link">#</a> { #helm.trino.trino.image.tag }
-:   Type `string`, default `"480-v11"`.
+:   Type `string`, default `"480-v12"`.
     Image tag for the Trino image. This value is explicitly pinned here and overrides any defaulting to `appVersion` from Chart.yaml.
 
 `trino.trino.initContainers.coordinator[2].name` <a class="headerlink" href="#helm.trino.trino.initContainers.coordinator.2.name" title="Permanent link">#</a> { #helm.trino.trino.initContainers.coordinator.2.name }
@@ -54670,7 +54874,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 

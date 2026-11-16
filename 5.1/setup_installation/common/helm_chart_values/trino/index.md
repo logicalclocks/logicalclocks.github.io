@@ -4,7 +4,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -131,7 +131,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 480-v11
+          tag: 480-v12
         initContainers:
           coordinator:
           - command:
@@ -274,7 +274,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 
 `trino` <a class="headerlink" href="#helm.trino" title="Permanent link">#</a> { #helm.trino }
 :   Type `object`, default `{}`.
-    override  trino values
+    override trino values
 
 `trino.catalogsConfigmapName` <a class="headerlink" href="#helm.trino.catalogsConfigmapName" title="Permanent link">#</a> { #helm.trino.catalogsConfigmapName }
 :   Type `string`, default `"hopsworks-trino-catalogs"`.
@@ -396,7 +396,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 480-v11
+          tag: 480-v12
         initContainers:
           coordinator:
           - command:
@@ -971,7 +971,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 480-v11
+          tag: 480-v12
         initContainers:
           coordinator:
           - command:
@@ -1557,7 +1557,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 480-v11
+          tag: 480-v12
         initContainers:
           coordinator:
           - command:
@@ -1851,7 +1851,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
     Repository location of the Trino image, typically `organization/imagename`
 
 `trino.trino.image.tag` <a class="headerlink" href="#helm.trino.trino.image.tag" title="Permanent link">#</a> { #helm.trino.trino.image.tag }
-:   Type `string`, default `"480-v11"`.
+:   Type `string`, default `"480-v12"`.
     Image tag for the Trino image. This value is explicitly pinned here and overrides any defaulting to `appVersion` from Chart.yaml.
 
 `trino.trino.initContainers.coordinator[2].name` <a class="headerlink" href="#helm.trino.trino.initContainers.coordinator.2.name" title="Permanent link">#</a> { #helm.trino.trino.initContainers.coordinator.2.name }

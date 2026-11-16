@@ -4,7 +4,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -85,7 +85,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `spark` <a class="headerlink" href="#helm.spark" title="Permanent link">#</a> { #helm.spark }
 :   Type `object`, default `{}`.
-    override sparkt values
+    override spark values
 
 `spark.cleanupOnUninstall` <a class="headerlink" href="#helm.spark.cleanupOnUninstall" title="Permanent link">#</a> { #helm.spark.cleanupOnUninstall }
 :   Type `object`, default `{"enabled":true,"ttlSecondsAfterFinished":null}`.
@@ -297,7 +297,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         image:
           image: rss
           initImage: hops-rss-init
-          initImageVersion: 0.9.2
+          initImageVersion: 0.9.3
           pullPolicy: Always
         namespaceSelector: ''
         nodeSelector: {}
@@ -413,7 +413,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         image:
           image: rss
           initImage: hops-rss-init
-          initImageVersion: 0.9.2
+          initImageVersion: 0.9.3
           pullPolicy: Always
         namespaceSelector: ''
         nodeSelector: {}

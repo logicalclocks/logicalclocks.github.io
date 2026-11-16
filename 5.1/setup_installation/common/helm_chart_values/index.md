@@ -17,7 +17,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 ## Common values { #helm-values-common }
 
@@ -47,20 +47,20 @@ _Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
 | [`consul`][helm-values-consul] | [`consul` 1.8.16](https://artifacthub.io/packages/helm/hashicorp/consul/1.8.16) | 24 |
 | [`docker-registry`][helm-values-docker-registry] |  | 90 |
 | [`grafana`][helm-values-grafana] | [`grafana` 7.0.17](https://artifacthub.io/packages/helm/grafana/grafana/7.0.17) | 7 |
-| [`hive`][helm-values-hive] |  | 78 |
-| [`hopsfs`][helm-values-hopsfs] |  | 221 |
-| [`hopsworks`][helm-values-hopsworks] |  | 893 |
-| [`hw-kueue`][helm-values-hw-kueue] | [`kueue` 0.12.2](https://github.com/kubernetes-sigs/kueue/blob/v0.12.2/charts/kueue/README.md) | 94 |
+| [`hive`][helm-values-hive] |  | 79 |
+| [`hopsfs`][helm-values-hopsfs] |  | 222 |
+| [`hopsworks`][helm-values-hopsworks] |  | 894 |
+| [`hw-kueue`][helm-values-hw-kueue] | [`kueue` 0.12.2](https://github.com/kubernetes-sigs/kueue/blob/v0.12.2/charts/kueue/README.md) | 95 |
 | [`hw-kyverno`][helm-values-hw-kyverno] |  | 56 |
 | [`judge`][helm-values-judge] |  | 23 |
-| [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 0.45.2](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/0.45.2) | 88 |
+| [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 0.45.2](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/0.45.2) | 90 |
 | [`kserve`][helm-values-kserve] |  | 240 |
 | [`minio`][helm-values-minio] |  | 42 |
 | [`olk`][helm-values-olk] | [`prometheus-elasticsearch-exporter` 5.8.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-elasticsearch-exporter/5.8.0) | 164 |
 | [`onlinefs`][helm-values-onlinefs] |  | 93 |
 | [`prometheus`][helm-values-prometheus] | [`prometheus` 25.20.2](https://artifacthub.io/packages/helm/prometheus-community/prometheus/25.20.2), [`prometheus-adapter` 4.11.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-adapter/4.11.0) | 9 |
 | [`ray`][helm-values-ray] | [`kuberay-operator` 1.4.0](https://artifacthub.io/packages/helm/kuberay-operator/kuberay-operator/1.4.0) | 2 |
-| [`rondb`][helm-values-rondb] | [`rondb` 26.2.21](https://github.com/logicalclocks/rondb-helm/blob/v26.2.21/values.schema.json) | 464 |
+| [`rondb`][helm-values-rondb] | [`rondb` 26.2.24](https://github.com/logicalclocks/rondb-helm/blob/v26.2.24/values.schema.json) | 498 |
 | [`spark`][helm-values-spark] | [`spark-operator` 2.5.1](https://github.com/kubeflow/spark-operator/blob/v2.5.1/charts/spark-operator-chart/README.md) | 160 |
 | [`superset`][helm-values-superset] | [`mysql` 12.3.5](https://artifacthub.io/packages/helm/bitnami/mysql/12.3.5), [`superset` 0.15.0](https://artifacthub.io/packages/helm/superset/superset/0.15.0) | 16 |
 | [`trino`][helm-values-trino] | [`trino` 1.41.0](https://artifacthub.io/packages/helm/trino/trino/1.41.0) | 31 |

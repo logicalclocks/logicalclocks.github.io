@@ -4,7 +4,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.1.2` (Hopsworks `5.1.2`)._
+_Generated from the Hopsworks Helm chart `5.1.3` (Hopsworks `5.1.3`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -49,7 +49,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works/superset
           repository: mysql
-          tag: 8.4.11-ubuntu24.04-h5
+          tag: 8.4.13-ubuntu24.04-h1
         metrics:
           enabled: true
           image:
@@ -57,7 +57,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             pullPolicy: IfNotPresent
             registry: docker.hops.works/superset
             repository: mysqld-exporter
-            tag: 0.20.0-alpine-h1.1
+            tag: 0.20.0-alpine-h2.1
           resources:
             limits:
               cpu: 100m
@@ -81,7 +81,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             pullPolicy: IfNotPresent
             registry: docker.hops.works/superset
             repository: os-shell
-            tag: 12-alpine-h1.1
+            tag: 12-alpine-h2.1
       superset:
         _publicRoleDefaultName: Public
         allowAnonymousAccess: true
@@ -169,7 +169,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/hopsworks/superset
-          tag: 6.0.0p4.5
+          tag: 6.0.0p4.7
         init:
           adminUser:
             email: admin@superset.com
@@ -226,7 +226,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         initImage:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/superset/dockerize
-          tag: 0.14.0-alpine-h1.1
+          tag: 0.14.0-alpine-h2.1
         postgresql:
           enabled: false
         publicRoleLike: Public
@@ -278,7 +278,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           image:
             registry: docker.hops.works/superset
             repository: redis
-            tag: 7.4.11-alpine-h2
+            tag: 7.4.11-alpine-h4
           master:
             configuration: |-
               maxmemory 256mb
@@ -333,7 +333,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
               pullPolicy: IfNotPresent
               registry: docker.hops.works/superset
               repository: redis-exporter
-              tag: 1.90.0-alpine-h1.1
+              tag: 1.90.0-alpine-h2.1
             resources:
               limits:
                 cpu: 100m
@@ -474,7 +474,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 
 `superset` <a class="headerlink" href="#helm.superset" title="Permanent link">#</a> { #helm.superset }
 :   Type `object`, default `{"mysql":{"enabled":true},"superset":{"redis":{"enabled":true}}}`.
-    override  superset values
+    override superset values
 
 `superset.cleanupOnUninstall` <a class="headerlink" href="#helm.superset.cleanupOnUninstall" title="Permanent link">#</a> { #helm.superset.cleanupOnUninstall }
 :   Type `object`, default `{"enabled":true,"ttlSecondsAfterFinished":null}`.
@@ -523,7 +523,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works/superset
           repository: mysql
-          tag: 8.4.11-ubuntu24.04-h5
+          tag: 8.4.13-ubuntu24.04-h1
         metrics:
           enabled: true
           image:
@@ -531,7 +531,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             pullPolicy: IfNotPresent
             registry: docker.hops.works/superset
             repository: mysqld-exporter
-            tag: 0.20.0-alpine-h1.1
+            tag: 0.20.0-alpine-h2.1
           resources:
             limits:
               cpu: 100m
@@ -555,7 +555,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             pullPolicy: IfNotPresent
             registry: docker.hops.works/superset
             repository: os-shell
-            tag: 12-alpine-h1.1
+            tag: 12-alpine-h2.1
         ```
 
 `superset.superset` <a class="headerlink" href="#helm.superset.superset" title="Permanent link">#</a> { #helm.superset.superset }
@@ -651,7 +651,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/hopsworks/superset
-          tag: 6.0.0p4.5
+          tag: 6.0.0p4.7
         init:
           adminUser:
             email: admin@superset.com
@@ -708,7 +708,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         initImage:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/superset/dockerize
-          tag: 0.14.0-alpine-h1.1
+          tag: 0.14.0-alpine-h2.1
         postgresql:
           enabled: false
         publicRoleLike: Public
@@ -760,7 +760,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           image:
             registry: docker.hops.works/superset
             repository: redis
-            tag: 7.4.11-alpine-h2
+            tag: 7.4.11-alpine-h4
           master:
             configuration: |-
               maxmemory 256mb
@@ -815,7 +815,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
               pullPolicy: IfNotPresent
               registry: docker.hops.works/superset
               repository: redis-exporter
-              tag: 1.90.0-alpine-h1.1
+              tag: 1.90.0-alpine-h2.1
             resources:
               limits:
                 cpu: 100m
