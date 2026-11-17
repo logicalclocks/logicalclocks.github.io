@@ -155,7 +155,7 @@ Helm chart 5.2.2 · Released on 2026-10-28 · Changes since [5.2.1][hopsworks-5-
 
 - [API] [FRONTEND] [HELM] Changed how OnlineFS checks the topic of the records it writes, to address a vulnerability ([what this affects][docs-upgrade-onlinefs]).
   Restart the producers that hold on to a topic after it changes; on a Kafka where records reach OnlineFS on a renamed topic, such as a mirrored secondary, set `onlinefs.configmapOverrides.onlinefssite.service.verifyFeatureGroupTopic: false`.
-- [API] A batch REST request with more than 4096 operations, or a batch feature vector request with more than 4096 entries, is now rejected by the RonDB REST server with HTTP 413, where it accepted any number; split larger batches, or raise `rondb.rondb.rdrs.internal.maxOperationsPerBatchRequest`.
+- [API] A batch REST request with more than 4096 operations, or a batch feature vector request with more than 4096 entries, is now rejected by the RonDB REST server with HTTP 413, where only the 1 MiB request body limit bounded it; split larger batches, or raise `rondb.rondb.rdrs.internal.maxOperationsPerBatchRequest`.
 - [API] A primary key read of a BLOB or TEXT value larger than 2 MiB now fails that operation with HTTP 413, and a feature vector with such a value fails with error 22 `Feature value too large.`, where the RonDB REST server returned it; raise `rondb.rondb.rdrs.internal.maxBlobTextValueBytes` (`0` for no limit) if you store larger values.
 - [API] [FRONTEND] On a cluster with Kueue, Spark jobs are now queued by Kueue and run with static executors instead of dynamic allocation: a job saved with dynamic allocation runs its dynamic-allocation minimum, at least one executor, and `spark.dynamicAllocation.enabled=true` is refused; set `spark.executor.instances` for more executors ([what changes][docs-kueue-what-changes]).
 - [API] [FRONTEND] The upgrade deletes the Deployment of every Python app whose executions have all ended, also one that still answers requests; start such an app again to keep it running.
@@ -166,7 +166,7 @@ Helm chart 5.2.2 · Released on 2026-10-28 · Changes since [5.2.1][hopsworks-5-
 - [FRONTEND] Because of a security fix, give a Python app that calls Hopsworks credentials of its own, such as an API key.
 - [HELM] Hopsworks now uses Kueue 0.20.3 installed as its own release, `kueue` in `kueue-system`, instead of the Kueue 0.12.2 bundled in its namespace, and the chart refuses to render while the bundled Kueue still runs ([Kueue outside the Hopsworks namespace][docs-upgrade-kueue-external]).
   With `global._hopsworks.kueue.enabled: true`, move Kueue with the 5.1 chart's `migrate-to-external.sh` before the upgrade, run the chart's `upgrade-kueue.sh` after it, and remove `hw-kueue.managerConfig`, `hw-kueue.nameOverride` and every `hw-kueue.kueue` value but `enabled` from your values, or the values schema rejects the upgrade.
-- [HELM] Remove `rondb.rondb.rdrs.internal.bufferSize`, `gomaxprocs` and `maxAllocatedBuffers` from your values, which the chart ignored, or `helm upgrade` fails before changing anything.
+- [HELM] Remove `rondb.rondb.rdrs.internal.bufferSize`, `batchMaxSize`, `gomaxprocs` and `maxAllocatedBuffers` from your values, which the chart ignored, or `helm upgrade` fails before changing anything.
 - [HELM] If you pin `rondb.rondb.images.rondb.tag` to a version older than 26.02.12, set `rondb.rondb.rdrs.internal.bufferShrinkAfterS: null` before upgrading, or upgrade the image: the chart now sets `Internal.BufferShrinkAfterS`, which RonDB REST server images before 26.02.12 reject, and they then don't start.
 - [HELM] The hopsworks, HopsFS and Hive schema migrations now run on the DDL SQL node instead of the application SQL nodes, so they no longer wait for application queries; a cluster that disables it (`rondb.rondb.meta.ddlMySQLd.enabled: false`) sets `hopsworks.dependencies.mysql.ddlConsulServiceName`, `hopsfs.dependencies.mysql.ddlConsulServiceName` and `hive.metastore.dependencies.mysql.ddlConsulServiceName` to `mysql`, or the migrations wait for a SQL node that doesn't exist ([DDL SQL node][docs-upgrade-ddl]).
 - [HELM] The chart package no longer ships `values.aws.yaml`, `values.azure.yml`, `values.gcp.yaml`, `values.rhel8.yaml` and `values.nodeselector-tolerations.yaml`; keep a copy of the one you pass, or start from the values file of the [AWS][docs-setup-aws], [Azure][docs-setup-azure] or [GCP][docs-setup-gcp] setup guide and take the RHEL 8 and node pool values from [Python build performance][docs-buildkitd-rhel8] and [dedicated node pools][docs-node-pools].
@@ -272,7 +272,8 @@ Helm chart 5.2.0 · Released on 2026-10-15 · Changes since [5.1.0][hopsworks-5-
 
 - [API] Addressed vulnerabilities in the Java client dependencies.
 - [API] [FRONTEND] Addressed vulnerabilities in model deployments.
-- [API] [FRONTEND] Fixed, on clusters with more than one RonDB MySQL server, library installs building on an older image of the environment and losing earlier installs, `insert(wait_for_online_ingestion=True)` returning before the rows were online, and apps reporting the execution they replaced.
+- [API] [FRONTEND] Fixed, on clusters with more than one RonDB MySQL server, library installs building on an older image of the environment and losing earlier installs, and jobs running on that older image (also in [5.1.3][hopsworks-5-1-3]).
+- [API] [FRONTEND] Fixed, on clusters with more than one RonDB MySQL server, `insert(wait_for_online_ingestion=True)` returning before the rows were online, and apps reporting the execution they replaced.
 - [API] Fixed OnlineFS leaving out of the online store a row with a null in a nullable `TEXT` column of an online feature group.
 - [API] Fixed `FeatureView.init_serving` in the Python client never releasing its online store connections, so a process serving many feature views could exhaust the connections of the RonDB MySQL servers.
 - [API] [FRONTEND] [HELM] Added the KServe Standard deployment mode, the default for new model deployments, which runs a deployment as a Kubernetes Deployment instead of a Knative service; existing deployments keep Knative mode, and `knative_mode` of a predictor in the Python client chooses the mode.
@@ -324,7 +325,7 @@ Helm chart 5.2.0 · Released on 2026-10-15 · Changes since [5.1.0][hopsworks-5-
 - [API] Fixed model deployments answering 403 to users whose password an administrator set.
   Such users already on a temporary password regain access at their next password change or account update.
 - [API] [FRONTEND] Fixed ingestion statistics runs piling up on frequently written feature groups and leaving other jobs pending; at most one runs per feature group.
-- [API] [FRONTEND] Fixed deleted feature views, feature groups and projects coming back as empty entries, which blocked creating new ones with the same name.
+- [API] [FRONTEND] Fixed deleted feature views, feature groups and projects coming back as empty entries, which blocked creating new ones with the same name (also in [5.1.3][hopsworks-5-1-3]).
 - [API] Fixed external Spark clients failing to read, write or delete DELTA feature groups when the HopsFS NameNode and DataNode load balancers are turned off (also in [5.1.2][hopsworks-5-1-2]).
 - [API] Fixed `Deployment.start()` and `save()` in the Python client returning before the deployment could be reached, so that the first `predict()` failed with "Deployment not created or running".
 - [API] [FRONTEND] Fixed a change of an LLM deployment's vLLM version being dropped, so that the deployment restarted on its old image, and LLM deployments failing to restart or update once an administrator removed their version from `hopsworks.variables.kube_serving_vllm_versions` or `hopsworks.variables.kube_serving_vllm_omni_versions`.
@@ -340,7 +341,7 @@ Helm chart 5.2.0 · Released on 2026-10-15 · Changes since [5.1.0][hopsworks-5-
 - [API] Fixed Python engine reads failing for queries with a filter on a joined feature group or a filter that compares features of two feature groups.
 - [API] [FRONTEND] Fixed a killed Spark job with pending executors staying in the aggregating logs state for up to 20 minutes (also in [5.1.1][hopsworks-5-1-1]).
 - [API] [FRONTEND] Fixed the logs of Ray jobs missing the output of their workers when copying the head's log files took longer than five minutes.
-- [API] [FRONTEND] Fixed project creation sometimes failing and rolling back on a group that "already exists".
+- [API] [FRONTEND] Fixed project creation sometimes failing and rolling back on a group that "already exists" (also in [5.1.3][hopsworks-5-1-3]).
 - [API] [FRONTEND] Fixed tags and keywords added right after an artifact was created missing from search.
 - [API] [FRONTEND] Fixed Trino giving a project access to only one of several feature stores shared with it (also in [5.1.1][hopsworks-5-1-1]).
 - [API] [FRONTEND] Fixed Git operations failing with an I/O error when a Git provider proxy is set and HopsFS encryption at rest is on.
@@ -366,12 +367,12 @@ Helm chart 5.2.0 · Released on 2026-10-15 · Changes since [5.1.0][hopsworks-5-
 - [FRONTEND] Added suggestions of each connector's properties to the properties editor of the Trino catalog form.
 - [FRONTEND] Changed the coding agent instruction files in members' home directories, such as `AGENTS.md`, to be updated on upgrade unless the member edited them.
 - [FRONTEND] Fixed queued service operations failing on every retry when they removed a user from Superset or set up a project Observer's online feature store connection in Superset, and stopping for good after 68 failed attempts; a failing operation now retries once a day (also in [5.1.2][hopsworks-5-1-2]).
-- [FRONTEND] Fixed a Jupyter server that had just started failing requests on clusters with more than one Hopsworks instance.
+- [FRONTEND] Fixed a Jupyter server that had just started failing requests on clusters with more than one Hopsworks instance (also in [5.1.3][hopsworks-5-1-3]).
 - [FRONTEND] Fixed Spark Connect in web terminals never starting on clusters that enforce the Kyverno restricted policies.
 - [FRONTEND] Fixed the SQL Runner leaving a query running when you leave it right after starting the query, and its autocompletion offering no column names in `WHERE`, `GROUP BY` or join conditions (also in [5.1.2][hopsworks-5-1-2]).
 - [FRONTEND] Fixed the **Why?** button of an online ingestion in a feature group's activity opening every OnlineFS log of the project instead of that ingestion's; it is now named **Logs** (also in [5.1.1][hopsworks-5-1-1]).
 - [FRONTEND] Fixed the table preview of a PostgreSQL data source failing for a role granted only some columns.
-- [FRONTEND] Fixed the dialogs and drawers of Git repository actions in the project settings closing on their own, and the Git Status drawer never opening.
+- [FRONTEND] Fixed dialogs, drawers and menus opened from a table row closing by themselves on the Git, model deployment, alert receiver and feature monitoring pages, and the Git Status drawer never opening (also in [5.1.3][hopsworks-5-1-3]).
 - [FRONTEND] Fixed transformation function previews showing the imports of the defining module instead of only the function.
 - [FRONTEND] Fixed Codex agent jobs failing before they reached the model.
 - [FRONTEND] Fixed the dialog that `hops setup` opens in the browser leaving a user without projects stuck; it can now create a project.
@@ -408,6 +409,8 @@ Helm chart 5.2.0 · Released on 2026-10-15 · Changes since [5.1.0][hopsworks-5-
 - [FRONTEND] [HELM] Web terminal sessions now last 8 hours instead of 4, and every upgrade sets `terminal_session_hours` from `hopsworks.terminal.sessionHours`, replacing a value set in the admin UI, which upgrades used to keep; to keep another length, set it in `hopsworks.terminal.sessionHours`.
 - [HELM] Upgrade 5.1 clusters to [5.2.2][hopsworks-5-2-2] instead of 5.2.0, whose OpenSearch index pass refuses every client, fails on an index with an empty mapping and doesn't check for nmslib vector fields, and whose index pass and OpenSearch restarts delete the roles behind restricted-access grants and feature group shares; 5.2.0 also lacks the OpenSearch vulnerability fix and the opt-in index copy Job of [5.1.2][hopsworks-5-1-2] ([upgrading OpenSearch][docs-os]).
   5.2.1 fixes these, but like 5.2.0 it loses Airflow tables, such as variables and XComs, in the upgrade from 5.1.
+- [HELM] Upgrade 5.1.3 clusters to [5.2.4][hopsworks-5-2-4] or later, not to an earlier 5.2 release: 5.2.0 and 5.2.1 lack most of the changes of [5.1.3][hopsworks-5-1-3], 5.2.2 and 5.2.3 also lack its fix of model deployments failing with an x509 error, and 5.2.4 still lacks, among others, the RonDB 26.02.14, Kafka load balancer annotations, Filebeat registry fix and fix of feature group deletes on S3, GCS and AWS Glue data sources of 5.1.3.
+  Set `rondb.rondb.images.rondb.tag: 26.02.14` so that the upgrade doesn't move RonDB back to 26.02.12, and remove it once you upgrade to a release with RonDB 26.02.14 or later; remove `kafka.cluster.kafka.externalLoadBalancer.bootstrapAnnotations` and `kafka.cluster.kafka.externalLoadBalancer.brokerAnnotations` from your values, which 5.2.4 and earlier reject.
 - [HELM] The upgrade migrates Kafka from ZooKeeper to KRaft, which can't be undone: give `helm upgrade` a long enough `--timeout`, never pass `--atomic` (`--rollback-on-failure` in Helm 4) or run `helm rollback`, and under ArgoCD invalidate its cluster cache, hard-refresh and sync again by hand ([Kafka 4 and KRaft][docs-kafka4-expect], [under ArgoCD][docs-kafka4-argocd]).
 - [HELM] Upgrade to 5.2 only from 5.1, satellites before central, with central and its satellites all under Helm or all under ArgoCD ([satellite clusters][docs-os-satellites], [Strimzi CRDs][docs-kafka4-strimzi-crds]).
 - [HELM] On a cluster installed before 5.1, OpenSearch refuses every client while the upgrade copies its oldest indices; plan the outage and the timeout ([upgrading OpenSearch][docs-os]).

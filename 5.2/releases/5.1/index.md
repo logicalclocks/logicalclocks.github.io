@@ -4,23 +4,87 @@ The releases of Hopsworks 5.1, newest first.
 
 ## 5.1.3 { #hopsworks-5-1-3 }
 
-Helm chart 5.1.3 · Released on TBD · Changes since [5.1.2][hopsworks-5-1-2] · Python client [5.1.2](https://github.com/logicalclocks/hopsworks-api/releases/tag/5.1.2), unchanged
+Helm chart 5.1.3 · Released on 2026-11-16 · Changes since [5.1.2][hopsworks-5-1-2] · Python client [5.1.3](https://github.com/logicalclocks/hopsworks-api/releases/tag/5.1.3)
 
 ### What's changed
 
+- [API] [FRONTEND] Addressed vulnerabilities in the Trino and Superset services of projects.
+- [API] [FRONTEND] Fixed deleting a feature group on an S3, GCS or AWS Glue data source also deleting the data of other feature groups whose folder starts with the same name, such as version 10 when deleting version 1; an object S3 refuses to delete now fails the delete instead of being ignored.
+- [API] [FRONTEND] Fixed model deployments never becoming ready, with an x509 error, when the image registry has an organisation path or a port.
+- [API] [FRONTEND] Fixed, on clusters with more than one RonDB MySQL server, library installs building on an older image of the environment and losing earlier installs, and jobs running on that older image.
+- [API] Fixed the Python client writing the rows it meant only for the offline feature store into the online feature store of a 5.0 satellite cluster, and its filtered kNN searches failing on a 5.0 satellite's OpenSearch.
+- [API] [FRONTEND] Changed the Kubernetes Monitoring dialog of a job to stay open when the run ends and show its final status with the last pods and events it observed; a Spark run that Kubernetes refuses to start, such as for a ResourceQuota or LimitRange, now shows the reason in the dialog and in its `stderr.log`.
+- [API] [FRONTEND] Fixed the logs of a project whose Kubernetes namespace was created beforehand under another name (`hopsworks.variables.kube_skip_namespace_creation`), deployment logs included, going to OpenSearch indices the project can't read; they are now named after the project.
+- [API] [FRONTEND] Fixed deleted feature views, feature groups and projects coming back as empty entries, which blocked creating new ones with the same name.
+- [API] [FRONTEND] Fixed project creation sometimes failing and rolling back on a group that "already exists".
+- [API] Fixed `hopsworks.login()` and Kafka inserts failing with `FileNotFoundError` on Windows, where the Python client used `/tmp`.
+- [API] Fixed waiting for an online ingestion of no rows in the Python client lasting until its timeout, or forever with `timeout` 0.
+- [FRONTEND] Fixed **Make a copy** of a job overwriting the job whose name the copy was given.
+- [FRONTEND] Added **File**, **Main class** and **Default arguments** to **Make a copy** of a job, prefilled from the job, so that a copy can run another program.
+- [FRONTEND] Fixed **Make a copy** of a job with environment variables failing with HTTP 400, and **Export** of such a job writing its environment variables in a form the job API does not accept.
+- [FRONTEND] Fixed a Jupyter server that had just started failing requests on clusters with more than one Hopsworks instance.
+- [FRONTEND] Fixed dialogs, drawers and menus opened from a table row closing by themselves on the Git, model deployment, alert receiver and feature monitoring pages, and the Git Status drawer never opening.
+- [HELM] Fixed Filebeat sending every container log on a node again after each restart, pod re-creation or `helm upgrade`, which could fill OpenSearch with duplicates until it stopped ingesting.
+  The first Filebeat start after the upgrade sends each node's current logs once more.
+- [HELM] Fixed the OpenSearch snapshot restore Job completing although shards failed to restore or an index it had closed for the restore stayed closed; such a restore now fails its Job.
+- [HELM] Added moving Hopsworks from the Kueue 0.12.2 it bundles in its namespace to Kueue 0.18.1 installed as its own release, `kueue` in `kueue-system`, keeping every queue, with the chart's `migrate-to-external.sh` and `hw-kueue.kueue.enabled: false` ([Kueue outside the Hopsworks namespace][docs-kueue-external-run]).
+  A cluster with Kueue makes this move before it upgrades to 5.2.2 or later.
+- [HELM] Added support for Kubernetes 1.33, which the chart refused below 1.34.
+- [HELM] Fixed the `TooManyShards` alert never firing; a cluster above 90% of its shard limit starts alerting after the upgrade.
+- [HELM] Added pinning the Kafka bootstrap and each broker LoadBalancer Service to its own MetalLB address, with `kafka.cluster.kafka.externalLoadBalancer.bootstrapAnnotations` and `brokerAnnotations` ([values][docs-values-kafka-broker-annotations]).
+- Addressed vulnerabilities in the Payara, Hopsworks, Hopsworks certificate authority, Hopsworks database migration, MySQL Connector/J, Superset, Superset init, Grafana, Prometheus, Prometheus config reloader, Prometheus node exporter, Prometheus adapter, Alertmanager, Pushgateway, kube-state-metrics, OpenSearch, OpenSearch Dashboards, OpenSearch metrics exporter, Logstash, Trino and remote shuffle service init images, and in the MySQL and Redis of Superset, their metrics exporters and the Superset MySQL volume permissions image.
+- Fixed the Superset Redis being OOM-killed every few hours by zombie processes its health probes left behind.
+- Fixed the statistics cleaner's query taking an hour or more per run on clusters with many feature statistics, during which it blocked the schema migrations of the statistics tables, such as migration V109 of an upgrade to 5.2 ([Migration V109][docs-upgrade-v109]).
 - Changed the RonDB REST server to size its buffer pool from its memory limit, return idle buffers after 15 minutes and opt out of transparent huge pages, so that its memory stays bounded.
 
 ### Breaking changes
 
-- [API] A batch REST request with more than 4096 operations, or a batch feature vector request with more than 4096 entries, is now rejected by the RonDB REST server with HTTP 413, where it accepted any number; split larger batches, or raise `rondb.rondb.rdrs.internal.maxOperationsPerBatchRequest`.
+- [API] A batch REST request with more than 4096 operations, or a batch feature vector request with more than 4096 entries, is now rejected by the RonDB REST server with HTTP 413, where only the 1 MiB request body limit bounded it; split larger batches, or raise `rondb.rondb.rdrs.internal.maxOperationsPerBatchRequest`.
 - [API] A primary key read of a BLOB or TEXT value larger than 2 MiB now fails that operation with HTTP 413, and a feature vector with such a value fails with error 22 `Feature value too large.`, where the RonDB REST server returned it; raise `rondb.rondb.rdrs.internal.maxBlobTextValueBytes` (`0` for no limit) if you store larger values.
-- [HELM] Remove `rondb.rondb.rdrs.internal.bufferSize`, `gomaxprocs` and `maxAllocatedBuffers` from your values, which the chart ignored, or `helm upgrade` fails before changing anything.
+- [HELM] Remove `rondb.rondb.rdrs.internal.bufferSize`, `batchMaxSize`, `gomaxprocs` and `maxAllocatedBuffers` from your values, which the chart ignored, or `helm upgrade` fails before changing anything.
+- [HELM] The hopsworks, HopsFS and Hive schema migrations now run on the DDL SQL node instead of the application SQL nodes, so they no longer wait for application queries; a cluster that disables it (`rondb.rondb.meta.ddlMySQLd.enabled: false`) sets `hopsworks.dependencies.mysql.ddlConsulServiceName`, `hopsfs.dependencies.mysql.ddlConsulServiceName` and `hive.metastore.dependencies.mysql.ddlConsulServiceName` to `mysql`, or the migrations wait for a SQL node that doesn't exist ([DDL SQL node][docs-upgrade-ddl]).
 - [HELM] If you pin `rondb.rondb.images.rondb.tag` to a version older than 26.02.12, set `rondb.rondb.rdrs.internal.bufferShrinkAfterS: null` before upgrading, or upgrade the image: the chart now sets `Internal.BufferShrinkAfterS`, which RonDB REST server images before 26.02.12 reject, and they then don't start.
+
+### Upgraded components
+
+| Component | 5.1.2 | 5.1.3 |
+| --------- | ----- | ----- |
+| Alertmanager | 0.34.0-alpine-h1.1 | 0.34.2-alpine-h2.0 |
+| Base environment images | 5.1.2 | 5.1.3 |
+| Grafana | 12.4.9-h10 | 12.4.14-h0.1 |
+| kube-state-metrics | v2.12.0 | 2.20.0-alpine-h2.1 |
+| Logstash | 7.17.29.6 | 7.17.29.8 |
+| MySQL Connector/J | 8.0.21.1 | 8.0.21.2 |
+| OpenSearch | 2.19.6.3 | 2.19.6.4 |
+| OpenSearch Dashboards | 2.19.6.7 | 2.19.6.9 |
+| OpenSearch metrics exporter | 1.11.0-alpine-h1.1 | 1.11.0-alpine-h2.1 |
+| Payara | 6.2025.11-jdk21.1 | 6.2025.11-jdk21.4 |
+| Prometheus | 3.14.0-alpine-h1.1 | 3.15.1-alpine-h2.0 |
+| Prometheus adapter | 0.12.0-alpine-h1.1 | 0.12.0-alpine-h2.1 |
+| Prometheus config reloader | 0.93.1-alpine-h1.1 | 0.93.1-alpine-h2.1 |
+| Prometheus node exporter | 1.12.1-alpine-h1.1 | 1.12.1-alpine-h2.1 |
+| Pushgateway | 1.11.3-alpine-h1.1 | 1.11.3-alpine-h2.1 |
+| Remote shuffle service init image | 0.9.2 | 0.9.3 |
+| RonDB | 26.02.11 | 26.02.14 |
+| Superset | 6.0.0p4.5 | 6.0.0p4.7 |
+| Superset init image | 0.14.0-alpine-h1.1 | 0.14.0-alpine-h2.1 |
+| Superset MySQL | 8.4.11-ubuntu24.04-h5 | 8.4.13-ubuntu24.04-h1 |
+| Superset MySQL metrics exporter | 0.20.0-alpine-h1.1 | 0.20.0-alpine-h2.1 |
+| Superset MySQL volume permissions image | 12-alpine-h1.1 | 12-alpine-h2.1 |
+| Superset Redis | 7.4.11-alpine-h2 | 7.4.11-alpine-h4 |
+| Superset Redis metrics exporter | 1.90.0-alpine-h1.1 | 1.90.0-alpine-h2.1 |
+| Trino | 480-v11 | 480-v12 |
 
 ### Configuration changes
 
 - [HELM] Changed the memory request and limit of the RonDB REST server pods (`rondb.rondb.resources.requests.memory.rdrsMiB`, `rondb.rondb.resources.limits.memory.rdrsMiB`) from 100 MiB and 500 MiB to 2 GiB; check node capacity before the upgrade.
   Large batches, wide rows or feature views with many feature groups can fill the RonDB REST server's buffer pool, which then answers HTTP 503, also to concurrent requests, and raising `maxOperationsPerBatchRequest` doesn't enlarge it: raise both values above 2 GiB for such workloads, or send smaller batches or fewer at once.
+- [HELM] Changed `prometheus.prometheus.kube-state-metrics.image.repository` from the subchart's `kube-state-metrics/kube-state-metrics` to `prometheus/kube-state-metrics`; if you mirror images into your own registry, mirror the new image.
+- [HELM] Changed the default of `olk.prometheus-elasticsearch-exporter.es.cluster_settings` from `false` to `true`, which the `TooManyShards` alert needs.
+- [HELM] Added `hw-kueue.kueue.enabled` (default `true`); `false` makes Hopsworks use a Kueue installed outside its release, once `migrate-to-external.sh` has moved the cluster to it, and leaves out the bundled Kueue and its queue objects.
+- [HELM] Added `hw-kueue.enforcePrerequisiteCheck` (default `true`); `false` skips the check that, with `hw-kueue.kueue.enabled: false`, refuses to render while the bundled Kueue or its `v1alpha1` storage is still on the cluster, or while no Kueue serving `v1beta2` is installed.
+- [HELM] Added `hopsworks.dependencies.mysql.ddlConsulServiceName`, `hopsfs.dependencies.mysql.ddlConsulServiceName` and `hive.metastore.dependencies.mysql.ddlConsulServiceName` (default `mysqlddl`), the SQL node the schema migrations connect to.
+- [HELM] Added `kafka.cluster.kafka.externalLoadBalancer.bootstrapAnnotations` and `kafka.cluster.kafka.externalLoadBalancer.brokerAnnotations`, the annotations of the Kafka bootstrap Service and of each broker's Service, merged over `annotations`.
 - [HELM] Added the RonDB REST server settings the chart didn't expose, under `rondb.rondb.rdrs`, such as its buffer pool, its request, BLOB and batch size limits, its rate limit and its use of transparent huge pages.
 
 ## 5.1.2 { #hopsworks-5-1-2 }
@@ -506,3 +570,7 @@ Follow [Before every upgrade][docs-upgrade-before] and [5.0.x to 5.1.x][docs-upg
 [docs-apps-auto-redeploy]: https://docs.hopsworks.ai/5.1/user_guides/projects/apps/#auto-redeploy-on-new-commits
 [docs-snowflake]: https://docs.hopsworks.ai/5.1/user_guides/fs/data_source/creation/snowflake/
 [docs-feature-monitoring]: https://docs.hopsworks.ai/5.1/user_guides/fs/feature_group/feature_monitoring/
+[docs-kueue-external-run]: https://docs.hopsworks.ai/5.2/setup_installation/admin/kueue_external/#run-the-migration
+[docs-values-kafka-broker-annotations]: https://docs.hopsworks.ai/5.1/setup_installation/common/helm_chart_values/kafka/#helm.kafka.cluster.kafka.externalLoadBalancer.brokerAnnotations
+[docs-upgrade-v109]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-v109-statistics-cleaner
+[docs-upgrade-ddl]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-ddl-sql-node
