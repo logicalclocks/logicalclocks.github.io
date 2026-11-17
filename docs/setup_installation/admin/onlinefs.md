@@ -301,9 +301,10 @@ A click on a topic opens its offsets, for each consumer group and partition:
 - `Current offset`: the offset OnlineFS resumes the partition from.
 - `Max offset`: the end offset, where Kafka writes the next record.
   A current offset equal to it means OnlineFS has processed every record of the partition.
+- `Lag`: the records OnlineFS has still to process, written or not.
 
 Every partition Kafka has is listed.
-A current offset of `-` means OnlineFS reads the partition from its min offset: it saved no offset for it, or saved one for an earlier topic of the same name, as after a restore that recreated the topic.
+A current offset of `-` means OnlineFS reads the partition from its min offset: it saved no offset for it, or saved one for an earlier topic of the same name, as after a restore that recreated the topic, which is marked `Earlier topic`.
 
 <figure>
   <img src="../../../assets/images/admin/onlinefs/offsets_topic.png" alt="The offsets of the fraud_detection_onlinefs topic for the RONDB consumer group: the min, current and max offset of each partition, with the actions to change them" />
@@ -327,8 +328,9 @@ In a topic's offsets, an administrator can move partitions of one consumer group
 - `Move to end` moves them to the end offset, to skip every record written until then.
 
 The confirmation lists each partition with its min, current and max offset and the new offset.
+Its button is red for a change that skips records: `Move to end`, or an offset above the current one.
 Hopsworks then sets the new offset as the partition's `desired_offset` in `onlinefs.kafka_offsets`, the start and the end as Kafka has them at that moment.
-The OnlineFS consumer that holds the partition looks for a new offset every 10 seconds, between batches, and moves the partition there with no restart: it saves the new offset, clears `desired_offset`, and resumes the partition from it.
+The OnlineFS consumer that holds the partition looks for a new offset every 10 seconds, between batches, and moves the partition there with no restart: it saves the new offset, clears `desired_offset`, records the outcome, and resumes the partition from it.
 The page reads the topic's offsets again every 5 seconds while its browser tab is visible, and says when the next read is.
 Under its current offset, a partition shows `Moving to <offset>` until OnlineFS moved it, then `Moved to <offset> by <time>`, the end of the first read that showed the move, until the page is closed.
 After a move back, OnlineFS can catch up before that read, so the current offset may already be at the max offset again.
@@ -342,7 +344,7 @@ After a move back, OnlineFS can catch up before that read, so the current offset
 
 Setting another offset for a partition before OnlineFS moved it replaces the first, also when two administrators set one at the same time.
 OnlineFS clears a desired offset without moving the partition when the topic was deleted and created again since it was set, once OnlineFS has seen the new topic at its metadata refresh, or when Kafka no longer has the offset, as when it deleted older records meanwhile, and logs a warning.
-The page shows such a partition as moved too, since the desired offset is gone either way; the warning tells them apart.
+The page then shows `Not moved to <offset>` with the reason instead of `Moved to <offset>`.
 A partition no OnlineFS consumer holds, as in a group whose thread number is 0, moves when a consumer gets it.
 Hopsworks logs who set which offsets; OnlineFS logs each move.
 
@@ -438,6 +440,7 @@ POST /hopsworks-api/api/admin/onlinefs/offsets/projects/{projectId}/topics/{topi
   A field left out is unknown, such as the `offset` of a partition OnlineFS saved none for.
 - Each entry of `items` has the `offset` OnlineFS saved, the `desiredOffset` set that OnlineFS has not moved the partition to yet, `beginningOffset` and `endOffset`, the offsets Kafka has, `lag`, `activeConsumerGroup` and a `status`.
   `lag` is the number of records OnlineFS has still to process, written or not; it is set for the current topic, and for a partition with no saved offset, in a consumer group of the current connection.
+- `lastMoveOffset` is the last desired offset OnlineFS took up for the partition, and `lastMoveOutcome` what it did with it: `MOVED`, or, without moving the partition, `EARLIER_TOPIC` (the topic was created again since), `OUT_OF_RANGE` (Kafka no longer has the offset) or `NO_TOPIC_ID` (Kafka gives the topic no ID).
 
 | `status` | Meaning |
 | --- | --- |
