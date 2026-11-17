@@ -14,7 +14,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | Upgrade | OpenSearch | What needs action |
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
-| [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523], and from 5.2.4 [Strimzi 1.3][upgrade-strimzi-13]. |
+| [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523], from 5.2.4 [Strimzi 1.3][upgrade-strimzi-13], and from 5.2.5 [Istio 1.30][upgrade-istio-130]. |
 | 5.2.x to a later 5.2.x | stays on 3.8.0 | From 5.2.0, [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch [security configuration][opensearch-security-configuration] of 5.2.1, from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522], from 5.2.0, 5.2.1 or 5.2.2 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523], and to 5.2.4 or later [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
@@ -305,3 +305,29 @@ An upgrade from 5.1.x goes from Strimzi 0.45 straight to 1.3, satellites before 
   To keep the earlier foreground deletion, set `kafka.strimzi-kafka-operator.featureGates: "-UseBackgroundPodDeletion"`.
 - **Under ArgoCD, the `ignoreDifferences` entry for the Kafka CRD is no longer needed.**
   Strimzi 1.3.1's Kafka CRD no longer has the empty map that the entry in [Under ArgoCD][kafka4-argocd] ignores, and the entry matches nothing on it, so it can stay.
+
+## Changes from 5.2.5 { #upgrade-changes-from-525 }
+
+These changes ship in 5.2.5.
+They apply to an upgrade from 5.1.x to 5.2.5 or later, and from 5.2.4 or earlier to a later 5.2 release.
+
+### Istio 1.30 { #upgrade-istio-130 }
+
+Istio moves from 1.29 to 1.30.
+Istio 1.30 supports Kubernetes 1.32 to 1.36.
+
+- **Model deployments.**
+  The Istio ingress gateway and the cluster-local gateway restart once.
+  Each rolls out its new pod before it stops the old one.
+- **Your own image registry.**
+  Mirror `istio/pilot` and `istio/proxyv2` at `1.30.8` before the upgrade.
+  The chart's `vendor_images.sh` lists both.
+- **Sidecars you injected yourself.**
+  The chart injects no Istio sidecar.
+  A workload you gave an Istio sidecar keeps its 1.29 proxy until it restarts, so restart it after the upgrade.
+- **If the hook fails.**
+  Fix the cause and run `helm upgrade` again.
+  The hook stops with an error, and changes nothing, when istiod or the gateways run a release other than 1.29 or 1.30.
+- **Rollback.**
+  A `helm rollback` to an earlier 5.2 release runs its hook, which installs Istio 1.29 over 1.30, a downgrade Istio does not support.
+  Restore from the backup instead, as described in [Disaster Recovery][disaster-recovery].
