@@ -314,8 +314,10 @@ They apply to an upgrade from 5.1.x to 5.2.5 or later, and from 5.2.4 or earlier
 ### Istio 1.30 { #upgrade-istio-130 }
 
 Istio moves from 1.29 to 1.30.
-Istio 1.30 supports Kubernetes 1.32 to 1.36.
+Istio 1.30 supports Kubernetes 1.32 to 1.36, and Istio supports the 1.30 release until about December 2026; 5.3 moves to Istio 1.31.
 
+- **Time.**
+  Each wait in the Istio install hook, the install and then istiod and each gateway rolling out, is bounded by `kserve.istio.istioctl.readinessTimeout` (15 minutes), so allow at least an hour for the hook in `helm upgrade --timeout`.
 - **Model deployments.**
   The Istio ingress gateway and the cluster-local gateway restart once.
   Each rolls out its new pod before it stops the old one.
@@ -328,6 +330,7 @@ Istio 1.30 supports Kubernetes 1.32 to 1.36.
 - **If the hook fails.**
   Fix the cause and run `helm upgrade` again.
   The hook stops with an error, and changes nothing, when istiod or the gateways run a release other than 1.29 or 1.30.
-- **Rollback.**
-  A `helm rollback` to an earlier 5.2 release runs its hook, which installs Istio 1.29 over 1.30, a downgrade Istio does not support.
-  Restore from the backup instead, as described in [Disaster Recovery][disaster-recovery].
+- **Going back to an earlier 5.2 release.**
+  A `helm rollback` does not run the Istio install hook, so Istio stays on 1.30.
+  Do not run `helm upgrade`, or an ArgoCD sync, with a release older than 5.2.5 afterwards: its hook installs Istio 1.29 over 1.30, a downgrade Istio does not support.
+  To go back entirely, restore from the backup, as described in [Disaster Recovery][disaster-recovery].
