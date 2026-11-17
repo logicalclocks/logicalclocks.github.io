@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794912106` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794920160` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -29,7 +29,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1794912106` (Hopsworks `5.
           image:
             pullPolicy: IfNotPresent
             repository: hopsworks/hopsfs-csi
-            tag: 0.2.0-SNAPSHOT
+            tag: 0.3.0-SNAPSHOT
         executor_uid: 1235
         full_platform: true
         grafana:
@@ -188,7 +188,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1794912106` (Hopsworks `5.
         image:
           pullPolicy: IfNotPresent
           repository: hopsworks/hopsfs-csi
-          tag: 0.2.0-SNAPSHOT
+          tag: 0.3.0-SNAPSHOT
         ```
 
 `global._hopsworks.csi.driverName` <a class="headerlink" href="#helm.global._hopsworks.csi.driverName" title="Permanent link">#</a> { #helm.global._hopsworks.csi.driverName }
