@@ -346,7 +346,7 @@ What changes for users and operators ([details](kueue_external.md#what-changes))
 
 ### Kafka node pool settings apply on every upgrade { #upgrade-kafka-node-pools }
 
-From the 5.2.x patch release that carries this fix, and in 5.3, a Helm upgrade applies the Kafka node pool settings in your values again.
+From 5.2.5, and in 5.3, a Helm upgrade applies the Kafka node pool settings in your values again.
 On a cluster whose Strimzi CRDs serve only `v1`, which is the case for a cluster installed on 5.2, earlier 5.2 releases left the two `KafkaNodePool` resources as they were on every Helm upgrade.
 A change of the replicas, storage, resources, JVM options or placement of the brokers or controllers had no effect, and a deleted pool did not come back.
 The `kafka-kraft-migration` pre-upgrade hook now applies both pools on every Helm upgrade.
