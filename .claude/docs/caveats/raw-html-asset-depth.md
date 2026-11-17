@@ -1,0 +1,5 @@
+# Raw HTML asset paths need the served page's depth
+
+mkdocs rewrites Markdown links and images relative to the `.md` file, but leaves raw HTML `<img src>` and `<a href>` alone, so the browser resolves them against the page URL. With `use_directory_urls` (the default), `docs/a/b/c.md` is served at `/<version>/a/b/c/`, so an asset path needs exactly one `../` per segment of that directory. One `../` too many climbs past the mike `/<version>/` segment to `/assets/...`, which returns 404: only `/<version>/assets/` exists. The usual cause is a page copied from a deeper directory that keeps the deeper prefix. The local build serves without the version segment, so the extra `../` still finds `docs/assets` and the page looks fine.
+
+Write `"../" * depth` followed by `assets/...`, where depth is the number of segments of the served page directory (`docs/user_guides/projects/wizard.md` is `/<version>/user_guides/projects/wizard/`, so `../../../assets/`). To check pages in bulk, resolve each raw HTML path against `/VER/<page dir>` and flag it when it leaves `/VER/` or the target file is missing; resolving against the bare page directory misses the extra `../`.
