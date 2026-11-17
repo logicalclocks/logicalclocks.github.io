@@ -108,7 +108,7 @@ They set the model explicitly and turn off model discovery in agents that have i
 
 When you [start a Terminal][start-the-terminal], choose **Hopsworks** as the LLM provider and pick a running vLLM deployment of the project, or one shared with it.
 The list is grouped: **This project** first, then one **Shared by `<project>`** group for each project that shares deployments with you.
-A shared deployment is listed when it is shared with all projects or with any project you are a member of, and is left out while it is not running.
+A shared deployment is listed when it is shared with all projects or with any project you are a Data Owner or Data Scientist of, and is left out while it is not running or when your role in the owning project is another one, since the LLM Gateway would refuse you.
 No API key is needed, because the Terminal already holds one: a shared deployment is reached through the owning project's LLM Gateway with the serving API key of the Terminal's own project.
 Claude Code, Codex, opencode, Copilot CLI, pi and Hermes then start configured for the deployment and its context window.
 

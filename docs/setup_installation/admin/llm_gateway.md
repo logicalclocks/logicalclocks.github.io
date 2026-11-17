@@ -132,8 +132,9 @@ Members of the projects it is shared with use the owning project's LLM Gateway w
 
 Listing models and every other path are refused for them with `403`, and they have no access to the deployment's per-deployment path.
 A deployment shared with all projects admits every user with an allowed platform role, an administrator included, whatever the project.
+A member of the owning project is held to their role there, so sharing never widens the access of a Feature store restricted or Observer member of it.
 
-A new vLLM deployment is shared with all projects.
+A new vLLM deployment that the LLM Gateway serves is shared with all projects.
 A deployment that existed before the upgrade that introduced sharing stays project-only until a Data Owner shares it.
 
 The cluster variable `serving_sharing_enabled` controls the feature:
