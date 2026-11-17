@@ -181,6 +181,11 @@ The Overview then shows no sharing badge.
 With the Python client, `Deployment` reads and changes the same state:
 
 ```python
+import hopsworks
+
+project = hopsworks.login()
+ms = project.get_model_serving()
+
 deployment = ms.get_deployment("my_llm_deployment")
 
 print(deployment.shared_with)  # {'all_projects': True, 'projects': []}
