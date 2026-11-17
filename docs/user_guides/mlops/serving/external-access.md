@@ -187,6 +187,7 @@ With the Python client, `Deployment` reads and changes the same state:
 ```python
 import hopsworks
 
+
 project = hopsworks.login()
 ms = project.get_model_serving()
 
