@@ -27,6 +27,7 @@ Use `Ingest Data to New Feature Group` when you want to:
 This ingestion flow supports multiple data sources:
 
 - SQL-like sources can either create an external feature group or ingest data into a new feature group.
+- The ingestion job reads a table and cannot run a SQL query, so a SQL query can only define an [external feature group][create-external-feature-group].
 - The SQL family currently includes Snowflake, BigQuery, Redshift, generic JDBC (MySQL, PostgreSQL, Oracle, SQL Server), and SAP HANA.
 - A [Hopsworks][data-source-hopsworks] source copies a feature group from another Hopsworks cluster, with full or incremental loads.
 - CRM and REST API sources use the ingestion path only.
@@ -38,6 +39,7 @@ This ingestion flow supports multiple data sources:
 Navigate to the data source you want to use and start the feature-group creation flow from the UI.
 
 For SQL-based sources, open the data source, click `Next: Select Tables`, select a database and a table, then choose `Ingest Data to New Feature Group`.
+The `Query` tab does not offer this option, since the ingestion job cannot run a query; select the table in the `Table` tab instead.
 Once the ingest option is selected, the column table gains a `Partition key` column and an `Add a feature` button for features that do not exist in the source; the transformation script computes their values.
 
 <figure markdown>
@@ -283,6 +285,8 @@ After creation:
 
 You can also configure data source ingestion programmatically with the Hopsworks Python APIs.
 This is done by creating a sink-enabled feature group and passing a sink job configuration, including loading strategy and, for REST sources, endpoint and pagination settings.
+For a SQL source, the data source must name a database and a table, such as one returned by `get_tables()`.
+A data source with a `query` and no table is rejected with error code 270136, because the ingestion job cannot run a query.
 
 ### Example: create a sink-enabled feature group
 

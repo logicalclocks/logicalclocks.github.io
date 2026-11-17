@@ -189,7 +189,11 @@ You can also optionally select a single column as the event time for the row (su
 
 Instead of selecting a table, you can write a custom SQL query to define the feature group.
 This is useful when you need to join multiple tables or apply transformations at read time.
+The `Query` tab is shown only for data sources that run SQL: SQL databases, Snowflake, Redshift, BigQuery and SAP HANA.
+Other sources, such as AWS Glue, read the selected table's files and cannot run a query.
 Click `Fetch Schema` to resolve the columns of the query, then, as with the table option, designate one or more columns as primary keys, optionally pick an event time column and give the feature group a name.
+A query always creates an external feature group, because the dltHub ingestion job reads tables and cannot run a query.
+To copy the data into Hopsworks, select the table in the `Table` tab and [ingest it with dltHub][ingest-data-with-dlthub].
 
 <p align="center">
   <figure>
