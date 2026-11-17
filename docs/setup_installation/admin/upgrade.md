@@ -305,3 +305,46 @@ An upgrade from 5.1.x goes from Strimzi 0.45 straight to 1.3, satellites before 
   To keep the earlier foreground deletion, set `kafka.strimzi-kafka-operator.featureGates: "-UseBackgroundPodDeletion"`.
 - **Under ArgoCD, the `ignoreDifferences` entry for the Kafka CRD is no longer needed.**
   Strimzi 1.3.1's Kafka CRD no longer has the empty map that the entry in [Under ArgoCD][kafka4-argocd] ignores, and the entry matches nothing on it, so it can stay.
+
+## Changes from 5.2.5 { #upgrade-changes-from-525 }
+
+These changes ship in 5.2.5.
+They apply to an upgrade from 5.1.x to 5.2.5 or later, and from 5.2.0, 5.2.1, 5.2.2, 5.2.3 or 5.2.4 to a later 5.2 release.
+
+### Kafka node pool settings apply on every upgrade { #upgrade-kafka-node-pools }
+
+From 5.2.5, a Helm upgrade applies the Kafka node pool settings in your values again.
+On a cluster whose Strimzi CRDs serve only `v1`, which is the case for a cluster installed on 5.2, earlier 5.2 releases left the two `KafkaNodePool` resources as they were on every Helm upgrade.
+A change of the replicas, storage, resources, JVM options or placement of the brokers or controllers had no effect, and a deleted pool did not come back.
+The `kafka-kraft-migration` pre-upgrade hook now applies both pools on every Helm upgrade.
+Under ArgoCD, and with Helm when `global._hopsworks.mode` is set, the pools are part of the release and are applied with it, so they were not affected, and the hook still leaves them to the release.
+
+- **The first upgrade with the fix applies what your values say.**
+  That includes settings that earlier upgrades ignored, and it overwrites a change made to a pool by hand, such as a replica count set with `kubectl`, because the hook applies every field the chart renders.
+  Compare the live pools with your values before upgrading:
+
+    ```sh
+    kubectl get kafkanodepools -n hopsworks -o yaml
+    ```
+
+  Strimzi replaces the Kafka pods one by one for a change of placement, resources or JVM options, and adds brokers for a higher replica count.
+- **A setting removed from the values can stay on a pool.**
+  The hook applies the pools server-side as the field manager `kafka-kraft-migration`, and Kubernetes removes a field that the values no longer set only when that manager is its only owner.
+  Helm owns the fields it set at install, and keeps owning each one whose value no upgrade has changed since, so such a field stays on the pool.
+  Check the pool after removing a setting, and remove the field from the pool by hand if it is still there.
+- **`kafka.migrationJob.enabled` stays on.**
+  The hook is the only thing that applies node pool settings during a Helm upgrade without `global._hopsworks.mode`, so with the switch off, pool changes are not applied.
+- **The upgrade fails when the pools cannot be applied.**
+  When the hook cannot read the `KafkaNodePool` CRD or the pools, or the cluster rejects the apply, the upgrade fails on the `kafka-kraft-migration` hook, where it used to continue without applying anything.
+  The log of the hook has the error:
+
+    ```sh
+    kubectl logs -n hopsworks job/kafka-kraft-migration
+    ```
+
+- **When the hook leaves the pools alone.**
+  When `v1beta2` has been removed from the `KafkaNodePool` CRD while a pool still carries ownership records written at that version, the cluster rejects every server-side apply to that pool.
+  The hook then applies nothing, and its log says `Not applying the node pools in this upgrade` and names the pools.
+  Pool changes are applied by the first upgrade after those records are cleared.
+  The `strimzi-crd-upgrade` hook clears them later in the same upgrade when it is enabled (`kafka.crdUpgradeJob.enabled`), the chart runs the Strimzi operator (`kafka.strimzi-kafka-operator.enabled`), and every Strimzi CRD stores only `v1`.
+  Otherwise whoever manages the Strimzi CRDs has to clear them, and until then every upgrade leaves the pools as they are.
