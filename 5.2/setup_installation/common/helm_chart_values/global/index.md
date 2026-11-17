@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 ## General { #helm-values-global-general }
 
@@ -29,7 +29,7 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
           image:
             pullPolicy: IfNotPresent
             repository: hopsworks/hopsfs-csi
-            tag: 0.1.1
+            tag: 0.2.0
         executor_uid: 1235
         full_platform: true
         grafana:
@@ -110,7 +110,7 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
         tolerations: []
         toolbox:
           image: hwutils
-          tag: '1.10'
+          tag: 1.10.1
         topologySpreadConstraint:
           maxSkew: 1
           nodeAffinityPolicy: Honor
@@ -173,7 +173,7 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
         image:
           pullPolicy: IfNotPresent
           repository: hopsworks/hopsfs-csi
-          tag: 0.1.1
+          tag: 0.2.0
         ```
 
 `global._hopsworks.csi.driverName` <a class="headerlink" href="#helm.global._hopsworks.csi.driverName" title="Permanent link">#</a> { #helm.global._hopsworks.csi.driverName }
@@ -354,7 +354,7 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
 :   Type `string`, default `"hwutils"`.
 
 `global._hopsworks.toolbox.tag` <a class="headerlink" href="#helm.global._hopsworks.toolbox.tag" title="Permanent link">#</a> { #helm.global._hopsworks.toolbox.tag }
-:   Type `string`, default `"1.10"`.
+:   Type `string`, default `"1.10.1"`.
 
 `global._hopsworks.topologySpreadConstraint` <a class="headerlink" href="#helm.global._hopsworks.topologySpreadConstraint" title="Permanent link">#</a> { #helm.global._hopsworks.topologySpreadConstraint }
 :   Type `object`.
@@ -912,7 +912,7 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
             mountWaitSeconds: 300
             storeRoot: /apps/trino
           image:
-            tag: 483-v3
+            tag: 483-v4
           mountRetryTimeLimit: 2m
           mountableSecrets:
             csi:
@@ -922,7 +922,7 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
             enabled: true
             image:
               repository: hopsworks/hopsfs-mount
-              tag: 3.4.3.3-EE-RC1-1
+              tag: 3.4.3.4-EE-RC0-1
             mechanism: csi
             mountPath: /opt/hopsworks/mounts
             storeRoot: /apps/mountable-secrets
@@ -1012,11 +1012,11 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
     Where the files live in HopsFS. Preset by charts/hopsfs, passed to the sidecar as `--srcDir` and seeded to the backend as `trino_files_path`. Moving it does not move existing files.
 
 `global._hopsworks.trino.image` <a class="headerlink" href="#helm.global._hopsworks.trino.image" title="Permanent link">#</a> { #helm.global._hopsworks.trino.image }
-:   Type `object`, default `{"tag":"483-v3"}`.
+:   Type `object`, default `{"tag":"483-v4"}`.
     The Trino image this release deploys, restated here for the backend.
 
 `global._hopsworks.trino.image.tag` <a class="headerlink" href="#helm.global._hopsworks.trino.image.tag" title="Permanent link">#</a> { #helm.global._hopsworks.trino.image.tag }
-:   Type `string`, default `"483-v3"`.
+:   Type `string`, default `"483-v4"`.
     The Trino image tag, seeded to the backend as `trino_image_tag` so it can tell when its connector-property table is stale. Duplicates trino.image.tag in charts/trino/values.yaml, which cannot be templated; charts/trino fails the render when they disagree. Bump both.
 
 `global._hopsworks.trino.mountRetryTimeLimit` <a class="headerlink" href="#helm.global._hopsworks.trino.mountRetryTimeLimit" title="Permanent link">#</a> { #helm.global._hopsworks.trino.mountRetryTimeLimit }
@@ -1037,7 +1037,7 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
         enabled: true
         image:
           repository: hopsworks/hopsfs-mount
-          tag: 3.4.3.3-EE-RC1-1
+          tag: 3.4.3.4-EE-RC0-1
         mechanism: csi
         mountPath: /opt/hopsworks/mounts
         storeRoot: /apps/mountable-secrets
@@ -1068,7 +1068,7 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
     Repository of the small bash image the Trino init containers wait-trino-files and assemble-catalogs run in. The dedicated hopsfs-mount image built in docker-images (90.8 MB); the mount sidecars themselves run global._hopsworks.csi.image.
 
 `global._hopsworks.trino.mountableSecrets.image.tag` <a class="headerlink" href="#helm.global._hopsworks.trino.mountableSecrets.image.tag" title="Permanent link">#</a> { #helm.global._hopsworks.trino.mountableSecrets.image.tag }
-:   Type `string`, default `"3.4.3.3-EE-RC1-1"`.
+:   Type `string`, default `"3.4.3.4-EE-RC0-1"`.
     Tag for the sidecar image, `<artifact version>-<image fix>`. The first half is the hops-fuse-mount artifact version, not the platform version: the image carries the HopsFS FUSE client and nothing else, so it turns over with HopsFS. Keep that half in step with charts/hopsfs image.tag, since the FUSE client should match the HopsFS line it talks to. The second half moves when the image is rebuilt without the artifact changing, a base bump or a security rebuild, so such a rebuild cannot silently replace the bytes behind a tag already deployed. Both halves are pinned here on purpose.
 
 `global._hopsworks.trino.mountableSecrets.mountPath` <a class="headerlink" href="#helm.global._hopsworks.trino.mountableSecrets.mountPath" title="Permanent link">#</a> { #helm.global._hopsworks.trino.mountableSecrets.mountPath }

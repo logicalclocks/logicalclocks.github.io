@@ -4,7 +4,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -118,7 +118,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           name: hopsfs
           registry: ''
-          tag: 3.4.3.3-EE-RC1
+          tag: 3.4.3.4-EE-RC0
         ttlSecondsAfterFinished: null
         waitSeconds: 600
     ```
@@ -135,13 +135,13 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           name: hopsfs
           registry: ''
-          tag: 3.4.3.3-EE-RC1
+          tag: 3.4.3.4-EE-RC0
         ttlSecondsAfterFinished: null
         waitSeconds: 600
         ```
 
 `trino.authSeeder.image` <a class="headerlink" href="#helm.trino.authSeeder.image" title="Permanent link">#</a> { #helm.trino.authSeeder.image }
-:   Type `object`, default `{"name":"hopsfs","registry":"","tag":"3.4.3.3-EE-RC1"}`.
+:   Type `object`, default `{"name":"hopsfs","registry":"","tag":"3.4.3.4-EE-RC0"}`.
     The HopsFS client image. The seeder writes with `hdfs dfs`; the trino-files mount is read-only.
 
 `trino.authSeeder.image.name` <a class="headerlink" href="#helm.trino.authSeeder.image.name" title="Permanent link">#</a> { #helm.trino.authSeeder.image.name }
@@ -153,7 +153,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
     Full registry+path prefix, ending with `/`. Empty uses `global._hopsworks.imageRegistry` plus `/hopsworks/`, matching charts/hopsfs.
 
 `trino.authSeeder.image.tag` <a class="headerlink" href="#helm.trino.authSeeder.image.tag" title="Permanent link">#</a> { #helm.trino.authSeeder.image.tag }
-:   Type `string`, default `"3.4.3.3-EE-RC1"`.
+:   Type `string`, default `"3.4.3.4-EE-RC0"`.
     Image tag. Keep in step with `hopsfs.image.tag` in charts/hopsfs/values.yaml.
 
 `trino.authSeeder.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.trino.authSeeder.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.trino.authSeeder.ttlSecondsAfterFinished }
@@ -257,7 +257,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 483-v3
+          tag: 483-v4
         initContainers:
           coordinator:
           - null
@@ -287,7 +287,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
     Repository location of the Trino image, typically `organization/imagename`
 
 `trino.trino.image.tag` <a class="headerlink" href="#helm.trino.trino.image.tag" title="Permanent link">#</a> { #helm.trino.trino.image.tag }
-:   Type `string`, default `"483-v3"`.
+:   Type `string`, default `"483-v4"`.
     Image tag for the Trino image. This value is explicitly pinned here and overrides any defaulting to `appVersion` from Chart.yaml.
 
 `trino.trino.initContainers.coordinator[2].name` <a class="headerlink" href="#helm.trino.trino.initContainers.coordinator.2.name" title="Permanent link">#</a> { #helm.trino.trino.initContainers.coordinator.2.name }

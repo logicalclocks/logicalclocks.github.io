@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -754,7 +754,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.dockerImage.packageAuth.caCertsConfigMap` <a class="headerlink" href="#helm.hopsworks.dockerImage.packageAuth.caCertsConfigMap" title="Permanent link">#</a> { #helm.hopsworks.dockerImage.packageAuth.caCertsConfigMap }
 :   Type `string`, default `""`.
-    Optional ConfigMap of trusted CA certificates to install into env-build Docker RUN steps. Each key in the ConfigMap is treated as a .crt / PEM file, bind-mounted into /usr/local/share/ca-certificates/ and installed via `update-ca-certificates` at the start of the RUN. Also exported as REQUESTS_CA_BUNDLE / SSL_CERT_FILE so pip/conda honour it. Leave empty to skip CA injection.
+    Optional ConfigMap of trusted CA certificates, for package mirrors and proxies signed by a private CA. Each key is a PEM file and may hold several certificates. In env-build Docker RUN steps each file is bind-mounted into /usr/local/share/ca-certificates/, installed via `update-ca-certificates` and exported as REQUESTS_CA_BUNDLE / SSL_CERT_FILE. Jupyter servers and terminals get the certificates as a bundle of the system roots plus these CAs in SSL_CERT_FILE (uv, pip, Python ssl), and the CAs alone in NODE_EXTRA_CA_CERTS (npm, Node). REQUESTS_CA_BUNDLE is not set, so plain Python requests calls keep the certifi roots. Every client in those pods that honours these variables trusts the CAs, unless the user sets the variable themselves. For those pods, content that is not a valid certificate, such as a private key, is ignored. Setting or clearing this value takes effect on a server's next start; a changed certificate reaches running servers when one of them in the project next starts. Leave empty to skip CA injection.
 
 `hopsworks.dockerImage.packageAuth.secretName` <a class="headerlink" href="#helm.hopsworks.dockerImage.packageAuth.secretName" title="Permanent link">#</a> { #helm.hopsworks.dockerImage.packageAuth.secretName }
 :   Type `string`, default `""`.
@@ -762,7 +762,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.dockerImage.pypi` <a class="headerlink" href="#helm.hopsworks.dockerImage.pypi" title="Permanent link">#</a> { #helm.hopsworks.dockerImage.pypi }
 :   Type `object`, default `{"global_parameters":null,"pythonDownloads":"never"}`.
-    pypi configurations global_parameters:   trusted-host: pypi.org   index-url: "<https://pypi.org/simple>"   extra-index-url: "<https://pypi.org/simple>"   proxy: "<http://proxy:3128>" Written verbatim to pip.conf, and translated into uv's own format in uv.toml because uv reads neither pip.conf nor PIP_INDEX_URL. These keys translate: trusted-host, proxy, index-url, extra-index-url, find-links, no-index, no-cache-dir, cache-dir, keyring-provider, index-strategy, require-hashes, pre. Anything else reaches pip only, and is listed in a comment at the end of uv.toml. timeout, retries, cert and client-cert have no uv equivalent; add trust roots through dockerImage.caCertsConfigMap instead of cert, which uv does honour. index-strategy is uv-only: pip searches every index and takes the highest version, while uv stops at the first index carrying the package. Set it to unsafe-best-match for pip's behaviour, at the cost of uv's dependency-confusion protection.
+    pypi configurations global_parameters:   trusted-host: pypi.org   index-url: "<https://pypi.org/simple>"   extra-index-url: "<https://pypi.org/simple>"   proxy: "<http://proxy:3128>" Written verbatim to pip.conf, and translated into uv's own format in uv.toml because uv reads neither pip.conf nor PIP_INDEX_URL. These keys translate: trusted-host, proxy, index-url, extra-index-url, find-links, no-index, no-cache-dir, cache-dir, keyring-provider, index-strategy, require-hashes, pre. timeout (seconds) and retries also apply to uv, which takes them only from the environment: library installs, custom-command builds, Jupyter, the terminal and Ray get them as UV_HTTP_TIMEOUT and UV_HTTP_RETRIES, unless the user set those variables. Unset, uv waits 30s per request and retries 3 times; raise timeout for a proxy mirror that is slow to serve a large wheel it has not cached yet. Anything else reaches pip only, and is listed in a comment at the end of uv.toml. cert and client-cert have no uv equivalent; add trust roots through dockerImage.packageAuth.caCertsConfigMap instead of cert, which env builds, Jupyter servers and terminals pass to uv and pip. index-strategy is uv-only: pip searches every index and takes the highest version, while uv stops at the first index carrying the package. Set it to unsafe-best-match for pip's behaviour, at the cost of uv's dependency-confusion protection.
 
 `hopsworks.dockerImage.pypi.global_parameters` <a class="headerlink" href="#helm.hopsworks.dockerImage.pypi.global_parameters" title="Permanent link">#</a> { #helm.hopsworks.dockerImage.pypi.global_parameters }
 :   Type `string`, default `nil`.
@@ -2443,7 +2443,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         audit_log_size_limit: '256000000'
         base_buildkit_image: docker.hops.works/hopsworks/moby/buildkit:v0.34.1-rootless
         base_image_name: hopsworks-base
-        base_image_version: 5.2.4
+        base_image_version: 5.2.5
         cert_mater_delay: 3m
         certs_dir: /srv/hops/certs-dir
         check_nodemanagers_status: ''
@@ -2588,17 +2588,17 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         git_github_https_proxy: ''
         git_gitlab_http_proxy: ''
         git_gitlab_https_proxy: ''
-        git_image_version: '1.6'
+        git_image_version: 1.6.1
         grafana_version: 9.3.16
         ha_enabled: 'true'
         hadoop_dir: /srv/hops/hadoop
-        hadoop_version: 3.4.3.3-EE-RC1
+        hadoop_version: 3.4.3.4-EE-RC0
         hdfs_base_storage_policy: CLOUD
         hdfs_default_quota: -1L
         hdfs_log_storage_policy: CLOUD
         hdfs_user: hdfs
         hdfscontentsmanager_base_hopsfs_client: libhdfs-go
-        hive2_version: 4.1.0.1-v1
+        hive2_version: 4.1.0.2.0-v1
         hive_conf_path: /srv/hops/apache-hive/conf
         hive_superuser: hive
         hive_warehouse: /apps/hive/warehouse
@@ -2878,7 +2878,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         spark_remove_job_when_completed: 'true'
         spark_ui_logs_offset: '512000'
         spark_user: spark
-        spark_version: 4.1.3.0
+        spark_version: 4.1.3.1.0
         srvmanager_password: srvmanagerpwd
         staging_dir: /srv/hops/staging
         statistics_cleaner_batch_size: '1000'
@@ -2900,7 +2900,6 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         tensorboard_max_last_accessed: '1140000'
         tensorboard_max_reload_threads: '1'
         tensorflow_version: 2.20.0
-        testconnector_image_version: '1.0'
         tf_spark_connector_version: ''
         trino_default_catalog: delta
         trino_events_cleaner_batch_size: '100'
@@ -3010,7 +3009,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"hopsworks-base"`.
 
 `hopsworks.variables.base_image_version` <a class="headerlink" href="#helm.hopsworks.variables.base_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.base_image_version }
-:   Type `string`, default `"5.2.4"`.
+:   Type `string`, default `"5.2.5"`.
 
 `hopsworks.variables.cert_mater_delay` <a class="headerlink" href="#helm.hopsworks.variables.cert_mater_delay" title="Permanent link">#</a> { #helm.hopsworks.variables.cert_mater_delay }
 :   Type `string`, default `"3m"`.
@@ -3484,7 +3483,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     Proxy for git traffic to GitLab over HTTPS. Empty means a direct connection.
 
 `hopsworks.variables.git_image_version` <a class="headerlink" href="#helm.hopsworks.variables.git_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.git_image_version }
-:   Type `string`, default `"1.6"`.
+:   Type `string`, default `"1.6.1"`.
 
 `hopsworks.variables.grafana_version` <a class="headerlink" href="#helm.hopsworks.variables.grafana_version" title="Permanent link">#</a> { #helm.hopsworks.variables.grafana_version }
 :   Type `string`, default `"9.3.16"`.
@@ -3496,7 +3495,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"/srv/hops/hadoop"`.
 
 `hopsworks.variables.hadoop_version` <a class="headerlink" href="#helm.hopsworks.variables.hadoop_version" title="Permanent link">#</a> { #helm.hopsworks.variables.hadoop_version }
-:   Type `string`, default `"3.4.3.3-EE-RC1"`.
+:   Type `string`, default `"3.4.3.4-EE-RC0"`.
 
 `hopsworks.variables.hdfs_base_storage_policy` <a class="headerlink" href="#helm.hopsworks.variables.hdfs_base_storage_policy" title="Permanent link">#</a> { #helm.hopsworks.variables.hdfs_base_storage_policy }
 :   Type `string`, default `"CLOUD"`.
@@ -3514,7 +3513,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"libhdfs-go"`.
 
 `hopsworks.variables.hive2_version` <a class="headerlink" href="#helm.hopsworks.variables.hive2_version" title="Permanent link">#</a> { #helm.hopsworks.variables.hive2_version }
-:   Type `string`, default `"4.1.0.1-v1"`.
+:   Type `string`, default `"4.1.0.2.0-v1"`.
 
 `hopsworks.variables.hive_conf_path` <a class="headerlink" href="#helm.hopsworks.variables.hive_conf_path" title="Permanent link">#</a> { #helm.hopsworks.variables.hive_conf_path }
 :   Type `string`, default `"/srv/hops/apache-hive/conf"`.
@@ -4419,7 +4418,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"spark"`.
 
 `hopsworks.variables.spark_version` <a class="headerlink" href="#helm.hopsworks.variables.spark_version" title="Permanent link">#</a> { #helm.hopsworks.variables.spark_version }
-:   Type `string`, default `"4.1.3.0"`.
+:   Type `string`, default `"4.1.3.1.0"`.
 
 `hopsworks.variables.srvmanager_password` <a class="headerlink" href="#helm.hopsworks.variables.srvmanager_password" title="Permanent link">#</a> { #helm.hopsworks.variables.srvmanager_password }
 :   Type `string`, default `"srvmanagerpwd"`.
@@ -4488,9 +4487,6 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.tensorflow_version` <a class="headerlink" href="#helm.hopsworks.variables.tensorflow_version" title="Permanent link">#</a> { #helm.hopsworks.variables.tensorflow_version }
 :   Type `string`, default `"2.20.0"`.
-
-`hopsworks.variables.testconnector_image_version` <a class="headerlink" href="#helm.hopsworks.variables.testconnector_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.testconnector_image_version }
-:   Type `string`, default `"1.0"`.
 
 `hopsworks.variables.tf_spark_connector_version` <a class="headerlink" href="#helm.hopsworks.variables.tf_spark_connector_version" title="Permanent link">#</a> { #helm.hopsworks.variables.tf_spark_connector_version }
 :   Type `string`, default `""`.

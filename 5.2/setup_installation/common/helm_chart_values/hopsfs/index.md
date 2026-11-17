@@ -4,7 +4,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -32,7 +32,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         name: hopsfs
         pullPolicy: IfNotPresent
         registry: ''
-        tag: 3.4.3.3-EE-RC1
+        tag: 3.4.3.4-EE-RC0
       namenode:
         resources:
           limits:
@@ -118,7 +118,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     Override the full registry+path prefix (must end with /). When set (non-empty), takes precedence over global._hopsworks.imageRegistry, bypassing the hardcoded /hopsworks/ segment. Use for custom HopsFS images at non-standard paths, e.g. "docker.hops.works/dev/salman/". Leave empty to use global._hopsworks.imageRegistry + "/hopsworks/".
 
 `hopsfs.image.tag` <a class="headerlink" href="#helm.hopsfs.image.tag" title="Permanent link">#</a> { #helm.hopsfs.image.tag }
-:   Type `string`, default `"3.4.3.3-EE-RC1"`.
+:   Type `string`, default `"3.4.3.4-EE-RC0"`.
 
 `hopsfs.nuke_db_in_retry` <a class="headerlink" href="#helm.hopsfs.nuke_db_in_retry" title="Permanent link">#</a> { #helm.hopsfs.nuke_db_in_retry }
 :   Type `bool`, default `false`.
@@ -505,6 +505,11 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           extraDnsNames: []
           extraIpAddresses: []
         tolerations: []
+        topology:
+          createRbac: true
+          enabled: true
+          initialSyncTimeoutMs: 30000
+          namespace: ''
         topologySpreadConstraint: {}
         txRetryCount: 10
         users:
@@ -770,6 +775,22 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsfs.namenode.tolerations` <a class="headerlink" href="#helm.hopsfs.namenode.tolerations" title="Permanent link">#</a> { #helm.hopsfs.namenode.tolerations }
 :   Type `list`, default `[]`.
+
+`hopsfs.namenode.topology.createRbac` <a class="headerlink" href="#helm.hopsfs.namenode.topology.createRbac" title="Permanent link">#</a> { #helm.hopsfs.namenode.topology.createRbac }
+:   Type `bool`, default `true`.
+    Create the RBAC the watch needs, bound to the NameNode's service account (hopsfs-namenode) only, never the DataNodes': a ClusterRole and ClusterRoleBinding with list/watch on pods when namespace is empty, or a Role and RoleBinding in that namespace. Disable when the grant is managed outside the chart.
+
+`hopsfs.namenode.topology.enabled` <a class="headerlink" href="#helm.hopsfs.namenode.topology.enabled" title="Permanent link">#</a> { #helm.hopsfs.namenode.topology.enabled }
+:   Type `bool`, default `true`.
+    Make the NameNode rack-aware by Kubernetes node (net.topology.node.switch.mapping.impl = io.hops.net.KubernetesTopologyMapping). The NameNode watches pods and places every pod IP in the rack /<node-name>, so a block's first replica goes to the DataNode on the writing client's node when one is there, and reads are served from it first. No per-write API calls: resolution is a lookup in a map kept current by the watch. Needs a HopsFS image with the class (3.4.3.4 and later) and list/watch on pods, granted below.
+
+`hopsfs.namenode.topology.initialSyncTimeoutMs` <a class="headerlink" href="#helm.hopsfs.namenode.topology.initialSyncTimeoutMs" title="Permanent link">#</a> { #helm.hopsfs.namenode.topology.initialSyncTimeoutMs }
+:   Type `int`, default `30000`.
+    Milliseconds the first block allocations may wait at NameNode start for the initial pod list (net.topology.kubernetes.initial.sync.timeout.ms). DataNodes are placed in a rack once, at registration, so an empty map at that moment would leave them in /default-rack until they re-register. After the first list, resolution never waits.
+
+`hopsfs.namenode.topology.namespace` <a class="headerlink" href="#helm.hopsfs.namenode.topology.namespace" title="Permanent link">#</a> { #helm.hopsfs.namenode.topology.namespace }
+:   Type `string`, default `""`.
+    Namespace whose pods the NameNode watches. Empty watches every namespace, which is what locality needs: Hopsworks runs client pods (jobs, Jupyter, serving) in per-project namespaces. Set it only to restrict the grant, at the cost of locality for pods elsewhere.
 
 `hopsfs.namenode.topologySpreadConstraint` <a class="headerlink" href="#helm.hopsfs.namenode.topologySpreadConstraint" title="Permanent link">#</a> { #helm.hopsfs.namenode.topologySpreadConstraint }
 :   Type `object`, default `{}`.

@@ -40596,7 +40596,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 ## Common values { #helm-values-common }
 
@@ -40627,21 +40627,21 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
 | [`docker-registry`][helm-values-docker-registry] |  | 90 |
 | [`grafana`][helm-values-grafana] | [`grafana` 7.0.17](https://artifacthub.io/packages/helm/grafana/grafana/7.0.17) | 7 |
 | [`hive`][helm-values-hive] |  | 79 |
-| [`hopsfs`][helm-values-hopsfs] |  | 222 |
+| [`hopsfs`][helm-values-hopsfs] |  | 226 |
 | [`hopsfs-csi`][helm-values-hopsfs-csi] |  | 29 |
-| [`hopsworks`][helm-values-hopsworks] |  | 978 |
+| [`hopsworks`][helm-values-hopsworks] |  | 977 |
 | [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) | 24 |
 | [`hw-kueue`][helm-values-hw-kueue] |  | 63 |
 | [`hw-kyverno`][helm-values-hw-kyverno] |  | 58 |
 | [`judge`][helm-values-judge] |  | 23 |
-| [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 1.3.1](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/1.3.1) | 102 |
+| [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 1.3.1](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/1.3.1) | 104 |
 | [`kserve`][helm-values-kserve] |  | 270 |
 | [`minio`][helm-values-minio] |  | 42 |
 | [`olk`][helm-values-olk] | [`prometheus-elasticsearch-exporter` 5.8.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-elasticsearch-exporter/5.8.0) | 164 |
 | [`onlinefs`][helm-values-onlinefs] |  | 94 |
 | [`prometheus`][helm-values-prometheus] | [`prometheus` 25.20.2](https://artifacthub.io/packages/helm/prometheus-community/prometheus/25.20.2), [`prometheus-adapter` 4.11.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-adapter/4.11.0) | 9 |
 | [`ray`][helm-values-ray] | [`kuberay-operator` 1.4.0](https://artifacthub.io/packages/helm/kuberay-operator/kuberay-operator/1.4.0) | 2 |
-| [`rondb`][helm-values-rondb] | [`rondb` 26.2.22](https://github.com/logicalclocks/rondb-helm/blob/v26.2.22/values.schema.json) | 498 |
+| [`rondb`][helm-values-rondb] | [`rondb` 26.2.24](https://github.com/logicalclocks/rondb-helm/blob/v26.2.24/values.schema.json) | 498 |
 | [`spark`][helm-values-spark] | [`spark-operator` 2.5.1](https://github.com/kubeflow/spark-operator/blob/v2.5.1/charts/spark-operator-chart/README.md) | 160 |
 | [`superset`][helm-values-superset] | [`mysql` 12.3.5](https://artifacthub.io/packages/helm/bitnami/mysql/12.3.5), [`superset` 0.15.0](https://artifacthub.io/packages/helm/superset/superset/0.15.0) | 25 |
 | [`trino`][helm-values-trino] | [`trino` 1.41.0](https://artifacthub.io/packages/helm/trino/trino/1.41.0) | 38 |
@@ -40675,7 +40675,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 ## General { #helm-values-global-general }
 
@@ -40700,7 +40700,7 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
           image:
             pullPolicy: IfNotPresent
             repository: hopsworks/hopsfs-csi
-            tag: 0.1.1
+            tag: 0.2.0
         executor_uid: 1235
         full_platform: true
         grafana:
@@ -40781,7 +40781,7 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
         tolerations: []
         toolbox:
           image: hwutils
-          tag: '1.10'
+          tag: 1.10.1
         topologySpreadConstraint:
           maxSkew: 1
           nodeAffinityPolicy: Honor
@@ -40844,7 +40844,7 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
         image:
           pullPolicy: IfNotPresent
           repository: hopsworks/hopsfs-csi
-          tag: 0.1.1
+          tag: 0.2.0
         ```
 
 `global._hopsworks.csi.driverName` <a class="headerlink" href="#helm.global._hopsworks.csi.driverName" title="Permanent link">#</a> { #helm.global._hopsworks.csi.driverName }
@@ -41025,7 +41025,7 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
 :   Type `string`, default `"hwutils"`.
 
 `global._hopsworks.toolbox.tag` <a class="headerlink" href="#helm.global._hopsworks.toolbox.tag" title="Permanent link">#</a> { #helm.global._hopsworks.toolbox.tag }
-:   Type `string`, default `"1.10"`.
+:   Type `string`, default `"1.10.1"`.
 
 `global._hopsworks.topologySpreadConstraint` <a class="headerlink" href="#helm.global._hopsworks.topologySpreadConstraint" title="Permanent link">#</a> { #helm.global._hopsworks.topologySpreadConstraint }
 :   Type `object`.
@@ -41583,7 +41583,7 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
             mountWaitSeconds: 300
             storeRoot: /apps/trino
           image:
-            tag: 483-v3
+            tag: 483-v4
           mountRetryTimeLimit: 2m
           mountableSecrets:
             csi:
@@ -41593,7 +41593,7 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
             enabled: true
             image:
               repository: hopsworks/hopsfs-mount
-              tag: 3.4.3.3-EE-RC1-1
+              tag: 3.4.3.4-EE-RC0-1
             mechanism: csi
             mountPath: /opt/hopsworks/mounts
             storeRoot: /apps/mountable-secrets
@@ -41683,11 +41683,11 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
     Where the files live in HopsFS. Preset by charts/hopsfs, passed to the sidecar as `--srcDir` and seeded to the backend as `trino_files_path`. Moving it does not move existing files.
 
 `global._hopsworks.trino.image` <a class="headerlink" href="#helm.global._hopsworks.trino.image" title="Permanent link">#</a> { #helm.global._hopsworks.trino.image }
-:   Type `object`, default `{"tag":"483-v3"}`.
+:   Type `object`, default `{"tag":"483-v4"}`.
     The Trino image this release deploys, restated here for the backend.
 
 `global._hopsworks.trino.image.tag` <a class="headerlink" href="#helm.global._hopsworks.trino.image.tag" title="Permanent link">#</a> { #helm.global._hopsworks.trino.image.tag }
-:   Type `string`, default `"483-v3"`.
+:   Type `string`, default `"483-v4"`.
     The Trino image tag, seeded to the backend as `trino_image_tag` so it can tell when its connector-property table is stale. Duplicates trino.image.tag in charts/trino/values.yaml, which cannot be templated; charts/trino fails the render when they disagree. Bump both.
 
 `global._hopsworks.trino.mountRetryTimeLimit` <a class="headerlink" href="#helm.global._hopsworks.trino.mountRetryTimeLimit" title="Permanent link">#</a> { #helm.global._hopsworks.trino.mountRetryTimeLimit }
@@ -41708,7 +41708,7 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
         enabled: true
         image:
           repository: hopsworks/hopsfs-mount
-          tag: 3.4.3.3-EE-RC1-1
+          tag: 3.4.3.4-EE-RC0-1
         mechanism: csi
         mountPath: /opt/hopsworks/mounts
         storeRoot: /apps/mountable-secrets
@@ -41739,7 +41739,7 @@ _Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
     Repository of the small bash image the Trino init containers wait-trino-files and assemble-catalogs run in. The dedicated hopsfs-mount image built in docker-images (90.8 MB); the mount sidecars themselves run global._hopsworks.csi.image.
 
 `global._hopsworks.trino.mountableSecrets.image.tag` <a class="headerlink" href="#helm.global._hopsworks.trino.mountableSecrets.image.tag" title="Permanent link">#</a> { #helm.global._hopsworks.trino.mountableSecrets.image.tag }
-:   Type `string`, default `"3.4.3.3-EE-RC1-1"`.
+:   Type `string`, default `"3.4.3.4-EE-RC0-1"`.
     Tag for the sidecar image, `<artifact version>-<image fix>`. The first half is the hops-fuse-mount artifact version, not the platform version: the image carries the HopsFS FUSE client and nothing else, so it turns over with HopsFS. Keep that half in step with charts/hopsfs image.tag, since the FUSE client should match the HopsFS line it talks to. The second half moves when the image is rebuilt without the artifact changing, a base bump or a security rebuild, so such a rebuild cannot silently replace the bytes behind a tag already deployed. Both halves are pinned here on purpose.
 
 `global._hopsworks.trino.mountableSecrets.mountPath` <a class="headerlink" href="#helm.global._hopsworks.trino.mountableSecrets.mountPath" title="Permanent link">#</a> { #helm.global._hopsworks.trino.mountableSecrets.mountPath }
@@ -41780,7 +41780,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -41815,7 +41815,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         enableApiKeyFallback: true
         hwJwtCacheTtlSeconds: 60
         internalClientCn: hopsworks-ee.hopsworks.svc
-        manifestPath: /shared-volume/hopsfs/.airflow/manifest.json
+        manifestPath: ''
         membershipCacheTtlSeconds: 60
         url: ''
       hopsworkslib: {}
@@ -41890,7 +41890,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         enableApiKeyFallback: true
         hwJwtCacheTtlSeconds: 60
         internalClientCn: hopsworks-ee.hopsworks.svc
-        manifestPath: /shared-volume/hopsfs/.airflow/manifest.json
+        manifestPath: ''
         membershipCacheTtlSeconds: 60
         url: ''
         ```
@@ -42646,7 +42646,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -42928,7 +42928,7 @@ Values under `certs-operator` configure the operator that issues the TLS certifi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -43116,7 +43116,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -43246,6 +43246,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `consul.autoConfigureCoreDNS` <a class="headerlink" href="#helm.consul.autoConfigureCoreDNS" title="Permanent link">#</a> { #helm.consul.autoConfigureCoreDNS }
 :   Type `bool`, default `true`.
+    Add the Consul domain to the cluster DNS with a Job, on install and after every upgrade. On an upgrade the same step also runs first, as a best-effort pre-upgrade hook, so that the other upgrade hooks can resolve Consul names. Turning this on for an existing installation that sets global._hopsworks.mode to upgrade takes a step first: <https://docs.hopsworks.ai/latest/setup_installation/admin/upgrade/#upgrade-coredns-hook>
 
 `consul.autoConfigureCoreDNSPort` <a class="headerlink" href="#helm.consul.autoConfigureCoreDNSPort" title="Permanent link">#</a> { #helm.consul.autoConfigureCoreDNSPort }
 :   Type `int`, default `53`.
@@ -43449,7 +43450,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -43900,7 +43901,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -44005,7 +44006,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           registry: docker.hops.works
           repository: hopsworks/hwutils
           sha: ''
-          tag: '1.10'
+          tag: 1.10.1
         extraConfigmapMounts:
         - configMap: '{{ include "hopsworks.grafana.conditionalProvidersName" . }}'
           mountPath: /etc/grafana/provisioning/dashboards/hopsworks-dashboardproviders.yaml
@@ -44111,7 +44112,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             verify_email_enabled: false
             viewers_can_edit: false
         image:
-          tag: 12.4.14-h0
+          tag: 12.4.14-h4
         nodeSelector: {}
         rbac:
           create: false
@@ -44244,7 +44245,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           registry: docker.hops.works
           repository: hopsworks/hwutils
           sha: ''
-          tag: '1.10'
+          tag: 1.10.1
         extraConfigmapMounts:
         - configMap: '{{ include "hopsworks.grafana.conditionalProvidersName" . }}'
           mountPath: /etc/grafana/provisioning/dashboards/hopsworks-dashboardproviders.yaml
@@ -44350,7 +44351,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             verify_email_enabled: false
             viewers_can_edit: false
         image:
-          tag: 12.4.14-h0
+          tag: 12.4.14-h4
         nodeSelector: {}
         rbac:
           create: false
@@ -44398,7 +44399,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -44816,7 +44817,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -44844,7 +44845,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         name: hopsfs
         pullPolicy: IfNotPresent
         registry: ''
-        tag: 3.4.3.3-EE-RC1
+        tag: 3.4.3.4-EE-RC0
       namenode:
         resources:
           limits:
@@ -44930,7 +44931,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     Override the full registry+path prefix (must end with /). When set (non-empty), takes precedence over global._hopsworks.imageRegistry, bypassing the hardcoded /hopsworks/ segment. Use for custom HopsFS images at non-standard paths, e.g. "docker.hops.works/dev/salman/". Leave empty to use global._hopsworks.imageRegistry + "/hopsworks/".
 
 `hopsfs.image.tag` <a class="headerlink" href="#helm.hopsfs.image.tag" title="Permanent link">#</a> { #helm.hopsfs.image.tag }
-:   Type `string`, default `"3.4.3.3-EE-RC1"`.
+:   Type `string`, default `"3.4.3.4-EE-RC0"`.
 
 `hopsfs.nuke_db_in_retry` <a class="headerlink" href="#helm.hopsfs.nuke_db_in_retry" title="Permanent link">#</a> { #helm.hopsfs.nuke_db_in_retry }
 :   Type `bool`, default `false`.
@@ -45317,6 +45318,11 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           extraDnsNames: []
           extraIpAddresses: []
         tolerations: []
+        topology:
+          createRbac: true
+          enabled: true
+          initialSyncTimeoutMs: 30000
+          namespace: ''
         topologySpreadConstraint: {}
         txRetryCount: 10
         users:
@@ -45582,6 +45588,22 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsfs.namenode.tolerations` <a class="headerlink" href="#helm.hopsfs.namenode.tolerations" title="Permanent link">#</a> { #helm.hopsfs.namenode.tolerations }
 :   Type `list`, default `[]`.
+
+`hopsfs.namenode.topology.createRbac` <a class="headerlink" href="#helm.hopsfs.namenode.topology.createRbac" title="Permanent link">#</a> { #helm.hopsfs.namenode.topology.createRbac }
+:   Type `bool`, default `true`.
+    Create the RBAC the watch needs, bound to the NameNode's service account (hopsfs-namenode) only, never the DataNodes': a ClusterRole and ClusterRoleBinding with list/watch on pods when namespace is empty, or a Role and RoleBinding in that namespace. Disable when the grant is managed outside the chart.
+
+`hopsfs.namenode.topology.enabled` <a class="headerlink" href="#helm.hopsfs.namenode.topology.enabled" title="Permanent link">#</a> { #helm.hopsfs.namenode.topology.enabled }
+:   Type `bool`, default `true`.
+    Make the NameNode rack-aware by Kubernetes node (net.topology.node.switch.mapping.impl = io.hops.net.KubernetesTopologyMapping). The NameNode watches pods and places every pod IP in the rack /<node-name>, so a block's first replica goes to the DataNode on the writing client's node when one is there, and reads are served from it first. No per-write API calls: resolution is a lookup in a map kept current by the watch. Needs a HopsFS image with the class (3.4.3.4 and later) and list/watch on pods, granted below.
+
+`hopsfs.namenode.topology.initialSyncTimeoutMs` <a class="headerlink" href="#helm.hopsfs.namenode.topology.initialSyncTimeoutMs" title="Permanent link">#</a> { #helm.hopsfs.namenode.topology.initialSyncTimeoutMs }
+:   Type `int`, default `30000`.
+    Milliseconds the first block allocations may wait at NameNode start for the initial pod list (net.topology.kubernetes.initial.sync.timeout.ms). DataNodes are placed in a rack once, at registration, so an empty map at that moment would leave them in /default-rack until they re-register. After the first list, resolution never waits.
+
+`hopsfs.namenode.topology.namespace` <a class="headerlink" href="#helm.hopsfs.namenode.topology.namespace" title="Permanent link">#</a> { #helm.hopsfs.namenode.topology.namespace }
+:   Type `string`, default `""`.
+    Namespace whose pods the NameNode watches. Empty watches every namespace, which is what locality needs: Hopsworks runs client pods (jobs, Jupyter, serving) in per-project namespaces. Set it only to restrict the grant, at the cost of locality for pods elsewhere.
 
 `hopsfs.namenode.topologySpreadConstraint` <a class="headerlink" href="#helm.hopsfs.namenode.topologySpreadConstraint" title="Permanent link">#</a> { #helm.hopsfs.namenode.topologySpreadConstraint }
 :   Type `object`, default `{}`.
@@ -45960,7 +45982,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 
@@ -45979,7 +46001,7 @@ Deployed when `global._hopsworks.csi.enabled` is `true`.
         pullPolicy: IfNotPresent
         registry: docker.hops.works
         repository: hopsworks/hopsfs-csi
-        tag: 0.1.1
+        tag: 0.2.0
       nameOverride: hopsfs-csi
       nodeSelector: {}
       sidecars:
@@ -46046,7 +46068,7 @@ Deployed when `global._hopsworks.csi.enabled` is `true`.
         pullPolicy: IfNotPresent
         registry: docker.hops.works
         repository: hopsworks/hopsfs-csi
-        tag: 0.1.1
+        tag: 0.2.0
         ```
 
 `hopsfs-csi.nameOverride` <a class="headerlink" href="#helm.hopsfs-csi.nameOverride" title="Permanent link">#</a> { #helm.hopsfs-csi.nameOverride }
@@ -46230,7 +46252,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -46980,7 +47002,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.dockerImage.packageAuth.caCertsConfigMap` <a class="headerlink" href="#helm.hopsworks.dockerImage.packageAuth.caCertsConfigMap" title="Permanent link">#</a> { #helm.hopsworks.dockerImage.packageAuth.caCertsConfigMap }
 :   Type `string`, default `""`.
-    Optional ConfigMap of trusted CA certificates to install into env-build Docker RUN steps. Each key in the ConfigMap is treated as a .crt / PEM file, bind-mounted into /usr/local/share/ca-certificates/ and installed via `update-ca-certificates` at the start of the RUN. Also exported as REQUESTS_CA_BUNDLE / SSL_CERT_FILE so pip/conda honour it. Leave empty to skip CA injection.
+    Optional ConfigMap of trusted CA certificates, for package mirrors and proxies signed by a private CA. Each key is a PEM file and may hold several certificates. In env-build Docker RUN steps each file is bind-mounted into /usr/local/share/ca-certificates/, installed via `update-ca-certificates` and exported as REQUESTS_CA_BUNDLE / SSL_CERT_FILE. Jupyter servers and terminals get the certificates as a bundle of the system roots plus these CAs in SSL_CERT_FILE (uv, pip, Python ssl), and the CAs alone in NODE_EXTRA_CA_CERTS (npm, Node). REQUESTS_CA_BUNDLE is not set, so plain Python requests calls keep the certifi roots. Every client in those pods that honours these variables trusts the CAs, unless the user sets the variable themselves. For those pods, content that is not a valid certificate, such as a private key, is ignored. Setting or clearing this value takes effect on a server's next start; a changed certificate reaches running servers when one of them in the project next starts. Leave empty to skip CA injection.
 
 `hopsworks.dockerImage.packageAuth.secretName` <a class="headerlink" href="#helm.hopsworks.dockerImage.packageAuth.secretName" title="Permanent link">#</a> { #helm.hopsworks.dockerImage.packageAuth.secretName }
 :   Type `string`, default `""`.
@@ -46988,7 +47010,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.dockerImage.pypi` <a class="headerlink" href="#helm.hopsworks.dockerImage.pypi" title="Permanent link">#</a> { #helm.hopsworks.dockerImage.pypi }
 :   Type `object`, default `{"global_parameters":null,"pythonDownloads":"never"}`.
-    pypi configurations global_parameters:   trusted-host: pypi.org   index-url: "<https://pypi.org/simple>"   extra-index-url: "<https://pypi.org/simple>"   proxy: "<http://proxy:3128>" Written verbatim to pip.conf, and translated into uv's own format in uv.toml because uv reads neither pip.conf nor PIP_INDEX_URL. These keys translate: trusted-host, proxy, index-url, extra-index-url, find-links, no-index, no-cache-dir, cache-dir, keyring-provider, index-strategy, require-hashes, pre. Anything else reaches pip only, and is listed in a comment at the end of uv.toml. timeout, retries, cert and client-cert have no uv equivalent; add trust roots through dockerImage.caCertsConfigMap instead of cert, which uv does honour. index-strategy is uv-only: pip searches every index and takes the highest version, while uv stops at the first index carrying the package. Set it to unsafe-best-match for pip's behaviour, at the cost of uv's dependency-confusion protection.
+    pypi configurations global_parameters:   trusted-host: pypi.org   index-url: "<https://pypi.org/simple>"   extra-index-url: "<https://pypi.org/simple>"   proxy: "<http://proxy:3128>" Written verbatim to pip.conf, and translated into uv's own format in uv.toml because uv reads neither pip.conf nor PIP_INDEX_URL. These keys translate: trusted-host, proxy, index-url, extra-index-url, find-links, no-index, no-cache-dir, cache-dir, keyring-provider, index-strategy, require-hashes, pre. timeout (seconds) and retries also apply to uv, which takes them only from the environment: library installs, custom-command builds, Jupyter, the terminal and Ray get them as UV_HTTP_TIMEOUT and UV_HTTP_RETRIES, unless the user set those variables. Unset, uv waits 30s per request and retries 3 times; raise timeout for a proxy mirror that is slow to serve a large wheel it has not cached yet. Anything else reaches pip only, and is listed in a comment at the end of uv.toml. cert and client-cert have no uv equivalent; add trust roots through dockerImage.packageAuth.caCertsConfigMap instead of cert, which env builds, Jupyter servers and terminals pass to uv and pip. index-strategy is uv-only: pip searches every index and takes the highest version, while uv stops at the first index carrying the package. Set it to unsafe-best-match for pip's behaviour, at the cost of uv's dependency-confusion protection.
 
 `hopsworks.dockerImage.pypi.global_parameters` <a class="headerlink" href="#helm.hopsworks.dockerImage.pypi.global_parameters" title="Permanent link">#</a> { #helm.hopsworks.dockerImage.pypi.global_parameters }
 :   Type `string`, default `nil`.
@@ -48669,7 +48691,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         audit_log_size_limit: '256000000'
         base_buildkit_image: docker.hops.works/hopsworks/moby/buildkit:v0.34.1-rootless
         base_image_name: hopsworks-base
-        base_image_version: 5.2.4
+        base_image_version: 5.2.5
         cert_mater_delay: 3m
         certs_dir: /srv/hops/certs-dir
         check_nodemanagers_status: ''
@@ -48814,17 +48836,17 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         git_github_https_proxy: ''
         git_gitlab_http_proxy: ''
         git_gitlab_https_proxy: ''
-        git_image_version: '1.6'
+        git_image_version: 1.6.1
         grafana_version: 9.3.16
         ha_enabled: 'true'
         hadoop_dir: /srv/hops/hadoop
-        hadoop_version: 3.4.3.3-EE-RC1
+        hadoop_version: 3.4.3.4-EE-RC0
         hdfs_base_storage_policy: CLOUD
         hdfs_default_quota: -1L
         hdfs_log_storage_policy: CLOUD
         hdfs_user: hdfs
         hdfscontentsmanager_base_hopsfs_client: libhdfs-go
-        hive2_version: 4.1.0.1-v1
+        hive2_version: 4.1.0.2.0-v1
         hive_conf_path: /srv/hops/apache-hive/conf
         hive_superuser: hive
         hive_warehouse: /apps/hive/warehouse
@@ -49104,7 +49126,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         spark_remove_job_when_completed: 'true'
         spark_ui_logs_offset: '512000'
         spark_user: spark
-        spark_version: 4.1.3.0
+        spark_version: 4.1.3.1.0
         srvmanager_password: srvmanagerpwd
         staging_dir: /srv/hops/staging
         statistics_cleaner_batch_size: '1000'
@@ -49126,7 +49148,6 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         tensorboard_max_last_accessed: '1140000'
         tensorboard_max_reload_threads: '1'
         tensorflow_version: 2.20.0
-        testconnector_image_version: '1.0'
         tf_spark_connector_version: ''
         trino_default_catalog: delta
         trino_events_cleaner_batch_size: '100'
@@ -49236,7 +49257,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"hopsworks-base"`.
 
 `hopsworks.variables.base_image_version` <a class="headerlink" href="#helm.hopsworks.variables.base_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.base_image_version }
-:   Type `string`, default `"5.2.4"`.
+:   Type `string`, default `"5.2.5"`.
 
 `hopsworks.variables.cert_mater_delay` <a class="headerlink" href="#helm.hopsworks.variables.cert_mater_delay" title="Permanent link">#</a> { #helm.hopsworks.variables.cert_mater_delay }
 :   Type `string`, default `"3m"`.
@@ -49710,7 +49731,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     Proxy for git traffic to GitLab over HTTPS. Empty means a direct connection.
 
 `hopsworks.variables.git_image_version` <a class="headerlink" href="#helm.hopsworks.variables.git_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.git_image_version }
-:   Type `string`, default `"1.6"`.
+:   Type `string`, default `"1.6.1"`.
 
 `hopsworks.variables.grafana_version` <a class="headerlink" href="#helm.hopsworks.variables.grafana_version" title="Permanent link">#</a> { #helm.hopsworks.variables.grafana_version }
 :   Type `string`, default `"9.3.16"`.
@@ -49722,7 +49743,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"/srv/hops/hadoop"`.
 
 `hopsworks.variables.hadoop_version` <a class="headerlink" href="#helm.hopsworks.variables.hadoop_version" title="Permanent link">#</a> { #helm.hopsworks.variables.hadoop_version }
-:   Type `string`, default `"3.4.3.3-EE-RC1"`.
+:   Type `string`, default `"3.4.3.4-EE-RC0"`.
 
 `hopsworks.variables.hdfs_base_storage_policy` <a class="headerlink" href="#helm.hopsworks.variables.hdfs_base_storage_policy" title="Permanent link">#</a> { #helm.hopsworks.variables.hdfs_base_storage_policy }
 :   Type `string`, default `"CLOUD"`.
@@ -49740,7 +49761,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"libhdfs-go"`.
 
 `hopsworks.variables.hive2_version` <a class="headerlink" href="#helm.hopsworks.variables.hive2_version" title="Permanent link">#</a> { #helm.hopsworks.variables.hive2_version }
-:   Type `string`, default `"4.1.0.1-v1"`.
+:   Type `string`, default `"4.1.0.2.0-v1"`.
 
 `hopsworks.variables.hive_conf_path` <a class="headerlink" href="#helm.hopsworks.variables.hive_conf_path" title="Permanent link">#</a> { #helm.hopsworks.variables.hive_conf_path }
 :   Type `string`, default `"/srv/hops/apache-hive/conf"`.
@@ -50645,7 +50666,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"spark"`.
 
 `hopsworks.variables.spark_version` <a class="headerlink" href="#helm.hopsworks.variables.spark_version" title="Permanent link">#</a> { #helm.hopsworks.variables.spark_version }
-:   Type `string`, default `"4.1.3.0"`.
+:   Type `string`, default `"4.1.3.1.0"`.
 
 `hopsworks.variables.srvmanager_password` <a class="headerlink" href="#helm.hopsworks.variables.srvmanager_password" title="Permanent link">#</a> { #helm.hopsworks.variables.srvmanager_password }
 :   Type `string`, default `"srvmanagerpwd"`.
@@ -50714,9 +50735,6 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.tensorflow_version` <a class="headerlink" href="#helm.hopsworks.variables.tensorflow_version" title="Permanent link">#</a> { #helm.hopsworks.variables.tensorflow_version }
 :   Type `string`, default `"2.20.0"`.
-
-`hopsworks.variables.testconnector_image_version` <a class="headerlink" href="#helm.hopsworks.variables.testconnector_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.testconnector_image_version }
-:   Type `string`, default `"1.0"`.
 
 `hopsworks.variables.tf_spark_connector_version` <a class="headerlink" href="#helm.hopsworks.variables.tf_spark_connector_version" title="Permanent link">#</a> { #helm.hopsworks.variables.tf_spark_connector_version }
 :   Type `string`, default `""`.
@@ -51151,7 +51169,7 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -51558,7 +51576,7 @@ With `kueue.enabled=false` Hopsworks uses a Kueue installed outside its release;
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -51944,7 +51962,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -52427,7 +52445,7 @@ Values under `judge` configure Judge, the active cluster arbitrator service.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -52562,7 +52580,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -52809,7 +52827,9 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
               consulServiceName: onlinefs
           externalLoadBalancer:
             annotations: {}
+            bootstrapAnnotations: {}
             bootstrapNodePort: null
+            brokerAnnotations: {}
             class: null
             dns: ''
             enabled: null
@@ -52994,9 +53014,17 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
 :   Type `object`, default `{}`.
     load balancer annotations
 
+`kafka.cluster.kafka.externalLoadBalancer.bootstrapAnnotations` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.bootstrapAnnotations" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.bootstrapAnnotations }
+:   Type `object`, default `{}`.
+    Annotations for the bootstrap Service only, merged over annotations; a key set here wins. Pins the bootstrap address with MetalLB, for example metallb.io/loadBalancerIPs: 10.0.0.10.
+
 `kafka.cluster.kafka.externalLoadBalancer.bootstrapNodePort` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.bootstrapNodePort" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.bootstrapNodePort }
 :   Type `string`, default `nil`.
     Explicit nodePort for the bootstrap service when the load balancer is unmanaged (managed: false). Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
+
+`kafka.cluster.kafka.externalLoadBalancer.brokerAnnotations` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.brokerAnnotations" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.brokerAnnotations }
+:   Type `object`, default `{}`.
+    Annotations for one broker's Service, keyed by broker id (0 to replicas - 1) and merged over annotations; a key set here wins. Pins each broker to its own MetalLB address, for example "0": {metallb.io/loadBalancerIPs: 10.0.0.11}. When replicas grows, a new broker without an entry gets only the shared annotations. When it shrinks, delete the entries of the removed brokers in the values file that sets them, or the render fails: a null in a later values file does not remove an entry. Setting an address on a running cluster moves that Service to it. External clients that took their Kafka config from Hopsworks before the move still hold the old broker addresses: restart long-running ones about a minute after the move, once Hopsworks serves the new ones.
 
 `kafka.cluster.kafka.externalLoadBalancer.class` <a class="headerlink" href="#helm.kafka.cluster.kafka.externalLoadBalancer.class" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.externalLoadBalancer.class }
 :   Type `string`, default `nil`.
@@ -53389,7 +53417,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
 
 `kafka.migrationJob.enabled` <a class="headerlink" href="#helm.kafka.migrationJob.enabled" title="Permanent link">#</a> { #helm.kafka.migrationJob.enabled }
 :   Type `bool`, default `true`.
-    Run the pre-upgrade Job that carries a ZooKeeper-based cluster to KRaft before the rest of the upgrade is applied. It exits immediately on a cluster that is already on KRaft, so leaving it on costs one short Job per upgrade. Turning it off on a cluster that still needs migrating does not make the upgrade work - it makes it fail later, in the preflight, because the Strimzi this chart ships cannot serve a ZooKeeper cluster at all.
+    Run the pre-upgrade Job that applies the Kafka node pools and carries a ZooKeeper-based cluster to KRaft before the rest of the upgrade is applied. On a Helm upgrade in the default global._hopsworks.mode it is the only thing that applies node pool settings (replicas, storage, resources, JVM options, scheduling), so with it off those changes are not applied; with an explicit mode, as under ArgoCD, the pools are part of the release whatever this says. On a cluster that is already on KRaft it applies the pools and exits, one short Job per upgrade. Turning it off on a cluster that still needs migrating does not make the upgrade work - it makes it fail later, in the preflight, because the Strimzi this chart ships cannot serve a ZooKeeper cluster at all.
 
 `kafka.migrationJob.name` <a class="headerlink" href="#helm.kafka.migrationJob.name" title="Permanent link">#</a> { #helm.kafka.migrationJob.name }
 :   Type `string`, default `"kafka-kraft-migration"`.
@@ -53442,7 +53470,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -53486,7 +53514,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
       servingTerminationGracePeriodSeconds: 120
       storageInitializer:
         image: hopsworks/storage-initializer
-        tag: 5.2.0
+        tag: 5.2.2
       webhook:
         minReplicas: 1
         podDisruptionBudget:
@@ -53570,7 +53598,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 :   Type `string`, default `"hopsworks/storage-initializer"`.
 
 `kserve.storageInitializer.tag` <a class="headerlink" href="#helm.kserve.storageInitializer.tag" title="Permanent link">#</a> { #helm.kserve.storageInitializer.tag }
-:   Type `string`, default `"5.2.0"`.
+:   Type `string`, default `"5.2.2"`.
 
 `kserve.webhook.minReplicas` <a class="headerlink" href="#helm.kserve.webhook.minReplicas" title="Permanent link">#</a> { #helm.kserve.webhook.minReplicas }
 :   Type `int`, default `1`.
@@ -53765,7 +53793,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
           requests:
             cpu: '0.1'
             memory: 128Mi
-        tag: 5.2.0
+        tag: 5.2.2
     ```
 
 <div class="hops-values" markdown>
@@ -53834,7 +53862,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 :   Type `string`, default `"128Mi"`.
 
 `kserve.inferenceLogger.tag` <a class="headerlink" href="#helm.kserve.inferenceLogger.tag" title="Permanent link">#</a> { #helm.kserve.inferenceLogger.tag }
-:   Type `string`, default `"5.2.0"`.
+:   Type `string`, default `"5.2.2"`.
 
 </div>
 
@@ -54449,7 +54477,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
             verifySSL: ''
           storageSecretNameAnnotation: serving.kserve.io/secretName
           storageSpecSecretName: storage-config
-          tag: 5.2.0
+          tag: 5.2.2
           uidModelcar: 1010
         tolerations: []
         topologySpreadConstraint: {}
@@ -54856,7 +54884,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     Storage spec secret name.
 
 `kserve.kserve.storage.tag` <a class="headerlink" href="#helm.kserve.kserve.storage.tag" title="Permanent link">#</a> { #helm.kserve.kserve.storage.tag }
-:   Type `string`, default `"5.2.0"`.
+:   Type `string`, default `"5.2.2"`.
     Hopsworks-built storage initializer tag. Pinned to the Hopsworks version (matching storageInitializer.tag and what the model-serving-webhook publishes), not the KServe version anchor.
 
 `kserve.kserve.storage.uidModelcar` <a class="headerlink" href="#helm.kserve.kserve.storage.uidModelcar" title="Permanent link">#</a> { #helm.kserve.kserve.storage.uidModelcar }
@@ -54945,7 +54973,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
         replicaCount: 1
         serviceAccount:
           annotations: {}
-        tag: 5.2.0
+        tag: 5.2.2
         ttlSecondsAfterFinished: null
     ```
 
@@ -55001,7 +55029,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     service account annotations
 
 `kserve.servingWebhook.tag` <a class="headerlink" href="#helm.kserve.servingWebhook.tag" title="Permanent link">#</a> { #helm.kserve.servingWebhook.tag }
-:   Type `string`, default `"5.2.0"`.
+:   Type `string`, default `"5.2.2"`.
 
 `kserve.servingWebhook.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.kserve.servingWebhook.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.kserve.servingWebhook.ttlSecondsAfterFinished }
 :   Type `string`, default `nil`.
@@ -55021,7 +55049,7 @@ Values under `minio` configure MinIO, an S3-compatible object store deployed ins
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed when [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) is `true`.
 
@@ -55276,7 +55304,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -55434,7 +55462,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
         startup_timeout: 5000
         tolerations: []
         topologySpreadConstraint: {}
-        version: 3.8.0.2
+        version: 3.8.0.3
     ```
 
 <div class="hops-values" markdown>
@@ -55520,7 +55548,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
     The default topology spread constraint. If not defined the global topology spread constraint would be used instead.
 
 `olk.dashboard.version` <a class="headerlink" href="#helm.olk.dashboard.version" title="Permanent link">#</a> { #helm.olk.dashboard.version }
-:   Type `string`, default `"3.8.0.2"`.
+:   Type `string`, default `"3.8.0.3"`.
 
 </div>
 
@@ -56247,7 +56275,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Always deployed.
 
@@ -56757,7 +56785,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -56917,7 +56945,7 @@ Values under `ray` configure the KubeRay operator, which runs the Ray clusters b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.ray.enabled`](global.md#helm.global._hopsworks.ray.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -57064,13 +57092,13 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Always deployed.
 
 !!! info "Upstream charts"
 
-    - Values under `rondb.rondb` go to [`rondb` 26.2.22](https://github.com/logicalclocks/rondb-helm/blob/v26.2.22/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+    - Values under `rondb.rondb` go to [`rondb` 26.2.24](https://github.com/logicalclocks/rondb-helm/blob/v26.2.24/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
 
 ??? example "Defaults as YAML"
 
@@ -57099,7 +57127,7 @@ Always deployed.
             name: hwutils
             registry: docker.hops.works
             repository: hopsworks
-            tag: '1.10'
+            tag: 1.10.1
         meta:
           ddlMySQLd:
             clusterIp:
@@ -57228,7 +57256,7 @@ Always deployed.
             toolbox:
               name: hwutils
               registry: docker.hops.works
-              tag: '1.10'
+              tag: 1.10.1
           meta:
             mysqld:
               externalLoadBalancer:
@@ -57280,7 +57308,7 @@ Always deployed.
         ```
 
 `rondb.rondb` <a class="headerlink" href="#helm.rondb.rondb" title="Permanent link">#</a> { #helm.rondb.rondb }
-:   Type `object`, passed to the [`rondb` 26.2.22](https://github.com/logicalclocks/rondb-helm/blob/v26.2.22/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+:   Type `object`, passed to the [`rondb` 26.2.24](https://github.com/logicalclocks/rondb-helm/blob/v26.2.24/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
     override rondb values
 
     ??? note "Default"
@@ -57358,7 +57386,7 @@ Always deployed.
             registry: docker.hops.works
             repository: hopsworks
             name: hwutils
-            tag: '1.10'
+            tag: 1.10.1
           mysqldExporter:
             registry: docker.hops.works
             repository: hopsworks
@@ -57415,7 +57443,7 @@ Always deployed.
 
 ## `rondb` chart values { #helm-values-rondb-rondb }
 
-These are the values of the [`rondb` 26.2.22](https://github.com/logicalclocks/rondb-helm/blob/v26.2.22/values.schema.json) chart, set under `rondb.rondb`.
+These are the values of the [`rondb` 26.2.24](https://github.com/logicalclocks/rondb-helm/blob/v26.2.24/values.schema.json) chart, set under `rondb.rondb`.
 The defaults are what Hopsworks deploys: the chart's own, with the `rondb` and `rondb.rondb` overrides above applied.
 Where Hopsworks overrides a value, the entry also gives the chart's own default.
 
@@ -57877,12 +57905,12 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
             name: rondb
             registry: docker.hops.works
             repository: hopsworks
-            tag: 26.02.12
+            tag: 26.02.14
           toolbox:
             name: hwutils
             registry: docker.hops.works
             repository: hopsworks
-            tag: '1.10'
+            tag: 1.10.1
           upgrade2410revokegrants:
             name: rondb
             registry: docker.io
@@ -57939,7 +57967,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 :   Type `string`, default `"hopsworks"`.
 
 `rondb.rondb.images.rondb.tag` <a class="headerlink" href="#helm.rondb.rondb.images.rondb.tag" title="Permanent link">#</a> { #helm.rondb.rondb.images.rondb.tag }
-:   Type `string`, default `"26.02.12"`.
+:   Type `string`, default `"26.02.14"`.
     The version of RonDB to use; This should always be equivalent to .Chart.AppVersion
 
 `rondb.rondb.images.toolbox` <a class="headerlink" href="#helm.rondb.rondb.images.toolbox" title="Permanent link">#</a> { #helm.rondb.rondb.images.toolbox }
@@ -57955,7 +57983,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 :   Type `string`, default `"hopsworks"`.
 
 `rondb.rondb.images.toolbox.tag` <a class="headerlink" href="#helm.rondb.rondb.images.toolbox.tag" title="Permanent link">#</a> { #helm.rondb.rondb.images.toolbox.tag }
-:   Type `string`, default `"1.10"`, Hopsworks overrides the `rondb` chart default `"1.7"`.
+:   Type `string`, default `"1.10.1"`, Hopsworks overrides the `rondb` chart default `"1.7"`.
 
 `rondb.rondb.images.upgrade2410revokegrants` <a class="headerlink" href="#helm.rondb.rondb.images.upgrade2410revokegrants" title="Permanent link">#</a> { #helm.rondb.rondb.images.upgrade2410revokegrants }
 :   Type `object`.
@@ -59982,7 +60010,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -60013,7 +60041,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         image:
           pullPolicy: Always
           repository: sparkhistoryserver
-          tag: 4.1.3.1
+          tag: 4.1.3.1.1
         name: spark-history-server
         nodeSelector: {}
         probes:
@@ -60094,7 +60122,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         image:
           pullPolicy: Always
           repository: sparkhistoryserver
-          tag: 4.1.3.1
+          tag: 4.1.3.1.1
         name: spark-history-server
         nodeSelector: {}
         probes:
@@ -60314,7 +60342,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         tolerations: []
         topologySpreadConstraint: {}
         ttlSecondsAfterFinished: null
-        version: 0.11.1
+        version: 0.11.1.1
         webhook:
           app: rss-webhook
           resources:
@@ -60430,7 +60458,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         tolerations: []
         topologySpreadConstraint: {}
         ttlSecondsAfterFinished: null
-        version: 0.11.1
+        version: 0.11.1.1
         webhook:
           app: rss-webhook
           resources:
@@ -60599,7 +60627,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           image:
             registry: docker.hops.works
             repository: hopsworks/spark-operator-crds
-            tag: 2.5.1-h1-1.10
+            tag: 2.5.1-h2-1.10.1
           nodeSelector: {}
           tolerations: []
           upgradeCrd: true
@@ -60608,7 +60636,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           pullSecrets: []
           registry: docker.hops.works
           repository: hopsworks/spark-operator
-          tag: 2.5.1-h1
+          tag: 2.5.1-h2
         nameOverride: ''
         podSecurityContext:
           fsGroup: 185
@@ -60812,7 +60840,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           image:
             registry: docker.hops.works
             repository: hopsworks/spark-operator-crds
-            tag: 2.5.1-h1-1.10
+            tag: 2.5.1-h2-1.10.1
           nodeSelector: {}
           tolerations: []
           upgradeCrd: true
@@ -60821,7 +60849,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           pullSecrets: []
           registry: docker.hops.works
           repository: hopsworks/spark-operator
-          tag: 2.5.1-h1
+          tag: 2.5.1-h2
         nameOverride: ''
         podSecurityContext:
           fsGroup: 185
@@ -61567,7 +61595,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -62650,7 +62678,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -62764,7 +62792,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           name: hopsfs
           registry: ''
-          tag: 3.4.3.3-EE-RC1
+          tag: 3.4.3.4-EE-RC0
         ttlSecondsAfterFinished: null
         waitSeconds: 600
     ```
@@ -62781,13 +62809,13 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           name: hopsfs
           registry: ''
-          tag: 3.4.3.3-EE-RC1
+          tag: 3.4.3.4-EE-RC0
         ttlSecondsAfterFinished: null
         waitSeconds: 600
         ```
 
 `trino.authSeeder.image` <a class="headerlink" href="#helm.trino.authSeeder.image" title="Permanent link">#</a> { #helm.trino.authSeeder.image }
-:   Type `object`, default `{"name":"hopsfs","registry":"","tag":"3.4.3.3-EE-RC1"}`.
+:   Type `object`, default `{"name":"hopsfs","registry":"","tag":"3.4.3.4-EE-RC0"}`.
     The HopsFS client image. The seeder writes with `hdfs dfs`; the trino-files mount is read-only.
 
 `trino.authSeeder.image.name` <a class="headerlink" href="#helm.trino.authSeeder.image.name" title="Permanent link">#</a> { #helm.trino.authSeeder.image.name }
@@ -62799,7 +62827,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
     Full registry+path prefix, ending with `/`. Empty uses `global._hopsworks.imageRegistry` plus `/hopsworks/`, matching charts/hopsfs.
 
 `trino.authSeeder.image.tag` <a class="headerlink" href="#helm.trino.authSeeder.image.tag" title="Permanent link">#</a> { #helm.trino.authSeeder.image.tag }
-:   Type `string`, default `"3.4.3.3-EE-RC1"`.
+:   Type `string`, default `"3.4.3.4-EE-RC0"`.
     Image tag. Keep in step with `hopsfs.image.tag` in charts/hopsfs/values.yaml.
 
 `trino.authSeeder.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.trino.authSeeder.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.trino.authSeeder.ttlSecondsAfterFinished }
@@ -62903,7 +62931,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           registry: docker.hops.works
           repository: hopsworks/trino
-          tag: 483-v3
+          tag: 483-v4
         initContainers:
           coordinator:
           - null
@@ -62933,7 +62961,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
     Repository location of the Trino image, typically `organization/imagename`
 
 `trino.trino.image.tag` <a class="headerlink" href="#helm.trino.trino.image.tag" title="Permanent link">#</a> { #helm.trino.trino.image.tag }
-:   Type `string`, default `"483-v3"`.
+:   Type `string`, default `"483-v4"`.
     Image tag for the Trino image. This value is explicitly pinned here and overrides any defaulting to `appVersion` from Chart.yaml.
 
 `trino.trino.initContainers.coordinator[2].name` <a class="headerlink" href="#helm.trino.trino.initContainers.coordinator.2.name" title="Permanent link">#</a> { #helm.trino.trino.initContainers.coordinator.2.name }
@@ -62958,7 +62986,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 

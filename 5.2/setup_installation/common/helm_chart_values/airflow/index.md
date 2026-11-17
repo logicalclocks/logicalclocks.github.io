@@ -4,7 +4,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -39,7 +39,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         enableApiKeyFallback: true
         hwJwtCacheTtlSeconds: 60
         internalClientCn: hopsworks-ee.hopsworks.svc
-        manifestPath: /shared-volume/hopsfs/.airflow/manifest.json
+        manifestPath: ''
         membershipCacheTtlSeconds: 60
         url: ''
       hopsworkslib: {}
@@ -114,7 +114,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         enableApiKeyFallback: true
         hwJwtCacheTtlSeconds: 60
         internalClientCn: hopsworks-ee.hopsworks.svc
-        manifestPath: /shared-volume/hopsfs/.airflow/manifest.json
+        manifestPath: ''
         membershipCacheTtlSeconds: 60
         url: ''
         ```

@@ -4,7 +4,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.4` (Hopsworks `5.2.3`)._
+_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -35,7 +35,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         image:
           pullPolicy: Always
           repository: sparkhistoryserver
-          tag: 4.1.3.1
+          tag: 4.1.3.1.1
         name: spark-history-server
         nodeSelector: {}
         probes:
@@ -116,7 +116,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         image:
           pullPolicy: Always
           repository: sparkhistoryserver
-          tag: 4.1.3.1
+          tag: 4.1.3.1.1
         name: spark-history-server
         nodeSelector: {}
         probes:
@@ -336,7 +336,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         tolerations: []
         topologySpreadConstraint: {}
         ttlSecondsAfterFinished: null
-        version: 0.11.1
+        version: 0.11.1.1
         webhook:
           app: rss-webhook
           resources:
@@ -452,7 +452,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         tolerations: []
         topologySpreadConstraint: {}
         ttlSecondsAfterFinished: null
-        version: 0.11.1
+        version: 0.11.1.1
         webhook:
           app: rss-webhook
           resources:
@@ -621,7 +621,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           image:
             registry: docker.hops.works
             repository: hopsworks/spark-operator-crds
-            tag: 2.5.1-h1-1.10
+            tag: 2.5.1-h2-1.10.1
           nodeSelector: {}
           tolerations: []
           upgradeCrd: true
@@ -630,7 +630,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           pullSecrets: []
           registry: docker.hops.works
           repository: hopsworks/spark-operator
-          tag: 2.5.1-h1
+          tag: 2.5.1-h2
         nameOverride: ''
         podSecurityContext:
           fsGroup: 185
@@ -834,7 +834,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           image:
             registry: docker.hops.works
             repository: hopsworks/spark-operator-crds
-            tag: 2.5.1-h1-1.10
+            tag: 2.5.1-h2-1.10.1
           nodeSelector: {}
           tolerations: []
           upgradeCrd: true
@@ -843,7 +843,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           pullSecrets: []
           registry: docker.hops.works
           repository: hopsworks/spark-operator
-          tag: 2.5.1-h1
+          tag: 2.5.1-h2
         nameOverride: ''
         podSecurityContext:
           fsGroup: 185
