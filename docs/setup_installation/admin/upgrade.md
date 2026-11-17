@@ -184,6 +184,31 @@ Shares of a whole feature group, and the online and embedding access of a subset
 The upgrade can fail on the `consul-server-acl-init` Job with `spec.template: field is immutable`.
 Delete that Job and run the upgrade again.
 
+### `opensearch-index-upgrade` gets no answer from `elastic.service.consul` { #upgrade-consul-dns-missing }
+
+The upgrade can fail on the `opensearch-index-upgrade` hook with `FATAL: no answer from https://elastic.service.consul:9200`, and fail the same way when it is run again.
+One cause is that the Consul block is missing from the cluster DNS, because something outside the chart has reset the DNS configuration since the last upgrade.
+An update of the EKS CoreDNS add-on with conflict resolution `OVERWRITE` does that.
+Check the `Corefile` before changing anything:
+
+```sh
+kubectl get configmap coredns -n kube-system -o jsonpath='{.data.Corefile}'
+```
+
+If it has a `consul` block, the cause is another one: see **No answer from the cluster** under [If the hook fails][opensearch-hook-fails].
+If the block is missing, a chart release with the [CoreDNS configuration hook][upgrade-coredns-hook] puts it back by itself.
+With an earlier release, add it at the end of the `Corefile`, wait a minute for CoreDNS to load it, and run the upgrade again:
+
+```text
+consul {
+  errors
+  cache 30
+  forward . {$CONSUL_SERVER}
+}
+```
+
+This is the form for the default setup, in which the chart configures the cluster DNS through the `coredns` ConfigMap and sets `CONSUL_SERVER` on the CoreDNS Deployment.
+
 ## 5.2.x to 5.3.x { #upgrade-52-to-53 }
 
 OpenSearch stays on 3.8.0.
@@ -241,6 +266,54 @@ An upgrade from a release that already uses Strimzi 1.3 crosses none of this.
   To keep the earlier foreground deletion, set `kafka.strimzi-kafka-operator.featureGates: "-UseBackgroundPodDeletion"`.
 - **Under ArgoCD, the `ignoreDifferences` entry for the Kafka CRD is no longer needed.**
   Strimzi 1.3.1's Kafka CRD no longer has the empty map that the entry in [Under ArgoCD][kafka4-argocd] ignores, and the entry matches nothing on it, so it can stay.
+
+### CoreDNS configuration hook { #upgrade-coredns-hook }
+
+From the 5.2.x patch release that carries this hook, and in 5.3, an upgrade configures the cluster DNS for the Consul domain before its other hooks run.
+The other hooks reach services by their Consul names, so an upgrade used to fail on its first hook when the Consul block was missing from the cluster DNS, as described under [`opensearch-index-upgrade` gets no answer][upgrade-consul-dns-missing].
+The hook is rendered when `consul.autoConfigureCoreDNS` is on, which is the default.
+
+- **What runs.**
+  The `consul-coredns-pre-upgrade` hook runs the same step as the `consul-coredns-autoconf` Job, which still runs after the release is applied.
+  It then waits until `consul.service.consul` has resolved 20 times in a row, for at most 3 minutes, because the CoreDNS pods load a changed configuration one by one.
+  On a cluster whose DNS is in order it changes nothing and adds about 20 seconds.
+- **The hook does not fail the upgrade by itself.**
+  It works with the roles of the previous release, so it cannot follow a change of `consul.corednsConfigMapName` or `consul.corednsDeploymentName` made in the same upgrade; the `consul-coredns-autoconf` Job applies that change afterwards.
+  When the hook cannot read or write the DNS configuration, or the name does not resolve in time, it says so in its log and the upgrade continues.
+  Its Job gives up after 4 minutes, under the 5 minutes Helm waits for a hook by default.
+- **The log says what the hook did.**
+  The Job is kept after it finishes, for one day by default, so that its log can be read:
+
+    ```sh
+    kubectl logs -n hopsworks job/$(kubectl get jobs -n hopsworks -o name --sort-by=.metadata.creationTimestamp | grep consul-coredns-pre-upgrade | tail -n 1 | cut -d/ -f2)
+    ```
+
+  Its lines start with `>> coredns pre-upgrade hook:`.
+
+    | Line | Meaning | What to do |
+    | ---- | ------- | ---------- |
+    | `consul.service.consul resolved 20 times in a row` | The hook did its work. | Nothing. |
+    | `could not read the Service` or `does not exist yet` | The hook could not find the Consul DNS Service and left the DNS configuration alone. | Nothing, unless a later hook fails on a Consul name: then check that Service and run the upgrade again. |
+    | `configure-dns.sh ended with status` | The hook could not read or write the DNS configuration; the error is above that line. | Nothing in an upgrade that changes one of the two names above. Otherwise check the Role `consul-autoconfigcoredns-update-dns-role` in `kube-system` and those two values. |
+    | `did not resolve 20 times in a row` | Consul names do not resolve reliably yet. | If a later hook fails on a Consul name, check the endpoints of the Consul DNS Service, the Consul server pods and the logs of the CoreDNS pods, then run the upgrade again. |
+
+- **When the hook's Job gets no pod.**
+  With `global._hopsworks.mode: upgrade`, as under ArgoCD, the chart cannot see whether the service account of the hook exists.
+  Turning `consul.autoConfigureCoreDNS` on for an existing installation in that mode creates the Job before its service account: the Job gets no pod, its events say `error looking up service account hopsworks/consul-autoconfigcoredns-account: serviceaccount "consul-autoconfigcoredns-account" not found`, and the upgrade or sync fails on the hook after 4 minutes.
+  Helm reports `pre-upgrade hooks failed` with `job consul-coredns-pre-upgrade-<hash>-r<revision> failed: DeadlineExceeded`, and nothing else of the release has been applied at that point.
+  The Job carries the annotation `hopsworks.ai/no-pod` for this case.
+  Under ArgoCD, apply the service account, the two Roles and the two RoleBindings of the Job first, with the values of the application, then sync:
+
+    ```sh
+    helm template hopsworks hopsworks/hopsworks --version <version> --namespace hopsworks --values <values> \
+      --show-only charts/consul/templates/consul-autoconfigcoredns-ServiceAccount.yaml \
+      --show-only charts/consul/templates/consul-autoconfigcoredns-role.yaml \
+      --show-only charts/consul/templates/consul-autoconfigcoredns-rolebinding.yaml \
+      | kubectl apply -f -
+    ```
+
+  With Helm, run that upgrade without `global._hopsworks.mode`, so that it takes its default, `auto`: the chart then sees that the service account is missing and leaves the hook out.
+  Applying the objects by hand does not work with Helm, which refuses objects it did not create.
 
 ### ICEBERG feature groups in Trino { #upgrade-iceberg-trino }
 
