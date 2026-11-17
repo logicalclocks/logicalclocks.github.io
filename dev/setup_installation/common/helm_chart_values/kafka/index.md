@@ -4,7 +4,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794906593` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794912106` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -841,7 +841,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
 
 `kafka.migrationJob.enabled` <a class="headerlink" href="#helm.kafka.migrationJob.enabled" title="Permanent link">#</a> { #helm.kafka.migrationJob.enabled }
 :   Type `bool`, default `true`.
-    Run the pre-upgrade Job that carries a ZooKeeper-based cluster to KRaft before the rest of the upgrade is applied. It exits immediately on a cluster that is already on KRaft, so leaving it on costs one short Job per upgrade. Turning it off on a cluster that still needs migrating does not make the upgrade work - it makes it fail later, in the preflight, because the Strimzi this chart ships cannot serve a ZooKeeper cluster at all.
+    Run the pre-upgrade Job that applies the Kafka node pools and carries a ZooKeeper-based cluster to KRaft before the rest of the upgrade is applied. On a Helm upgrade in the default global._hopsworks.mode it is the only thing that applies node pool settings (replicas, storage, resources, JVM options, scheduling), so with it off those changes are not applied; with an explicit mode, as under ArgoCD, the pools are part of the release whatever this says. On a cluster that is already on KRaft it applies the pools and exits, one short Job per upgrade. Turning it off on a cluster that still needs migrating does not make the upgrade work - it makes it fail later, in the preflight, because the Strimzi this chart ships cannot serve a ZooKeeper cluster at all.
 
 `kafka.migrationJob.name` <a class="headerlink" href="#helm.kafka.migrationJob.name" title="Permanent link">#</a> { #helm.kafka.migrationJob.name }
 :   Type `string`, default `"kafka-kraft-migration"`.
