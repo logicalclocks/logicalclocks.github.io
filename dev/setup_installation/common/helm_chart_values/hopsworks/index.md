@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794856681` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794906593` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -20,6 +20,8 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         enabled: true
         ttlSecondsAfterFinished: null
       create_secrets: true
+      credentialBootstrap:
+        existingSecret: ''
       ddlConfigmapName: sql-ddl
       defaultServiceAccount:
         annotations: {}
@@ -197,6 +199,14 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.create_secrets` <a class="headerlink" href="#helm.hopsworks.create_secrets" title="Permanent link">#</a> { #helm.hopsworks.create_secrets }
 :   Type `bool`, default `true`.
     If false, you have to create the secret for the hopsworks users (hopsworks-users-secrets) manually. If false and ldap/kerberos is enabled, the secret for ldap credentials must be created manually as well.
+
+`hopsworks.credentialBootstrap` <a class="headerlink" href="#helm.hopsworks.credentialBootstrap" title="Permanent link">#</a> { #helm.hopsworks.credentialBootstrap }
+:   Type `object`, default `{"existingSecret":""}`.
+    Credentials used only to initialize missing accounts. Existing passwords and internal service credentials are preserved.
+
+`hopsworks.credentialBootstrap.existingSecret` <a class="headerlink" href="#helm.hopsworks.credentialBootstrap.existingSecret" title="Permanent link">#</a> { #helm.hopsworks.credentialBootstrap.existingSecret }
+:   Type `string`, default `""`.
+    Optional existing Secret with admin-password, agent-password, serving-password and onlinefs-password keys. For a fresh install, set global._hopsworks.onlinefs.password to match this Secret's onlinefs-password: the OnlineFS token setup reads values, not this Secret (falling back to onlinefs.apiKey.password when the global value is empty). The post-upgrade search reindex logs in with this Secret's agent-password instead of agent_password, so keep it equal to the agent user's current password. When existingSecret is empty, a dedicated Secret is created from variables.admin_password, agent_password, variables.srvmanager_password and the effective OnlineFS password, independently of create_secrets. Existing users and LDAP Secrets require no additional keys.
 
 `hopsworks.ddlConfigmapName` <a class="headerlink" href="#helm.hopsworks.ddlConfigmapName" title="Permanent link">#</a> { #helm.hopsworks.ddlConfigmapName }
 :   Type `string`, default `"sql-ddl"`.

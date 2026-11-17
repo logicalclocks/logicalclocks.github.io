@@ -4,7 +4,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794856681` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794906593` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -134,6 +134,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `consul.autoConfigureCoreDNS` <a class="headerlink" href="#helm.consul.autoConfigureCoreDNS" title="Permanent link">#</a> { #helm.consul.autoConfigureCoreDNS }
 :   Type `bool`, default `true`.
+    Add the Consul domain to the cluster DNS with a Job, on install and after every upgrade. On an upgrade the same step also runs first, as a best-effort pre-upgrade hook, so that the other upgrade hooks can resolve Consul names. Turning this on for an existing installation that sets global._hopsworks.mode to upgrade takes a step first: <https://docs.hopsworks.ai/latest/setup_installation/admin/upgrade/#upgrade-coredns-hook>
 
 `consul.autoConfigureCoreDNSPort` <a class="headerlink" href="#helm.consul.autoConfigureCoreDNSPort" title="Permanent link">#</a> { #helm.consul.autoConfigureCoreDNSPort }
 :   Type `int`, default `53`.
