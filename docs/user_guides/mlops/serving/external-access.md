@@ -150,7 +150,8 @@ A Data Owner can turn the LLM Gateway off for the project or for one deployment,
 ### Sharing with projects { #serving-sharing }
 
 A vLLM deployment that the LLM Gateway serves can also be shared with other projects of the cluster.
-Members of those projects call it through the owning project's LLM Gateway with their own API keys, as described under [Coding agents][coding-agents-access].
+Members of those projects with the role Data Owner or Data Scientist call it through the owning project's LLM Gateway with their own API keys, as described under [Coding agents][coding-agents-access].
+Members with another role, such as Feature store restricted, are refused, and the Terminal does not list the deployment for them.
 They run inference with the five operations listed above, for the deployment's own `model` only.
 They cannot list models, see or manage the deployment, or call its direct route, and each request is attributed to them in the owning project's usage.
 
@@ -160,7 +161,7 @@ Three mechanisms grant access to a deployment, each to a different kind of calle
 | --- | --- | --- |
 | Project membership | Members of the owning project | LLM Gateway and direct |
 | External access groups | External users in the listed groups | LLM Gateway and direct |
-| Sharing with projects | Members of the projects it is shared with | LLM Gateway only |
+| Sharing with projects | Data Owners and Data Scientists of the projects it is shared with | LLM Gateway only |
 
 Data Owners of the owning project decide, per deployment.
 The deployment's create and edit forms have a **Share with other projects** setting with two options:
@@ -190,9 +191,12 @@ deployment.share_with(projects=["analytics", "research"])
 print(deployment.shared_with)  # {'all_projects': False, 'projects': [...]}
 ```
 
+`share_with` adds the named projects and `unshare` removes them from what is stored when the call reaches the backend, so two Data Owners changing the sharing at the same time do not undo each other's change.
+
 A new LLM deployment is shared with all projects by default.
 A deployment created before the upgrade that introduced sharing stays project-only until a Data Owner shares it.
-If the LLM Gateway did not serve it, turning the LLM Gateway on for it with the REST API or `set_llm_gateway(True)` shares it with all projects, as for a new deployment; the edit form saves the sharing it shows instead.
+If the LLM Gateway did not serve it, turning the LLM Gateway on for it with the REST API or `set_llm_gateway(True)` shares it with all projects, as for a new deployment.
+The create and edit forms send the sharing they show with the deployment, so it is stored before the deployment is exposed and the all-projects default does not apply.
 A choice a Data Owner made, including switching **All projects** off, is kept when the deployment leaves and joins the LLM Gateway again.
 
 !!! api "API reference"
