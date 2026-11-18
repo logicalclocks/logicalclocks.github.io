@@ -91,6 +91,12 @@ To change a member's role or remove them from the project, click the `Manage mem
   </figure>
 </p>
 
+### What happens to a removed member's files
+
+Each member has a [private home directory][user-home-directories] in the project, `/Projects/<project>/Users/<username>`, holding their notebooks, their SSH key and their agent configuration.
+When you remove a member, their home directory stays in the project unless you ask for it to be deleted, with `delete_home_dir=True` in the Python SDK below.
+The removed member loses access to it, as they do to the rest of the project.
+
 ## Python SDK
 
 ```python
@@ -111,6 +117,9 @@ project.get_members_api().update_role("alice@example.com", "Observer")
 
 # Remove a member
 project.remove_member("alice@example.com")
+
+# Remove a member and delete their home directory
+project.remove_member("alice@example.com", delete_home_dir=True)
 ```
 
 Roles are the same as in the UI: `Data owner`, `Data scientist`, `Observer`, and `Feature store restricted`.

@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 736 352" role="img" aria-label="Two projects, fraud_detection and marketing, inside one Hopsworks cluster. Each project holds its own datasets, models and feature store, which only its members can reach. Inside each project, a Users dataset holds one private home directory per member: alice and bob in fraud_detection, carol and dan in marketing, each readable only by its owner. A read-only share from the fraud_detection feature store to the marketing project is the only path between the two projects.">
+  <style>
+    text { font-family: "Roboto Mono", SFMono-Regular, Menlo, Consolas, monospace; }
+    .zone { fill: #eef8f4; stroke: #9ad9c2; stroke-width: 1; }
+    .zone-label { fill: #0e8a63; font-size: 12px; font-weight: 700; letter-spacing: 0.04em; }
+    .frame { fill: #ffffff; stroke: #cbcbcb; stroke-width: 1; }
+    .band { fill: #f5f5f5; stroke: #cbcbcb; stroke-width: 1; }
+    .title { fill: #1f2328; font-size: 13px; font-weight: 700; letter-spacing: 0.04em; }
+    .meta { fill: #6b7280; font-size: 11px; }
+    .field { fill: #1f2328; font-size: 12px; }
+    .sep { stroke: #e2e2e2; stroke-width: 1; }
+    .icon { fill: none; stroke: #4b5563; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .edge { fill: none; stroke: #6b7280; stroke-width: 1.4; }
+    .arrow { fill: #6b7280; }
+    .knob { fill: #ffffff; stroke: #6b7280; stroke-width: 1.4; }
+  </style>
+  <defs>
+    <marker id="iso-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path class="arrow" d="M0 0 L11 5.5 L0 11 z"/>
+    </marker>
+    <marker id="iso-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="knob" cx="5" cy="5" r="3"/></marker>
+    <g id="iso-folder"><path class="icon" d="M3 7 A2 2 0 0 1 5 5 H9 L11 7 H19 A2 2 0 0 1 21 9 V17 A2 2 0 0 1 19 19 H5 A2 2 0 0 1 3 17 Z"/></g>
+    <g id="iso-model"><path class="icon" d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z"/><path class="icon" d="M3 7 L12 12 L21 7 M12 12 V22"/></g>
+    <g id="iso-fs"><rect class="icon" x="8" y="8" width="12.5" height="13" rx="2"/><path class="icon" d="M4.5 17 V6 A2 2 0 0 1 6.5 4 H15.5"/></g>
+    <g id="iso-user"><circle class="icon" cx="12" cy="-3.5" r="4"/><path class="icon" d="M5 8 C5 3.5 8 1.5 12 1.5 C16 1.5 19 3.5 19 8"/></g>
+  </defs>
+
+  <rect class="zone" x="16" y="32" width="704" height="304" rx="6"/>
+  <text class="zone-label" x="28" y="24">HOPSWORKS</text>
+
+  <!-- fraud_detection -->
+  <rect class="frame" x="48" y="56" width="272" height="264" rx="6"/>
+  <path class="band" d="M48 62 a6 6 0 0 1 6 -6 h260 a6 6 0 0 1 6 6 v20 h-272 z"/>
+  <text class="title" x="62" y="75">FRAUD_DETECTION</text>
+  <text class="meta" x="306" y="75" text-anchor="end">project</text>
+  <use href="#iso-folder" transform="translate(62,92) scale(0.6)"/>
+  <text class="field" x="88" y="104">Resources</text>
+  <line class="sep" x1="48" y1="118" x2="320" y2="118"/>
+  <use href="#iso-model" transform="translate(62,128) scale(0.6)"/>
+  <text class="field" x="88" y="140">Models</text>
+  <line class="sep" x1="48" y1="154" x2="320" y2="154"/>
+  <use href="#iso-fs" transform="translate(62,164) scale(0.6)"/>
+  <text class="field" x="88" y="176">Feature store</text>
+  <rect class="frame" x="64" y="200" width="240" height="104" rx="6"/>
+  <path class="band" d="M64 206 a6 6 0 0 1 6 -6 h228 a6 6 0 0 1 6 6 v20 h-240 z"/>
+  <text class="title" x="78" y="219">USERS</text>
+  <text class="meta" x="290" y="219" text-anchor="end">private homes</text>
+  <use href="#iso-user" transform="translate(78,244) scale(0.6)"/>
+  <text class="field" x="102" y="248">alice</text>
+  <text class="meta" x="290" y="248" text-anchor="end">only alice</text>
+  <line class="sep" x1="64" y1="262" x2="304" y2="262"/>
+  <use href="#iso-user" transform="translate(78,280) scale(0.6)"/>
+  <text class="field" x="102" y="284">bob</text>
+  <text class="meta" x="290" y="284" text-anchor="end">only bob</text>
+
+  <!-- marketing -->
+  <rect class="frame" x="416" y="56" width="272" height="264" rx="6"/>
+  <path class="band" d="M416 62 a6 6 0 0 1 6 -6 h260 a6 6 0 0 1 6 6 v20 h-272 z"/>
+  <text class="title" x="430" y="75">MARKETING</text>
+  <text class="meta" x="674" y="75" text-anchor="end">project</text>
+  <use href="#iso-folder" transform="translate(430,92) scale(0.6)"/>
+  <text class="field" x="456" y="104">Resources</text>
+  <line class="sep" x1="416" y1="118" x2="688" y2="118"/>
+  <use href="#iso-model" transform="translate(430,128) scale(0.6)"/>
+  <text class="field" x="456" y="140">Models</text>
+  <line class="sep" x1="416" y1="154" x2="688" y2="154"/>
+  <use href="#iso-fs" transform="translate(430,164) scale(0.6)"/>
+  <text class="field" x="456" y="176">Feature store</text>
+  <rect class="frame" x="432" y="200" width="240" height="104" rx="6"/>
+  <path class="band" d="M432 206 a6 6 0 0 1 6 -6 h228 a6 6 0 0 1 6 6 v20 h-240 z"/>
+  <text class="title" x="446" y="219">USERS</text>
+  <text class="meta" x="658" y="219" text-anchor="end">private homes</text>
+  <use href="#iso-user" transform="translate(446,244) scale(0.6)"/>
+  <text class="field" x="470" y="248">carol</text>
+  <text class="meta" x="658" y="248" text-anchor="end">only carol</text>
+  <line class="sep" x1="432" y1="262" x2="672" y2="262"/>
+  <use href="#iso-user" transform="translate(446,280) scale(0.6)"/>
+  <text class="field" x="470" y="284">dan</text>
+  <text class="meta" x="658" y="284" text-anchor="end">only dan</text>
+
+  <!-- the only path between projects: an explicit, read-only share -->
+  <path class="edge" d="M320 172 L416 172" marker-start="url(#iso-knob)" marker-end="url(#iso-arrow)"/>
+  <text class="meta" x="368" y="162" text-anchor="middle">share</text>
+  <text class="meta" x="368" y="190" text-anchor="middle">read-only</text>
+</svg>
