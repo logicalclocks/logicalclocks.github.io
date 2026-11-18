@@ -4,7 +4,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794993429` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794997588` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -37,6 +37,8 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
             imageRegistry: ''
             tag: v0.32.0
           vllmopenai:
+            cpu:
+              enabled: false
             imageRegistry: ''
             tag: v0.32.0
       kserveUtilsImage:
@@ -73,6 +75,8 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
               imageRegistry: ''
               tag: v0.32.0
             vllmopenai:
+              cpu:
+                enabled: false
               imageRegistry: ''
               tag: v0.32.0
         ```
@@ -1290,6 +1294,9 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
             imageRegistry: ''
             tag: v0.32.0
           vllmopenai:
+            cpu:
+              enabled: false
+              image: vllm/vllm-openai-cpu
             env: []
             image: vllm/vllm-openai
             imageRegistry: ''
@@ -1607,8 +1614,32 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     Registry override for the vllm-omni image. Empty falls back to `global._hopsworks.imageRegistry`.
 
 `kserve.kserve.servingruntime.vllmopenai` <a class="headerlink" href="#helm.kserve.kserve.servingruntime.vllmopenai" title="Permanent link">#</a> { #helm.kserve.kserve.servingruntime.vllmopenai }
-:   Type `object`, default `{"env":[],"image":"vllm/vllm-openai","imageRegistry":"","tag":"v0.32.0"}`.
+:   Type `object`.
     backs the `vllm-openai` ClusterServingRuntime (standard vLLM)
+
+    ??? note "Default"
+
+        ```yaml
+        cpu:
+          enabled: false
+          image: vllm/vllm-openai-cpu
+        env: []
+        image: vllm/vllm-openai
+        imageRegistry: ''
+        tag: v0.32.0
+        ```
+
+`kserve.kserve.servingruntime.vllmopenai.cpu` <a class="headerlink" href="#helm.kserve.kserve.servingruntime.vllmopenai.cpu" title="Permanent link">#</a> { #helm.kserve.kserve.servingruntime.vllmopenai.cpu }
+:   Type `object`, default `{"enabled":false,"image":"vllm/vllm-openai-cpu"}`.
+    Runs the `vllm-openai` ClusterServingRuntime on CPU, for clusters without GPUs
+
+`kserve.kserve.servingruntime.vllmopenai.cpu.enabled` <a class="headerlink" href="#helm.kserve.kserve.servingruntime.vllmopenai.cpu.enabled" title="Permanent link">#</a> { #helm.kserve.kserve.servingruntime.vllmopenai.cpu.enabled }
+:   Type `bool`, default `false`.
+    Run the `vllm-openai` runtime on the CPU image (`vllm/vllm-openai-cpu`, same tag and registry) without a GPU request and with one OpenMP thread per CPU of the deployment's limit, for clusters without GPUs. vLLM-Omni stays GPU-only.
+
+`kserve.kserve.servingruntime.vllmopenai.cpu.image` <a class="headerlink" href="#helm.kserve.kserve.servingruntime.vllmopenai.cpu.image" title="Permanent link">#</a> { #helm.kserve.kserve.servingruntime.vllmopenai.cpu.image }
+:   Type `string`, default `"vllm/vllm-openai-cpu"`.
+    CPU image of vLLM-OpenAI, published with the same tags as `image`.
 
 `kserve.kserve.servingruntime.vllmopenai.env` <a class="headerlink" href="#helm.kserve.kserve.servingruntime.vllmopenai.env" title="Permanent link">#</a> { #helm.kserve.kserve.servingruntime.vllmopenai.env }
 :   Type `list`, default `[]`.
