@@ -75,7 +75,8 @@ The only way across the project boundary is a share a Data owner creates on purp
 - **Share the feature store** with another project, always read-only, see [Sharing the entire feature store][sharing-the-entire-feature-store].
 - **Publish a dataset** to the whole cluster, which makes it read-only and lets any project import it.
 
-The members of the receiving project get access as soon as the share is created, and so does anyone who joins that project later.
+The members of the receiving project get access as soon as the share is created, as far as their role allows, and so does anyone who joins that project later.
+Members with the Feature store restricted role do not get access to shared feature stores or feature groups.
 Revoking the share removes the access again.
 [Data Storage and Sharing][data-storage-and-sharing] shows how shares look across projects.
 
