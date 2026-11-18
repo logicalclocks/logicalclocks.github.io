@@ -8,14 +8,16 @@ The loading strategy decides how they get them.
 | Strategy         | How the pods get the files                                                                                        | Model servers                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
 | `HOPSFS_MOUNT`   | Mounted read-only from HopsFS and read in place.                                                                  | Python, TensorFlow Serving, Triton |
-| `RUNAI_STREAMER` | Mounted read-only from HopsFS, and vLLM loads the weights with the [Run:ai Model Streamer][runai-model-streamer]. | vLLM                               |
+| `RUNAI_STREAMER` | Mounted read-only from HopsFS, and vLLM loads the weights with the [Run:ai Model Streamer][runai-model-streamer]. | vLLM, but not vLLM-Omni            |
 | `DOWNLOAD`       | Downloaded to the pod's local disk before the model server starts.                                                | All                                |
 
 Either way the files are at the same paths, `/mnt/models` and `/mnt/artifacts`, so predictor and transformer scripts do not depend on the strategy.
 
 The two mount strategies need the [HopsFS CSI driver][hopsfs-csi-driver]; without it, `DOWNLOAD` is the only strategy.
-The strategy is set per deployment, and it takes effect the next time the deployment starts.
-A deployment created without a strategy gets the mount strategy of its model server when the driver is enabled, and `DOWNLOAD` otherwise.
+A deployment with a mount strategy fails to start if the driver is disabled later, until its strategy is changed to `DOWNLOAD`.
+The strategy is set per deployment.
+Saving a new strategy on a running deployment rolls it out right away and replaces its pods; a stopped deployment uses it the next time it starts.
+A deployment created without a strategy gets the mount strategy of its model server when the driver is enabled and the model server can read the model from the mount, and `DOWNLOAD` otherwise.
 Updating a deployment without a strategy keeps the one it has, and a deployment created before loading strategies existed keeps downloading its files.
 
 ### Which strategy to choose
@@ -27,8 +29,10 @@ Updating a deployment without a strategy keeps the one it has, and a deployment 
   vLLM's default loader maps the files into memory instead and reads a mount several times slower, which is why vLLM mounts only through the streamer.
   Loading a 16 GB model with the streamer takes about as long as downloading it, without the local disk.
   The weights must be in safetensors format, and the vLLM image must include the streamer: the official `vllm/vllm-openai` images do, and a custom image needs `vllm[runai]`.
+  Saving `RUNAI_STREAMER` for a model without safetensors weights, or for a vLLM-Omni deployment, whose pipelines load models their own way, is rejected.
+  The strategy sets vLLM's `--load-format`, which overrides a `load-format` in the configuration file.
 - **`DOWNLOAD`** needs local disk at least as large as the model, and then reads the files at disk speed.
-  Use it when the cluster has no HopsFS CSI driver, when a vLLM model has no safetensors weights, or when the vLLM image does not include the streamer.
+  Use it when the cluster has no HopsFS CSI driver, when a vLLM model has no safetensors weights, for vLLM-Omni, when the vLLM image does not include the streamer, or when the configuration file sets its own `load-format`.
 
 !!! warning "A mounted deployment needs its HopsFS mount for as long as it runs"
     A model server that reads its files lazily also needs the mount after it started, so a failed mount stops it from reading files it has not loaded yet.
@@ -85,7 +89,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   )
   my_deployment = my_predictor.deploy()
 
-  # change it on an existing deployment, applied when it next starts
+  # change it on an existing deployment: a running one rolls out new pods right away
   my_deployment.loading_strategy = "DOWNLOAD"
   my_deployment.save()
   ```
