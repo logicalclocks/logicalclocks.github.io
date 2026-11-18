@@ -7,7 +7,7 @@ description: Documentation on compacting, checkpointing and vacuuming Delta Feat
 ## Introduction
 
 A Delta table that is written to repeatedly accumulates two things: data files and log entries.
-Every commit writes at least one new data file, and every reader opens all of them.
+Every insert commits at least one new data file, and every reader opens all of them.
 Every commit also appends to the `_delta_log`, and a reader replays that log from the last checkpoint.
 Neither is reclaimed on its own, and on a table written from Python neither is bounded on its own either: Spark writes a checkpoint every `delta.checkpointInterval` commits, delta-rs writes none.
 
@@ -56,6 +56,8 @@ It is also the time travel window: a version whose files have been vacuumed cann
 
 The effect of a short retention is not that a vacuum deletes more, but that it deletes sooner.
 A run reclaims what earlier runs orphaned rather than its own rewrite, whose files are seconds old.
+
+The files of [deleted partitions][deleting-partitions] are orphaned the same way: the delete only removes them from the current version, and the vacuum reclaims them once the retention has passed.
 
 !!! warning "Delta's own floor"
     Delta refuses a retention under seven days unless its retention check is disabled.

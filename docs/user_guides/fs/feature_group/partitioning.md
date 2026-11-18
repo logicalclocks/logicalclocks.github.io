@@ -284,6 +284,48 @@ Five methods read the actual table state, so drift (for example, an external eng
 The format-specific getters raise on the wrong format rather than returning `None`, so an unconfigured layout is never confused with an unsupported operation.
 For Iceberg feature groups written through a user-provided catalog (the `iceberg.catalog` write option), the current-metadata pointer lives in that catalog, so inspect the layout through the catalog instead; Glue-backed feature groups are inspected through the Glue Data Catalog automatically.
 
+## Deleting partitions { #deleting-partitions }
+
+`delete_partitions` removes whole partitions from the offline table.
+Only partition columns can be named, so each format drops whole data files from its metadata without reading or rewriting any of them.
+On a large table this is the way to reload a few days: `insert(df, overwrite=True)` deletes the whole table first, and an upsert or `remove_rows` has to match rows against every partition.
+
+```python
+import datetime
+
+fg = fs.get_feature_group("transactions", version=1)
+
+fg.delete_partitions({"snapshot_date": ["2026-09-02", datetime.date(2026, 9, 3)]})
+fg.insert(reloaded_df, operation="insert")
+```
+
+The argument maps each partition column to the values to delete.
+Values of one column are combined with OR and columns with AND, so `{"region": ["eu", "us"], "day": [1, 2]}` selects all four combinations.
+A partition column you leave out is not restricted, and `None` selects the partition holding null values.
+
+Each value must already have its column's type: a `str` for a string column, an `int` for an integer column, a `bool` for a boolean column, and a `datetime.date` or a `"YYYY-MM-DD"` string for a date column.
+Nothing is converted, because a converted value can select a different partition than the one you meant: `1.9` for an integer column is an error, not partition `1`.
+Partition columns of other types, such as timestamps, are not supported.
+
+| Format | Engines | Columns you can name | What the delete writes |
+| --- | --- | --- | --- |
+| `DELTA` | Spark, Python | `partition_key` | A `DELETE` commit that removes the partitions' files and adds none. |
+| `ICEBERG` | Spark, Python | `partition_key`, and identity transforms of `partitioned_by` | A `delete` snapshot that drops whole data files. |
+| `HUDI` | Spark | `partition_key`, and identity transforms of `partitioned_by` | A `replacecommit` that retires the partitions' file groups. |
+
+A `day(...)` or `bucket(...)` partition of an Iceberg or Hudi feature group cannot be named by a column value, so those columns are rejected.
+On an Iceberg feature group stored on HopsFS, the Python engine works only inside the Hopsworks cluster, such as in a Python job or a Jupyter notebook, because pyiceberg reaches HopsFS through libhdfs; from an external Python client, use a Spark job.
+
+The call returns the commit, or `None` when no existing partition matched, in which case nothing is committed.
+The commit's `rows_deleted` is `None` where the delete does not report how many rows the dropped files held: always on Hudi, and on Delta with the Python engine.
+
+The delete and the insert of a reload are two commits.
+Readers between them see the partitions missing, and if the insert fails the partitions stay deleted.
+On a stream feature group, run the materialization job before deleting: inserts reach the offline table through that job, so rows of those partitions that were not materialized yet would be written back after the delete.
+
+Only the offline store changes: rows of the deleted partitions are still served online, until you remove them with `remove_rows(df, storage="online")`.
+Time travel to a point before the delete still returns them as well, until the format reclaims the files: [`delta_vacuum`][delta-maintenance-feature-group] on Delta, snapshot expiry on Iceberg, the cleaner on Hudi.
+
 ## Migrating from the grain list form
 
 Earlier Hopsworks versions accepted `partitioned_by` as a list of bare grain names, for example `["year", "month"]`.
