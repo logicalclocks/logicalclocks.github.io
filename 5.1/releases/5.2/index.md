@@ -2,6 +2,93 @@
 
 The releases of Hopsworks 5.2, newest first.
 
+## 5.2.5 { #hopsworks-5-2-5 }
+
+Helm chart 5.2.5 · Released on 2026-11-17 · Changes since [5.2.4][hopsworks-5-2-4] · Python client [5.2.4](https://github.com/logicalclocks/hopsworks-api/releases/tag/5.2.4)
+
+### What's changed
+
+- [API] [FRONTEND] Addressed vulnerabilities in Airflow.
+- [API] [FRONTEND] Fixed deleting a feature group on an S3, GCS or AWS Glue data source also deleting the data of other feature groups whose folder starts with the same name, such as version 10 when deleting version 1; an object S3 refuses to delete now fails the delete instead of being ignored.
+- [API] [FRONTEND] Fixed a model deployment never starting once its storage initializer had restarted, such as after an update of a running deployment with a new predictor script, because each new attempt failed on the files an earlier attempt had downloaded.
+- [API] [FRONTEND] Added an optional local disk limit to jobs, Python apps and Jupyter servers: **Container disk (GB)** for Python workloads, **Driver disk (GB)** and **Executor disk (GB)** for Spark, **Driver disk (GB)** and **Worker disk (GB)** for Ray, also as `resourceConfig.diskGb`, `driverDiskGb`, `executorDiskGb` and `workerDiskGb` of the job configuration; a workload that writes more is evicted, and its execution shows the eviction reason ([Python job][docs-job-python-config]).
+  With Kueue, run `upgrade-kueue.sh upgrade` from the 5.2.5 chart after the upgrade, or jobs, Jupyter servers and model deployments with a disk limit stay pending ([Disk limits][docs-kueue-disk-limits]).
+- [API] [FRONTEND] Added **HopsFS mount** settings, the memory, cores and namenode connections of the container that serves `/hopsfs`, to Python, Ray, Python app, agent and ingestion jobs, to Jupyter servers and their Ray clusters, and to the project's default configuration, also as `hopsfsMountConfig` of the job configuration; a field left empty keeps the cluster default ([Python job][docs-job-python-config], [Jupyter][docs-jupyter-python]).
+- [API] [FRONTEND] Added an optional disk limit to the predictor and the transformer of a model deployment, **Disk (GB)** in the resource allocation and `disk` of `Resources` in the Python client ([Resources][docs-serving-resources]).
+- [API] Added `Environment.run_custom_commands` to the Python client, which builds an environment from an uploaded Bash script, with `artifacts`, `env_vars`, `await_completion` and `timeout` ([Custom commands][docs-custom-commands]).
+- [API] [FRONTEND] Changed the Kubernetes Monitoring dialog of a job to stay open when the run ends and show its final status with the last pods and events it observed; a Spark run that Kubernetes refuses to start, such as for a ResourceQuota or LimitRange, now shows the reason in the dialog and in its `stderr.log`.
+- [API] [FRONTEND] Changed creating a feature group from a SQL query on a data source to offer only an external feature group: **Ingest Data to New Feature Group** is gone from the **Query** tab, where it always failed with "A database must be specified", and a request with `sink_enabled` and a query without a table is refused with HTTP 400 (error 270136), because ingestion jobs read a table.
+- [API] [FRONTEND] Fixed queries on a Trino catalog of an Oracle data source whose credentials each member provides failing with ORA-01017 from Superset, from other Trino clients and from the owner's other projects: the catalog now uses its owner's credentials and follows them when the owner saves new ones ([Trino catalogs][docs-ds-provided-trino]).
+  Removing your credentials for the data source now also removes your Trino catalogs on it, and saving credentials again does not bring them back.
+- [API] [FRONTEND] [HELM] Fixed installing a wheel or a requirements file into an environment failing with exit code 127 when `hopsworks.dockerImage.packageAuth.secretName` or `hopsworks.dockerImage.packageAuth.caCertsConfigMap` is set.
+- [API] [FRONTEND] [HELM] Fixed library installs and custom-command builds of an environment timing out on a package mirror that is slow to serve a large package: `timeout` and `retries` of `hopsworks.dockerImage.pypi.global_parameters` now also apply to uv, in environment builds and in Jupyter, terminal and Ray pods.
+- [API] [FRONTEND] Fixed custom-command environment builds failing on OpenShift before the script started.
+- [API] Fixed calls to the Airflow REST API through Hopsworks, under `/hopsworks-api/airflow/`, with a Hopsworks JWT in `Authorization: Bearer` being refused with HTTP 401.
+- [API] [FRONTEND] Fixed the Airflow UI and API stalling while a DAG was saved or deleted, and deleting a DAG timing out under load.
+- [FRONTEND] Fixed DAGs never appearing in Airflow, whether composed in the UI or uploaded to the project's `Airflow` dataset, while saving them reported success, on a cluster whose HopsFS has no `/.airflow` folder, which no earlier chart created: the upgrade creates it, DAGs saved earlier then appear, and a save that cannot be delivered to Airflow now fails.
+- [FRONTEND] Fixed Airflow marking tasks that had succeeded as failed, and its scheduler restarting, when several DAGs ran at the same time.
+- [FRONTEND] Added a table of each pod's containers to the Kubernetes Monitoring dialog that **Monitor** opens on job executions and Jupyter servers, init and sidecar containers included, with state, restarts, last termination and memory and disk limits, a warning when the HopsFS mount restarted or ran out of memory, and the reason a pod was evicted with the disk setting to raise.
+- [FRONTEND] Added a **Metrics** link to the executions of Python, Python app, agent and ingestion jobs and to the running Jupyter server, and a **Pod metrics** link to Ray executions and to the Ray sessions of a Jupyter server, which open a new Grafana dashboard of the workload's pods: memory against limit, CPU and throttling per container, restarts and out-of-memory kills of the HopsFS mount, and GPU utilization.
+- [FRONTEND] [HELM] Fixed `uv pip install`, `pip install` and `npm install` from a notebook, a Jupyter terminal or a web terminal failing certificate verification behind a package proxy with a private CA: Jupyter servers and terminals now trust the certificates of `hopsworks.dockerImage.packageAuth.caCertsConfigMap` from their next start, which only environment builds did before.
+- [FRONTEND] Fixed DAGs composed in the UI with a **File Sensor** failing to import in Airflow, and `HopsworksHdfsSensor` failing its task on the first check instead of waiting when the path does not exist yet; a missing dataset still fails the task at once, and the sensor now defaults to `mode="reschedule"`, which frees its worker slot between checks.
+- [FRONTEND] Changed saving a DAG to refuse one that launches a job whose files the project owner cannot read, such as a file in another member's personal folder, since its tasks run as the project owner and failed with Permission denied on every run; move the files to a folder the whole project can read, such as `Resources`.
+- [FRONTEND] Fixed an edit to a DAG file uploaded to the project's `Airflow` dataset not reaching Airflow, which kept running the version first uploaded until its DAG processor restarted.
+- [FRONTEND] Changed DAG files uploaded to the project's `Airflow` dataset to get their own API key, as DAGs composed in the UI do, so that their tasks can launch jobs without an Airflow connection holding a key.
+  Their tasks then call Hopsworks as the project owner, also in a DAG that used an Airflow connection until now.
+- [FRONTEND] Removed the **Query** tab from the feature group creation of MongoDB and AWS Glue data sources, which never ran the text as SQL.
+- [FRONTEND] Fixed deleting a project leaving its DAGs and their runs in Airflow.
+- [HELM] Fixed `helm upgrade` failing on the `opensearch-index-upgrade` hook, also when run again, after the Consul block was lost from the cluster DNS configuration, such as by an update of the EKS CoreDNS add-on that overwrites its configuration: the new `consul-coredns-pre-upgrade` hook restores it before the other hooks run ([CoreDNS configuration hook][docs-upgrade-coredns-hook]).
+- [HELM] Fixed Filebeat sending every container log on a node again after each restart, pod re-creation or `helm upgrade`, which could fill OpenSearch with duplicates until it stopped ingesting.
+  The first Filebeat start after the upgrade sends each node's current logs once more.
+- [HELM] Changed the HopsFS NameNode to place the first replica of a block on the DataNode of the writing pod's Kubernetes node, when there is one, and to serve reads from that DataNode first, for which it watches the pods of every namespace; `hopsfs.namenode.topology.enabled: false` turns it off ([values][values-hopsfs-topology]).
+- [HELM] Added pinning the Kafka bootstrap and each broker LoadBalancer Service to its own MetalLB address, with `kafka.cluster.kafka.externalLoadBalancer.bootstrapAnnotations` and `brokerAnnotations` ([values][values-kafka-broker-annotations]).
+- Addressed vulnerabilities in the OpenSearch Dashboards and remote shuffle service images, and in the OnlineFS dependencies.
+- Fixed Discover in OpenSearch Dashboards failing with `Could not locate that index-pattern-field (id: @timestamp)` on the Service Logs and REST API audit index patterns; the upgrade repairs the saved index patterns.
+
+### Breaking changes
+
+- [HELM] Remove `hopsworks.variables.testconnector_image_version` from your values if you set it, or `helm upgrade` fails on schema validation: the chart no longer has the value, which was the tag of the image of a data source connection test that Hopsworks no longer runs.
+- [HELM] If you pin `hopsfs.image.tag` to a HopsFS older than 3.4.3.4, set `hopsfs.namenode.topology.enabled: false` before upgrading, or upgrade the image: the chart now configures the NameNode with a topology mapping that older images lack, and the NameNode does not start without it ([values][values-hopsfs-topology]).
+- [HELM] `helm upgrade` now applies the Kafka node pool settings of your values, such as `kafka.cluster.kafka.replicas`, `storageSize`, `resources` and `jvmOptions`, on a cluster whose Strimzi CRDs serve only `v1`, such as one installed on 5.2, where earlier 5.2 releases left the Kafka node pools as they were: compare the live pools with your values before upgrading, because the first upgrade applies the settings earlier upgrades ignored and overwrites changes made to a pool by hand, and keep `kafka.migrationJob.enabled` on ([Kafka node pool settings][docs-upgrade-kafka-node-pools]).
+
+### Upgrade steps
+
+Follow [Changes from 5.2.5][docs-upgrade-changes-from-525] in the upgrade guide.
+
+### Upgraded components
+
+| Component | 5.2.4 | 5.2.5 |
+| --------- | ----- | ----- |
+| Airflow image | 5.2.1 | 5.2.2 |
+| ArrowFlight server | 5.2.2 | 5.2.3 |
+| Base environment images | 5.2.4 | 5.2.5 |
+| Git image | 1.6 | 1.6.1 |
+| Grafana | 12.4.14-h0 | 12.4.14-h4 |
+| Hive Metastore | 4.1.0.1-v1 | 4.1.0.2.0-v1 |
+| HopsFS | 3.4.3.3-EE-RC1 | 3.4.3.4-EE-RC0 |
+| HopsFS CSI driver | 0.1.1 | 0.2.0 |
+| Inference logger | 5.2.0 | 5.2.2 |
+| Model serving webhook | 5.2.0 | 5.2.2 |
+| OnlineFS | 2.5.2 | 2.5.3 |
+| OpenSearch Dashboards | 3.8.0.2 | 3.8.0.3 |
+| Remote shuffle service (Apache Uniffle) | 0.11.1 | 0.11.1.1 |
+| RonDB | 26.02.12 | 26.02.14 |
+| Spark | 4.1.3.0 | 4.1.3.1.0 |
+| Spark history server | 4.1.3.1 | 4.1.3.1.1 |
+| Spark operator | 2.5.1-h1 | 2.5.1-h2 |
+| Storage initializer | 5.2.0 | 5.2.2 |
+| Toolbox image (hwutils) | 1.10 | 1.10.1 |
+| Trino | 483-v3 | 483-v4 |
+| Trino authentication seeder | 3.4.3.3-EE-RC1 | 3.4.3.4-EE-RC0 |
+| Trino mountable-secrets sidecar | 3.4.3.3-EE-RC1-1 | 3.4.3.4-EE-RC0-1 |
+
+### Configuration changes
+
+- [HELM] Added `hopsfs.namenode.topology.enabled` (default `true`), which makes the NameNode place and read blocks by Kubernetes node, `hopsfs.namenode.topology.createRbac` (default `true`), which creates the ClusterRole and ClusterRoleBinding that let the NameNode list and watch pods, `hopsfs.namenode.topology.namespace` (default empty, every namespace), the only namespace whose pods it then watches, with a Role in that namespace instead, and `hopsfs.namenode.topology.initialSyncTimeoutMs` (default `30000`), how long the first block allocations wait for the pod list when the NameNode starts ([values][values-hopsfs-topology]).
+- [HELM] Changed the default of `airflow.hopsworks.manifestPath` from `/shared-volume/hopsfs/.airflow/manifest.json` to empty, which means the same path, in the HopsFS folder the chart now creates; a path you set is kept ([values][values-airflow-manifest]).
+- [HELM] Removed `hopsworks.variables.testconnector_image_version`, the tag of the `testconnector` image of the data source connection test, with the cluster variable `testconnector_image`, which the upgrade deletes.
+- [HELM] Added `kafka.cluster.kafka.externalLoadBalancer.bootstrapAnnotations` and `kafka.cluster.kafka.externalLoadBalancer.brokerAnnotations`, the annotations of the Kafka bootstrap Service and of each broker's Service, merged over `annotations`.
+
 ## 5.2.4 { #hopsworks-5-2-4 }
 
 Helm chart 5.2.4 · Released on 2026-11-05 · Changes since [5.2.3][hopsworks-5-2-3] · Python client [5.2.3](https://github.com/logicalclocks/hopsworks-api/releases/tag/5.2.3)
@@ -409,8 +496,7 @@ Helm chart 5.2.0 · Released on 2026-10-15 · Changes since [5.1.0][hopsworks-5-
 - [FRONTEND] [HELM] Web terminal sessions now last 8 hours instead of 4, and every upgrade sets `terminal_session_hours` from `hopsworks.terminal.sessionHours`, replacing a value set in the admin UI, which upgrades used to keep; to keep another length, set it in `hopsworks.terminal.sessionHours`.
 - [HELM] Upgrade 5.1 clusters to [5.2.2][hopsworks-5-2-2] instead of 5.2.0, whose OpenSearch index pass refuses every client, fails on an index with an empty mapping and doesn't check for nmslib vector fields, and whose index pass and OpenSearch restarts delete the roles behind restricted-access grants and feature group shares; 5.2.0 also lacks the OpenSearch vulnerability fix and the opt-in index copy Job of [5.1.2][hopsworks-5-1-2] ([upgrading OpenSearch][docs-os]).
   5.2.1 fixes these, but like 5.2.0 it loses Airflow tables, such as variables and XComs, in the upgrade from 5.1.
-- [HELM] Upgrade 5.1.3 clusters to [5.2.4][hopsworks-5-2-4] or later, not to an earlier 5.2 release: 5.2.0 and 5.2.1 lack most of the changes of [5.1.3][hopsworks-5-1-3], 5.2.2 and 5.2.3 also lack its fix of model deployments failing with an x509 error, and 5.2.4 still lacks, among others, the RonDB 26.02.14, Kafka load balancer annotations, Filebeat registry fix and fix of feature group deletes on S3, GCS and AWS Glue data sources of 5.1.3.
-  Set `rondb.rondb.images.rondb.tag: 26.02.14` so that the upgrade doesn't move RonDB back to 26.02.12, and remove it once you upgrade to a release with RonDB 26.02.14 or later; remove `kafka.cluster.kafka.externalLoadBalancer.bootstrapAnnotations` and `kafka.cluster.kafka.externalLoadBalancer.brokerAnnotations` from your values, which 5.2.4 and earlier reject.
+- [HELM] Upgrade 5.1.3 clusters to [5.2.5][hopsworks-5-2-5] or later, not to an earlier 5.2 release: 5.2.0 and 5.2.1 lack most of the changes of [5.1.3][hopsworks-5-1-3], 5.2.2 and 5.2.3 also lack its fix of model deployments failing with an x509 error, and 5.2.4 lacks its RonDB 26.02.14, Filebeat registry fix, fix of feature group deletes on S3, GCS and AWS Glue data sources and Kafka load balancer annotations, which the values schema of 5.2.4 and earlier rejects.
 - [HELM] The upgrade migrates Kafka from ZooKeeper to KRaft, which can't be undone: give `helm upgrade` a long enough `--timeout`, never pass `--atomic` (`--rollback-on-failure` in Helm 4) or run `helm rollback`, and under ArgoCD invalidate its cluster cache, hard-refresh and sync again by hand ([Kafka 4 and KRaft][docs-kafka4-expect], [under ArgoCD][docs-kafka4-argocd]).
 - [HELM] Upgrade to 5.2 only from 5.1, satellites before central, with central and its satellites all under Helm or all under ArgoCD ([satellite clusters][docs-os-satellites], [Strimzi CRDs][docs-kafka4-strimzi-crds]).
 - [HELM] On a cluster installed before 5.1, OpenSearch refuses every client while the upgrade copies its oldest indices; plan the outage and the timeout ([upgrading OpenSearch][docs-os]).
@@ -611,3 +697,15 @@ Follow [Before every upgrade][docs-upgrade-before] and [5.1.x to 5.2.x][docs-upg
 [docs-serving-gateway-clusterip]: https://docs.hopsworks.ai/5.2/setup_installation/admin/model_serving_gateway/#model-serving-gateway-clusterip
 [docs-upgrade-changes-from-524]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-changes-from-524
 [docs-upgrade-strimzi-13]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-strimzi-13
+[docs-ds-provided-trino]: https://docs.hopsworks.ai/5.2/user_guides/fs/data_source/creation/sql/#data-source-provided-credentials-trino
+[docs-job-python-config]: https://docs.hopsworks.ai/5.2/user_guides/projects/jobs/python_job/#step-6-optional-additional-configuration
+[docs-jupyter-python]: https://docs.hopsworks.ai/5.2/user_guides/projects/jupyter/python_notebook/
+[docs-serving-resources]: https://docs.hopsworks.ai/5.2/user_guides/mlops/serving/resources/
+[docs-kueue-disk-limits]: https://docs.hopsworks.ai/5.2/setup_installation/admin/kueue_external/#kueue-disk-limits
+[docs-custom-commands]: https://docs.hopsworks.ai/5.2/user_guides/projects/python/custom_commands/
+[docs-upgrade-changes-from-525]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-changes-from-525
+[docs-upgrade-coredns-hook]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-coredns-hook
+[docs-upgrade-kafka-node-pools]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-kafka-node-pools
+[values-kafka-broker-annotations]: https://docs.hopsworks.ai/5.2/setup_installation/common/helm_chart_values/kafka/#helm.kafka.cluster.kafka.externalLoadBalancer.brokerAnnotations
+[values-hopsfs-topology]: https://docs.hopsworks.ai/5.2/setup_installation/common/helm_chart_values/hopsfs/#helm.hopsfs.namenode.topology.enabled
+[values-airflow-manifest]: https://docs.hopsworks.ai/5.2/setup_installation/common/helm_chart_values/airflow/#helm.airflow.hopsworks
