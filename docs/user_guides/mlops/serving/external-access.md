@@ -206,6 +206,7 @@ print(deployment.shared_with)  # {'all_projects': False, 'projects': [...]}
 A new LLM deployment that the LLM Gateway serves is shared with all projects by default.
 A deployment created before the upgrade that introduced sharing stays project-only until a Data Owner shares it.
 If the LLM Gateway did not serve it, turning the LLM Gateway on for it with the REST API or `set_llm_gateway(True)` shares it with all projects, as for a new deployment.
+Turning the LLM Gateway on for the project does not share anything: a deployment created while the project's LLM Gateway was off stays project-only until a Data Owner shares it.
 The create and edit forms send the sharing they show with the deployment, so it is stored before the deployment is exposed and the all-projects default does not apply.
 A choice a Data Owner made, including switching **All projects** off, is kept when the deployment leaves and joins the LLM Gateway again.
 

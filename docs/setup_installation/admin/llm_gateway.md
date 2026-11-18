@@ -136,6 +136,7 @@ A member of the owning project is held to their role there, so sharing never wid
 
 A new vLLM deployment that the LLM Gateway serves is shared with all projects.
 A deployment that existed before the upgrade that introduced sharing stays project-only until a Data Owner shares it.
+Turning the LLM Gateway on for the project does not share anything: a deployment created while the project's LLM Gateway was off stays project-only until a Data Owner shares it.
 
 The cluster variable `serving_sharing_enabled` controls the feature:
 
