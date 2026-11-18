@@ -143,8 +143,8 @@ The cluster variable `serving_sharing_enabled` controls the feature:
 | --- | --- | --- |
 | `serving_sharing_enabled` | `true` | When `false`, no deployment is shared, the **Share with other projects** setting of the deployment forms is disabled, the Overview shows no sharing badge, the Terminal lists no shared deployment and the sharing API answers error code `240078` |
 
-Change it in [Cluster Configuration][cluster-configuration].
-The Hopsworks Helm chart seeds it once, so an upgrade keeps the value an administrator set.
+Set it with the Hopsworks Helm chart value `hopsworks.variables.serving_sharing_enabled`.
+The chart writes the value on every install and upgrade, so a change made in [Cluster Configuration][cluster-configuration] lasts until the next upgrade.
 A change reaches the LLM Gateway's routes within about a minute.
 The sharing choices of the Data Owners are kept while it is `false`, and apply again when it is `true`.
 
