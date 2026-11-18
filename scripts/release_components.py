@@ -113,7 +113,6 @@ COMPONENTS = {
         f"{KSERVE}:kserve.controller.tag",
         f"{KSERVE}:kserve.localmodel.controller.tag",
         f"{KSERVE}:kserve.router.tag",
-        f"{KSERVE}:kserve.storage.tag",
     ],
     "KServe RBAC proxy": [f"{KSERVE}:kserve.controller.rbacProxyImage"],
     "KServe utilities": [f"{KSERVE}:kserveUtilsImage.tag"],
@@ -172,7 +171,13 @@ COMPONENTS = {
     "RonDB MySQL metrics exporter": ["rondb:images.mysqldExporter.tag"],
     "scikit-learn model server": [f"{KSERVE}:kserve.servingruntime.sklearnserver.tag"],
     "Spark": [f"{HOPSWORKS}:variables.spark_version"],
-    "Storage initializer": [f"{KSERVE}:storageInitializer.tag"],
+    "Storage connector test image": [
+        f"{HOPSWORKS}:variables.testconnector_image_version"
+    ],
+    "Storage initializer": [
+        f"{KSERVE}:storageInitializer.tag",
+        f"{KSERVE}:kserve.storage.tag",
+    ],
     "Spark history server": ["charts/spark/values.yaml:historyServer.image.tag"],
     "Spark operator": [
         "charts/spark/values.yaml:spark-operator.image.tag",
