@@ -10,6 +10,8 @@ Hopsworks mounts HopsFS into Airflow, Trino, and the jobs, notebooks and deploym
 A privileged node plugin, run as a DaemonSet, performs the FUSE mount for each pod's inline volume and hands the connection to a `hopsfs-fuse` sidecar in the pod, which runs unprivileged and as a non-root user.
 The pods that mount HopsFS therefore carry no privileged container.
 
+Model deployments whose [loading strategy][loading-strategy-guide] mounts HopsFS, the default when the driver is on, read their model and deployment files through the driver as well, read-only, at the paths a download would fill (`/mnt/models` and `/mnt/artifacts`), so a pod does not copy the model before it starts.
+
 The driver is on by default (`global._hopsworks.csi.enabled: true`).
 The node plugin is installed whenever something needs it: `global._hopsworks.full_platform`, Airflow or Trino.
 The values are listed in [HopsFS CSI driver values][helm-values-hopsfs-csi].
@@ -39,6 +41,8 @@ A name set there must be unique in the Kubernetes cluster: two releases with one
 
 - **A crashed or restarted `hopsfs-fuse` sidecar leaves the pod's mount dead until the pod is recreated.**
   Reads and writes fail with `ENOTCONN`, and the restarted sidecar cannot resume the connection, so it crash-loops.
+  Delete the pod.
+- **A model deployment reads its files through the mount for as long as it runs**, so a dead mount also stops the model server from reading files it has not loaded yet.
   Delete the pod.
 - **A sidecar that never serves the mount**, for example because of bad certificates or an unreachable NameNode, leaves the pod's other containers in `ContainerCreating`.
   Read the sidecar's log with `kubectl logs <pod> -c hopsfs-fuse`.

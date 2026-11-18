@@ -266,6 +266,7 @@ nav:
                   - Autoscaling: user_guides/mlops/serving/autoscaling.md
                   - Scheduling: user_guides/mlops/serving/scheduling.md
                   - API Protocol: user_guides/mlops/serving/api-protocol.md
+                  - Loading Strategy: user_guides/mlops/serving/loading-strategy.md
               - REST API: user_guides/mlops/serving/rest-api.md
               - Troubleshooting: user_guides/mlops/serving/troubleshooting.md
               - External Access: user_guides/mlops/serving/external-access.md
