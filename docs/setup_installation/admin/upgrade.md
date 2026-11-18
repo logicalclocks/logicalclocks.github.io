@@ -502,6 +502,21 @@ Before, it created no topics there, so every topic had to exist before ingestion
   Creating or deleting a topic or a schema, or setting a compatibility level, through a feature store shared from another project fails with `CHANGE_THROUGH_SHARED_FEATURE_STORE` (190027).
   Reading through a shared feature store is unchanged.
 
+### Deleting a tag schema in use is refused { #upgrade-tag-schema-delete }
+
+Up to 5.2, deleting a tag schema deleted every tag created from it, in every project.
+From 5.3, the delete is refused with `TAG_SCHEMA_IN_USE` (370014, HTTP 409) while a tag created from the schema is attached to any artifact, or while the schema has archived values in the [tag history][archive-tag-history].
+The message says how many tags use the schema, per kind of artifact, or how many archived values it has.
+
+- **Automation that deletes tag schemas** has to remove their tags first, with `delete_tag()`.
+  A schema with archived values cannot be deleted, because the history keeps them.
+- **Wait for the dataset tag migration before deleting a tag schema.**
+  Legacy dataset tags stored in HopsFS are moved into the database by a background migration that starts 30 minutes after Hopsworks starts, and the delete does not see tags that have not moved yet.
+  A dataset whose legacy tag names a deleted schema fails the migration and keeps its tags in HopsFS.
+  The migration has finished when the `dataset_tags_xattr_migration_done` setting is `true`.
+
+See [Deleting a tag schema][deleting-a-tag-schema].
+
 ### Envoy Gateway { #upgrade-envoy-gateway }
 
 New in 5.3 and off by default: [Envoy Gateway][envoy-gateway] routes Standard-mode model deployments through the Kubernetes Gateway API, with Istio still the front door.
