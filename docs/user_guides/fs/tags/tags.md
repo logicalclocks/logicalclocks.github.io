@@ -389,9 +389,9 @@ A `removed_at` of `NULL` means the artifact is still in that state. An `added_on
 tag was attached before Hopsworks began recording attachment times, so the start is unknown; it is
 left empty rather than filled with a guess.
 
-The history outlives what it describes. Deleting the artifact, the tag schema or the project closes
-the open intervals and keeps the rows, so a report over a past quarter still returns what was true
-then.
+The history outlives what it describes. Deleting the artifact or the project closes the open
+intervals and keeps the rows, so a report over a past quarter still returns what was true then.
+A tag schema with history cannot be deleted, see [Deleting a tag schema][deleting-a-tag-schema].
 Deleting a dataset does the same for the HopsFS data sources that point into it, since they are deleted with it.
 
 ## Step 3: Search
