@@ -4,7 +4,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1794997588` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795014475` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -699,6 +699,168 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 `airflow.scheduler.topologySpreadConstraint` <a class="headerlink" href="#helm.airflow.scheduler.topologySpreadConstraint" title="Permanent link">#</a> { #helm.airflow.scheduler.topologySpreadConstraint }
 :   Type `object`, default `{}`.
     The default topology spread constraint. If not defined the global topology spread constraint would be used instead.
+
+</div>
+
+## statsd { #helm-values-airflow-statsd }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    airflow:
+      statsd:
+        enabled: true
+        image:
+          registry: docker.hops.works
+          repository: prometheus/statsd-exporter
+          tag: 0.31.0-alpine-h2.0
+        name: airflow-statsd
+        nodeSelector: {}
+        probe:
+          failureThreshold: 6
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 200m
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsGroup: 65534
+          runAsNonRoot: true
+          runAsUser: 65534
+        service:
+          annotations:
+            prometheus.io/path: /metrics
+            prometheus.io/port: '9102'
+            prometheus.io/scheme: http
+            prometheus.io/scrape: 'true'
+        tolerations: []
+    ```
+
+<div class="hops-values" markdown>
+
+`airflow.statsd` <a class="headerlink" href="#helm.airflow.statsd" title="Permanent link">#</a> { #helm.airflow.statsd }
+:   Type `object`.
+    statsd_exporter, which receives Airflow's StatsD metrics and serves them to Prometheus. The Grafana Airflow dashboard is built on them.
+
+    ??? note "Default"
+
+        ```yaml
+        enabled: true
+        image:
+          registry: docker.hops.works
+          repository: prometheus/statsd-exporter
+          tag: 0.31.0-alpine-h2.0
+        name: airflow-statsd
+        nodeSelector: {}
+        probe:
+          failureThreshold: 6
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 200m
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        securityContext:
+          readOnlyRootFilesystem: true
+          runAsGroup: 65534
+          runAsNonRoot: true
+          runAsUser: 65534
+        service:
+          annotations:
+            prometheus.io/path: /metrics
+            prometheus.io/port: '9102'
+            prometheus.io/scheme: http
+            prometheus.io/scrape: 'true'
+        tolerations: []
+        ```
+
+`airflow.statsd.enabled` <a class="headerlink" href="#helm.airflow.statsd.enabled" title="Permanent link">#</a> { #helm.airflow.statsd.enabled }
+:   Type `bool`, default `true`.
+    deploy the exporter and send Airflow's metrics to it; false turns Airflow's metrics off
+
+`airflow.statsd.image.registry` <a class="headerlink" href="#helm.airflow.statsd.image.registry" title="Permanent link">#</a> { #helm.airflow.statsd.image.registry }
+:   Type `string`, default `"docker.hops.works"`.
+    image registry; global._hopsworks.imageRegistry overrides it
+
+`airflow.statsd.image.repository` <a class="headerlink" href="#helm.airflow.statsd.image.repository" title="Permanent link">#</a> { #helm.airflow.statsd.image.repository }
+:   Type `string`, default `"prometheus/statsd-exporter"`.
+    repository under the image registry root
+
+`airflow.statsd.image.tag` <a class="headerlink" href="#helm.airflow.statsd.image.tag" title="Permanent link">#</a> { #helm.airflow.statsd.image.tag }
+:   Type `string`, default `"0.31.0-alpine-h2.0"`.
+    image tag
+
+`airflow.statsd.name` <a class="headerlink" href="#helm.airflow.statsd.name" title="Permanent link">#</a> { #helm.airflow.statsd.name }
+:   Type `string`, default `"airflow-statsd"`.
+    name of the exporter's Deployment, Service and ConfigMap, and the host Airflow sends StatsD to
+
+`airflow.statsd.nodeSelector` <a class="headerlink" href="#helm.airflow.statsd.nodeSelector" title="Permanent link">#</a> { #helm.airflow.statsd.nodeSelector }
+:   Type `object`, default `{}`.
+    node selector configuration
+
+`airflow.statsd.probe` <a class="headerlink" href="#helm.airflow.statsd.probe" title="Permanent link">#</a> { #helm.airflow.statsd.probe }
+:   Type `object`.
+    timings of the liveness and readiness probes
+
+    ??? note "Default"
+
+        ```yaml
+        failureThreshold: 6
+        initialDelaySeconds: 5
+        periodSeconds: 10
+        timeoutSeconds: 5
+        ```
+
+`airflow.statsd.resources` <a class="headerlink" href="#helm.airflow.statsd.resources" title="Permanent link">#</a> { #helm.airflow.statsd.resources }
+:   Type `object`.
+    resources of the exporter container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: 200m
+          memory: 128Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        ```
+
+`airflow.statsd.securityContext` <a class="headerlink" href="#helm.airflow.statsd.securityContext" title="Permanent link">#</a> { #helm.airflow.statsd.securityContext }
+:   Type `object`.
+    container securityContext; the image runs as nobody
+
+    ??? note "Default"
+
+        ```yaml
+        readOnlyRootFilesystem: true
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
+        ```
+
+`airflow.statsd.service.annotations` <a class="headerlink" href="#helm.airflow.statsd.service.annotations" title="Permanent link">#</a> { #helm.airflow.statsd.service.annotations }
+:   Type `object`.
+    annotations on the exporter Service; Prometheus scrapes it through the prometheus.io keys, and the map is open, so an operator can add their own
+
+    ??? note "Default"
+
+        ```yaml
+        prometheus.io/path: /metrics
+        prometheus.io/port: '9102'
+        prometheus.io/scheme: http
+        prometheus.io/scrape: 'true'
+        ```
 
 </div>
 
