@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795014475` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795016896` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -3192,6 +3192,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         serving_feature_logging_transport: realtime
         serving_max_route_connections: '10'
         serving_redeploy_not_found_after_seconds: '120'
+        serving_sharing_enabled: 'true'
         serving_state_manager_batch_size: '25'
         serving_state_manager_enabled: 'true'
         serving_state_manager_interval_ms: '300000'
@@ -4819,6 +4820,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.serving_redeploy_not_found_after_seconds` <a class="headerlink" href="#helm.hopsworks.variables.serving_redeploy_not_found_after_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.serving_redeploy_not_found_after_seconds }
 :   Type `string`, default `"120"`.
+
+`hopsworks.variables.serving_sharing_enabled` <a class="headerlink" href="#helm.hopsworks.variables.serving_sharing_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.serving_sharing_enabled }
+:   Type `string`, default `"true"`.
+    Whether Data Owners may share LLM deployments with other projects through the LLM gateway.
 
 `hopsworks.variables.serving_state_manager_batch_size` <a class="headerlink" href="#helm.hopsworks.variables.serving_state_manager_batch_size" title="Permanent link">#</a> { #helm.hopsworks.variables.serving_state_manager_batch_size }
 :   Type `string`, default `"25"`.
