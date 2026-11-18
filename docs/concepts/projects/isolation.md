@@ -27,8 +27,8 @@ Platform administrators manage projects from the administration pages, which hav
 
 ### One identity per project
 
-When you join a project, Hopsworks gives you an identity in that project, named `<project>__<username>`, for example `fraud_detection__alice`.
-Everything you start in the project runs with it, from notebooks and jobs to the terminal, and it is the owner you see on the files you create.
+When you join a project, Hopsworks gives you a separate identity in that project.
+Everything you start in the project runs with it, from notebooks and jobs to the terminal, and the files you create there belong to it.
 
 If you are a member of two projects, you have two separate identities.
 Being a member of both does not let a notebook or job in one project read the files of the other: those files must first be shared with the project it runs in.
