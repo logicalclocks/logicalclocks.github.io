@@ -1,0 +1,58 @@
+name: mkdocs-release-notes
+
+# Every docs version shows the release pages of main (docs/releases/). After each
+# successful docs build of main, rebuild the release branch versions whose release
+# pages are stale with their own workflow, and fail if any version still doesn't
+# match main.
+# See .claude/docs/releases.md.
+
+on:
+  workflow_run:
+    workflows:
+      - mkdocs-release
+    types:
+      - completed
+    branches:
+      - main
+
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+  queue: max
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  sync-release-notes:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout main repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # The commit the docs build ran on; later commits are accepted too.
+          ref: ${{ github.event.workflow_run.head_sha || 'main' }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          activate-environment: true
+
+      - name: Install Python dependencies
+        run: uv sync --extra cli
+
+      - name: Rebuild stale versions and check that every version shows main's release pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: hopsworks-docs sync-release-notes --rebuild

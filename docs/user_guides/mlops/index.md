@@ -36,7 +36,7 @@ The guides below follow that path.
 - [Model registry](registry/index.md)
   Save a model with metrics, a schema and an input example, one version per save.
 - [Frameworks](registry/frameworks/python.md)
-  TensorFlow, PyTorch, scikit-learn, LLM and plain Python models.
+  TensorFlow, PyTorch, scikit-learn, LLM, Triton and plain Python models.
 - [Import from Hugging Face](registry/import_huggingface.md)
   Bring a Hub model into the registry without training it here.
 - [Evaluation images](registry/model_evaluation_images.md)

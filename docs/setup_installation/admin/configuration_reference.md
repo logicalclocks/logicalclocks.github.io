@@ -189,6 +189,8 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `enable_feature_monitoring` | Boolean | `false` | Settings.java |
 | `enable_gcs_storage_connectors` | Boolean | `false` | Settings.java |
 | `enable_glue_storage_connectors` | Boolean | `true` | Settings.java |
+| `enable_gmail_storage_connectors` | Boolean | `true` | Settings.java |
+| `enable_outlook_storage_connectors` | Boolean | `true` | Settings.java |
 | `enable_google_sheets_storage_connectors` | Boolean | `true` | Settings.java |
 | `enable_hopsfsmount_page_cache_in_jobs` | Boolean | `true` | Settings.java |
 | `enable_hopsfsmount_page_cache_in_jupyter` | Boolean | `false` | Settings.java |
@@ -612,8 +614,6 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `terminal_session_max_hours` | Integer | `24` | Settings.java |
 | `terminal_shm_size` | String | `1Gi` | Settings.java |
 | `terminal_spark_image` | String | `terminal-spark` | Settings.java |
-| `testconnector_image` | String | `docker.hops.works/hopsworks/testconnector:0.2` | Settings.java |
-| `testconnector_launcher` | String | `testconnector-launch.sh` | Settings.java |
 | `trino_access_control_base_configmap` | String | `hopsworks-trino-access-control-base` | KubeSettings.java |
 | `trino_catalog_approval_required` | Boolean | `false` | Settings.java |
 | `trino_catalog_max_bytes` | Integer | `16384` | Settings.java |

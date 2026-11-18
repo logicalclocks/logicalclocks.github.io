@@ -56,7 +56,7 @@ uv pip install "hopsworks[python,great-expectations,polars]"
 
 ## Skills and instructions for coding agents
 
-The Hopsworks Python library ships a set of skills for coding agents: Claude Code, Codex, GitHub Copilot and OpenCode.
+The Hopsworks Python library ships a set of skills for coding agents: Claude Code, Codex, GitHub Copilot, OpenCode, pi and Hermes Agent.
 Inside a Hopsworks terminal they are available to every agent automatically.
 On your own machine, two commands make them available in the repository you are working in.
 
@@ -85,7 +85,7 @@ It then writes the following files into the current directory:
 | `.claude/agents/hops-infer-agent.md` | The Claude Code sub-agent `/hops-build` runs to build inference until it meets its SLA. |
 | `.claude/settings.local.json` | Allows `Bash(hops *)`, so Claude Code can run the CLI without asking before each command. |
 
-`AGENTS.md` is read by Claude Code, Codex, GitHub Copilot and OpenCode.
+`AGENTS.md` is read by Claude Code, Codex, GitHub Copilot, OpenCode, pi and Hermes Agent.
 The files under `.claude/` are read by Claude Code only.
 Running `hops setup` again in a directory that already has these files updates the files you have not edited and leaves the ones you have edited unchanged.
 A file an earlier version wrote and this one no longer ships, such as `.claude/agents/hops-fti.md`, is removed when you have not edited it and reported otherwise.
@@ -104,9 +104,13 @@ For another agent, pass `--agent`, which can be repeated:
 hops skills install --agent codex
 hops skills install --agent copilot
 hops skills install --agent opencode
+hops skills install --agent pi
+hops skills install --agent hermes
 ```
 
-The skills are written to `.codex/skills/`, `.agents/skills/` and `.opencode/skills/` respectively, and for OpenCode the path is also registered in `opencode.json`.
+The skills are written to `.codex/skills/` for Codex, `.opencode/skills/` for OpenCode, where the path is also registered in `opencode.json`, and `.agents/skills/` for GitHub Copilot, pi and Hermes Agent, which share that directory.
+pi asks whether to trust the repository the first time it starts there, and loads the skills once you do.
+Hermes Agent loads a repository's skills only in a git repository you have trusted, so run `hermes skills trust <your-repository>` once after installing them.
 An agent loads only the name and description of each skill when it starts and reads a skill in full when a task calls for it, so adding all of them costs a few kilobytes of context rather than the size of the skills themselves.
 
 Running `hops skills install` again after upgrading the `hopsworks` library updates the skills you have not edited, keeps the skills you have edited, and removes skills that the new version no longer ships.
@@ -168,6 +172,8 @@ Sections with defaults show a one-line summary of their answers, with **Edit** t
 For an agentic system the LLM's endpoint, model and key are saved as your account environment variables, `LLM_URL`, `LLM_MODEL` and `LLM_API_KEY`.
 For a batch or real-time system, **Monitoring** (collapsed) sets whether every prediction logs the features it used (on by default) and, in your own words, what to monitor and alert on, such as drift in a feature against the training data or a failed job.
 The build turns them into feature logging on the feature view, feature monitoring checks and alerts, and sends a failure alert for every job the system owns to the project's alert receiver.
+For a real-time system, **Prediction latency tracing** (collapsed, off by default) creates the deployment with tracing: the share of requests recorded as traces, from 0.01% to 100% (10% by default), and the days tracing stays on (7 by default).
+The deployment then times every request's feature lookup, transformations, model predict and feature logging, shown under X-ray latencies on its page, and can be switched off and on there without a restart; it serves one worker per replica, which the build's latency benchmark runs with.
 **Create** runs `hops factory run ml-batch --answers` (or `ml-realtime`, `ml-streaming`, `ml-agent`) in a Terminal tab named after the system, which records it and starts Claude Code on `/hops-build <name>`; the page opens the system once it is registered.
 **Location**, above the form of every factory, sets the folder the system's directory goes in, which holds its code and is its git repository: your home folder in the project by default, or another folder of the project you can write to, such as one in `Resources` so every member can open the code; from the CLI, run `hops factory run` in that folder.
 

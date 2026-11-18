@@ -3,7 +3,7 @@
 ## Introduction
 
 Hopsworks supports both REST and gRPC as API protocols for sending inference requests to model deployments.
-While REST API protocol is supported in all types of model deployments, gRPC is currently supported for **Python model deployments** only.
+While REST API protocol is supported in all types of model deployments, gRPC is supported for **Python** and **Triton** model deployments only.
 
 The protocol is chosen per deployment with `api_protocol`, in the creation form or in the Python API, and defaults to REST.
 REST is what `curl`, the published OpenAPI document and any client that is not the Python library use.
@@ -16,6 +16,23 @@ On gRPC the rows travel as one KServe v2 tensor per schema field, and `deploymen
 
 A deployment that runs your own predictor script has to stay on REST unless the script is written for gRPC.
 Under gRPC the model server hands `predict()` KServe v2 tensors rather than rows, which a script written for REST cannot read.
+
+A [Triton deployment][triton-model-guide] speaks the Open Inference Protocol on both: REST on `/v2/models/<name>/infer`, and gRPC through the `inference.GRPCInferenceService` service on port 9000.
+The model name is the deployment name, and the tensor names are the input and output names in `config.pbtxt`.
+`deployment.predict()` takes the same tensors with either protocol:
+
+```python
+response = deployment.predict(
+    inputs=[
+        {
+            "name": "input",
+            "shape": [1, 4],
+            "datatype": "FP32",
+            "data": [5.1, 3.5, 1.4, 0.2],
+        }
+    ]
+)
+```
 
 ## Web UI
 

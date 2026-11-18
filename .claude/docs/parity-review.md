@@ -101,7 +101,7 @@ Status: `[ ]` pending, `[x]` reviewed OK, `[!]` reviewed with a follow-up noted 
 | [ ] | `user_guides/fs/feature_monitoring/distribution_comparison.md` | modified | +10/-10 |
 | [ ] | `user_guides/projects/auth/registration.md` | modified | +6/-13 |
 | [ ] | `user_guides/projects/project/create_project.md` | modified | +1/-2 |
-| [ ] | `user_guides/projects/project/manage_members.md` | modified | +25/-0 |
+| [x] | `user_guides/projects/project/manage_members.md` | modified | all four member captures on the new UI, edit and delete buttons per row |
 | [ ] | `user_guides/projects/search.md` | added | +112/-0 |
 | [ ] | `user_guides/projects/python/python_env_overview.md` | modified | +14/-12 |
 | [ ] | `user_guides/projects/python/python_install.md` | modified | +43/-3 |
@@ -161,7 +161,7 @@ Status: `[ ]` pending, `[x]` reviewed OK, `[!]` reviewed with a follow-up noted 
 | [ ] | `setup_installation/admin/user.md` | modified | +52/-10 |
 | [ ] | `setup_installation/admin/project.md` | modified | +2/-2 |
 | [ ] | `setup_installation/admin/alert.md` | modified | +25/-11 |
-| [ ] | `setup_installation/admin/configure-project-mapping.md` | modified | +2/-2 |
+| [ ] | `setup_installation/admin/configure-project-mapping.md` | modified | mapping list, create and edit captures on the new UI; the two configuration captures are still old |
 | [ ] | `setup_installation/admin/airflow3.md` | modified | +4/-4 |
 | [ ] | `setup_installation/admin/search_index.md` | added | +93/-0 |
 | [ ] | `setup_installation/admin/monitoring/grafana.md` | modified | +4/-4 |
@@ -169,10 +169,10 @@ Status: `[ ]` pending, `[x]` reviewed OK, `[!]` reviewed with a follow-up noted 
 | [ ] | `setup_installation/admin/monitoring/websocket-pool.md` | modified | +3/-2 |
 | [ ] | `setup_installation/admin/auth.md` | modified | +10/-8 |
 | [ ] | `setup_installation/admin/oauth2/create-client.md` | modified | +1/-1 |
-| [ ] | `setup_installation/admin/oauth2/configure-project-mapping.md` | modified | +2/-2 |
+| [ ] | `setup_installation/admin/oauth2/configure-project-mapping.md` | modified | mapping list, create and edit captures on the new UI; the two configuration captures are still old |
 | [ ] | `setup_installation/admin/ldap/configure-ldap.md` | modified | +1/-1 |
 | [ ] | `setup_installation/admin/ldap/configure-krb.md` | modified | +1/-1 |
-| [ ] | `setup_installation/admin/ldap/configure-project-mapping.md` | modified | +2/-2 |
+| [ ] | `setup_installation/admin/ldap/configure-project-mapping.md` | modified | mapping list, create and edit captures on the new UI; the two configuration captures are still old |
 | [ ] | `setup_installation/admin/ha-dr/dr.md` | modified | +3/-3 |
 | [ ] | `setup_installation/admin/audit/audit-logs.md` | modified | +9/-9 |
 | [ ] | `setup_installation/admin/trino.md` | modified | +198/-1 |

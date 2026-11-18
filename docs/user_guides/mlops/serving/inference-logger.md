@@ -6,7 +6,9 @@ Once a model is deployed and starts making predictions as inference requests arr
 
 Hopsworks supports logging both inference requests and predictions as events to a Kafka topic for analysis.
 
-!!! warning "Inference logging is not supported for vLLM deployments."
+!!! warning "Inference logging is not supported for vLLM and Triton deployments."
+    The logger parses JSON bodies only, and Triton requests can carry binary tensors or arrive over gRPC.
+    Feature logging is not supported for Triton deployments either, because it runs through the same logger.
 
 !!! info "Inference logger vs. feature logging"
     The inference logger described here stores model inputs and predictions from inference requests and responses into a Kafka topic, for later consumption and analysis.

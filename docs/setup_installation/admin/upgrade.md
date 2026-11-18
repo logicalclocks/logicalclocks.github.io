@@ -8,21 +8,23 @@ description: What to do before and during each upgrade of a self-managed Hopswor
 
 Upgrade a self-managed Hopsworks cluster one minor release at a time, in order.
 Skipping a minor release is not supported, and for OpenSearch it fails at startup.
+Upgrade from the latest patch release of your current minor release to the latest patch release of the next one.
+Patch releases carry fixes for the upgrade itself, and these notes are written for the latest ones: the move to OpenSearch 3.8, for example, needs 5.2.1 or later.
 This page covers upgrades from 5.0.x and later.
 The commands assume Hopsworks is installed in the `hopsworks` namespace.
 
 | Upgrade | OpenSearch | What needs action |
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
-| [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, and from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | ICEBERG feature groups in Trino, the Filebeat registry, the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], and from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Additional prerequisites][upgrade-additional-prerequisites], [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] and [LLM Gateway][upgrade-llm-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
 1. Take a backup and check that it completed, as described in [Disaster Recovery][disaster-recovery].
 2. Pass `helm upgrade --timeout` long enough for the hooks of that upgrade.
    The upgrade from 5.1.x to 5.2.x has two that can run for hours: the [OpenSearch index pass][opensearch-set-the-timeout] and the [Kafka migration][kafka4-kraft-upgrade].
-3. If you run satellite clusters, read the order in which they upgrade relative to the central cluster, for [OpenSearch][opensearch-satellite-clusters] and for [Kafka][kafka4-before-you-start].
+3. If you run satellite clusters, read the order in which they upgrade relative to the central cluster, for [OpenSearch][opensearch-satellite-clusters], for [Kafka][kafka4-before-you-start] from 5.1.x to 5.2.x and for [Strimzi 1.3][upgrade-strimzi-13], and leave [KEDA][keda-satellite-clusters] out of them.
 4. If this is the first upgrade of the release with Helm 4, read [Upgrading with Helm 4][upgrading-with-helm-4] first.
 
 ## 5.0.x to 5.1.x { #upgrade-50-to-51 }
@@ -50,6 +52,25 @@ An upgrade from 5.0 to 5.1 also conflicted on the `trino-password-file` and `tri
 Running it again with `--force-conflicts` overwrites the Trino user database that the backend wrote (`password.db` and `group.db`), so check the Trino users afterwards.
 `--force-conflicts` applies to the whole release, as [The RSS ConfigMap][helm4-rss-configmap] explains.
 
+### Satellite clusters on 5.0 { #upgrade-50-to-51-satellites }
+
+Upgrade the central cluster first, as described in [Satellite clusters][opensearch-satellite-clusters].
+Until a satellite is on 5.1, the central cluster's 5.1 Python client writes to the satellite's 5.0 online store and searches its OpenSearch 1.3.
+The following restrictions apply during this window, also for workloads that use no 5.1 feature:
+
+- Similarity search fails with `[knn] unknown token [START_OBJECT] after [filter]` on an embedding feature group created after the central upgrade.
+  The 5.1 central cluster creates its index on faiss, and the client puts the search filters inside the nearest-neighbor query for faiss, which OpenSearch 1.3 cannot parse.
+  Embedding feature groups created before the central upgrade keep working, and search recovers once the satellite is on 5.1.
+- In a stream feature group, an insert with several rows for one primary key leaves the last of those rows in the online store instead of the one with the latest event time.
+  The 5.1 client marks the older rows for the offline store only, in a way the 5.0 online store does not read.
+  The offline store is not affected, and feature groups that are not stream feature groups drop those rows in the client.
+  The rows stay as they are after the satellite's upgrade, so insert the newest values of the affected keys again once the satellite is on 5.1.
+- Creating a new cosine embedding feature group fails while the satellite runs OpenSearch 1.3, for both shared project indexes and dedicated indexes.
+  The central cluster creates the embedding fields with the faiss engine, whose OpenSearch 1.3 implementation does not support the `cosinesimil` space type.
+  Postpone creation of these feature groups until the target satellite is upgraded to 5.1 and runs OpenSearch 2.19.
+
+Deletes and `upsert_if_newer` work as on 5.1.
+
 ## 5.1.x to 5.2.x { #upgrade-51-to-52 }
 
 ### OpenSearch 3.8.0 { #upgrade-opensearch-38 }
@@ -60,8 +81,8 @@ Follow [Upgrading OpenSearch][upgrading-opensearch]: it covers what keeps workin
 
 ### Kafka 4 and KRaft { #upgrade-kafka-kraft }
 
-The upgrade migrates every Kafka from ZooKeeper to KRaft and moves Strimzi from 0.45 to 1.2.
-Run the read-only checks in [Before you start][kafka4-before-you-start] first, and read [Kafka 4 and KRaft upgrade notes][kafka4-kraft-upgrade], including the step and the `ignoreDifferences` entry that ArgoCD needs.
+The upgrade migrates every Kafka from ZooKeeper to KRaft and moves Strimzi from 0.45 to 1.2, or to 1.3 from the 5.2.x patch release that uses it.
+Run the read-only checks in [Before you start][kafka4-before-you-start] first, and read [Kafka 4 and KRaft upgrade notes][kafka4-kraft-upgrade], including the step that ArgoCD needs and, with Strimzi 1.2, its `ignoreDifferences` entry.
 
 ### Migration V109 waits for the statistics cleaner { #upgrade-v109-statistics-cleaner }
 
@@ -154,23 +175,145 @@ Set the value to 61 or more to keep the details.
 
 ### Feature groups shared with a subset of their features { #upgrade-trino-subset-shares }
 
-From 5.2.1, Trino serves feature groups shared with a subset of their features through `delta_shared`, `hudi_shared` and `iceberg_shared` only while `hopsworks.variables.trino_feature_group_subset_shares_enabled` is `"true"`.
-It defaults to `"false"`.
-Shares of a whole feature group, and the online and embedding access of a subset share, do not depend on it.
-
-Those catalogs read HopsFS as a superuser, and a data owner writes the table metadata that names a shared table's data files, so through the metastore they can point that table at another project's files.
-Keep the value at `"false"`.
+From 5.2.1, because of a security fix, share the whole feature group with a project that queries it in Trino and may read all its features.
+Shares of a whole feature group, and the online and embedding access of a subset share, are unchanged.
+`hopsworks.variables.trino_feature_group_subset_shares_enabled: "true"` keeps the behaviour of 5.2.0, without the fix; keep its default, `"false"`.
 
 ### `consul-server-acl-init` fails with `field is immutable` { #upgrade-consul-acl-init }
 
 The upgrade can fail on the `consul-server-acl-init` Job with `spec.template: field is immutable`.
 Delete that Job and run the upgrade again.
 
+### `opensearch-index-upgrade` gets no answer from `elastic.service.consul` { #upgrade-consul-dns-missing }
+
+The upgrade can fail on the `opensearch-index-upgrade` hook with `FATAL: no answer from https://elastic.service.consul:9200`, and fail the same way when it is run again.
+One cause is that the Consul block is missing from the cluster DNS, because something outside the chart has reset the DNS configuration since the last upgrade.
+An update of the EKS CoreDNS add-on with conflict resolution `OVERWRITE` does that.
+Check the `Corefile` before changing anything:
+
+```sh
+kubectl get configmap coredns -n kube-system -o jsonpath='{.data.Corefile}'
+```
+
+If it has a `consul` block, the cause is another one: see **No answer from the cluster** under [If the hook fails][opensearch-hook-fails].
+If the block is missing, a chart release with the [CoreDNS configuration hook][upgrade-coredns-hook] puts it back by itself.
+With an earlier release, add it at the end of the `Corefile`, wait a minute for CoreDNS to load it, and run the upgrade again:
+
+```text
+consul {
+  errors
+  cache 30
+  forward . {$CONSUL_SERVER}
+}
+```
+
+This is the form for the default setup, in which the chart configures the cluster DNS through the `coredns` ConfigMap and sets `CONSUL_SERVER` on the CoreDNS Deployment.
+
 ## 5.2.x to 5.3.x { #upgrade-52-to-53 }
 
 OpenSearch stays on 3.8.0.
 An upgrade from 5.2.0 or 5.2.1 also gets the [changes from 5.2.2][upgrade-changes-from-522].
-An upgrade from 5.2.0 also crosses two changes of 5.2.1, described under 5.1.x to 5.2.x: [Feature groups shared with a subset of their features][upgrade-trino-subset-shares], and the OpenSearch [Security configuration][opensearch-security-configuration], which takes away the read access of restricted project members.
+An upgrade from 5.2.0 also crosses two changes of 5.2.1, described under 5.1.x to 5.2.x: [Feature groups shared with a subset of their features][upgrade-trino-subset-shares], and the OpenSearch [Security configuration][opensearch-security-configuration], which addresses a vulnerability.
+
+### Additional upgrade prerequisites { #upgrade-additional-prerequisites }
+
+The identity running Helm or syncing ArgoCD must have permission to manage `ValidatingAdmissionPolicy` and `ValidatingAdmissionPolicyBinding` resources in the `admissionregistration.k8s.io` API group.
+
+Before upgrading, check that every project namespace carries the label configured by `global._hopsworks.projectPodSecurity.namespaceLabel`, which defaults to `hopsworks.ai/project`:
+
+```bash
+kubectl get namespaces -L hopsworks.ai/project
+```
+
+If you supply project namespaces yourself, set `global._hopsworks.projectPodSecurity.namespaceLabel` to an administrator-managed label key, for example `ops.example.org/hopsworks-project`, and add that label to every project namespace.
+Include it in `hopsworks.variables.project_namespace_labels` so Hopsworks also labels new project namespaces, preserving any existing entries in that setting.
+The `hopsworks.ai/project` label also controls namespace ownership during [uninstallation][uninstalling-hopsworks]; do not add it to a namespace you intend to manage yourself.
+
+For multiple releases on the same Kubernetes cluster, set `global._hopsworks.projectPodSecurity.namespaceMatchLabels` to each release's tenant labels.
+Leaving `namespaceMatchLabels` empty selects every namespace carrying `namespaceLabel`, including projects belonging to other releases.
+Every release must select a distinct set of project namespaces.
+Add these labels to existing and pre-created project namespaces and include them in `hopsworks.variables.project_namespace_labels` before upgrading.
+
+Project pod admission can be turned off with `global._hopsworks.projectPodSecurity.enabled: false`, which skips these prerequisites, but we recommend keeping it on.
+
+### Strimzi 1.3 { #upgrade-strimzi-13 }
+
+From the 5.2.x patch release that uses Strimzi 1.3, and in 5.3, the chart deploys Strimzi 1.3.1 in place of 1.2.0, and Kafka stays on 4.3.1.
+An upgrade from a release that already uses Strimzi 1.3 crosses none of this.
+
+- **Upgrade central before its satellites**, the reverse of the order from 5.1.x to 5.2.x.
+  A satellite runs on central's operator, and the 1.2.0 operator would replace the satellite's controller onto the 1.3.1 image without the configuration that image reads, which leaves the satellite's Kafka down until central is upgraded.
+  The satellite's upgrade therefore refuses to start while its Kafka was last reconciled by an older 1.x operator.
+  Upgrade central, wait until the satellite's Kafka reports the 1.3.1 operator, then upgrade the satellite:
+
+    ```sh
+    kubectl get kafka <cluster> -n <satellite-namespace> -o jsonpath='{.status.operatorLastSuccessfulVersion}'
+    ```
+
+  Until its own upgrade, the satellite keeps its pods on the old image under the 1.3.1 operator, and that upgrade replaces each of them once.
+- **No step before `helm upgrade`.**
+  The `strimzi-crd-upgrade` hook applies the Strimzi 1.3.1 CRDs before the operator is replaced.
+- **The brokers and controllers are replaced once**, by the new operator, for the new image.
+  The chart stops the outgoing operator before it starts the new one, through `kafka.strimzi-kafka-operator.deploymentStrategy`, so that the 1.2.0 operator does not act on the new image.
+  A pod the 1.2.0 operator replaces onto the 1.3.1 image lacks the configuration that image reads, and restarts until the new operator takes over.
+  It then recovers on its own, which can take a few minutes, because Kubernetes waits up to five minutes between restarts of a failing container.
+  The setting makes that unlikely rather than impossible: nothing waits for the old operator to exit.
+  If your values set `kafka.strimzi-kafka-operator.deploymentStrategy.type: Recreate`, also set `rollingUpdate: null` there, or the merged strategy is rejected.
+  A single-broker cluster is unavailable while its broker is replaced, a single-controller cluster has no KRaft quorum while its controller is replaced, and OnlineFS catches up afterwards.
+- **Three new tags to mirror on an airgapped cluster**: `strimzi/operator`, `strimzi/kafka` and `strimzi/crds`, which `vendor_images.sh` lists.
+- **The operator deletes pods with background propagation during a rolling update.**
+  Strimzi 1.3 turns its `UseBackgroundPodDeletion` feature gate on by default, so that CNI plugins which remove a pod's network endpoints when its object is deleted, such as Cilium, no longer cut a broker off before it has shut down.
+  To keep the earlier foreground deletion, set `kafka.strimzi-kafka-operator.featureGates: "-UseBackgroundPodDeletion"`.
+- **Under ArgoCD, the `ignoreDifferences` entry for the Kafka CRD is no longer needed.**
+  Strimzi 1.3.1's Kafka CRD no longer has the empty map that the entry in [Under ArgoCD][kafka4-argocd] ignores, and the entry matches nothing on it, so it can stay.
+
+### CoreDNS configuration hook { #upgrade-coredns-hook }
+
+From the 5.2.x patch release that carries this hook, and in 5.3, an upgrade configures the cluster DNS for the Consul domain before its other hooks run.
+The other hooks reach services by their Consul names, so an upgrade used to fail on its first hook when the Consul block was missing from the cluster DNS, as described under [`opensearch-index-upgrade` gets no answer][upgrade-consul-dns-missing].
+The hook is rendered when `consul.autoConfigureCoreDNS` is on, which is the default.
+
+- **What runs.**
+  The `consul-coredns-pre-upgrade` hook runs the same step as the `consul-coredns-autoconf` Job, which still runs after the release is applied.
+  It then waits until `consul.service.consul` has resolved 20 times in a row, for at most 3 minutes, because the CoreDNS pods load a changed configuration one by one.
+  On a cluster whose DNS is in order it changes nothing and adds about 20 seconds.
+- **The hook does not fail the upgrade by itself.**
+  It works with the roles of the previous release, so it cannot follow a change of `consul.corednsConfigMapName` or `consul.corednsDeploymentName` made in the same upgrade; the `consul-coredns-autoconf` Job applies that change afterwards.
+  When the hook cannot read or write the DNS configuration, or the name does not resolve in time, it says so in its log and the upgrade continues.
+  Its Job gives up after 4 minutes, under the 5 minutes Helm waits for a hook by default.
+- **The log says what the hook did.**
+  The Job is kept after it finishes, for one day by default, so that its log can be read:
+
+    ```sh
+    kubectl logs -n hopsworks job/$(kubectl get jobs -n hopsworks -o name --sort-by=.metadata.creationTimestamp | grep consul-coredns-pre-upgrade | tail -n 1 | cut -d/ -f2)
+    ```
+
+  Its lines start with `>> coredns pre-upgrade hook:`.
+
+    | Line | Meaning | What to do |
+    | ---- | ------- | ---------- |
+    | `consul.service.consul resolved 20 times in a row` | The hook did its work. | Nothing. |
+    | `could not read the Service` or `does not exist yet` | The hook could not find the Consul DNS Service and left the DNS configuration alone. | Nothing, unless a later hook fails on a Consul name: then check that Service and run the upgrade again. |
+    | `configure-dns.sh ended with status` | The hook could not read or write the DNS configuration; the error is above that line. | Nothing in an upgrade that changes one of the two names above. Otherwise check the Role `consul-autoconfigcoredns-update-dns-role` in `kube-system` and those two values. |
+    | `did not resolve 20 times in a row` | Consul names do not resolve reliably yet. | If a later hook fails on a Consul name, check the endpoints of the Consul DNS Service, the Consul server pods and the logs of the CoreDNS pods, then run the upgrade again. |
+
+- **When the hook's Job gets no pod.**
+  With `global._hopsworks.mode: upgrade`, as under ArgoCD, the chart cannot see whether the service account of the hook exists.
+  Turning `consul.autoConfigureCoreDNS` on for an existing installation in that mode creates the Job before its service account: the Job gets no pod, its events say `error looking up service account hopsworks/consul-autoconfigcoredns-account: serviceaccount "consul-autoconfigcoredns-account" not found`, and the upgrade or sync fails on the hook after 4 minutes.
+  Helm reports `pre-upgrade hooks failed` with `job consul-coredns-pre-upgrade-<hash>-r<revision> failed: DeadlineExceeded`, and nothing else of the release has been applied at that point.
+  The Job carries the annotation `hopsworks.ai/no-pod` for this case.
+  Under ArgoCD, apply the service account, the two Roles and the two RoleBindings of the Job first, with the values of the application, then sync:
+
+    ```sh
+    helm template hopsworks hopsworks/hopsworks --version <version> --namespace hopsworks --values <values> \
+      --show-only charts/consul/templates/consul-autoconfigcoredns-ServiceAccount.yaml \
+      --show-only charts/consul/templates/consul-autoconfigcoredns-role.yaml \
+      --show-only charts/consul/templates/consul-autoconfigcoredns-rolebinding.yaml \
+      | kubectl apply -f -
+    ```
+
+  With Helm, run that upgrade without `global._hopsworks.mode`, so that it takes its default, `auto`: the chart then sees that the service account is missing and leaves the hook out.
+  Applying the objects by hand does not work with Helm, which refuses objects it did not create.
 
 ### ICEBERG feature groups in Trino { #upgrade-iceberg-trino }
 
@@ -218,6 +361,23 @@ On the upgrade to 5.3:
 - Leave the existing contents of `/var/lib/filebeat-data` in place.
   Nothing in the chart reads them, and they may belong to another Filebeat on the node.
 
+### Logstash 9 { #upgrade-logstash-9 }
+
+In 5.3, and from the 5.2.x patch release that ships it, Logstash moves from 7.17 to 9.5.
+The chart's own pipelines need nothing, and documents keep their field names, because the chart sets `pipeline.ecs_compatibility: disabled`.
+Pipelines, outputs and plugins you added through `logstash.extraPipelines`, `logstash.additional_audit_outputs` or `logstash.plugins` need a check before the upgrade:
+
+- **Rename the TLS settings of `elasticsearch`, `http` and `tcp` outputs in the same upgrade.**
+  The output plugins move up a major version: `elasticsearch` 11 to 12, `http` 5 to 6, `tcp` 6 to 7 and `opensearch` 1 to 2.
+  The new `elasticsearch`, `http` and `tcp` outputs refuse their old SSL settings, such as `cacert`, `ssl` and `ssl_certificate_verification` on `elasticsearch`, `cacert`, `client_cert`, `client_key`, `keystore` and `truststore` on `http`, and `ssl_enable`, `ssl_cert`, `ssl_cacert` and `ssl_verify` on `tcp`.
+  The 7.17 versions do not know the replacement names, such as `ssl_enabled` and `ssl_certificate_authorities`, so no TLS setting works on both versions, and the values of the upgrade itself must carry the new names.
+  Each plugin's page in the [Logstash plugin reference](https://www.elastic.co/docs/reference/logstash/plugins) lists them.
+- **A pipeline that fails to start stops all log shipping.**
+  Logstash keeps running the other pipelines, but the routing pipeline waits on every event for the one that did not start, so service, project and audit logs all stop while the Logstash pod stays ready.
+  After the upgrade, look for `is obsolete and is no longer available` in the Logstash log.
+- **The kafka integration, the `azure_event_hubs` input and the `webhdfs` output are no longer in the image.**
+  A pipeline that uses one of them needs it in `logstash.plugins`, which installs it when the Logstash pod starts, so it needs access to `rubygems.org` and cannot run on an airgapped cluster.
+
 ### Agent deployments reserve 2 GiB for their OTLP sidecar { #upgrade-agent-otlp-sidecar }
 
 An agent deployment with tracing enabled runs a `hops-otlp` sidecar next to the agent.
@@ -254,6 +414,46 @@ What changes for users and operators ([details](kueue_external.md#what-changes))
 - A workload whose pods are not all ready 30 minutes after admission is evicted and queued again (Kueue 0.19 `waitForPodsReady`).
 - The Ray autoscaler and job-submitter sidecars count against quota (Kueue 0.19).
 - A workload without a priority class gets the WorkloadPriorityClass named `default`, when one exists (Kueue 0.20).
+- Disk limits need Kueue to leave `ephemeral-storage` out of its quota checks, which the upgrade script sets up.
+  It stops before changing the cluster when it cannot read the queues, or when disk is budgeted but some ClusterQueues do not cover it ([Disk limits][kueue-disk-limits]).
+
+### Kafka node pool settings apply on every upgrade { #upgrade-kafka-node-pools }
+
+From 5.2.5, and in 5.3, a Helm upgrade applies the Kafka node pool settings in your values again.
+On a cluster whose Strimzi CRDs serve only `v1`, which is the case for a cluster installed on 5.2, earlier 5.2 releases left the two `KafkaNodePool` resources as they were on every Helm upgrade.
+A change of the replicas, storage, resources, JVM options or placement of the brokers or controllers had no effect, and a deleted pool did not come back.
+The `kafka-kraft-migration` pre-upgrade hook now applies both pools on every Helm upgrade.
+Under ArgoCD, and with Helm when `global._hopsworks.mode` is set, the pools are part of the release and are applied with it, so they were not affected, and the hook still leaves them to the release.
+
+- **The first upgrade with the fix applies what your values say.**
+  That includes settings that earlier upgrades ignored, and it overwrites a change made to a pool by hand, such as a replica count set with `kubectl`, because the hook applies every field the chart renders.
+  Compare the live pools with your values before upgrading:
+
+    ```sh
+    kubectl get kafkanodepools -n hopsworks -o yaml
+    ```
+
+  Strimzi replaces the Kafka pods one by one for a change of placement, resources or JVM options, and adds brokers for a higher replica count.
+- **A setting removed from the values can stay on a pool.**
+  The hook applies the pools server-side as the field manager `kafka-kraft-migration`, and Kubernetes removes a field that the values no longer set only when that manager is its only owner.
+  Helm owns the fields it set at install, and keeps owning each one whose value no upgrade has changed since, so such a field stays on the pool.
+  Check the pool after removing a setting, and remove the field from the pool by hand if it is still there.
+- **`kafka.migrationJob.enabled` stays on.**
+  The hook is the only thing that applies node pool settings during a Helm upgrade without `global._hopsworks.mode`, so with the switch off, pool changes are not applied.
+- **The upgrade fails when the pools cannot be applied.**
+  When the hook cannot read the `KafkaNodePool` CRD or the pools, or the cluster rejects the apply, the upgrade fails on the `kafka-kraft-migration` hook, where it used to continue without applying anything.
+  The log of the hook has the error:
+
+    ```sh
+    kubectl logs -n hopsworks job/kafka-kraft-migration
+    ```
+
+- **When the hook leaves the pools alone.**
+  When `v1beta2` has been removed from the `KafkaNodePool` CRD while a pool still carries ownership records written at that version, the cluster rejects every server-side apply to that pool.
+  The hook then applies nothing, and its log says `Not applying the node pools in this upgrade` and names the pools.
+  Pool changes are applied by the first upgrade after those records are cleared.
+  The `strimzi-crd-upgrade` hook clears them later in the same upgrade when it is enabled (`kafka.crdUpgradeJob.enabled`), the chart runs the Strimzi operator (`kafka.strimzi-kafka-operator.enabled`), and every Strimzi CRD stores only `v1`.
+  Otherwise whoever manages the Strimzi CRDs has to clear them, and until then every upgrade leaves the pools as they are.
 
 ### Bring your own Kafka: Hopsworks creates and deletes topics { #upgrade-byok-topics }
 
@@ -300,14 +500,13 @@ Before, it created no topics there, so every topic had to exist before ingestion
   A notification topic set before the upgrade is left as it is until its feature group moves to another one.
 - **Kafka changes through a shared feature store are refused.**
   Creating or deleting a topic or a schema, or setting a compatibility level, through a feature store shared from another project fails with `CHANGE_THROUGH_SHARED_FEATURE_STORE` (190027).
-  Before, the change was made in the project that shares the feature store, and with an external Kafka on that project's cluster.
   Reading through a shared feature store is unchanged.
 
 ### Envoy Gateway { #upgrade-envoy-gateway }
 
 New in 5.3 and off by default: [Envoy Gateway][envoy-gateway] routes Standard-mode model deployments through the Kubernetes Gateway API, with Istio still the front door.
 
-- **Nothing moves unless you turn it on.**
+- **Nothing moves unless you enable it.**
   An upgrade that leaves `global._hopsworks.envoyGateway` alone routes every request as before.
 - **Two components restart during the upgrade.**
   The KServe controller restarts, and the running deployments keep serving meanwhile.
@@ -315,7 +514,7 @@ New in 5.3 and off by default: [Envoy Gateway][envoy-gateway] routes Standard-mo
   `model-serving-authenticator` restarts with a new listener for the Gateway.
   While its old pod is replaced, a few requests can get a 403, because the 5.2 pod stops without waiting for the new one; from 5.3 its restarts wait, so later ones lose no request.
 
-To turn it on in a cluster with running deployments, upgrade twice, so that the Gateway is up before any deployment moves.
+To enable it in a cluster with running deployments, upgrade twice, so that the Gateway is up before any deployment moves.
 Clients keep their endpoint, Knative-mode deployments stay on Istio, and no deployment restarts.
 
 1. **Prepare.**
@@ -372,6 +571,47 @@ Clients keep their endpoint, Knative-mode deployments stay on Istio, and no depl
     - Every Standard-mode deployment answers through the usual endpoint, with both URL shapes.
     - The Knative-mode deployments are unchanged.
 
+!!! warning "Headers with underscores"
+    Once a deployment has moved, the Gateway drops request headers whose names contain an underscore, such as `session_id`, which Istio passed on.
+    The request still succeeds, but a predictor or transformer script that reads such a header no longer receives it.
+    Send the value in a header whose name uses hyphens instead.
+
+### Search index rebuild { #upgrade-53-search-reindex }
+
+After the upgrade, the `post-upgrade-opensearch-reindex-job` hook indexes the existing data sources, which 5.3 adds to search, and datasets, which a cluster upgraded from 5.1 may lack, without emptying the index.
+No action is needed unless `hopsworks.opensearchReindex.enabled` is `false` or the hook's log reports a run already in progress: then request a reindex with `scope=ADDITIVE` through the [REST API][search-index-rebuild] once no run is in progress.
+
+### LLM Gateway { #upgrade-llm-gateway }
+
+The [LLM Gateway][llm-gateway] is new in 5.3 and off by default.
+On top of Envoy Gateway, `global._hopsworks.envoyGateway.aiGateway.enabled` gives every project one OpenAI-compatible endpoint, `<inference endpoint>/v1/<project>/v1/...`, for its Standard-mode vLLM deployments.
+It brings the LLM Gateway controller, its six CRDs and a dedicated AI Gateway, a Redis and Envoy Gateway's rate-limit service for the [rate limits][llm-gateway-rate-limits], an access log on the AI Gateway's Envoy, and Grafana dashboards.
+[Tracing][llm-gateway-tracing] has a switch of its own, `aiGateway.tracing.enabled`, also off by default.
+
+An upgrade that leaves `aiGateway` alone changes nothing: the Istio Lua filter is the same, no object is added, and the backend finds no `envoy-ai-gateway-config` ConfigMap and does nothing.
+Rendering fails when `aiGateway.enabled` is on and `envoyGateway.enabled` is off.
+
+Before enabling, as listed under [How to enable it][llm-gateway-enable]:
+
+- Stop the started deployments named `v1`, or recreate them under another name.
+  Once the feature is on, such a deployment answers `404` through the Istio ingress and is not served by the LLM Gateway; it keeps answering through the Envoy Gateway.
+- Check cert-manager, a network plugin that enforces NetworkPolicies, and the backend's grants in the release namespace.
+- On an airgapped cluster, mirror the four images.
+
+Enable with one `helm upgrade`: no predictive pod, Knative pod or `kserve-ingress-gateway` pod restarts, and the AI Gateway's Envoy pods roll once when the first route attaches.
+Data Owners can then turn the LLM Gateway off per project and per deployment, both on by default.
+Disable with one upgrade with `aiGateway.enabled: false`, as described under [Turn it off][llm-gateway-disable], which also lists what a `helm rollback` leaves behind and how to remove it.
+
+### Security response headers { #upgrade-security-headers }
+
+Hopsworks now sets [security response headers][security-headers] itself, including a Content-Security-Policy that the UI enforces.
+An upgrade needs no action.
+The policy allows what the Hopsworks UI loads from the Hopsworks origin only.
+If the UI calls model deployments on another host or port, or another site frames the UI, add that origin to `hopsworks.payara.securityHeaders.extraSources`, as described under [Model deployments on another host or port][security-headers-inference] and [Embedding Hopsworks in another site][security-headers-embedding].
+A page the policy breaks shows a `Content-Security-Policy` error in the browser console; set `cspMode: report-only` while [finding what it needs][security-headers-troubleshooting].
+
+Pages are no longer served from the browser's offline cache, so a page needs the cluster to be reachable.
+
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
 These changes ship in 5.2.2 and 5.3.0.
@@ -379,8 +619,7 @@ They apply to an upgrade from 5.1.x to 5.2.2 or later, from 5.2.0 or 5.2.1 to a 
 
 ### OnlineFS drops records that arrive on another topic { #upgrade-onlinefs-topics }
 
-OnlineFS writes a record only if it arrived on the online topic of the feature group that its headers name.
-Before, the headers alone decided, so a producer could write into another project's online feature groups.
+To address a vulnerability, OnlineFS writes a record only if it arrived on the online topic of the feature group that its headers name.
 A record that fails the check is dropped, logged by OnlineFS (`Record dropped, it did not arrive on the online topic of the feature group in its headers`) and counted in `onlinefs_topic_mismatch_total`, on the Topics row of the OnlineFS dashboard.
 
 - **Producers that hold on to an old topic.**
@@ -388,16 +627,15 @@ A record that fails the check is dropped, logged by OnlineFS (`Record dropped, i
   Producers that hold on to their topic include the inference logger of model deployments, streaming jobs and long-lived sessions.
 - **Records that reach OnlineFS on another topic name.**
   A Kafka where records reach OnlineFS on a topic other than the one Hopsworks resolves for their feature group, such as a multi-region secondary that reads topics renamed or prefixed by mirroring, needs `onlinefs.configmapOverrides.onlinefssite.service.verifyFeatureGroupTopic: false`.
-  With the check off, OnlineFS logs a warning at startup and attributes records by their headers, as before.
-  Projects that share a topic need no change: their records arrive on the topic resolved for them.
-- **A project can no longer use another project's online topic.**
+  With the check off, OnlineFS logs a warning at startup and keeps the behaviour of 5.2.1, without the fix.
+- **Projects that use another project's topic.**
   Creating a project, changing its topic, creating an online feature group or changing its topic, or creating a Kafka topic fails with `TOPIC_IN_USE_BY_ANOTHER_PROJECT` (190026) when the topic is the online topic of another project, the topic of another project's feature group, or a topic another project owns.
-  The upgrade leaves a project or feature group already configured that way as it is, and updates that keep its topic still succeed.
+  Because of a security fix, give each project and online feature group that already uses another project's topic a topic of its own after the upgrade, then restart its producers as above; the upgrade leaves such a topic in place, and updates that keep it still succeed.
   A project whose own topic is taken that way cannot create online feature groups until it gets a topic of its own, while the project that created the topic, or whose default `<project>_onlinefs` topic it is, keeps using it.
-  With an external Kafka (`enable_bring_your_own_kafka`), where Hopsworks owns no topics and projects may share one, 5.2.2 does not enforce this.
+  With an external Kafka (`enable_bring_your_own_kafka`), where Hopsworks owns no topics, the same security fix needs each project to have topics of its own there, and Kafka credentials that write only to them.
   From 5.3 a topic on an external Kafka is refused only when another project owns it because Hopsworks created it for that project, as described in [Bring your own Kafka][upgrade-byok-topics].
 - **After the upgrade**, check that the topic mismatch panels stay at zero.
-  A drop from a legitimate producer means one of the cases above: its insert never completes its online ingestion, and the project's `get_failures` does not list the dropped records.
+  A drop means one of the cases above: its insert never completes its online ingestion, and the project's `get_failures` does not list the dropped records.
 
 ### Schema migrations run on the DDL SQL node { #upgrade-ddl-sql-node }
 
@@ -428,3 +666,15 @@ hive:
 ```
 
 The Airflow `ddlConsulServiceName` cannot point at `mysql`, because its migrations need a single SQL node, so a cluster without the DDL SQL node runs with `global._hopsworks.airflow.enabled: false`.
+
+## Changes from 5.2.3 { #upgrade-changes-from-523 }
+
+These changes ship in 5.2.3.
+They apply to an upgrade from 5.1.x to 5.2.3 or later, and from 5.2.0, 5.2.1 or 5.2.2 to a later 5.2 release.
+
+### Envoy image of Python apps { #upgrade-python-app-envoy }
+
+Python apps pull their Envoy sidecar from `global._hopsworks.imageRegistry`, as `<registry>/envoyproxy/envoy:<tag>` with the tag in `hopsworks.variables.python_app_envoy_image_version` (`v1.38.0`); before, the chart did not set the backend's `python_app_envoy_image`, so clusters pulled `envoyproxy/envoy:v1.38.0` from Docker Hub.
+The default registry, `docker.hops.works`, has the image.
+A cluster whose `global._hopsworks.imageRegistry` is its own registry mirrors `envoyproxy/envoy:v1.38.0` there, at the path `envoyproxy/envoy`, before the upgrade, or its Python apps cannot start; the chart's `vendor_images.sh` does not list the image.
+The chart now writes `python_app_envoy_image` on every upgrade, replacing a value set by hand, so a cluster that pointed it at another image mirrors that image as above.

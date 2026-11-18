@@ -43,6 +43,14 @@ Follow these framework-specific guides to export a Model to the Model Registry.
 
     [:octicons-arrow-right-24: Export guide](frameworks/llm.md)
 
+- :simple-nvidia:{ .lg .middle style="color:#76B900" } **Triton**
+
+    ---
+
+    Export a Triton model directory for NVIDIA Triton Inference Server.
+
+    [:octicons-arrow-right-24: Export guide](frameworks/triton.md)
+
 - :simple-python:{ .lg .middle style="color:#3776AB" } **Other Python frameworks**
 
     ---

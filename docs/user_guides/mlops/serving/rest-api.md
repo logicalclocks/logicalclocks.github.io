@@ -30,7 +30,9 @@ authorization: ApiKey <API_KEY_VALUE>
 | Header          | Description                         | Example Value           |
 | --------------- | ----------------------------------- | ----------------------- |
 | `authorization` | API key for authentication.         | `ApiKey <your_api_key>` |
-| `content-type`  | Request payload type (always JSON). | `application/json`      |
+| `content-type`  | Request payload type (JSON).        | `application/json`      |
+
+Triton deployments also accept Triton's binary tensor extension on the Istio path, see [Binary tensor data](#binary-tensor-data).
 
 ## URL Paths
 
@@ -41,7 +43,7 @@ This URL is also provided on the model deployment page in the Hopsworks UI.
 !!! example ""
     **`<base_url>/<server-specific_suffix>`**
 
-Where `server-specific_suffix` depends on the model server type (see [ML Inference Paths](#ml-inference) or [OpenAI-compatible Paths](#openai-compatible)).
+Where `server-specific_suffix` depends on the model server type (see [ML Inference Paths](#ml-inference), [Open Inference Protocol (v2) Paths][open-inference-protocol-v2] or [OpenAI-compatible Paths](#openai-compatible)).
 
 ### Base URL
 
@@ -81,6 +83,36 @@ For model deployments using Python, KServe sklearnserver, or TensorFlow Serving,
     inference_url = deployment.get_inference_url()
     ```
 
+### Open Inference Protocol (v2) { #open-inference-protocol-v2 }
+
+==Triton deployments== follow the [Open Inference Protocol](https://kserve.github.io/website/docs/concepts/architecture/data-plane/v2-protocol), also called the KServe V2 protocol.
+The model name in the path is the deployment name.
+
+!!! info "Supported verbs and path format"
+    | Model Server | Method | Path Format                         | Purpose          |
+    | ------------ | ------ | ----------------------------------- | ---------------- |
+    | Triton       | `POST` | `<base_url>/v2/models/<name>/infer` | Inference        |
+    | Triton       | `GET`  | `<base_url>/v2/models/<name>/ready` | Model readiness  |
+    | Triton       | `GET`  | `<base_url>/v2/models/<name>`       | Model metadata   |
+
+The model metadata response lists the input and output tensors from `config.pbtxt`, with their names, data types and shapes.
+
+!!! tip "Hopsworks Python API"
+
+    The inference url of a Triton deployment is retrieved the same way.
+
+    ```python
+    # Returns: https://<istio-host>/v1/<project>/<deployment>/v2/models/<name>/infer
+    inference_url = deployment.get_inference_url()
+    ```
+
+Requests can also go through the Hopsworks REST API, which forwards them to the deployment, with the `infer` verb in place of `predict`:
+
+!!! example ""
+    **`POST https://<HOPSWORKS_HOST>/hopsworks-api/api/project/<project_id>/inference/serving/<deployment_name>:infer`**
+
+The Hopsworks REST API accepts JSON bodies only, so binary tensor data works only on the Istio path.
+
 ### Deployment schema discovery
 
 Deployments that carry a deployment schema describe their request and response contract as JSON Schema and OpenAPI, and validate every request against it before any predictor code runs.
@@ -113,6 +145,71 @@ Refer to the official [vLLM OpenAI-compatible server documentation](https://docs
     # Append /chat/completions or /completions for specific endpoints
     openai_url = deployment.get_openai_url()
     ```
+
+### LLM Gateway { #rest-api-llm-gateway }
+
+On a cluster where the [LLM Gateway][llm-gateway] is enabled, all the vLLM deployments of a project are also served by one OpenAI-compatible endpoint, `<inference endpoint>/v1/<project>/v1/`.
+The `model` of each request is the name of the deployment it goes to.
+Every deployment also stays on its own path.
+
+The LLM Gateway also serves the Anthropic Messages API, with the base URL `<inference endpoint>/v1/<project>/v1/anthropic` that `ms.get_anthropic_url()` returns.
+A vLLM deployment serves it on its own path too, with the base URL `<inference endpoint>/v1/<project>/<deployment>`, verified from vLLM v0.28.0.
+Requests go to `<base URL>/v1/messages`, and Claude Code takes the base URL as `ANTHROPIC_BASE_URL`, see [Coding agents][coding-agents].
+
+!!! info "Deployments the LLM Gateway does not serve"
+
+    - A deployment in Knative mode.
+    - A deployment that scales to zero when idle (a minimum of 0 instances), or that autoscales on concurrency or requests per second.
+    - Every deployment of a project with a started deployment named `v1`.
+
+    On a cluster with the LLM Gateway, a vLLM deployment created without a minimum number of instances gets a minimum of 1, so the LLM Gateway serves it.
+
+!!! tip "Hopsworks Python API"
+
+    The project's `ModelServing` gives the URL of the LLM Gateway, an OpenAI client for it, and its state.
+
+    ```python
+    ms = project.get_model_serving()
+
+    # The URL of the LLM Gateway, to use with any HTTP client
+    project_url = ms.get_openai_url()
+
+    # An OpenAI client for the LLM Gateway: choose the deployment by `model`
+    openai_client = ms.get_openai_client()
+    response = openai_client.chat.completions.create(
+        model="my_llm_deployment",
+        messages=[{"role": "user", "content": "Hello"}],
+    )
+
+    # The state of the LLM Gateway: enabled, available and url
+    state = ms.get_llm_gateway()
+    ```
+
+    `Deployment.get_openai_client()` returns a client for one deployment's own path instead.
+
+#### Turning the LLM Gateway off
+
+The LLM Gateway is on for every project and deployment by default, and a Data Owner can take deployments off it:
+
+- For the whole project, with the LLM Gateway card in the project settings, or `ms.set_llm_gateway(False)`.
+  The project's endpoint then answers `404`.
+- For one deployment, with the LLM Gateway switch, under Deployment configuration when creating the deployment and under Advanced configuration when editing it, or `deployment.set_llm_gateway(False)`.
+
+No deployment restarts, every deployment keeps its own URL, and the change takes effect within a minute.
+A deployment's Overview shows whether the LLM Gateway serves it.
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-class"></code> [`ModelServing`][hsml.model_serving.ModelServing]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_openai_url`][hsml.model_serving.ModelServing.get_openai_url]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_openai_client`][hsml.model_serving.ModelServing.get_openai_client]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_llm_gateway`][hsml.model_serving.ModelServing.get_llm_gateway]
+        - <code class="doc-symbol doc-symbol-method"></code> [`set_llm_gateway`][hsml.model_serving.ModelServing.set_llm_gateway]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Deployment`][hsml.deployment.Deployment]
+        - <code class="doc-symbol doc-symbol-method"></code> [`get_openai_client`][hsml.deployment.Deployment.get_openai_client]
+        - <code class="doc-symbol doc-symbol-method"></code> [`set_llm_gateway`][hsml.deployment.Deployment.set_llm_gateway]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ## Request Format
 
@@ -153,6 +250,104 @@ See [more information on the request format](https://kserve.github.io/website/do
               }'
         ```
 
+For Triton deployments, the request follows the [Open Inference Protocol](https://kserve.github.io/website/docs/concepts/architecture/data-plane/v2-protocol) and is sent to the `infer` path.
+The body is a JSON object with an `inputs` list holding one tensor per model input named in `config.pbtxt`:
+
+| Field                 | Description                                                                      |
+| --------------------- | -------------------------------------------------------------------------------- |
+| `inputs[].name`       | Input name from `config.pbtxt`.                                                  |
+| `inputs[].shape`      | Tensor shape, with the batch size first when the model has `max_batch_size > 0`. |
+| `inputs[].datatype`   | Tensor data type, such as `FP32`, `INT64` or `BYTES`.                            |
+| `inputs[].data`       | Tensor values, flattened in row-major order.                                     |
+| `inputs[].parameters` | Optional input parameters.                                                       |
+| `outputs`             | Optional list of `{"name": ...}` objects selecting the outputs to return.        |
+| `parameters`          | Optional request parameters.                                                     |
+
+!!! example "REST API example for Triton"
+    === "Python"
+
+        ```python
+        import requests
+
+
+        data = {
+            "inputs": [
+                {
+                    "name": "input",
+                    "shape": [1, 4],
+                    "datatype": "FP32",
+                    "data": [5.1, 3.5, 1.4, 0.2],
+                }
+            ],
+            "outputs": [{"name": "label"}],
+        }
+
+        headers = {"authorization": "ApiKey <your_api_key>", "content-type": "application/json"}
+
+        response = requests.post(
+            "https://<ISTIO_GATEWAY_IP>/v1/my_project/irisonnx/v2/models/irisonnx/infer",
+            headers=headers,
+            json=data,
+        )
+        print(response.json())
+        ```
+
+    === "Curl"
+
+        ```bash
+        curl -X POST "https://<ISTIO_GATEWAY_IP>/v1/my_project/irisonnx/v2/models/irisonnx/infer" \
+          -H "authorization: ApiKey <your_api_key>" \
+          -H "content-type: application/json" \
+          -d '{
+                "inputs": [
+                  {"name": "input", "shape": [1, 4], "datatype": "FP32", "data": [5.1, 3.5, 1.4, 0.2]}
+                ],
+                "outputs": [{"name": "label"}]
+              }'
+        ```
+
+    === "Hopsworks REST API"
+
+        ```bash
+        curl -X POST "https://<HOPSWORKS_HOST>/hopsworks-api/api/project/<project_id>/inference/serving/irisonnx:infer" \
+          -H "authorization: ApiKey <your_api_key>" \
+          -H "content-type: application/json" \
+          -d '{
+                "inputs": [
+                  {"name": "input", "shape": [1, 4], "datatype": "FP32", "data": [5.1, 3.5, 1.4, 0.2]}
+                ]
+              }'
+        ```
+
+    === "Hopsworks Python API"
+
+        ```python
+        response = deployment.predict(
+            inputs=[
+                {
+                    "name": "input",
+                    "shape": [1, 4],
+                    "datatype": "FP32",
+                    "data": [5.1, 3.5, 1.4, 0.2],
+                }
+            ]
+        )
+        ```
+
+Triton answers with the v2 response:
+
+```json
+{
+  "model_name": "irisonnx",
+  "model_version": "1",
+  "outputs": [
+    {"name": "label", "datatype": "INT64", "shape": [1], "data": [0]}
+  ]
+}
+```
+
+`model_version` is the Triton version folder that served the request, which is independent of the Hopsworks model version.
+
 For generative inference (vLLM), the request follows the [OpenAI specification](https://docs.vllm.ai/en/v0.28.0/serving/openai_compatible_server.html) supported by the vLLM OpenAI-compatible server.
 
 !!! example "vLLM chat completions"
@@ -191,6 +386,12 @@ For generative inference (vLLM), the request follows the [OpenAI specification](
             }'
         ```
 
+### Binary tensor data
+
+Triton's [binary tensor data extension](https://github.com/triton-inference-server/server/blob/main/docs/protocol/extension_binary_data.md) sends tensors as raw bytes after the JSON header, with the `Inference-Header-Content-Length` header giving the length of the JSON part.
+Send such requests to the Istio path only.
+The Hopsworks REST API takes the request body as JSON text, so it cannot forward binary tensor data.
+
 ## CORS
 
 The Istio EnvoyFilter handles CORS preflight (`OPTIONS`) requests automatically. Allowed origins can be configured via `istio.envoyFilter.corsAllowedOrigins` in the Helm chart configuration.
@@ -199,3 +400,4 @@ The Istio EnvoyFilter handles CORS preflight (`OPTIONS`) requests automatically.
 
 The model returns predictions in a JSON object.
 The response depends on the model server implementation.
+Triton deployments return the v2 response shown in [Request Format](#request-format).

@@ -40,6 +40,39 @@ See Figure 1.
 
 ## Code
 
+You can run the custom commands from the Python SDK.
+Upload the bash script and any artifacts to a dataset in your project, then pass their paths to `run_custom_commands` on the cloned environment:
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+env = project.get_environment_api().get_environment("my_env")
+dataset_api = project.get_dataset_api()
+script = dataset_api.upload("setup.sh", "Resources")
+artifact = dataset_api.upload("tool.zip", "Resources")
+
+env.run_custom_commands(
+    script,
+    artifacts=[artifact],
+    env_vars={
+        "BUILD_MODE": "release",
+        "MY_TOKEN": "secret:my_secret_name",
+        "HOPSWORKS_BUILD_CACHE": "ccache",
+    },
+    timeout=1800,
+)
+```
+
+`env_vars` takes the same variables as the environment variables file.
+A plain value becomes an `ENV` instruction under Dockerfile rules, so `$NAME` references are expanded and a value with spaces must be wrapped in double quotes.
+A `secret:<name>` value and the build directives are described in [Making custom-command builds faster](#making-custom-command-builds-faster) and [Referencing a secret](#referencing-a-secret).
+
+The call first waits for any operation already running on the environment, then submits the build and waits for it to finish, raising an error if it fails.
+`timeout` limits each of those waits in seconds.
+Pass `await_completion=False` to return as soon as the build is submitted.
+
 You can also run the custom commands using the REST API.
 From the REST API, you should provide the path, in HOPSFS, to the bash script and the artifacts(comma separated string of paths in HopsFs).
 The REST API endpoint for running custom commands is: `hopsworks-api/api/project/<projectId>/python/environments/<environmentName>/commands/custom` and the body should look like this:

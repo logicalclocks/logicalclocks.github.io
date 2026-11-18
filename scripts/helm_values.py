@@ -67,6 +67,9 @@ _RENDERED_SCHEMAS = {"rondb": "rondb"}
 # Top-level keys listed under "Other values" on the index by design: the
 # library chart has a single override knob.
 _NO_PAGE = {"hopsworkslib"}
+# Pages for a subtree of another page's subchart, keyed by page: a subchart
+# that installs two components documents each on its own page.
+_SPLIT_PAGES = {"hw-envoy-ai-gateway": "hw-envoy-gateway.aiGateway"}
 # Values a typical install sets, taken from the example values files of the
 # AWS, Azure and GCP setup guides, with what each one decides.
 _COMMON_VALUES = (
@@ -978,6 +981,18 @@ def _generate(chart: Path, pages_dir: Path, strict: bool) -> None:
             )
             page.schemas.append((prefix, dep, rows))
         pages[key] = page
+    for key, prefix in _SPLIT_PAGES.items():
+        parent = pages.get(_segments(prefix)[0])
+        if key not in pages or parent is None:
+            problems.append(
+                f"{key}.md and its parent page must both exist for {prefix}"
+            )
+            continue
+        inside = [
+            r for r in parent.rows if r.key == prefix or r.key.startswith(prefix + ".")
+        ]
+        pages[key].rows = inside
+        parent.rows = [r for r in parent.rows if r not in inside]
     leftover = [row for rows in by_key.values() for row in rows]
     unplaced = sorted(set(by_key) - _NO_PAGE)
     if unplaced:

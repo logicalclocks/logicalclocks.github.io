@@ -1,3 +1,4 @@
+import os
 import subprocess
 
 from hopsworks_docs.scripts.shared.docs_root import _DOCS_ROOT
@@ -20,4 +21,6 @@ def check():
             str(_DOCS_ROOT / "mkdocs.yml"),
         ],
         check=True,
+        # releases_hook checks that the linked Python client versions are tagged.
+        env={**os.environ, "HOPSWORKS_DOCS_CHECK_CLIENT_TAGS": "1"},
     )

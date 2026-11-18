@@ -143,6 +143,72 @@ Spark and the query engine use Microsoft's JDBC driver, so other JDBC connection
 The argument `encrypt=false` therefore turns off encryption for Spark and the query engine only: the Python engine and DLTHub ingestion always encrypt.
 The arguments cannot replace the host, port or database (`serverName`, `portNumber`, `databaseName`); the data source's own fields set those.
 
+### FILESTREAM and binary columns as files { #data-source-sqlserver-files }
+
+An ingestion job can copy the values of a SQL Server table's large binary columns into files in the project, instead of storing the bytes in the feature group.
+Every FILESTREAM column is stored as files.
+A `varbinary(max)` or `image` column is stored as files when you select **Store as files** for it in the ingestion wizard, or list it in `file_columns`.
+
+For each such column, the feature group holds two features:
+
+- The column's own feature, a `string` with the full path of the file, such as `/Projects/sales/Resources/erp/Sales/dbo/Documents/c-Body/3f/v-42`.
+- `<column>_size`, a `bigint` with the length of the value in bytes.
+
+A NULL value gives a NULL path and a NULL size, and an empty value gives an empty file and the size 0.
+The preview in the wizard shows the size of each value instead of its bytes.
+In the SDK, `get_data(file_columns=[...])` returns the features as an ingestion job stores them; pass `file_columns=[]` for a table whose only file columns are FILESTREAM columns.
+Without `file_columns`, `get_data` returns the source schema, which is what an external feature group uses.
+`data.column_metadata` lists each source column's type and whether it is, or can be, stored as files.
+
+A feature group created before this feature, with a `binary` feature for the column, keeps copying the bytes into the feature group.
+To store the values as files instead, create a new feature group with the path and size features.
+
+```python
+from hopsworks_common.core.sink_job_configuration import SinkJobConfiguration
+
+documents = fs.get_data_source("erp").get_tables("Sales")[0]
+data = documents.get_data(file_columns=["Body"])
+
+fg = fs.get_or_create_feature_group(
+    name="documents",
+    version=1,
+    primary_key=["id"],
+    features=data.features,
+    data_source=documents,
+    sink_enabled=True,
+    sink_job_conf=SinkJobConfiguration(
+        write_mode="MERGE",
+        file_columns=["Body"],
+        files_directory="Resources/documents",
+    ),
+)
+fg.save()
+```
+
+The files are written under the files directory, by default `Resources/<data source>/<database>/<schema>/<table>`.
+It must be a directory inside a dataset, outside `Resources/jobs` and the ingestion state under `Resources/dlthub-warehouse`, and it cannot overlap the files directory of another table or job.
+Each file is named after the row's primary key, under one directory per column and one of 256 subdirectories per column.
+The directory also holds `.hopsworks-files.json`, which names the job and feature group it belongs to, and `.hopsworks-files.lease`, which keeps two runs from writing it at the same time.
+A job refuses a directory that belongs to another job or feature group, or that holds files but no `.hopsworks-files.json`.
+
+The feature group needs a primary key, since it names the files.
+It must be written by one ingestion job only: a job with file columns cannot share its feature group with another ingestion job.
+A file column keeps its path and size features while it keeps its files directory; to store it under other features, choose another files directory.
+Its columns must be non-NULL and include every column of the table's primary key or of one of its unique indexes.
+A date and time key is matched to the microsecond, so two rows whose keys differ by less than a microsecond fail the run.
+A value can be at most 2147483647 bytes.
+
+A run writes each file before it loads the row, and replaces a file that already exists, so a row always points at a complete file.
+Incremental ingestion needs the `MERGE` write mode, and picks up a changed value only with a cursor column that changes when the row is updated, such as a `datetime2` updated-at column.
+After a run succeeds, it deletes the files that no row of the feature group references, such as the files of deleted rows on a full load and of values that became NULL.
+A failed run deletes nothing, and the next successful run deletes what it left.
+A run that fails after writing files but before loading their rows leaves files that no row references yet, so a file in the files directory is not proof that its row was loaded: read the paths from the feature group.
+Earlier versions of the feature group can point at files that a later run replaced or deleted, so reading a file column at an earlier commit is not supported.
+Write the path features only through the ingestion job: a path written by another job or by an insert can point at a file that the next run deletes.
+
+Deleting the feature group, the job or the data source leaves the files in place.
+To remove them, delete the files directory in the file browser, or with `project.get_dataset_api().remove("Resources/documents")`.
+
 ## Provided credentials for Oracle { #data-source-provided-credentials }
 
 A data source has a credentials mode.
@@ -250,7 +316,8 @@ The data source keeps a reference to these entries, not a copy.
 Fetching or listing a provided data source returns the status of your binding and the names of your env var and secrets, never your username or password.
 The Python client reads the values from your own account entries when it needs them.
 Deleting the secret or the env var from your account leaves the binding `INCOMPLETE`, and the data source refuses to read until you set your credentials again.
-Removing your credentials deletes the binding, the wallet file, and the env var and secrets that carry the default names above.
+Your [Trino catalogs][data-source-provided-credentials-trino] on the data source keep reading with the login already in their published file, so remove your credentials to stop them using it.
+Removing your credentials deletes the binding, the wallet file, the env var and secrets that carry the default names above, and your [Trino catalogs][data-source-provided-credentials-trino] on the data source.
 The same deletion happens for a member who is removed from the project, and for every member when the data source is deleted.
 Entries saved under names of your own stay in your account, since you may use them elsewhere.
 
@@ -335,38 +402,40 @@ On a feature group whose data source has shared credentials it tests the shared 
 
 ### Trino catalogs { #data-source-provided-credentials-trino }
 
-A provided Oracle data source can back a [Trino catalog][trino-catalogs], and each query through the catalog runs as the member who sends it.
-Such a catalog is always a [private catalog][private-catalogs] of the member who creates it, named `_<username>__<name>` and available in every project they belong to.
+A provided Oracle data source can back a [Trino catalog][trino-catalogs] that reads it as the member who creates it.
+Such a catalog is always a [private catalog][private-catalogs] of that member, named `_<username>__<name>` and available in every project they belong to.
 Each member who wants to query the data source through Trino creates their own, as a Data Owner or a Data Scientist.
 A request for a project catalog from a provided data source is refused with `CREDENTIALS_MODE_NOT_SUPPORTED` (270337), and a catalog on a provided data source cannot be shared, so only its owner queries it.
-The catalog stores no login.
-Its properties name the Trino extra credentials that carry the username and password with each query:
+
+The catalog's properties name the data source instead of holding a login:
 
 ```properties
 user-credential-name=hops_ds_<data source id>_user
 password-credential-name=hops_ds_<data source id>_password
-oracle.connection-pool.enabled=false
 ```
 
-The connection pool is off because a pooled connection keeps the login of the member who opened it.
-Metadata caching is refused for the same reason: a cached table list would show one member what another member's database user can see.
+When the catalog is published to the query engine, Hopsworks puts your username and password for the data source in their place.
+Every Trino client therefore reads the catalog as you, in any of your projects: the SQL runner, `project.get_trino_api()`, Superset, JDBC and the Trino CLI.
+The catalog cannot carry `connection-user` or `connection-password` of its own, since its login always comes from your credentials, and its connection URL stays the data source's, since your credentials are sent to it.
+A Superset dashboard you build on the catalog and share shows its viewers data read with your credentials.
 
-Which clients send the extra credentials:
+The catalog follows your credentials:
 
-| Client | Extra credentials |
+| When you | The catalog |
 | --- | --- |
-| SQL runner in the UI | Added by Hopsworks for the member running the query |
-| `project.get_trino_api().connect()` and `create_engine()` | Fetched by the Python client for the caller |
-| JDBC, the Trino CLI, Superset and other Trino clients | Sent by the client, or the Oracle login fails |
+| Save credentials | Uses them once the query engine reloads its catalogs, as described in [When the catalog goes live][when-the-catalog-goes-live]; until then it uses the ones saved before |
+| Remove your credentials, are removed from the project, or the data source is deleted | Is removed and refused at once, because it would otherwise keep reading with credentials you no longer hold; saving credentials again does not bring it back |
 
-A client that is not listed fetches your values from `GET /hopsworks-api/api/project/<project id>/trino/extra-credentials`, with an API key that has the `TRINO` scope, and sends each entry as a Trino extra credential, for example with the CLI's `--extra-credential hops_ds_<data source id>_user=<username>` or the JDBC `extraCredentials` property.
-A member who has not set credentials for the data source has nothing to send, and the Oracle login fails.
+When your database password changes, save the new one on the data source as well.
+The catalog keeps logging in with the saved password until then, and the database may lock your account after repeated failed logins.
+Editing or deleting the secret or the env var under **Account Settings** does not reach the catalog.
+The catalog changes only when its file is rewritten, that is when you save the credentials on the data source or edit the catalog.
+A query engine restart for another reason reloads it from its unchanged file.
+To stop the catalog using your login, remove your credentials from the data source.
 
 Creating the catalog requires you to have set your own credentials for the data source.
-For a database behind mTLS, the catalog's wallet (`TNS_ADMIN`) is built from your wallet into a [mountable secret of your account][mountable-secrets-for-private-catalogs]; it only secures the transport, and every query still logs in with your username and password.
-The wallet follows your credentials: it is rebuilt when you save a new wallet, and deleted when you remove your credentials, when you leave the project (your credentials go with it), when the data source is deleted, or when you delete your last catalog that uses it.
-The catalog itself stays, like any private catalog, until you delete it.
-It reads only in projects that can read the data source's feature store, since only there are your extra credentials for it sent, and without your credentials it no longer reads at all.
+For a database behind mTLS, the catalog's wallet (`TNS_ADMIN`) is built from your wallet into a [mountable secret of your account][mountable-secrets-for-private-catalogs]; it only secures the transport, and the catalog still logs in with your username and password.
+The wallet follows your credentials: it is rebuilt when you save a new wallet, and deleted when you remove your credentials, or when you delete your last catalog that uses it.
 `Test connection` on the catalog runs with your credentials.
 The catalog becomes queryable after the query engine restarts, as described in [When the catalog goes live][when-the-catalog-goes-live].
 

@@ -57,7 +57,7 @@ The `INFERENCE / AGENTS / APPS` environments can be used in a deployment using a
 - `tensorflow-inference-pipeline` to load and serve TensorFlow models
 - `torch-inference-pipeline` to load and serve PyTorch models
 - `pandas-inference-pipeline` to load and serve XGBoost, Catboost and Sklearn models
-- `python-agent-pipeline` to build Python agents, bundling FastAPI, LlamaIndex and OpenTelemetry
+- `python-agent-pipeline` to build Python agents, bundling FastAPI, LangChain and LangGraph, Deep Agents, LlamaIndex, the OpenAI Agents SDK, the Claude Agent SDK and its predecessor the Claude Code SDK, the Tavily search client and OpenTelemetry
 - `python-app-pipeline` to build interactive applications with Streamlit
 - `vllm-inference-pipeline` to load and serve LLMs with vLLM inference engine
 - `minimal-inference-pipeline` to install your own custom framework, contains a minimal set of dependencies

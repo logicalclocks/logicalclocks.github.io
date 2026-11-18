@@ -1,0 +1,29 @@
+/* The release pages, which every docs version takes from main (FROM_MAIN in
+   scripts/releases_hook.py); the tokens come from custom.css, whose branch-5.0
+   copy lacks --hops-nav-fg. */
+
+/* Python client release notes at the end of each release on the release pages,
+   fetched from GitHub by docs/js/client-release-notes.js; without it the block
+   keeps its links. */
+.md-typeset .hops-client-notes__title {
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+}
+.md-typeset .hops-client-notes__body {
+  padding-left: 0.8rem;
+  border-left: 1px solid var(--hops-border);
+}
+
+/* Release notes: the tags that say how users reach a change */
+.hops-release-tag {
+  display: inline-block;
+  padding: 0 0.35em;
+  border: 1px solid var(--hops-border-strong);
+  border-radius: 0.2rem;
+  background: var(--hops-surface);
+  color: var(--hops-nav-fg, var(--md-default-fg-color--light));
+  font-family: var(--md-code-font-family);
+  font-size: 0.6rem;
+  line-height: 1.5;
+  vertical-align: 0.05em;
+}
