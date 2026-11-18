@@ -3,7 +3,7 @@
 ## Introduction
 
 Hopsworks provides a browser terminal that runs inside your project.
-The terminal is a dedicated pod running under your project user, with your HopsFS home directory mounted at `/hopsfs/Users/<username>`.
+The terminal is a dedicated pod running under your project user, with your [HopsFS home directory][user-home-directories] mounted at `/hopsfs/Users/<username>`.
 Files you create there are stored in the project file system and survive the terminal session.
 
 ## Prerequisites
