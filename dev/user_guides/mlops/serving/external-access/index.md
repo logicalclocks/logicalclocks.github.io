@@ -143,6 +143,78 @@ Listing the project's models, and every other path, is refused with `403`.
 The LLM Gateway serves only the deployments described under [LLM Gateway][rest-api-llm-gateway]; the others stay on their own path.
 A Data Owner can turn the LLM Gateway off for the project or for one deployment, which leaves the deployment's own path as it is.
 
+### Sharing with projects { #serving-sharing }
+
+A vLLM deployment that the LLM Gateway serves can also be shared with other projects of the cluster.
+Its users call it through the owning project's LLM Gateway with their own API keys, as described under [Coding agents][coding-agents-access].
+A deployment shared with selected projects admits their members with the role Data Owner or Data Scientist, and refuses members with another role, such as Feature store restricted.
+A deployment shared with all projects admits every user with an allowed platform role, whatever their projects.
+Sharing never widens the access of the owning project's own members: a member keeps the access of their role there, so a Feature store restricted member of the owning project is refused either way.
+The Terminal lists a shared deployment only to the users it admits.
+Unlike access through external access groups, sharing does not require external users to sign in periodically: as for the owning project's members, their roles in Hopsworks decide.
+They run inference with the five operations listed above, for the deployment's own `model` only.
+They cannot list models, see or manage the deployment, or call its direct route, and each request is attributed to them in the owning project's usage.
+
+Three mechanisms grant access to a deployment, each to a different kind of caller:
+
+| Mechanism | Who it grants | Routes |
+| --- | --- | --- |
+| Project membership | Members of the owning project | LLM Gateway and direct |
+| External access groups | External users in the listed groups | LLM Gateway and direct |
+| Sharing with projects | Data Owners and Data Scientists of the selected projects, or every user with an allowed platform role when shared with all projects; never a member of the owning project | LLM Gateway only |
+
+Data Owners of the owning project decide, per deployment.
+The deployment's create and edit forms have a **Share with other projects** setting with two options:
+
+- **All projects**, which shares the deployment with every project of the cluster;
+- **Selected projects**, with a list of project names, which shares it with the members of those projects only.
+
+The deployment's Overview shows the state on its LLM Gateway card with read-only badges:
+
+- **Enabled** or **Disabled**, whether the LLM Gateway serves the deployment;
+- the sharing state: **Shared with all projects**, **Shared with N projects** followed by one badge per project name, or **Not shared with any project**.
+
+Project members see the badges, and only Data Owners change the setting.
+The setting is disabled, with the reason shown under it, when the deployment is not served by the LLM Gateway or when an administrator turned sharing off for the cluster, see [Access to the LLM Gateway][llm-gateway-access].
+The Overview then shows no sharing badge.
+
+With the Python client, `Deployment` reads and changes the same state:
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+ms = project.get_model_serving()
+
+deployment = ms.get_deployment("my_llm_deployment")
+
+print(deployment.shared_with)  # {'all_projects': True, 'projects': []}
+
+# Restrict it to two projects
+deployment.unshare(all_projects=True)
+deployment.share_with(projects=["analytics", "research"])
+print(deployment.shared_with)  # {'all_projects': False, 'projects': [...]}
+```
+
+`share_with` adds the named projects and `unshare` removes them from what is stored when the call reaches the backend, so two Data Owners changing the sharing at the same time do not undo each other's change.
+
+A new LLM deployment that the LLM Gateway serves is shared with all projects by default.
+A deployment created before the upgrade that introduced sharing stays project-only until a Data Owner shares it.
+If the LLM Gateway did not serve it, turning the LLM Gateway on for it with the REST API or `set_llm_gateway(True)` shares it with all projects, as for a new deployment.
+Turning the LLM Gateway on for the project does not share anything: a deployment created while the project's LLM Gateway was off stays project-only until a Data Owner shares it.
+The create and edit forms send the sharing they show with the deployment, so it is stored before the deployment is exposed and the all-projects default does not apply.
+A choice a Data Owner made, including switching **All projects** off, is kept when the deployment leaves and joins the LLM Gateway again.
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-class"></code> [`Deployment`][hsml.deployment.Deployment]
+        - <code class="doc-symbol doc-symbol-method"></code> [`shared_with`][hsml.deployment.Deployment.shared_with]
+        - <code class="doc-symbol doc-symbol-method"></code> [`share_with`][hsml.deployment.Deployment.share_with]
+        - <code class="doc-symbol doc-symbol-method"></code> [`unshare`][hsml.deployment.Deployment.unshare]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+
 ### Limits and traces of the LLM Gateway
 
 An administrator can set token and request limits on the LLM Gateway, per project, per user and per deployment, as described under [Rate limits and token quotas][llm-gateway-rate-limits].
