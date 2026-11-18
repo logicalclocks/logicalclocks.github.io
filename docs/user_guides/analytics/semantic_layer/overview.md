@@ -139,5 +139,6 @@ The names, labels, descriptions and definitions of metrics, dimensions and saved
   Observers list and read semantic projects and their definitions; Trino gives an Observer no access to the project's feature groups, so their metric queries fail on Trino.
   Feature store restricted members are refused every semantic layer request with 403 `SEMANTIC_LAYER_FORBIDDEN`, since a semantic project reads every feature of a feature group.
 - Only data owners run [metric exports][semantic-exports] by hand, and an export's job runs as the semantic project's [owner][semantic-builds-owner], who must be a data owner.
+- [Roles and Permissions][semantic-roles] lists each action with the roles that may take it and the custom role permission it needs.
 - An API key needs the `FEATURESTORE` scope for semantic projects and builds.
   Everything the gateway answers, from listing metrics to running a query, also needs the `TRINO` scope, since the gateway connects to Trino as the key's user.

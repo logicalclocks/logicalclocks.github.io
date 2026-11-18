@@ -237,6 +237,7 @@ nav:
           - Semantic Layer:
               - user_guides/analytics/semantic_layer/index.md
               - Overview: user_guides/analytics/semantic_layer/overview.md
+              - Roles and Permissions: user_guides/analytics/semantic_layer/roles.md
               - Get Started: user_guides/analytics/semantic_layer/get_started.md
               - Ecommerce Blueprint: user_guides/analytics/semantic_layer/ecommerce_blueprint.md
               - Define Metrics: user_guides/analytics/semantic_layer/define_metrics.md
