@@ -31,7 +31,7 @@ When you join a project, Hopsworks gives you an identity in that project, named 
 Everything you start in the project runs with it, from notebooks and jobs to the terminal, and it is the owner you see on the files you create.
 
 If you are a member of two projects, you have two separate identities.
-A notebook or job you run in one project cannot read the files of the other, even though you are a member of both.
+Being a member of both does not let a notebook or job in one project read the files of the other: those files must first be shared with the project it runs in.
 
 ### Files and datasets
 
@@ -113,7 +113,7 @@ Your `.ssh` directory and your `.bashrc` live there too.
 
 Only you.
 Other members, the Data owners and the project owner included, cannot list, read, change, move or delete anything in your home directory.
-This holds everywhere: in the file browser, the REST API, the Python client and search, and in the notebooks, jobs and terminals other members run, because HopsFS itself refuses them.
+This holds everywhere: in the file browser, the REST API, the Python client and search, and in the notebooks, jobs and terminals other members run.
 
 The `Users` dataset is managed by Hopsworks:
 
