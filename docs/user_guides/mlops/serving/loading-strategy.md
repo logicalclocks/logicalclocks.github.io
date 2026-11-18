@@ -8,7 +8,7 @@ The loading strategy decides how they get them.
 | Strategy         | How the pods get the files                                                                                        | Model servers                      |
 | ---------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
 | `MOUNT`          | Mounted read-only from HopsFS and read in place.                                                                  | Python, TensorFlow Serving, Triton |
-| `RUNAI_STREAMER` | Mounted read-only from HopsFS, and vLLM loads the weights with the [Run:ai Model Streamer][runai-model-streamer]. | vLLM                               |
+| `RUNAI_STREAMER` | Mounted read-only from HopsFS, and vLLM loads the weights with the [Run:ai Model Streamer][runai-model-streamer]. | vLLM, but not vLLM-Omni            |
 | `DOWNLOAD`       | Downloaded to the pod's local disk before the model server starts.                                                | All                                |
 
 Either way the files are at the same paths, `/mnt/models` and `/mnt/artifacts`, so predictor and transformer scripts do not depend on the strategy.
@@ -30,10 +30,10 @@ Updating a deployment without a strategy keeps the one it has, and a deployment 
   Loading a 16 GB model with the streamer takes about as long as downloading it, without the local disk.
   The weights must be in safetensors format, and the vLLM image must include the streamer: the official `vllm/vllm-openai` images do, and a custom image needs `vllm[runai]`.
   Saving `RUNAI_STREAMER` for a model without safetensors weights at the top of its files is rejected.
-  vLLM-Omni streams the weights of its autoregressive models the same way; a diffusion pipeline keeps its weights in subfolders, which its own loader reads, so it downloads by default.
+  vLLM-Omni cannot use it: the streamer hands over tensors in the order it reads them, and vLLM-Omni's model loaders need them in file order, so a vLLM-Omni deployment downloads.
   See [Run:ai Model Streamer settings][run-ai-model-streamer-settings] for how it is configured.
 - **`DOWNLOAD`** needs local disk at least as large as the model, and then reads the files at disk speed.
-  Use it when the cluster has no HopsFS CSI driver, when a vLLM model has no safetensors weights, when the vLLM image does not include the streamer, or when the configuration file sets its own `load-format`.
+  Use it when the cluster has no HopsFS CSI driver, when a vLLM model has no safetensors weights, for vLLM-Omni, when the vLLM image does not include the streamer, or when the configuration file sets its own `load-format`.
 
 ### Run:ai Model Streamer settings { #run-ai-model-streamer-settings }
 
@@ -44,7 +44,6 @@ Each one is only a default: setting it in the deployment's configuration file or
   A `load-format` in the configuration file replaces the streamer, and that loader then reads the model from the mount; for vLLM's default loader that is several times slower, so choose `DOWNLOAD` to load from a local copy instead.
 - **Distributed streaming**, when a vLLM deployment has more than one GPU: each GPU reads a share of the files and passes it to the others, so the model is read from HopsFS once instead of once per GPU.
   Hopsworks turns it on with `--model-loader-extra-config '{"distributed": true}'`, unless the configuration file sets `model-loader-extra-config`, whose value then replaces it: add `distributed: true` to it to keep distributed streaming.
-  It is not turned on for vLLM-Omni, whose stages each run on their own GPUs.
 - **`RUNAI_STREAMER_MEMORY_LIMIT`**, the host memory the streamer stages tensors in: half the deployment's memory limit, divided by its GPUs.
   When that share is below 4 GiB, the streamer uses a single buffer the size of the largest tensor, which loads more slowly.
   A `memory_limit` in `model-loader-extra-config`, or the variable set in the deployment's environment variables, replaces it.
