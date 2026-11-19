@@ -521,7 +521,37 @@ See [Deleting a tag schema][deleting-a-tag-schema].
 
 From 5.3, `/project/{id}/xattrs/{path}` answers 404: HopsFS extended attributes can no longer be read, written or deleted through the REST API.
 Tags on datasets, feature groups, models and the other artifacts are managed through their tag APIs, as before.
-A dataset whose legacy tags cannot be moved into the database is fixed by an administrator, who edits the dataset's `user.tags` extended attribute with `hdfs dfs -getfattr` and `hdfs dfs -setfattr` in the NameNode pod.
+
+A dataset whose legacy tags cannot be moved into the database answers tag changes with `TAG_MIGRATION_PENDING` (370013, HTTP 409), and the Hopsworks log names the dataset and the tags that failed.
+A tag fails when its tag schema was deleted or its value no longer validates against the schema.
+Re-creating a deleted schema clears the dataset when its values validate.
+Otherwise an administrator edits the dataset's `user.tags` extended attribute as the HopsFS superuser, which the NameNode container runs as.
+The attribute holds a JSON array with one `{"key": <tag schema>, "value": <tag value as a JSON string>}` entry per tag.
+
+1. **Read the attribute**, with the dataset's HopsFS path, for example `/Projects/<project>/<dataset>`:
+
+    ```bash
+    kubectl exec -n hopsworks deploy/namenode -c namenode -- \
+      /srv/hops/hadoop/bin/hdfs dfs -getfattr -n user.tags -e text /Projects/<project>/<dataset>
+    ```
+
+    The value is the text between the outer quotes:
+
+    ```text
+    user.tags="[{"key":"pii","value":"{\"owner\":\"ann\"}"},{"key":"retired","value":"{\"a\":1}"}]"
+    ```
+
+2. **Write it back** without the tags that failed, or with their values corrected:
+
+    ```bash
+    kubectl exec -n hopsworks deploy/namenode -c namenode -- \
+      /srv/hops/hadoop/bin/hdfs dfs -setfattr -n user.tags \
+      -v '[{"key":"pii","value":"{\"owner\":\"ann\"}"}]' /Projects/<project>/<dataset>
+    ```
+
+    When no tag should be kept, remove the attribute with `-setfattr -x user.tags` instead.
+
+The dataset's tags move into the database the next time they are read, or at the hourly migration pass.
 
 ### Envoy Gateway { #upgrade-envoy-gateway }
 
