@@ -13,6 +13,7 @@
 - [AI Systems](https://docs.hopsworks.ai/latest/concepts/mlops/prediction_services/) ([md](https://docs.hopsworks.ai/latest/concepts/mlops/prediction_services/index.md))
 - [Agents and LLM Systems](https://docs.hopsworks.ai/latest/concepts/mlops/agents/) ([md](https://docs.hopsworks.ai/latest/concepts/mlops/agents/index.md))
 - [Projects and Governance](https://docs.hopsworks.ai/latest/concepts/projects/governance/) ([md](https://docs.hopsworks.ai/latest/concepts/projects/governance/index.md))
+- [Project and User Isolation](https://docs.hopsworks.ai/latest/concepts/projects/isolation/) ([md](https://docs.hopsworks.ai/latest/concepts/projects/isolation/index.md))
 - [Data Storage and Sharing](https://docs.hopsworks.ai/latest/concepts/projects/storage/) ([md](https://docs.hopsworks.ai/latest/concepts/projects/storage/index.md))
 - [MLOps Dictionary ↗](https://www.hopsworks.ai/mlops-dictionary?utm_source=web&utm_medium=docs)
 
