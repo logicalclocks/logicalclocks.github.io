@@ -17,7 +17,7 @@ The two mount strategies need the [HopsFS CSI driver][hopsfs-csi-driver]; withou
 A deployment with a mount strategy fails to start if the driver is disabled later, until its strategy is changed to `DOWNLOAD`.
 The strategy is set per deployment.
 Saving a new strategy on a running deployment rolls it out right away and replaces its pods; a stopped deployment uses it the next time it starts.
-A deployment created without a strategy gets `RUNAI_STREAMER` for vLLM and `MOUNT` for every other model server and for vLLM-Omni when the driver is enabled, and `DOWNLOAD` without it or for a vLLM model the streamer cannot load.
+A deployment created without a strategy gets `MOUNT` when the driver is enabled, and `DOWNLOAD` without it.
 Updating a deployment without a strategy keeps the one it has, and a deployment created before loading strategies existed keeps downloading its files.
 
 ### Which strategy to choose
@@ -28,16 +28,16 @@ Updating a deployment without a strategy keeps the one it has, and a deployment 
   Their own default, `lazy`, maps the files into memory and reads them out of order, which is several times slower from a mount: loading a 16 GB model that way took 524 s, against 202 s with `RUNAI_STREAMER`.
   Reading a file whole holds it in host memory while its weights load, once per GPU, and that counts against the deployment's memory limit.
   For vLLM-Omni it is the only way to read a mounted model.
-- **`RUNAI_STREAMER`** is how vLLM reads a mounted model.
-  The streamer reads the safetensors files in large chunks, several at once.
-  vLLM's default loader maps the files into memory instead and reads a mount several times slower.
+- **`RUNAI_STREAMER`** can load a vLLM model faster when the deployment requests several GPUs.
+  The streamer reads the safetensors files in large chunks, several at once, and with more than one GPU each GPU reads a share of the files and passes it to the others, so the model is read from HopsFS once instead of once per GPU.
+  It also holds a single tensor in host memory at a time, where `MOUNT` holds a whole file per GPU.
   Loading a 16 GB model with the streamer takes about as long as downloading it, without the local disk.
   The weights must be in safetensors format, and the vLLM image must include the streamer: the official `vllm/vllm-openai` images do, and a custom image needs `vllm[runai]`.
   Saving `RUNAI_STREAMER` for a model without safetensors weights at the top of its files is rejected.
   vLLM-Omni cannot use it: the streamer hands over tensors in the order it reads them, and vLLM-Omni's model loaders need them in file order.
   See [Run:ai Model Streamer settings][run-ai-model-streamer-settings] for how it is configured.
 - **`DOWNLOAD`** needs local disk at least as large as the model, and then reads the files at disk speed.
-  Use it when the cluster has no HopsFS CSI driver, when a vLLM model has no safetensors weights, when the vLLM image does not include the streamer, or when the configuration file sets its own `load-format`.
+  Use it when the cluster has no HopsFS CSI driver.
 
 ### Run:ai Model Streamer settings { #run-ai-model-streamer-settings }
 
@@ -73,7 +73,7 @@ To navigate to the advanced creation form, click on `Advanced options`.
 ### Step 3: Select the loading strategy
 
 Select the strategy in the `Loading strategy` field.
-It lists the strategies the model server of the deployment supports, with its default already selected: `RUNAI_STREAMER` for vLLM and `MOUNT` for the other model servers, or `DOWNLOAD` when the cluster has no HopsFS CSI driver.
+It lists the strategies the model server of the deployment supports, with its default already selected: `MOUNT`, or `DOWNLOAD` when the cluster has no HopsFS CSI driver.
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
