@@ -133,6 +133,7 @@ The exception applies to pods labelled `serving.hops.works/model-server: triton`
 
 ## Knative
 
+Knative mode is [deprecated][knative-mode-deprecated] and removed in 5.4, so this section concerns only existing Knative-mode deployments.
 In Knative mode, Knative resolves the image tag to a digest before it creates a revision.
 When the Knative controller cannot resolve the tag, for example because it cannot authenticate to the registry or verify its TLS certificate, the deployment fails before a pod is created.
 Registries listed in `registries-skipping-tag-resolving` of Knative's `config-deployment` ConfigMap skip this step.

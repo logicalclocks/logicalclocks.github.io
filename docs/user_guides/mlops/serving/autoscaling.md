@@ -294,6 +294,7 @@ my_deployment.start()
 
 The deployment restarts once.
 Its Knative-only scaling settings are dropped and the Standard-mode defaults fill the gaps; a minimum of zero instances becomes [scale to zero when idle](#scale-to-zero-when-idle) where the cluster supports it, and one instance otherwise.
+A vLLM deployment keeps at least one instance while the LLM Gateway is published, so the LLM Gateway serves it.
 Converting needs the permissions to edit and to start and stop the deployment, which Data Owners have.
 A converted deployment can still roll back to a version saved in Knative mode; the version runs in Standard mode.
 

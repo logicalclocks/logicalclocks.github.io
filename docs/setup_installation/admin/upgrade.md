@@ -755,8 +755,10 @@ The 5.4 upgrade refuses to start while Envoy Gateway is off or a Knative-mode de
     With a `LoadBalancer` Service, note the address of the Istio ingress gateway.
     On MetalLB you pin it on the Envoy Gateway Service after the upgrade; with a cloud load balancer, reserve the address with your provider, or plan to move your DNS records to the new one.
     With `NodePort`, the node ports stay the same.
-5. **Anything outside the chart that names `istio-ingressgateway`**, such as an OpenShift Route or a DNS record, moves to the Envoy Gateway Service `kserve-ingress-gateway` after the upgrade.
-6. **Clients.**
+5. **AWS with unmanaged load balancers.**
+    Note the target groups bound to the Istio ingress gateway through `global.unmanagedLoadBalancers.istio`: in 5.4 they move to the Envoy Gateway Service, and the 5.4 upgrade notes give the exact steps.
+6. **Anything outside the chart that names `istio-ingressgateway`**, such as an OpenShift Route or a DNS record, moves to the Envoy Gateway Service `kserve-ingress-gateway` after the upgrade.
+7. **Clients.**
     Requests through Envoy Gateway drop headers whose names contain an underscore, and a path must name the project exactly, as described in [Headers with underscores][upgrade-envoy-gateway] and under [Expose the Gateway directly][envoy-gateway].
     Hopsworks and the Python clients cache the inference endpoint until they restart.
 
