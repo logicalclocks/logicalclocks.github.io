@@ -515,6 +515,10 @@ The message says how many tags use the schema, per kind of artifact, or how many
   A dataset whose legacy tag names a deleted schema fails the migration and keeps its tags in HopsFS.
   The migration has finished when the `dataset_tags_xattr_migration_done` setting is `true`.
 
+- **A deleted schema's name can stay taken.**
+  A schema deleted before 5.3 kept its archived values in the tag history, and a new schema of the same name would take them over.
+  Creating a schema under such a name is refused with `TAG_SCHEMA_NAME_HAS_HISTORY` (370015, HTTP 409), so choose another name.
+
 See [Deleting a tag schema][deleting-a-tag-schema].
 
 ### The extended attributes endpoint is removed { #upgrade-xattrs-endpoint }

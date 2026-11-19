@@ -1229,6 +1229,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 370012 | `TAG_WRITE_DENIED` | 403 FORBIDDEN | Not allowed to change the tags of this dataset. |
 | 370013 | `TAG_MIGRATION_PENDING` | 409 CONFLICT | This dataset still has legacy tags in HopsFS that could not be migrated. Resolve them before changing its tags. |
 | 370014 | `TAG_SCHEMA_IN_USE` | 409 CONFLICT | The tag schema is still in use and cannot be deleted. |
+| 370015 | `TAG_SCHEMA_NAME_HAS_HISTORY` | 409 CONFLICT | A deleted tag schema of this name left archived values in the tag history. Choose another name. |
 
 ## CloudErrorCode
 
