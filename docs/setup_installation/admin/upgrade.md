@@ -16,8 +16,8 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | Upgrade | OpenSearch | What needs action |
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
-| [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], and from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Additional prerequisites][upgrade-additional-prerequisites], [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] and [LLM Gateway][upgrade-llm-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523], and from 5.2.5 [Istio 1.30][upgrade-istio-130]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Additional prerequisites][upgrade-additional-prerequisites], [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, from 5.2.5 or later [Istio 1.31][upgrade-istio-131], [Envoy Gateway][upgrade-envoy-gateway] and [LLM Gateway][upgrade-llm-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -591,6 +591,106 @@ Clients keep their endpoint, Knative-mode deployments stay on Istio, and no depl
     The request still succeeds, but a predictor or transformer script that reads such a header no longer receives it.
     Send the value in a header whose name uses hyphens instead.
 
+### OnlineFS offsets move to `onlinefs.kafka_offsets` { #upgrade-onlinefs-offsets }
+
+From 5.3, OnlineFS keeps its consumer offsets in one table, `onlinefs.kafka_offsets`, in the RonDB it writes to, with the ID of the Kafka topic each offset was saved for, in place of a `kafka_offsets` table in the online feature store of each project.
+With the topic ID, OnlineFS reads a topic that was deleted and created again under the same name from its start, as after a restore that rebuilt Kafka, instead of resuming at an offset of the earlier topic ([Consumer offsets][onlinefs-offsets]).
+
+- **No step before `helm upgrade`.**
+  Each OnlineFS pod runs an `offsets-schema` init container before OnlineFS starts.
+  It creates the table, copies the offsets of every project into it, and lists each copied project database in `onlinefs.kafka_offsets_moved`.
+  For each consumer group, topic and partition it keeps the highest offset the project tables hold, with the topic's current ID, and leaves out the offsets of topics Kafka no longer has.
+  A pod that starts later copies only project tables not listed yet.
+- **The project tables stay until every OnlineFS pod runs 5.3.**
+  An OnlineFS pod of 5.2 reads its project's table each time Kafka gives it partitions, as during the rollout.
+  The `onlinefs-drop-legacy-offsets-<hash>-r<revision>` Job waits for the rollout of the OnlineFS Deployment to finish, then drops the listed project tables.
+  On a cluster with `global._hopsworks.full_platform: true` it holds the Flyway lease while it drops them, as the schema migrations do.
+- **The init container connects to the DDL SQL node of the release as the `onlinefs` MySQL user, and the Job as `hopsworksroot`**: the `ddl-mysqld` Service of the release, or, when RonDB is managed externally on a release with `global._hopsworks.full_platform: true`, the consul name in `onlinefs.dependencies.mysql.ddlConsulServiceName` (`mysqlddl`).
+  A satellite cluster (`global._hopsworks.full_platform: false`) always connects to the Service, also with an external RonDB.
+  A cluster that disables the DDL SQL node (`rondb.rondb.meta.ddlMySQLd.enabled: false`) sets `onlinefs.dependencies.mysql.serviceName: mysqld`, and also `onlinefs.dependencies.mysql.ddlConsulServiceName: mysql` when it is not a satellite and RonDB is managed externally.
+  `onlinefs.dependencies.mysql.url` overrides both.
+- **The chart's RonDB creates the `onlinefs` user** during the upgrade, with its password in the `onlinefs` key of the `mysql-users-secrets` Secret, and the grants below.
+  With RonDB managed externally, create it before the upgrade and add its password to the Secret, or set `onlinefs.dependencies.mysql.user: hopsworksroot`:
+
+    ```sql
+    CREATE USER 'onlinefs'@'%' IDENTIFIED BY '<password>';
+    GRANT NDB_STORED_USER ON *.* TO 'onlinefs'@'%';
+    GRANT CREATE, SELECT, INSERT, UPDATE ON onlinefs.* TO 'onlinefs'@'%';
+    GRANT SELECT ON *.* TO 'onlinefs'@'%';
+    ```
+
+- **With `onlinefs.rbac.useExistingRole`**, the role needs `get`, `list` and `watch` on `deployments`, and on a cluster with `global._hopsworks.full_platform: true` the lease rules of the chart's `onlinefs-role`, for the Job.
+- **A step that fails keeps the pod from starting.**
+  It reads every project table before it writes, so a step that fails while it copies leaves every project table as it is, and the next start copies them again.
+  The pod stays in `Init:Error` or `Init:CrashLoopBackOff`, and the log names the database:
+
+    ```sh
+    kubectl logs <onlinefs-pod> -c offsets-schema -n <namespace>
+    ```
+
+  The step gives up after `onlinefs.offsetsSchemaBudgetSeconds`, 900 seconds by default, its wait for Hopsworks to answer with the OnlineFS settings included, and Kubernetes starts it again.
+  Fix the cause, as described in [If the offsets-schema step fails][upgrade-onlinefs-offsets-failures], and the next start of the pod runs it again.
+- **Records written during the rollout can be written to the online feature store twice, never skipped.**
+  A new OnlineFS pod resumes a partition from the offset copied when the first new pod started, so it writes again the records the pods of the earlier release processed since.
+- **On satellite clusters**, upgraded after central as [Strimzi 1.3][upgrade-strimzi-13] requires, a project created after central's upgrade has no offsets table on a satellite that is not upgraded yet.
+  The satellite's OnlineFS logs `Failed to save offsets` for that project and keeps writing its rows, but reads the project's online topics again from their start when it restarts, and once more at the satellite's upgrade.
+- **Rolling OnlineFS back to 5.2** after the Job dropped the project tables makes it read every online topic again from its earliest retained record, because the tables it reads are gone.
+  Before the Job ran, it resumes from the project tables, at the offsets they held when the 5.3 pods started.
+  An offset set in [Kafka offsets][onlinefs-offsets-admin] that OnlineFS had not applied yet waits in `onlinefs.kafka_offsets`, and applies once OnlineFS is upgraded again if the topic was not created again meanwhile and Kafka still has the offset.
+- **A restore needs no step for the offsets on a Kafka that gives its topics IDs**, as the Kafka the chart installs does.
+  `onlinefs.kafka_offsets` is in the RonDB backup like any other database, and after a restore that rebuilt Kafka, OnlineFS reads the recreated topics from their start.
+  An offset saved without a topic ID, by a consumer group of an earlier Kafka connection or on a Kafka that gives no IDs, has nothing to check against, and OnlineFS resumes from it.
+
+#### If the offsets-schema step fails { #upgrade-onlinefs-offsets-failures }
+
+A step that fails logs `Failed to set up onlinefs.kafka_offsets, OnlineFS does not start`, followed by the error, in the `offsets-schema` container of a pod that is not `Running`:
+
+```sh
+kubectl logs <onlinefs-pod> -c offsets-schema -n <namespace>
+```
+
+| The error | What it means | What to do |
+| --- | --- | --- |
+| `Hopsworks did not answer with the OnlineFS settings within 900 s` | Hopsworks did not answer within the step's time, `onlinefs.offsetsSchemaBudgetSeconds`. Nothing was changed. | Wait until the `hopsworks-instance` pods are ready. The next start runs the step again. |
+| `Communications link failure`, `UnknownHostException` or `Access denied for user 'onlinefs'` | The step cannot reach or log in to the SQL node. Nothing was changed. | While the upgrade restarts the SQL node, or the chart's RonDB has not created the `onlinefs` user yet, this passes on its own. Otherwise check the SQL node the step connects to, as described above, the user, and the `onlinefs` key of the `mysql-users-secrets` Secret. |
+| `Got error 4009 'No data node(s) available'` | RonDB's data nodes are restarting or down, as while the upgrade restarts them. Nothing was changed. | The next start runs the step again once the data nodes are up. |
+| `onlinefs.kafka_offsets has the columns [...], OnlineFS maps [...]` | The table exists with columns OnlineFS does not map, because it was created or changed outside OnlineFS. Nothing was moved. | Do not drop it, it holds the offsets. Change its columns to the ones the message lists after `OnlineFS maps`, keeping its rows. |
+| `Failed to read a per-project kafka_offsets, it is kept as it is`, with the database | The table of that project cannot be read. A single such table stops the whole step: nothing was written, and every project table is kept. | Repair that table, from the RonDB backup if needed. A table that cannot be repaired can be dropped, as described below. |
+| A Kafka error, such as `org.apache.kafka.common.errors.TimeoutException` | The step could not ask Kafka for the IDs of the topics. Nothing was written. | Check that OnlineFS reaches Kafka, as for its own consumers. |
+| `onlinefs.kafka_offsets was not set up within 900 s` | The step ran out of time while it copied the offsets. A project table counts as copied only once every offset is written, so the next start reads every project table and writes every offset again, and needs as long. | Raise `onlinefs.offsetsSchemaBudgetSeconds` and run `helm upgrade`. Offsets written already keep their values. |
+
+The Job logs each table it drops, and `Dropped <n> per-project kafka_offsets, none is left` when it is done:
+
+```sh
+kubectl get jobs -n <namespace> | grep onlinefs-drop-legacy-offsets
+kubectl logs job/<job> -c drop-legacy-offsets -n <namespace>
+```
+
+It fails, and drops no table that is not listed, when a project table was not copied, as while OnlineFS is scaled to 0, or a `DROP TABLE` statement fails.
+Until a Job drops them, the tables stay, and each OnlineFS pod logs them as waiting for the drop Job when it starts.
+The Job of the next `helm upgrade` runs again; the tables can also be dropped by hand once every OnlineFS pod runs 5.3, as below.
+
+The commands below run SQL as the RonDB `root` user on the chart's `mysqlds-0` pod; with an external RonDB, run the statements on one of its SQL nodes instead.
+A project table that cannot be repaired can be dropped, so that the step moves the others:
+
+```sh
+NAMESPACE=hopsworks
+ROOT_PW=$(kubectl get secret mysql-users-secrets -n "$NAMESPACE" -o jsonpath='{.data.root}' | base64 -d)
+kubectl exec mysqlds-0 -n "$NAMESPACE" -c mysqld -- env MYSQL_PWD="$ROOT_PW" mysql -uroot -e \
+  'DROP TABLE `<database>`.kafka_offsets'
+```
+
+OnlineFS then has no offsets for the online topics of that project and reads them from their earliest retained record, so it writes the records Kafka still retains to the online feature store again, and skips none.
+
+The move has finished when every OnlineFS pod is `Running`, the Job has completed, and no project table is left:
+
+```sh
+kubectl exec mysqlds-0 -n "$NAMESPACE" -c mysqld -- env MYSQL_PWD="$ROOT_PW" mysql -uroot -N -e \
+  "SELECT table_schema FROM information_schema.tables WHERE table_name = 'kafka_offsets' AND table_schema <> 'onlinefs'"
+```
+
+[Kafka offsets][onlinefs-offsets-admin] in `Cluster Settings` → `OnlineFS` then shows the moved offsets as the current offset of each partition.
+
 ### Search index rebuild { #upgrade-53-search-reindex }
 
 After the upgrade, the `post-upgrade-opensearch-reindex-job` hook indexes the existing data sources, which 5.3 adds to search, and datasets, which a cluster upgraded from 5.1 may lack, without emptying the index.
@@ -626,6 +726,30 @@ If the UI calls model deployments on another host or port, or another site frame
 A page the policy breaks shows a `Content-Security-Policy` error in the browser console; set `cspMode: report-only` while [finding what it needs][security-headers-troubleshooting].
 
 Pages are no longer served from the browser's offline cache, so a page needs the cluster to be reachable.
+
+### Istio 1.31 { #upgrade-istio-131 }
+
+Istio moves from 1.30 to 1.31.
+Istio upgrades in place one minor release at a time, so upgrade to 5.3 from 5.2.5 or later, the release that moves Istio to 1.30, as described in [Istio 1.30][upgrade-istio-130].
+On a cluster still on Istio 1.29, the Istio install hook stops with an error before it changes anything; upgrade to the latest 5.2 release first.
+
+- **Time.**
+  Each wait in the Istio install hook, the install and then istiod and each gateway rolling out, is bounded by `kserve.istio.istioctl.readinessTimeout` (15 minutes), so allow at least an hour for the hook in `helm upgrade --timeout`.
+- **Model deployments.**
+  The Istio ingress gateway and the cluster-local gateway restart once.
+  Each rolls out its new pod before it stops the old one.
+- **Your own image registry.**
+  Mirror `istio/pilot` and `istio/proxyv2` at `1.31.4` before the upgrade.
+  The chart's `vendor_images.sh` lists both.
+- **Sidecars you injected yourself.**
+  The chart injects no Istio sidecar.
+  A workload you gave an Istio sidecar keeps its 1.30 proxy until it restarts, so restart it after the upgrade.
+- **Going back to 5.2.**
+  A `helm rollback` does not run the Istio install hook, so Istio stays on 1.31.
+  A later `helm upgrade`, or an ArgoCD sync, with 5.2.5 or a later 5.2 chart stops in that hook before it changes anything, since 5.2 does not install Istio over 1.31.
+  Do not run `helm upgrade`, or an ArgoCD sync, with a release older than 5.2.5 afterwards: its hook installs Istio 1.29 over 1.31, a downgrade Istio does not support.
+  To go back entirely, restore the backup on a new cluster, as described in [New Cluster Restore][new-cluster-restore].
+  An in-place restore does not apply here, since it runs `helm upgrade` with the release of the backup, whose Istio install hook then runs over Istio 1.31.
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
@@ -693,3 +817,33 @@ Python apps pull their Envoy sidecar from `global._hopsworks.imageRegistry`, as 
 The default registry, `docker.hops.works`, has the image.
 A cluster whose `global._hopsworks.imageRegistry` is its own registry mirrors `envoyproxy/envoy:v1.38.0` there, at the path `envoyproxy/envoy`, before the upgrade, or its Python apps cannot start; the chart's `vendor_images.sh` does not list the image.
 The chart now writes `python_app_envoy_image` on every upgrade, replacing a value set by hand, so a cluster that pointed it at another image mirrors that image as above.
+
+## Changes from 5.2.5 { #upgrade-changes-from-525 }
+
+These changes ship in 5.2.5.
+They apply to an upgrade from 5.1.x to 5.2.5 or later, and from 5.2.4 or earlier to a later 5.2 release.
+
+### Istio 1.30 { #upgrade-istio-130 }
+
+Istio moves from 1.29 to 1.30.
+Istio 1.30 supports Kubernetes 1.32 to 1.36, and Istio supports the 1.30 release until about December 2026; 5.3 moves to Istio 1.31.
+
+- **Time.**
+  Each wait in the Istio install hook, the install and then istiod and each gateway rolling out, is bounded by `kserve.istio.istioctl.readinessTimeout` (15 minutes), so allow at least an hour for the hook in `helm upgrade --timeout`.
+- **Model deployments.**
+  The Istio ingress gateway and the cluster-local gateway restart once.
+  Each rolls out its new pod before it stops the old one.
+- **Your own image registry.**
+  Mirror `istio/pilot` and `istio/proxyv2` at `1.30.8` before the upgrade.
+  The chart's `vendor_images.sh` lists both.
+- **Sidecars you injected yourself.**
+  The chart injects no Istio sidecar.
+  A workload you gave an Istio sidecar keeps its 1.29 proxy until it restarts, so restart it after the upgrade.
+- **If the hook fails.**
+  Fix the cause and run `helm upgrade` again.
+  The hook stops with an error, and changes nothing, when istiod or the gateways run a release other than 1.29 or 1.30.
+- **Going back to an earlier 5.2 release.**
+  A `helm rollback` does not run the Istio install hook, so Istio stays on 1.30.
+  Do not run `helm upgrade`, or an ArgoCD sync, with a release older than 5.2.5 afterwards: its hook installs Istio 1.29 over 1.30, a downgrade Istio does not support.
+  To go back entirely, restore the backup on a new cluster, as described in [New Cluster Restore][new-cluster-restore].
+  An in-place restore does not apply here, since it runs `helm upgrade` with the release of the backup, whose Istio install hook installs Istio 1.29 over 1.30.

@@ -199,6 +199,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 120012 | `FEATURE_FLAG_NOT_ENABLED` | 400 BAD_REQUEST | Platform feature not enabled |
 | 120013 | `REQUEST_TOO_LARGE` | 413 REQUEST_ENTITY_TOO_LARGE | The request body is larger than this endpoint accepts |
 | 120014 | `LENGTH_REQUIRED` | 411 LENGTH_REQUIRED | This endpoint requires a Content-Length |
+| 120015 | `TOO_MANY_REQUESTS` | 429 TOO_MANY_REQUESTS | Too many requests |
 
 ## JobErrorCode
 
@@ -297,6 +298,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 130091 | `SYNC_JOB_MANAGED` | 403 FORBIDDEN | This job runs a data source sync; delete or rename it through the sync. |
 | 130092 | `PYTHON_APP_BUSY` | 409 CONFLICT | Another start, stop or cleanup of this app is in progress. Try again in a minute. |
 | 130093 | `PYTHON_APP_AGENT_INVALID` | 400 BAD_REQUEST | The agent the app names is not an agent deployment of this project. |
+| 130094 | `DLT_JOB_FILE_COLUMNS_INVALID` | 400 BAD_REQUEST | The file columns of the ingestion job are not valid. |
 
 ## RequestErrorCode
 
@@ -515,6 +517,9 @@ Do not hand-edit the tables below; regenerate them instead.
 | 160074 | `ACCOUNT_DELETION_PENDING_CLEANUP` | 409 CONFLICT | Account still has records awaiting background cleanup. Retry shortly. |
 | 160075 | `LLM_PROVIDER_NOT_FOUND` | 404 NOT_FOUND | LLM provider not found. |
 | 160076 | `LLM_API_KEY_MISSING` | 400 BAD_REQUEST | No API key is saved for this LLM provider. |
+| 160077 | `RATE_LIMIT_OUT_OF_RANGE` | 400 BAD_REQUEST | The user's REST API rate limit is out of range. |
+| 160078 | `LLM_PROVIDER_HAS_NO_KEY` | 400 BAD_REQUEST | This LLM provider has no API key to save or test. |
+| 160079 | `LLM_MODEL_NOT_AVAILABLE` | 400 BAD_REQUEST | There is no running vLLM deployment available to use as the LLM. |
 
 ## MetadataErrorCode
 
@@ -692,6 +697,17 @@ Do not hand-edit the tables below; regenerate them instead.
 | 240066 | `TRITON_IMAGE_TAG_NOT_AVAILABLE` | 400 BAD_REQUEST | Triton image tag not available |
 | 240067 | `TRITON_MODEL_REPOSITORY_NOT_VALID` | 400 BAD_REQUEST | Triton model repository not valid |
 | 240068 | `TRITON_OPTION_NOT_SUPPORTED` | 400 BAD_REQUEST | Option not supported in Triton deployments |
+| 240069 | `TRACES_QUERY_NOT_VALID` | 400 BAD_REQUEST | Trace query not valid |
+| 240070 | `PREDICTION_METRICS_UNAVAILABLE` | 503 SERVICE_UNAVAILABLE | Prediction latency metrics are unavailable: Prometheus did not answer |
+| 240071 | `RESERVED_DEPLOYMENT_NAME` | 400 BAD_REQUEST | The deployment name is reserved for the project's inference endpoint |
+| 240072 | `LLM_GATEWAY_NOT_SUPPORTED` | 400 BAD_REQUEST | The project's inference endpoint only serves KServe deployments |
+| 240073 | `EVAL_CHECK_NOT_FOUND` | 404 NOT_FOUND | Check file not found in the project |
+| 240074 | `EVAL_CHECK_TOO_LARGE` | 400 BAD_REQUEST | Check file or package larger than a check is expected to be |
+| 240075 | `RESOURCES_NOT_VALID` | 400 BAD_REQUEST | Resource configuration not valid |
+| 240076 | `MODEL_VOLUME_CONFIG_UNAVAILABLE` | 503 SERVICE_UNAVAILABLE | The LLM model volume configuration is temporarily unavailable. Retry shortly. |
+| 240077 | `SERVING_SHARING_NOT_SUPPORTED` | 400 BAD_REQUEST | Only a vLLM deployment served by the LLM gateway can be shared with other projects. |
+| 240078 | `SERVING_SHARING_DISABLED` | 400 BAD_REQUEST | Sharing deployments with other projects is disabled on this cluster. |
+| 240079 | `SERVING_SHARING_PROJECT_NOT_FOUND` | 404 NOT_FOUND | The project to share the deployment with does not exist or is the owner of the deployment. |
 
 ## InferenceErrorCode
 
@@ -1071,6 +1087,11 @@ Do not hand-edit the tables below; regenerate them instead.
 | 270366 | `ONLINEFS_FORBIDDEN` | 403 FORBIDDEN | Only the OnlineFS service user may read the OnlineFS runtime configuration. |
 | 270367 | `ONLINEFS_CONFIG_ENCRYPTION_ERROR` | 500 INTERNAL_SERVER_ERROR | Could not encrypt or decrypt the OnlineFS Kafka connection. |
 | 270368 | `ONLINEFS_CONFIG_CONFLICT` | 409 CONFLICT | The master encryption password changed while the OnlineFS configuration was saved; save it again. |
+| 270369 | `ONLINE_TABLE_QUOTA_EXCEEDED` | 400 BAD_REQUEST | The project has as many online tables as its quota allows. |
+| 270370 | `GMAIL_ACCESS_TOKEN_ERROR` | 400 BAD_REQUEST | Google refused to issue a Gmail access token for the data source's credentials. |
+| 270371 | `MAIL_SYNC_JOB_ERROR` | 400 BAD_REQUEST | The mail sync job could not be set up. |
+| 270372 | `EMBEDDING_INDEX_QUOTA_EXCEEDED` | 400 BAD_REQUEST | The project has as many embedding indices as its quota allows. |
+| 270373 | `OUTLOOK_ACCESS_TOKEN_ERROR` | 400 BAD_REQUEST | Microsoft refused to issue an Outlook access token for the data source's credentials. |
 
 ## AirflowErrorCode
 
