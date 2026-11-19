@@ -4,7 +4,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795016896` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795091969` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -29,6 +29,7 @@ Always deployed.
         targetCPUUtilizationPercentage: 80
         targetMemoryUtilizationPercentage: 80
       nodeSelector: {}
+      offsetsSchemaBudgetSeconds: 900
       podDisruptionBudget:
         enabled: true
         minAvailable: 1
@@ -88,6 +89,10 @@ Always deployed.
 `onlinefs.nodeSelector` <a class="headerlink" href="#helm.onlinefs.nodeSelector" title="Permanent link">#</a> { #helm.onlinefs.nodeSelector }
 :   Type `object`, default `{}`.
     node selector configuration
+
+`onlinefs.offsetsSchemaBudgetSeconds` <a class="headerlink" href="#helm.onlinefs.offsetsSchemaBudgetSeconds" title="Permanent link">#</a> { #helm.onlinefs.offsetsSchemaBudgetSeconds }
+:   Type `int`, default `900`.
+    Seconds the offsets-schema init container may take to copy the per-project Kafka offsets into onlinefs.kafka_offsets, its wait for the OnlineFS settings from Hopsworks included. A copy that runs out of time starts again from the first project table at the next start, so a cluster whose copy needs longer needs a higher value
 
 `onlinefs.podDisruptionBudget.enabled` <a class="headerlink" href="#helm.onlinefs.podDisruptionBudget.enabled" title="Permanent link">#</a> { #helm.onlinefs.podDisruptionBudget.enabled }
 :   Type `bool`, default `true`.
@@ -283,6 +288,12 @@ Always deployed.
           consulServiceName: mgmd
           port: 1186
           url: ''
+        mysql:
+          ddlConsulServiceName: mysqlddl
+          port: 3306
+          serviceName: ddl-mysqld
+          url: ''
+          user: onlinefs
         opensearch:
           consulServiceName: elastic
           consulServiceTag: rest
@@ -326,6 +337,25 @@ Always deployed.
 `onlinefs.dependencies.mgmd.url` <a class="headerlink" href="#helm.onlinefs.dependencies.mgmd.url" title="Permanent link">#</a> { #helm.onlinefs.dependencies.mgmd.url }
 :   Type `string`, default `""`.
     The mgmd URL, if not set the consul DNS name will be used
+
+`onlinefs.dependencies.mysql.ddlConsulServiceName` <a class="headerlink" href="#helm.onlinefs.dependencies.mysql.ddlConsulServiceName" title="Permanent link">#</a> { #helm.onlinefs.dependencies.mysql.ddlConsulServiceName }
+:   Type `string`, default `"mysqlddl"`.
+    The consul service of the DDL-dedicated RonDB SQL node, used when RonDB is installed externally and global._hopsworks.full_platform is true. Set to mysql when the DDL node is disabled
+
+`onlinefs.dependencies.mysql.port` <a class="headerlink" href="#helm.onlinefs.dependencies.mysql.port" title="Permanent link">#</a> { #helm.onlinefs.dependencies.mysql.port }
+:   Type `int`, default `3306`.
+
+`onlinefs.dependencies.mysql.serviceName` <a class="headerlink" href="#helm.onlinefs.dependencies.mysql.serviceName" title="Permanent link">#</a> { #helm.onlinefs.dependencies.mysql.serviceName }
+:   Type `string`, default `"ddl-mysqld"`.
+    The Kubernetes Service of the release's DDL-dedicated RonDB SQL node (rondb.meta.ddlMySQLd), used by a satellite also when RonDB is installed externally. Set to mysqld when the DDL node is disabled
+
+`onlinefs.dependencies.mysql.url` <a class="headerlink" href="#helm.onlinefs.dependencies.mysql.url" title="Permanent link">#</a> { #helm.onlinefs.dependencies.mysql.url }
+:   Type `string`, default `""`.
+    The RonDB SQL node host the offsets table is set up through before OnlineFS starts. If not set, the DDL-dedicated node of the RonDB this release deploys, or the consul DNS name when RonDB is installed externally in a full platform release
+
+`onlinefs.dependencies.mysql.user` <a class="headerlink" href="#helm.onlinefs.dependencies.mysql.user" title="Permanent link">#</a> { #helm.onlinefs.dependencies.mysql.user }
+:   Type `string`, default `"onlinefs"`.
+    The MySQL user the offsets-schema init container connects as, with its password under the same key of the MySQL users Secret. The chart's RonDB creates it; with RonDB installed externally, create it with the grants the upgrade guide lists
 
 `onlinefs.dependencies.opensearch.consulServiceName` <a class="headerlink" href="#helm.onlinefs.dependencies.opensearch.consulServiceName" title="Permanent link">#</a> { #helm.onlinefs.dependencies.opensearch.consulServiceName }
 :   Type `string`, default `"elastic"`.

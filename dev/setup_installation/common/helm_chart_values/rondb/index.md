@@ -4,7 +4,7 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795016896` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795091969` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -118,6 +118,20 @@ Always deployed.
               table: '*'
               withGrantOption: true
             username: hopsworksroot
+          - host: '%'
+            privileges:
+            - database: onlinefs
+              privileges:
+              - CREATE
+              - SELECT
+              - INSERT
+              - UPDATE
+              table: '*'
+            - database: '*'
+              privileges:
+              - SELECT
+              table: '*'
+            username: onlinefs
         networkPolicy:
           mgmds:
             ingressSelectors:
@@ -198,6 +212,20 @@ Always deployed.
                 table: '*'
                 withGrantOption: true
               username: hopsworksroot
+            - host: '%'
+              privileges:
+              - database: onlinefs
+                privileges:
+                - CREATE
+                - SELECT
+                - INSERT
+                - UPDATE
+                table: '*'
+              - database: '*'
+                privileges:
+                - SELECT
+                table: '*'
+              username: onlinefs
           networkPolicy:
             mgmds:
               ingressSelectors:
@@ -315,6 +343,20 @@ Always deployed.
               withGrantOption: true
               privileges:
               - ALL
+          - username: onlinefs
+            host: '%'
+            privileges:
+            - database: onlinefs
+              table: '*'
+              privileges:
+              - CREATE
+              - SELECT
+              - INSERT
+              - UPDATE
+            - database: '*'
+              table: '*'
+              privileges:
+              - SELECT
           credentialsSecretName: mysql-users-secrets
         clusterSize:
           activeDataReplicas: 2
@@ -1542,6 +1584,20 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
               table: '*'
               withGrantOption: true
             username: hopsworksroot
+          - host: '%'
+            privileges:
+            - database: onlinefs
+              privileges:
+              - CREATE
+              - SELECT
+              - INSERT
+              - UPDATE
+              table: '*'
+            - database: '*'
+              privileges:
+              - SELECT
+              table: '*'
+            username: onlinefs
     ```
 
 <div class="hops-values" markdown>
@@ -1618,6 +1674,20 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
             withGrantOption: true
             privileges:
             - ALL
+        - username: onlinefs
+          host: '%'
+          privileges:
+          - database: onlinefs
+            table: '*'
+            privileges:
+            - CREATE
+            - SELECT
+            - INSERT
+            - UPDATE
+          - database: '*'
+            table: '*'
+            privileges:
+            - SELECT
         ```
 
 `rondb.rondb.mysql.users[].existingSecret` <a class="headerlink" href="#helm.rondb.rondb.mysql.users.existingSecret" title="Permanent link">#</a> { #helm.rondb.rondb.mysql.users.existingSecret }
