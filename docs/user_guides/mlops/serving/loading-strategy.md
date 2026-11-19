@@ -24,11 +24,13 @@ Updating a deployment without a strategy keeps the one it has, and a deployment 
 
 - **`MOUNT`** starts the model server without copying the model first and needs no local disk for it.
   The model server reads the files from HopsFS as it needs them.
-  vLLM and vLLM-Omni read a mount this way with their default loaders, which map the files into memory and read them out of order: loading a 16 GB model with vLLM took 524 s, against 202 s with `RUNAI_STREAMER`.
+  Hopsworks starts vLLM and vLLM-Omni with `--safetensors-load-strategy eager`, so they read each safetensors file whole before loading its weights, unless the configuration file sets `safetensors-load-strategy`.
+  Their own default, `lazy`, maps the files into memory and reads them out of order, which is several times slower from a mount: loading a 16 GB model that way took 524 s, against 202 s with `RUNAI_STREAMER`.
+  Reading a file whole holds it in host memory while its weights load, once per GPU, and that counts against the deployment's memory limit.
   For vLLM-Omni it is the only way to read a mounted model.
 - **`RUNAI_STREAMER`** is how vLLM reads a mounted model.
   The streamer reads the safetensors files in large chunks, several at once.
-  vLLM's default loader maps the files into memory instead and reads a mount several times slower, as `MOUNT` does.
+  vLLM's default loader maps the files into memory instead and reads a mount several times slower.
   Loading a 16 GB model with the streamer takes about as long as downloading it, without the local disk.
   The weights must be in safetensors format, and the vLLM image must include the streamer: the official `vllm/vllm-openai` images do, and a custom image needs `vllm[runai]`.
   Saving `RUNAI_STREAMER` for a model without safetensors weights at the top of its files is rejected.
