@@ -32,7 +32,7 @@ Updating a deployment without a strategy keeps the one it has, and a deployment 
   The streamer reads the safetensors files in large chunks, several at once, and with more than one GPU each GPU reads a share of the files and passes it to the others, so the model is read from HopsFS once instead of once per GPU.
   It also holds a single tensor in host memory at a time, where `MOUNT` holds a whole file per GPU.
   Loading a 16 GB model with the streamer takes about as long as downloading it, without the local disk.
-  The weights must be in safetensors format, and the vLLM image must include the streamer: the official `vllm/vllm-openai` images do, and a custom image needs `vllm[runai]`.
+  The weights must be in safetensors format, and the vLLM image must include the streamer: the official `vllm/vllm-openai` images do, while the CPU images (`vllm/vllm-openai-cpu`) do not, and a custom image needs `vllm[runai]`.
   Saving `RUNAI_STREAMER` for a model without safetensors weights at the top of its files is rejected.
   vLLM-Omni cannot use it: the streamer hands over tensors in the order it reads them, and vLLM-Omni's model loaders need them in file order.
   See [Run:ai Model Streamer settings][run-ai-model-streamer-settings] for how it is configured.
@@ -45,7 +45,7 @@ With `RUNAI_STREAMER`, Hopsworks starts vLLM with the defaults below.
 Each one is only a default: setting it in the deployment's configuration file or environment variables takes precedence.
 
 - **`--load-format runai_streamer`** makes vLLM load the weights with the streamer.
-  A `load-format` in the configuration file replaces the streamer, and that loader then reads the model from the mount; for vLLM's default loader that is several times slower, so choose `DOWNLOAD` to load from a local copy instead.
+  A `load-format` in the configuration file replaces the streamer, and that loader then reads the model from the mount; for vLLM's default loader that is several times slower, so choose `MOUNT`, which has it read each file whole, or `DOWNLOAD` instead.
 - **Distributed streaming**, when a vLLM deployment has more than one GPU: each GPU reads a share of the files and passes it to the others, so the model is read from HopsFS once instead of once per GPU.
   Hopsworks turns it on with `--model-loader-extra-config '{"distributed": true}'`, unless the configuration file sets `model-loader-extra-config`, whose value then replaces it: add `distributed: true` to it to keep distributed streaming.
 - **`RUNAI_STREAMER_MEMORY_LIMIT=0`**, the host memory the streamer stages tensors in: a single buffer the size of the largest tensor.
