@@ -731,8 +731,10 @@ On a cluster still on Istio 1.29, the Istio install hook stops with an error bef
   A workload you gave an Istio sidecar keeps its 1.30 proxy until it restarts, so restart it after the upgrade.
 - **Going back to 5.2.**
   A `helm rollback` does not run the Istio install hook, so Istio stays on 1.31.
-  A later `helm upgrade`, or an ArgoCD sync, with a 5.2 chart stops in that hook before it changes anything, since 5.2 does not install Istio over 1.31.
-  To go back entirely, restore from the backup, as described in [Disaster Recovery][disaster-recovery].
+  A later `helm upgrade`, or an ArgoCD sync, with 5.2.5 or a later 5.2 chart stops in that hook before it changes anything, since 5.2 does not install Istio over 1.31.
+  Do not run `helm upgrade`, or an ArgoCD sync, with a release older than 5.2.5 afterwards: its hook installs Istio 1.29 over 1.31, a downgrade Istio does not support.
+  To go back entirely, restore the backup on a new cluster, as described in [New Cluster Restore][new-cluster-restore].
+  An in-place restore does not apply here, since it runs `helm upgrade` with the release of the backup, whose Istio install hook then runs over Istio 1.31.
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
@@ -828,4 +830,5 @@ Istio 1.30 supports Kubernetes 1.32 to 1.36, and Istio supports the 1.30 release
 - **Going back to an earlier 5.2 release.**
   A `helm rollback` does not run the Istio install hook, so Istio stays on 1.30.
   Do not run `helm upgrade`, or an ArgoCD sync, with a release older than 5.2.5 afterwards: its hook installs Istio 1.29 over 1.30, a downgrade Istio does not support.
-  To go back entirely, restore from the backup, as described in [Disaster Recovery][disaster-recovery].
+  To go back entirely, restore the backup on a new cluster, as described in [New Cluster Restore][new-cluster-restore].
+  An in-place restore does not apply here, since it runs `helm upgrade` with the release of the backup, whose Istio install hook installs Istio 1.29 over 1.30.
