@@ -24,6 +24,14 @@ For each component, you can set minimum (requests) and maximum (limits) resource
     A component that uses more than its limit is evicted and restarted; with no limit, it shares the node's free disk with the other pods on the node.
     A cluster can instead give vLLM deployments a fixed-size volume for their model files; their predictor then takes no disk setting, and the form shows the volume's size.
 
+!!! note "HopsFS mount"
+    With a [loading strategy][loading-strategy-guide] that mounts HopsFS (`MOUNT` or `RUNAI_STREAMER`), every predictor and transformer instance carries its own HopsFS mount, a container that serves the model and deployment files to it.
+    For each component you can set the mount's memory (limit in MB, 512 to 1048576), cores (CPU request, 0.001 to 64 and at most the cluster's mount CPU limit) and namenode connections (1 to 32); a setting left empty uses the cluster default.
+    The default CPU request of a model deployment's mount is 0.5 cores, set by `kube_scheduling_model_hopsfsmount_cpu_requests` in the [cluster configuration][cluster-configuration].
+    Cores is a request only: the mount can use more while it loads a model, up to the cluster's mount CPU limit (none by default).
+    The mount's memory and cores count towards the project's resource quota, if it has one, beside the component's own resources.
+    With `DOWNLOAD` there is no mount, and the settings are kept but unused.
+
 !!! tip "Automatic downscale of inactive instances"
     Setting the number of instances to **0** for a component enables **scale-to-zero**: its instances scale down to zero after a period without requests and the next request wakes it.
     In ==Knative== mode this applies to the predictor and the transformer, once the stable window (60 seconds by default) has seen no traffic.
@@ -63,6 +71,7 @@ To navigate to the advanced creation form, click on `Advanced options`.
 In the `Resource allocation` section of the form, you can optionally set the resources to be allocated to the predictor and/or the transformer (if available).
 Moreover, you can choose the minimum number of replicas for each of these components.
 `Disk (GB)` limits a component's local disk; leave it empty for no limit.
+When the selected loading strategy mounts HopsFS, each component also shows `Mount memory (MB)`, `Mount cores` and `Namenode connections` for its HopsFS mount, prefilled with the cluster defaults.
 
 !!! note "Scale-to-zero capabilities"
     Set the number of instances to **0** to enable scale-to-zero on the component.
@@ -108,11 +117,16 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   maximum_res = Resources(cores=2, memory=256, gpus=1)
 
   predictor_res = PredictorResources(
-      num_instances=1, requests=minimum_res, limits=maximum_res
+      num_instances=1,
+      requests=minimum_res,
+      limits=maximum_res,
+      # optional: the HopsFS mount of each predictor instance
+      hopsfs_mount={"cores": 0.5, "memory": 1024},
   )
   ```
 
 To limit a component's local disk, set `disk` in GB on its limits only, for example `Resources(cores=2, memory=256, gpus=1, disk=50)` or `"disk": 50` in a limits dict; the request is set to the same amount.
+To size a component's HopsFS mount, set `hopsfs_mount` on its resources, a dict with the optional keys `cores`, `memory` (MB) and `namenode_connections`, or `"hopsfs_mount"` in a resources dict; a key left out uses the cluster default.
 
 ### Step 3 (Optional): Define the transformer resource configuration
 
@@ -125,7 +139,11 @@ To limit a component's local disk, set `disk` in GB on its limits only, for exam
   maximum_res = Resources(cores=2, memory=256, gpus=1)
 
   transformer_res = TransformerResources(
-      num_instances=2, requests=minimum_res, limits=maximum_res
+      num_instances=2,
+      requests=minimum_res,
+      limits=maximum_res,
+      # optional: the HopsFS mount of each transformer instance
+      hopsfs_mount={"memory": 1024, "namenode_connections": 2},
   )
   ```
 

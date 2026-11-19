@@ -15,6 +15,8 @@ Either way the files are at the same paths, `/mnt/models` and `/mnt/artifacts`, 
 
 The two mount strategies need the [HopsFS CSI driver][hopsfs-csi-driver]; without it, `DOWNLOAD` is the only strategy.
 A deployment with a mount strategy fails to start if the driver is disabled later, until its strategy is changed to `DOWNLOAD`.
+Each of its pods carries its own HopsFS mount, with a CPU request and a memory limit of its own.
+To change them per component, see the [Resources Guide](resources.md).
 The strategy is set per deployment.
 Saving a new strategy on a running deployment rolls it out right away and replaces its pods; a stopped deployment uses it the next time it starts.
 A deployment created without a strategy gets `MOUNT` when the driver is enabled, and `DOWNLOAD` without it.
