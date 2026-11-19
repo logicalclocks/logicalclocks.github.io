@@ -40,6 +40,7 @@ nav:
               - Versioning: concepts/fs/feature_view/versioning.md
       - Projects:
           - Governance: concepts/projects/governance.md
+          - Project/User Isolation: concepts/projects/isolation.md
           - Data Storage/Sharing: concepts/projects/storage.md
           - Tags/Search/Lineage: concepts/projects/search.md
           - CI/CD: concepts/projects/cicd.md
