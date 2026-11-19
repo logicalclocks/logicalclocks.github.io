@@ -189,7 +189,7 @@ Hopsworks supports two restore modes:
 !!! Note
     Use the exact Hopsworks version that was used to create the backup.
 
-### New Cluster Restore
+### New Cluster Restore { #new-cluster-restore }
 
 The new cluster restore process has two phases:
 
