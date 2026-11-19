@@ -613,7 +613,7 @@ With the topic ID, OnlineFS reads a topic that was deleted and created again und
     kubectl logs <onlinefs-pod> -c offsets-schema -n <namespace>
     ```
 
-  The step gives up after 15 minutes, its wait for Hopsworks to answer with the OnlineFS settings included, and Kubernetes starts it again.
+  The step gives up after `onlinefs.offsetsSchemaBudgetSeconds`, 900 seconds by default, its wait for Hopsworks to answer with the OnlineFS settings included, and Kubernetes starts it again.
   Fix the cause, as described in [If the offsets-schema step fails][upgrade-onlinefs-offsets-failures], and the next start of the pod runs it again.
 - **Records written during the rollout can be written to the online feature store twice, never skipped.**
   A new OnlineFS pod resumes a partition from the offset copied when the first new pod started, so it writes again the records the pods of the earlier release processed since.
@@ -636,13 +636,13 @@ kubectl logs <onlinefs-pod> -c offsets-schema -n <namespace>
 
 | The error | What it means | What to do |
 | --- | --- | --- |
-| `Hopsworks did not answer with the OnlineFS settings within 900 s` | Hopsworks did not answer within the step's 15 minutes. Nothing was changed. | Wait until the `hopsworks-instance` pods are ready. The next start runs the step again. |
+| `Hopsworks did not answer with the OnlineFS settings within 900 s` | Hopsworks did not answer within the step's time, `onlinefs.offsetsSchemaBudgetSeconds`. Nothing was changed. | Wait until the `hopsworks-instance` pods are ready. The next start runs the step again. |
 | `Communications link failure`, `UnknownHostException` or `Access denied for user 'onlinefs'` | The step cannot reach or log in to the SQL node. Nothing was changed. | While the upgrade restarts the SQL node, or the chart's RonDB has not created the `onlinefs` user yet, this passes on its own. Otherwise check the SQL node the step connects to, as described above, the user, and the `onlinefs` key of the `mysql-users-secrets` Secret. |
 | `Got error 4009 'No data node(s) available'` | RonDB's data nodes are restarting or down, as while the upgrade restarts them. Nothing was changed. | The next start runs the step again once the data nodes are up. |
 | `onlinefs.kafka_offsets has the columns [...], OnlineFS maps [...]` | The table exists with columns OnlineFS does not map, because it was created or changed outside OnlineFS. Nothing was moved. | Do not drop it, it holds the offsets. Change its columns to the ones the message lists after `OnlineFS maps`, keeping its rows. |
 | `Failed to read a per-project kafka_offsets, it is kept as it is`, with the database | The table of that project cannot be read. A single such table stops the whole step: nothing was written, and every project table is kept. | Repair that table, from the RonDB backup if needed. A table that cannot be repaired can be dropped, as described below. |
 | A Kafka error, such as `org.apache.kafka.common.errors.TimeoutException` | The step could not ask Kafka for the IDs of the topics. Nothing was written. | Check that OnlineFS reaches Kafka, as for its own consumers. |
-| `onlinefs.kafka_offsets was not set up within 900 s` | The step ran out of time while it moved the offsets. | The next start goes on. Offsets it moved already keep their values. |
+| `onlinefs.kafka_offsets was not set up within 900 s` | The step ran out of time while it copied the offsets. A project table counts as copied only once every offset is written, so the next start reads every project table and writes every offset again, and needs as long. | Raise `onlinefs.offsetsSchemaBudgetSeconds` and run `helm upgrade`. Offsets written already keep their values. |
 
 The Job logs each table it drops, and `Dropped <n> per-project kafka_offsets, none is left` when it is done:
 
