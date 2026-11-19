@@ -159,7 +159,8 @@ On Superset 7.0, the chart runs Superset's MCP service, which the `hops superset
 
 | Object | Purpose |
 | --- | --- |
-| Deployment and Service `hopsworks-superset-mcp` | `superset mcp run` on port 5008, with the Superset image and configuration, reached in the cluster as `app.superset-mcp.service.<domain>:5008`. |
+| Deployment and Service `hopsworks-superset-mcp` | `superset mcp run` on port 5008, with the Superset image and configuration, reached in the cluster as `https://app.superset-mcp.service.<domain>:5008`. |
+| HopsworksCert `hopsworks-superset-mcp` | The service's TLS certificate, issued by the cluster's CA for `app.superset-mcp.service.<domain>`, in the Secret `hopsworks-superset-mcp-crypto-material`. The SDK and the CLI verify it against the cluster's CA. |
 | Secret `superset-mcp-jwt` | The key Hopsworks signs the service's tokens with, each for the caller's Superset user in the project. The service applies that user's roles. |
 
 The chart creates the secret on install and keeps it on upgrade.
