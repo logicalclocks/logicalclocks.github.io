@@ -46,11 +46,11 @@ Each one is only a default: setting it in the deployment's configuration file or
   A `load-format` in the configuration file replaces the streamer, and that loader then reads the model from the mount; for vLLM's default loader that is several times slower, so choose `DOWNLOAD` to load from a local copy instead.
 - **Distributed streaming**, when a vLLM deployment has more than one GPU: each GPU reads a share of the files and passes it to the others, so the model is read from HopsFS once instead of once per GPU.
   Hopsworks turns it on with `--model-loader-extra-config '{"distributed": true}'`, unless the configuration file sets `model-loader-extra-config`, whose value then replaces it: add `distributed: true` to it to keep distributed streaming.
-- **`RUNAI_STREAMER_MEMORY_LIMIT`**, the host memory the streamer stages tensors in: half the deployment's memory limit, divided by its GPUs.
-  When that share is below 4 GiB, the streamer uses a single buffer the size of the largest tensor, which loads more slowly.
+- **`RUNAI_STREAMER_MEMORY_LIMIT=0`**, the host memory the streamer stages tensors in: a single buffer the size of the largest tensor.
+  A limit in bytes gives the streamer more buffers to read ahead with, but a limit smaller than the largest tensor fails the load.
   A `memory_limit` in `model-loader-extra-config`, or the variable set in the deployment's environment variables, replaces it.
 
-The staging memory counts against the deployment's memory limit, unlike the page cache a download fills, so give a `RUNAI_STREAMER` deployment memory to spare beyond what vLLM itself uses.
+The staging memory counts against the deployment's memory limit, unlike the page cache a download fills, so when you raise the limit, give the deployment that much memory beyond what vLLM itself uses.
 
 !!! warning "A mounted deployment needs its HopsFS mount for as long as it runs"
     A model server that reads its files lazily also needs the mount after it started, so a failed mount stops it from reading files it has not loaded yet.
