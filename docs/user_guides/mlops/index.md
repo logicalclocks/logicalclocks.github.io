@@ -19,7 +19,7 @@ The guides below follow that path.
         metrics={{"f1": 0.92}},
     )
     model.save("model_dir")
-    deployment = model.deploy()
+    deployment = model.deploy(script_file="predictor.py")
     ```
 
     [Model registry](registry/index.md) · [Deployment creation](serving/deployment.md) · [Model monitoring](model_monitoring/index.md)
