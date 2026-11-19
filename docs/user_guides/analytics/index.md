@@ -38,6 +38,8 @@ Start with a query, then turn it into a dashboard.
   Expose a data source as a catalog so external tables join feature data.
 - [External BI tools](../../concepts/mlops/bi_tools.md)
   How a BI tool connects to the offline store through Trino.
+- [Ontology and text-to-SQL][build-an-ontology-and-text-to-sql-app]
+  Ask questions about a SQL data source's tables in plain language and get the answer with its SQL.
 
 </div>
 
