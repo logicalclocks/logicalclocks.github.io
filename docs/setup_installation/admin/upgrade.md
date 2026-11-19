@@ -517,6 +517,12 @@ The message says how many tags use the schema, per kind of artifact, or how many
 
 See [Deleting a tag schema][deleting-a-tag-schema].
 
+### The extended attributes endpoint is removed { #upgrade-xattrs-endpoint }
+
+From 5.3, `/project/{id}/xattrs/{path}` answers 404: HopsFS extended attributes can no longer be read, written or deleted through the REST API.
+Tags on datasets, feature groups, models and the other artifacts are managed through their tag APIs, as before.
+A dataset whose legacy tags cannot be moved into the database is fixed by an administrator, who edits the dataset's `user.tags` extended attribute with `hdfs dfs -getfattr` and `hdfs dfs -setfattr` in the NameNode pod.
+
 ### Envoy Gateway { #upgrade-envoy-gateway }
 
 New in 5.3 and off by default: [Envoy Gateway][envoy-gateway] routes Standard-mode model deployments through the Kubernetes Gateway API, with Istio still the front door.
