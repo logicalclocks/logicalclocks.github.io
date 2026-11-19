@@ -1,0 +1,78 @@
+<figure class="hops-diagram hops-viz hops-viz-static">
+<svg viewBox="0 0 736 352" role="img" aria-label="Two projects, fraud_detection and marketing, inside one Hopsworks cluster. Each project holds its own datasets, models and feature store, which only its members can reach. Inside each project, a Users dataset holds one private home directory per member: alice and bob in fraud_detection, carol and dan in marketing, each readable only by its owner. A read-only share from the fraud_detection feature store to the marketing project is the only path between the two projects." xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="iso-arrow" viewBox="0 0 11 11" refX="11" refY="5.5" markerUnits="userSpaceOnUse" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path class="viz-edge-arrow" d="M0 0 L11 5.5 L0 11 z"/>
+    </marker>
+    <marker id="iso-knob" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto"><circle class="viz-edge-knob" cx="5" cy="5" r="3"/></marker>
+  </defs>
+
+  <!-- Hopsworks boundary -->
+  <rect class="viz-zone" data-tone="accent" x="16" y="32" width="704" height="304" rx="6"/>
+  <text class="viz-label" x="28" y="24" style="fill:var(--hops-accent-text)">Hopsworks</text>
+
+  <!-- the only path between projects: an explicit, read-only share -->
+  <path class="viz-edge" d="M320 172 L416 172" marker-start="url(#iso-knob)" marker-end="url(#iso-arrow)"/>
+  <text class="viz-meta" x="368" y="162" text-anchor="middle">share</text>
+  <text class="viz-meta" x="368" y="190" text-anchor="middle">read-only</text>
+
+  <!-- project fraud_detection -->
+  <g>
+    <rect class="viz-kv-frame" x="48" y="56" width="272" height="264" rx="6"/>
+    <path class="viz-kv-header" d="M48 62 a6 6 0 0 1 6 -6 h260 a6 6 0 0 1 6 6 v20 h-272 z"/>
+    <text class="viz-kv-title" x="62" y="75">fraud_detection</text>
+    <text class="viz-meta" x="306" y="75" text-anchor="end">project</text>
+    <g class="viz-icon" transform="translate(62,92) scale(0.6)"><path d="M3 7 A2 2 0 0 1 5 5 H9 L11 7 H19 A2 2 0 0 1 21 9 V17 A2 2 0 0 1 19 19 H5 A2 2 0 0 1 3 17 Z"/></g>
+    <text class="viz-field" x="88" y="104">Resources</text>
+    <line class="viz-row-sep" x1="48" y1="118" x2="320" y2="118"/>
+    <a class="viz-link" href="../../mlops/registry/">
+      <g class="viz-icon" transform="translate(62,128) scale(0.6)"><path d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z"/><path d="M3 7 L12 12 L21 7 M12 12 V22"/></g>
+      <text class="viz-field" x="88" y="140">Models</text></a>
+    <line class="viz-row-sep" x1="48" y1="154" x2="320" y2="154"/>
+    <a class="viz-link" href="../../fs/feature_group/fg_overview/">
+      <g class="viz-icon" transform="translate(62,164) scale(0.6)"><rect x="8" y="8" width="12.5" height="13" rx="2"/><path d="M4.5 17 V6 A2 2 0 0 1 6.5 4 H15.5"/></g>
+      <text class="viz-field" x="88" y="176">Feature store</text></a>
+    <!-- Users dataset: one private home per member -->
+    <rect class="viz-kv-frame" x="64" y="200" width="240" height="104" rx="6"/>
+    <path class="viz-kv-header" d="M64 206 a6 6 0 0 1 6 -6 h228 a6 6 0 0 1 6 6 v20 h-240 z"/>
+    <text class="viz-kv-title" x="78" y="219">Users</text>
+    <text class="viz-meta" x="290" y="219" text-anchor="end">private homes</text>
+    <g class="viz-icon" transform="translate(78,244) scale(0.6)"><circle cx="12" cy="-3.5" r="4"/><path d="M5 8 C5 3.5 8 1.5 12 1.5 C16 1.5 19 3.5 19 8"/></g>
+    <text class="viz-field" x="102" y="248">alice</text>
+    <text class="viz-meta" x="290" y="248" text-anchor="end">only alice</text>
+    <line class="viz-row-sep" x1="64" y1="262" x2="304" y2="262"/>
+    <g class="viz-icon" transform="translate(78,280) scale(0.6)"><circle cx="12" cy="-3.5" r="4"/><path d="M5 8 C5 3.5 8 1.5 12 1.5 C16 1.5 19 3.5 19 8"/></g>
+    <text class="viz-field" x="102" y="284">bob</text>
+    <text class="viz-meta" x="290" y="284" text-anchor="end">only bob</text>
+  </g>
+
+  <!-- project marketing -->
+  <g>
+    <rect class="viz-kv-frame" x="416" y="56" width="272" height="264" rx="6"/>
+    <path class="viz-kv-header" d="M416 62 a6 6 0 0 1 6 -6 h260 a6 6 0 0 1 6 6 v20 h-272 z"/>
+    <text class="viz-kv-title" x="430" y="75">marketing</text>
+    <text class="viz-meta" x="674" y="75" text-anchor="end">project</text>
+    <g class="viz-icon" transform="translate(430,92) scale(0.6)"><path d="M3 7 A2 2 0 0 1 5 5 H9 L11 7 H19 A2 2 0 0 1 21 9 V17 A2 2 0 0 1 19 19 H5 A2 2 0 0 1 3 17 Z"/></g>
+    <text class="viz-field" x="456" y="104">Resources</text>
+    <line class="viz-row-sep" x1="416" y1="118" x2="688" y2="118"/>
+    <a class="viz-link" href="../../mlops/registry/">
+      <g class="viz-icon" transform="translate(430,128) scale(0.6)"><path d="M12 2 L21 7 V17 L12 22 L3 17 V7 Z"/><path d="M3 7 L12 12 L21 7 M12 12 V22"/></g>
+      <text class="viz-field" x="456" y="140">Models</text></a>
+    <line class="viz-row-sep" x1="416" y1="154" x2="688" y2="154"/>
+    <a class="viz-link" href="../../fs/feature_group/fg_overview/">
+      <g class="viz-icon" transform="translate(430,164) scale(0.6)"><rect x="8" y="8" width="12.5" height="13" rx="2"/><path d="M4.5 17 V6 A2 2 0 0 1 6.5 4 H15.5"/></g>
+      <text class="viz-field" x="456" y="176">Feature store</text></a>
+    <rect class="viz-kv-frame" x="432" y="200" width="240" height="104" rx="6"/>
+    <path class="viz-kv-header" d="M432 206 a6 6 0 0 1 6 -6 h228 a6 6 0 0 1 6 6 v20 h-240 z"/>
+    <text class="viz-kv-title" x="446" y="219">Users</text>
+    <text class="viz-meta" x="658" y="219" text-anchor="end">private homes</text>
+    <g class="viz-icon" transform="translate(446,244) scale(0.6)"><circle cx="12" cy="-3.5" r="4"/><path d="M5 8 C5 3.5 8 1.5 12 1.5 C16 1.5 19 3.5 19 8"/></g>
+    <text class="viz-field" x="470" y="248">carol</text>
+    <text class="viz-meta" x="658" y="248" text-anchor="end">only carol</text>
+    <line class="viz-row-sep" x1="432" y1="262" x2="672" y2="262"/>
+    <g class="viz-icon" transform="translate(446,280) scale(0.6)"><circle cx="12" cy="-3.5" r="4"/><path d="M5 8 C5 3.5 8 1.5 12 1.5 C16 1.5 19 3.5 19 8"/></g>
+    <text class="viz-field" x="470" y="284">dan</text>
+    <text class="viz-meta" x="658" y="284" text-anchor="end">only dan</text>
+  </g>
+</svg>
+</figure>
