@@ -25,6 +25,7 @@ nav:
           - AI Systems: concepts/mlops/prediction_services.md
           - Agents and LLM Systems: concepts/mlops/agents.md
           - Projects and Governance: concepts/projects/governance.md
+          - Project and User Isolation: concepts/projects/isolation.md
           - Data Storage and Sharing: concepts/projects/storage.md
       - MLOps Dictionary ↗: https://www.hopsworks.ai/mlops-dictionary?utm_source=web&utm_medium=docs
       - Feature Store:

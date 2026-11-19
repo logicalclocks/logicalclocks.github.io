@@ -7,6 +7,9 @@ The ML assets can only be accessed by project members, and there is role-based a
 
 --8<-- "concepts/projects/governance/projects-and-governance.html"
 
+Inside a project, every member also has a private home directory that no other member can open.
+[Project and User Isolation][project-and-user-isolation] explains both levels: the project sandbox, and the home directories within it.
+
 ## Dev/Staging/Prod for Data
 
 Projects enable you to define development, staging, and even production projects on the same cluster.
