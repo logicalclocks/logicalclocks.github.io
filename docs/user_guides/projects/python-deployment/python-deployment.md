@@ -226,6 +226,7 @@ For full details on resource configuration, see the [Resources Guide](../../mlop
 Deployments automatically scale the number of replicas between a minimum and a maximum.
 In Standard mode, the default, they are scaled by **KEDA** where the cluster has it, on CPU or memory utilization or on the requests at the gateway (concurrency or requests per second), and a minimum of 0 scales the deployment to zero when idle.
 In Knative mode they are scaled by the **Knative Pod Autoscaler (KPA)** on request traffic.
+Knative mode is [deprecated][knative-mode-deprecated]: new deployments run in Standard mode, and existing Knative-mode ones can be converted.
 
 For full details on autoscaling parameters, see the [Autoscaling Guide](../../mlops/serving/autoscaling.md).
 

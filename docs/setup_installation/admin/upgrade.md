@@ -17,7 +17,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
 | [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523], and from 5.2.5 [Istio 1.30][upgrade-istio-130]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Additional prerequisites][upgrade-additional-prerequisites], [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] and [LLM Gateway][upgrade-llm-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Additional prerequisites][upgrade-additional-prerequisites], [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] and [LLM Gateway][upgrade-llm-gateway] when turned on, [Knative mode deprecated][upgrade-knative-mode-deprecated], with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -711,6 +711,54 @@ If the UI calls model deployments on another host or port, or another site frame
 A page the policy breaks shows a `Content-Security-Policy` error in the browser console; set `cspMode: report-only` while [finding what it needs][security-headers-troubleshooting].
 
 Pages are no longer served from the browser's offline cache, so a page needs the cluster to be reachable.
+
+### Knative mode is deprecated { #upgrade-knative-mode-deprecated }
+
+[Knative mode][knative-mode-deprecated] is deprecated in 5.3, and 5.4 removes Knative and Istio.
+
+- **New Knative-mode deployments are refused.**
+  Creating a deployment in Knative mode, or switching a Standard-mode deployment to Knative mode, fails with error `240080`, from the UI, the Python SDK and the REST API alike.
+  A deployment created without a mode runs in Standard mode, as in 5.2.
+- **Existing Knative-mode deployments keep working.**
+  They start, stop, update, roll back and serve as before, and their owners convert them to Standard mode when it suits them.
+  `helm upgrade` prints how many Knative-mode deployments are running.
+- **Escape hatch.**
+  `hopsworks.variables.kube_knative_mode_allowed: "true"` allows creating Knative-mode deployments again, until 5.4.
+  The chart writes the value on every upgrade, so set it in your values file; a change in the admin UI lasts only until the next upgrade.
+
+Prepare for 5.4 while on 5.3, as described in [5.3.x to 5.4.x][upgrade-53-to-54].
+
+## 5.3.x to 5.4.x { #upgrade-53-to-54 }
+
+5.4 is not released yet.
+It removes Knative and Istio: model deployments run in Standard mode only, and Envoy Gateway takes over the external address and ports of the Istio ingress gateway.
+The 5.4 upgrade refuses to start while Envoy Gateway is off or a Knative-mode deployment is running, so prepare on 5.3:
+
+1. **Enable Envoy Gateway**, as described in [Envoy Gateway][upgrade-envoy-gateway], and check that every Standard-mode deployment moved.
+2. **Convert the Knative-mode deployments.**
+    List the ones that run:
+
+    ```bash
+    kubectl get isvc -A -o json | jq -r '.items[] | select(.metadata.annotations["serving.kserve.io/deploymentMode"] == null) | .metadata.namespace + "/" + .metadata.name'
+    ```
+
+    Their owners convert each one, as described in [Knative mode is deprecated][knative-mode-deprecated]; each conversion restarts that deployment once.
+    A stopped Knative-mode deployment may stay as it is: the 5.4 upgrade converts it.
+3. **HTTPS at the gateway.**
+    With `kserve.knative.https.enabled`, check that the Secret named in `kserve.knative.https.credentialsName` has the type `kubernetes.io/tls`: Envoy Gateway accepts no other type, where Istio also accepted a generic Secret.
+
+    ```bash
+    kubectl get secret -n <namespace> <credentialsName> -o jsonpath='{.type}'
+    ```
+
+4. **The gateway address.**
+    With a `LoadBalancer` Service, note the address of the Istio ingress gateway.
+    On MetalLB you pin it on the Envoy Gateway Service after the upgrade; with a cloud load balancer, reserve the address with your provider, or plan to move your DNS records to the new one.
+    With `NodePort`, the node ports stay the same.
+5. **Anything outside the chart that names `istio-ingressgateway`**, such as an OpenShift Route or a DNS record, moves to the Envoy Gateway Service `kserve-ingress-gateway` after the upgrade.
+6. **Clients.**
+    Requests through Envoy Gateway drop headers whose names contain an underscore, and a path must name the project exactly, as described in [Headers with underscores][upgrade-envoy-gateway] and under [Expose the Gateway directly][envoy-gateway].
+    Hopsworks and the Python clients cache the inference endpoint until they restart.
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
