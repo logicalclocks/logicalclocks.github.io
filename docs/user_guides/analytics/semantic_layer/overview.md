@@ -31,7 +31,7 @@ Around the queries:
 | A saved query written into a feature group by a scheduled job, and queries answered from it | [Metric exports][semantic-exports] |
 | Every query recorded, for its members and Data Owners | [Query history][semantic-query-history] |
 | The YAML edited in the UI, validated as you type | [Edit definitions in the UI][semantic-editor] |
-| Dashboards from metrics on Superset 7.0 | [Dashboards in Superset][semantic-superset-dashboards] |
+| Dashboards from metrics in Superset | [Dashboards in Superset][semantic-superset-dashboards] |
 | The semantic layer tools of the Hopsworks MCP server | [Agent tools][semantic-agent-tools] |
 | Turning it on and configuring it | [Semantic Layer administration][semantic-admin] |
 

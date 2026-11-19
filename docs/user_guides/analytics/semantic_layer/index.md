@@ -90,7 +90,7 @@ Administrators turn the service on as in [Semantic Layer administration][semanti
 - [Metric exports][semantic-exports]
   Saved queries written into feature groups by scheduled jobs, and answered from them.
 - [Dashboards in Superset][semantic-superset-dashboards]
-  Superset 7.0 dashboards and charts from metrics, and Explore links.
+  Superset dashboards and charts from metrics, and Explore links.
 - [Agent tools][semantic-agent-tools]
   The semantic layer tools of the Hopsworks MCP server.
 

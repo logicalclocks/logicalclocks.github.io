@@ -178,9 +178,9 @@ Dashboards combine multiple charts into interactive visualization reports.
 4. Resize and arrange charts as needed
 5. Click **Save** to publish the dashboard
 
-## Charts and Dashboard Edits from the CLI { #superset-cli-mcp }
+## Charts from the CLI { #superset-cli-mcp }
 
-On Superset 7.0, the `hops` CLI creates charts and changes dashboards through Superset's MCP service.
+The `hops` CLI creates charts through Superset's MCP service.
 Superset checks a chart's config against the dataset and runs its query before it saves the chart.
 The commands run inside the cluster, in a terminal, a Jupyter server or a job, as a Data Owner or Data Scientist of the project; observers cannot use them.
 Each call runs as your Superset user in the project, with its roles.
@@ -219,19 +219,7 @@ A metric is an aggregate over a column (`SUM(amount)` with `SUM`, `COUNT`, `AVG`
 `--y`, `--columns`, `--group-by` and `IN` lists split on commas outside parentheses and quotes, so `--y 'SUM(COALESCE(amount, 0)),revenue'` is two metrics.
 A column the dataset does not have fails the command with an error that names it, and nothing is saved.
 
-Change only the given fields of a dashboard, by id or slug:
-
-```bash
-hops superset dashboard update 7 --title "Sales, weekly" --refresh 600 --published
-```
-
-`dashboard update` also takes `--description`, `--slug`, `--cross-filters/--no-cross-filters`, `--filter-bar vertical|horizontal` and `--tags` (tag ids, the full list), and `--css`, `--metadata` (merged into the dashboard's JSON metadata) and `--position` (the layout JSON), each as text or `@file`.
-
-The Python SDK has the same calls on `project.get_superset_api()`: `generate_chart(dataset_id, config, name=None, save=True)`, `chart_type_schema(chart_type)` and `patch_dashboard(dashboard_id, **fields)`.
-
-!!! note
-    A chart created this way has no saved query context until it is opened and saved once in Superset.
-    It renders in Explore and on dashboards, but the chart data REST endpoint (`/api/v1/chart/<id>/data/`) refuses it until then.
+The Python SDK has the same calls on `project.get_superset_api()`: `generate_chart(dataset_id, config, name=None, save=True)` and `chart_type_schema(chart_type)`.
 
 ## Sharing and Collaboration
 

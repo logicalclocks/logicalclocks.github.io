@@ -11,7 +11,7 @@ The examples use the `sales` semantic project from [Define metrics][semantic-def
 
 ## Prerequisites { #semantic-superset-prerequisites }
 
-- Superset 7.0, in the Hopsworks Superset image, which ships the driver of the connections.
+- The Hopsworks Superset image, which ships the driver of the connections.
 - The semantic layer and Superset enabled on the cluster, and the `superset_semantic_enabled` cluster setting on, which it is by default, see [For administrators][semantic-superset-admin].
 - The Superset service in the project.
 - A semantic project with a valid build, see [Compile and builds][semantic-compile-builds].
