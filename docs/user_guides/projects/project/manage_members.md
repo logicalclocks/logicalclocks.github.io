@@ -106,7 +106,7 @@ To remove them from the project, click the delete button (:material-delete:) in 
 
 ### What happens to a removed member's files
 
-Each member has a private home directory in the project, `/Projects/<project>/Users/<username>`, holding their notebooks, their SSH key and their agent configuration.
+Each member has a [private home directory][user-home-directories] in the project, `/Projects/<project>/Users/<username>`, holding their notebooks, their SSH key and their agent configuration.
 
 When a member is removed, that directory and everything under it is transferred to another data owner. The files keep their contents and their paths; only the owner changes. The removed member loses access, as they do to the rest of the project.
 

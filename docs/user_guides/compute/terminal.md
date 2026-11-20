@@ -3,7 +3,7 @@
 ## Introduction
 
 Hopsworks provides a browser terminal that runs inside your project.
-The terminal is a dedicated pod running under your project user, with your HopsFS home directory mounted at `/hopsfs/Users/<username>`.
+The terminal is a dedicated pod running under your project user, with your [user home directory][user-home-directories] mounted at `/hopsfs/Users/<username>`.
 Files you create there are stored in the project file system and survive the terminal session.
 
 ## Prerequisites
@@ -30,7 +30,7 @@ A session expires after a fixed lifetime, four hours by default (`terminal_sessi
 
 ## Use the terminal
 
-Once connected, the panel shows a shell in your HopsFS home directory, with live CPU and memory usage of the terminal pod in the header.
+Once connected, the panel shows a shell in your user home directory, with live CPU and memory usage of the terminal pod in the header.
 
 <figure>
   <img src="../../../assets/images/guides/terminal/terminal_connected.png" alt="Connected terminal session"/>
