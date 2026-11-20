@@ -17,7 +17,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
 | [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523], and from 5.2.5 [Istio 1.30][upgrade-istio-130]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Additional prerequisites][upgrade-additional-prerequisites], [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, from 5.2.5 or later [Istio 1.31][upgrade-istio-131], [Envoy Gateway][upgrade-envoy-gateway] and [LLM Gateway][upgrade-llm-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Additional prerequisites][upgrade-additional-prerequisites], [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, from 5.2.5 or later [Istio 1.31][upgrade-istio-131], [Envoy Gateway][upgrade-envoy-gateway] and [LLM Gateway][upgrade-llm-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], the statistics defaults, from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -813,6 +813,31 @@ On a cluster still on Istio 1.29, the Istio install hook stops with an error bef
   Do not run `helm upgrade`, or an ArgoCD sync, with a release older than 5.2.5 afterwards: its hook installs Istio 1.29 over 1.31, a downgrade Istio does not support.
   To go back entirely, restore the backup on a new cluster, as described in [New Cluster Restore][new-cluster-restore].
   An in-place restore does not apply here, since it runs `helm upgrade` with the release of the backup, whose Istio install hook then runs over Istio 1.31.
+
+### Statistics defaults { #upgrade-statistics-defaults }
+
+The chart writes its variables from the values file on every upgrade, so `feature_monitoring_max_num_features` rises from 15 to 32 with this hop.
+One feature monitoring configuration may then cover up to 32 features, and its runs grow with them.
+`hopsworks.variables.feature_monitoring_max_num_features: "15"` keeps the old limit.
+
+The statistics settings added in 5.3 default to the previous behaviour, so an untouched cluster computes and keeps statistics as before:
+
+- `statistics_job_driver_memory`, `statistics_job_executor_memory`, `statistics_job_executor_cores` and `statistics_job_max_executors` override the generic Spark job values for the statistics jobs only when set, and are empty by default.
+  Before each ingestion statistics run they are applied to the existing job too.
+  The memory and cores settings are floors, so a job given more in the Jobs UI keeps it, while `statistics_job_max_executors` caps the job's maximum executors.
+- `statistics_job_bytes_per_executor` sizes the executors of a statistics run from the size of the table it profiles; at the default 0 a run keeps the job's configured executors.
+  When it is set, each ingestion statistics run sets the job's maximum executors from the table size, up to `statistics_job_max_executors` or the generic Spark job default.
+- `statistics_retention_rows_per_entity` keeps that many statistics rows per feature group and feature view, newest first; at the default 0 every row is kept.
+- `statistics_incremental_enabled` (default `false`) is the setting of feature groups that do not set their own `incremental` statistics flag: with it on, each append is merged into the previous statistics instead of profiling the whole table.
+  `statistics_incremental_allowed` (default `true`) is the admin switch, which makes every feature group run full profiles when off, and `statistics_incremental_full_profile_every` (default 50) is the number of merged commits after which a feature group gets a full profile again.
+
+Like every chart variable, these are rewritten from the values file on each upgrade.
+A change made on the admin variables page, such as turning `statistics_incremental_allowed` off, lasts only until the next upgrade unless it is made in the values file as well.
+
+From this hop, a statistics computation stores the histograms, correlations and KLL sketches of up to 32 features in one file, a format earlier releases cannot read.
+The Hopsworks workers are replaced one at a time during the upgrade, so while the rollout runs, a worker still on 5.2 returns statistics computed after the first worker was upgraded without those values.
+Statistics read after the rollout are complete.
+A feature monitoring run that finishes during the rollout can compare against these incomplete statistics, so check the results of runs from that period and run any that report a shift again after the upgrade.
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
