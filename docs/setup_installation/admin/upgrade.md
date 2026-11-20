@@ -753,6 +753,11 @@ The statistics settings added in 5.3 default to the previous behaviour, so an un
 Like every chart variable, these are rewritten from the values file on each upgrade.
 A change made on the admin variables page, such as turning `statistics_incremental_allowed` off, lasts only until the next upgrade unless it is made in the values file as well.
 
+From this hop, a statistics computation stores the histograms, correlations and KLL sketches of up to 32 features in one file, a format earlier releases cannot read.
+The Hopsworks workers are replaced one at a time during the upgrade, so while the rollout runs, a worker still on 5.2 returns statistics computed after the first worker was upgraded without those values.
+Statistics read after the rollout are complete.
+A feature monitoring run that finishes during the rollout can compare against these incomplete statistics, so check the results of runs from that period and run any that report a shift again after the upgrade.
+
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
 These changes ship in 5.2.2 and 5.3.0.
