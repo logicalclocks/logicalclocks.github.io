@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -95,6 +95,8 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.
           tls:
             enabled: true
         securityContextEnabled: true
+        semanticLayer:
+          enabled: false
         serviceAccount:
           annotations: {}
           create: true
@@ -334,6 +336,14 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.
 `global._hopsworks.securityContextEnabled` <a class="headerlink" href="#helm.global._hopsworks.securityContextEnabled" title="Permanent link">#</a> { #helm.global._hopsworks.securityContextEnabled }
 :   Type `bool`, default `true`.
     Flag to disable templating SecurityContext for Openshift
+
+`global._hopsworks.semanticLayer` <a class="headerlink" href="#helm.global._hopsworks.semanticLayer" title="Permanent link">#</a> { #helm.global._hopsworks.semanticLayer }
+:   Type `object`, default `{"enabled":false}`.
+    The semantic layer, off unless `enabled`. Optional, so an upgrade that reuses the values of a release without it still renders.
+
+`global._hopsworks.semanticLayer.enabled` <a class="headerlink" href="#helm.global._hopsworks.semanticLayer.enabled" title="Permanent link">#</a> { #helm.global._hopsworks.semanticLayer.enabled }
+:   Type `bool`, default `false`.
+    Install the semantic layer: the semantic-gateway subchart (the hosted query service), its /semantic-layer/ path on the Hopsworks ingress hosts, and the backend and UI side (hopsworks.variables.semantic_layer_enabled).
 
 `global._hopsworks.serviceAccount.annotations` <a class="headerlink" href="#helm.global._hopsworks.serviceAccount.annotations" title="Permanent link">#</a> { #helm.global._hopsworks.serviceAccount.annotations }
 :   Type `object`, default `{}`.

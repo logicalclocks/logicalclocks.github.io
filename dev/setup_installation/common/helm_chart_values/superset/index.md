@@ -4,7 +4,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -284,6 +284,70 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 
 </div>
 
+## mcp { #helm-values-superset-mcp }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    superset:
+      mcp:
+        enabled: true
+        jwtSecret: null
+        port: 5008
+        replicas: 1
+        resources:
+          limits:
+            cpu: '1'
+            memory: 2Gi
+          requests:
+            cpu: 100m
+            memory: 1Gi
+    ```
+
+<div class="hops-values" markdown>
+
+`superset.mcp` <a class="headerlink" href="#helm.superset.mcp" title="Permanent link">#</a> { #helm.superset.mcp }
+:   Type `object`.
+    Superset's MCP service, which the hops CLI calls to generate charts. Authenticated with JWTs Hopsworks mints per call for the caller's project Superset user
+
+    ??? note "Default"
+
+        ```yaml
+        enabled: true
+        jwtSecret: null
+        port: 5008
+        replicas: 1
+        resources:
+          limits:
+            cpu: '1'
+            memory: 2Gi
+          requests:
+            cpu: 100m
+            memory: 1Gi
+        ```
+
+`superset.mcp.enabled` <a class="headerlink" href="#helm.superset.mcp.enabled" title="Permanent link">#</a> { #helm.superset.mcp.enabled }
+:   Type `bool`, default `true`.
+    run the MCP service
+
+`superset.mcp.jwtSecret` <a class="headerlink" href="#helm.superset.mcp.jwtSecret" title="Permanent link">#</a> { #helm.superset.mcp.jwtSecret }
+:   Type `string`, default `nil`.
+    JWT signing secret. Leave null to generate it once and keep it; a value set here replaces the key, on install and upgrade alike. Set it when the chart is rendered without cluster access (global._hopsworks.mode not auto, as under ArgoCD), or the MCP service is not rendered
+
+`superset.mcp.port` <a class="headerlink" href="#helm.superset.mcp.port" title="Permanent link">#</a> { #helm.superset.mcp.port }
+:   Type `int`, default `5008`.
+    Port the MCP container listens on. Its Service, which the SDK and the CLI call, stays on 5008.
+
+`superset.mcp.replicas` <a class="headerlink" href="#helm.superset.mcp.replicas" title="Permanent link">#</a> { #helm.superset.mcp.replicas }
+:   Type `int`, default `1`.
+    MCP service replicas
+
+`superset.mcp.resources` <a class="headerlink" href="#helm.superset.mcp.resources" title="Permanent link">#</a> { #helm.superset.mcp.resources }
+:   Type `object`, default `{"limits":{"cpu":"1","memory":"2Gi"},"requests":{"cpu":"100m","memory":"1Gi"}}`.
+    MCP service container resources
+
+</div>
+
 ## superset { #helm-values-superset-superset }
 
 ??? example "Defaults as YAML"
@@ -315,6 +379,18 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             SESSION_REFRESH_EACH_REQUEST = True # Default: True
             def FLASK_APP_MUTATOR(app: Flask) -> None:
                 app.before_request_funcs.setdefault(None, []).append(make_session_permanent)
+          mcp: |
+            # Read only by the MCP service (templates/mcp.yaml), the one pod with MCP_JWT_SECRET. Without
+            # it the service refuses to start rather than serve unauthenticated.
+            MCP_AUTH_ENABLED = True
+            MCP_JWT_ALGORITHM = "HS256"
+            MCP_JWT_SECRET = os.getenv("MCP_JWT_SECRET")
+            MCP_JWT_ISSUER = "hopsworks"
+            MCP_JWT_AUDIENCE = "superset-mcp"
+            MCP_DEV_USERNAME = None
+            # Set only in the MCP pod, which serves HTTPS with them (templates/mcp.yaml).
+            MCP_SSL_CERTFILE = os.getenv("MCP_SSL_CERTFILE")
+            MCP_SSL_KEYFILE = os.getenv("MCP_SSL_KEYFILE")
           mysql: |
             SQLALCHEMY_DATABASE_URI = f"mysql+mysqldb://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
           proxyConfig: |
@@ -333,6 +409,79 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             {{- if .Values.allowAnonymousAccess }}
             AUTH_ROLE_PUBLIC = {{ .Values._publicRoleDefaultName | quote }}
             {{- end }}
+          security_manager: |
+            import hashlib
+            import inspect
+            import logging
+
+            from flask import g
+            from flask_appbuilder.security.sqla.models import (
+                assoc_group_role,
+                assoc_permissionview_role,
+                assoc_user_group,
+                assoc_user_role,
+            )
+            from sqlalchemy import select
+            from superset.security import SupersetSecurityManager
+            from superset.utils.core import get_user_id
+
+            # A security manager set by an earlier override stays the base class.
+            _security_manager = globals().get("CUSTOM_SECURITY_MANAGER") or SupersetSecurityManager
+
+            class HopsworksSecurityManager(_security_manager):
+                def user_view_menu_names(self, permission_name):
+                    """The names Superset's lookup returns, read from the same tables in the same request.
+
+                    Superset tests the user's roles with a correlated EXISTS on every granted permission,
+                    so MySQL reads all of ab_permission_view_role on each call, and a request makes
+                    several. Hopsworks adds a role and its grants per project member, so that table grows
+                    with the cluster. Here the user's role ids are read first and passed as literals,
+                    which lets MySQL start from idx_role_id and read only the user's grants.
+                    """
+                    if g.user.is_anonymous or self.is_guest_user():
+                        return super().user_view_menu_names(permission_name)
+                    user_id = get_user_id()
+                    role_ids = self.session.execute(
+                        select(assoc_user_role.c.role_id)
+                        .where(assoc_user_role.c.user_id == user_id)
+                        .union(
+                            select(assoc_group_role.c.role_id)
+                            .join(assoc_user_group, assoc_user_group.c.group_id == assoc_group_role.c.group_id)
+                            .where(assoc_user_group.c.user_id == user_id)
+                        )
+                    ).scalars().all()
+                    role_ids = [role_id for role_id in role_ids if role_id is not None]
+                    if not role_ids:
+                        return set()
+                    rows = (
+                        self.session.query(self.viewmenu_model.name)
+                        .join(self.permissionview_model)
+                        .join(self.permission_model)
+                        .join(assoc_permissionview_role)
+                        .filter(self.permission_model.name == permission_name)
+                        .filter(assoc_permissionview_role.c.role_id.in_(role_ids))
+                    ).all()
+                    return {row.name for row in rows}
+
+            # sha256 of the lookup's source in each Superset release the override was compared with
+            # (tests/superset-init/compare_permission_lookup.py). Any other source keeps Superset's own
+            # lookup: an upgrade that changes who may read what never runs the older rule.
+            _COMPARED_LOOKUPS = {
+                "b2c316a97189a650972199e72a5c85a288c0df026381c8efdfb617296e5cb84e",  # 6.1.0
+                "b6f3a09a472e511f5e1505896d1e082a8090a2b5f12f850df7a10011d9847ef4",  # 7.0.0rc2
+            }
+            try:
+                _lookup = inspect.getsource(_security_manager.user_view_menu_names)
+            except (OSError, TypeError):
+                _lookup = ""
+            if hashlib.sha256(_lookup.encode()).hexdigest() in _COMPARED_LOOKUPS:
+                CUSTOM_SECURITY_MANAGER = HopsworksSecurityManager
+            else:
+                logging.getLogger("hopsworks").warning(
+                    "Superset's permission lookup differs from the releases the Hopsworks lookup was "
+                    "compared with: Superset's own lookup is in use, which is slow on a cluster with "
+                    "many project members."
+                )
         extraEnv:
           SUPERSET_APP_ROOT: /hopsworks-api/superset
         extraEnvRaw:
@@ -380,7 +529,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/hopsworks/superset
-          tag: 6.0.0p4.7
+          tag: 6.1.0.1
         init:
           adminUser:
             email: admin@superset.com
@@ -584,6 +733,11 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         serviceAccount:
           create: true
         supersetCeleryBeat:
+          containerSecurityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
           initContainers:
           - command:
             - /bin/sh
@@ -631,6 +785,17 @@ Deployed according to the first of these values that is set: [`global._hopsworks
               capabilities:
                 drop:
                 - ALL
+          podSecurityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            limits:
+              cpu: 250m
+              memory: 768Mi
+            requests:
+              cpu: 100m
+              memory: 768Mi
         supersetCeleryFlower:
           initContainers:
           - command:
@@ -839,10 +1004,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           resources:
             limits:
               cpu: 500m
-              memory: 1024Mi
+              memory: 2048Mi
             requests:
               cpu: 500m
-              memory: 1024Mi
+              memory: 2048Mi
     ```
 
 <div class="hops-values" markdown>
@@ -878,6 +1043,18 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             SESSION_REFRESH_EACH_REQUEST = True # Default: True
             def FLASK_APP_MUTATOR(app: Flask) -> None:
                 app.before_request_funcs.setdefault(None, []).append(make_session_permanent)
+          mcp: |
+            # Read only by the MCP service (templates/mcp.yaml), the one pod with MCP_JWT_SECRET. Without
+            # it the service refuses to start rather than serve unauthenticated.
+            MCP_AUTH_ENABLED = True
+            MCP_JWT_ALGORITHM = "HS256"
+            MCP_JWT_SECRET = os.getenv("MCP_JWT_SECRET")
+            MCP_JWT_ISSUER = "hopsworks"
+            MCP_JWT_AUDIENCE = "superset-mcp"
+            MCP_DEV_USERNAME = None
+            # Set only in the MCP pod, which serves HTTPS with them (templates/mcp.yaml).
+            MCP_SSL_CERTFILE = os.getenv("MCP_SSL_CERTFILE")
+            MCP_SSL_KEYFILE = os.getenv("MCP_SSL_KEYFILE")
           mysql: |
             SQLALCHEMY_DATABASE_URI = f"mysql+mysqldb://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
           proxyConfig: |
@@ -896,6 +1073,79 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             {{- if .Values.allowAnonymousAccess }}
             AUTH_ROLE_PUBLIC = {{ .Values._publicRoleDefaultName | quote }}
             {{- end }}
+          security_manager: |
+            import hashlib
+            import inspect
+            import logging
+
+            from flask import g
+            from flask_appbuilder.security.sqla.models import (
+                assoc_group_role,
+                assoc_permissionview_role,
+                assoc_user_group,
+                assoc_user_role,
+            )
+            from sqlalchemy import select
+            from superset.security import SupersetSecurityManager
+            from superset.utils.core import get_user_id
+
+            # A security manager set by an earlier override stays the base class.
+            _security_manager = globals().get("CUSTOM_SECURITY_MANAGER") or SupersetSecurityManager
+
+            class HopsworksSecurityManager(_security_manager):
+                def user_view_menu_names(self, permission_name):
+                    """The names Superset's lookup returns, read from the same tables in the same request.
+
+                    Superset tests the user's roles with a correlated EXISTS on every granted permission,
+                    so MySQL reads all of ab_permission_view_role on each call, and a request makes
+                    several. Hopsworks adds a role and its grants per project member, so that table grows
+                    with the cluster. Here the user's role ids are read first and passed as literals,
+                    which lets MySQL start from idx_role_id and read only the user's grants.
+                    """
+                    if g.user.is_anonymous or self.is_guest_user():
+                        return super().user_view_menu_names(permission_name)
+                    user_id = get_user_id()
+                    role_ids = self.session.execute(
+                        select(assoc_user_role.c.role_id)
+                        .where(assoc_user_role.c.user_id == user_id)
+                        .union(
+                            select(assoc_group_role.c.role_id)
+                            .join(assoc_user_group, assoc_user_group.c.group_id == assoc_group_role.c.group_id)
+                            .where(assoc_user_group.c.user_id == user_id)
+                        )
+                    ).scalars().all()
+                    role_ids = [role_id for role_id in role_ids if role_id is not None]
+                    if not role_ids:
+                        return set()
+                    rows = (
+                        self.session.query(self.viewmenu_model.name)
+                        .join(self.permissionview_model)
+                        .join(self.permission_model)
+                        .join(assoc_permissionview_role)
+                        .filter(self.permission_model.name == permission_name)
+                        .filter(assoc_permissionview_role.c.role_id.in_(role_ids))
+                    ).all()
+                    return {row.name for row in rows}
+
+            # sha256 of the lookup's source in each Superset release the override was compared with
+            # (tests/superset-init/compare_permission_lookup.py). Any other source keeps Superset's own
+            # lookup: an upgrade that changes who may read what never runs the older rule.
+            _COMPARED_LOOKUPS = {
+                "b2c316a97189a650972199e72a5c85a288c0df026381c8efdfb617296e5cb84e",  # 6.1.0
+                "b6f3a09a472e511f5e1505896d1e082a8090a2b5f12f850df7a10011d9847ef4",  # 7.0.0rc2
+            }
+            try:
+                _lookup = inspect.getsource(_security_manager.user_view_menu_names)
+            except (OSError, TypeError):
+                _lookup = ""
+            if hashlib.sha256(_lookup.encode()).hexdigest() in _COMPARED_LOOKUPS:
+                CUSTOM_SECURITY_MANAGER = HopsworksSecurityManager
+            else:
+                logging.getLogger("hopsworks").warning(
+                    "Superset's permission lookup differs from the releases the Hopsworks lookup was "
+                    "compared with: Superset's own lookup is in use, which is slow on a cluster with "
+                    "many project members."
+                )
         extraEnv:
           SUPERSET_APP_ROOT: /hopsworks-api/superset
         extraEnvRaw:
@@ -943,7 +1193,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/hopsworks/superset
-          tag: 6.0.0p4.7
+          tag: 6.1.0.1
         init:
           adminUser:
             email: admin@superset.com
@@ -1147,6 +1397,11 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         serviceAccount:
           create: true
         supersetCeleryBeat:
+          containerSecurityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
           initContainers:
           - command:
             - /bin/sh
@@ -1194,6 +1449,17 @@ Deployed according to the first of these values that is set: [`global._hopsworks
               capabilities:
                 drop:
                 - ALL
+          podSecurityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            limits:
+              cpu: 250m
+              memory: 768Mi
+            requests:
+              cpu: 100m
+              memory: 768Mi
         supersetCeleryFlower:
           initContainers:
           - command:
@@ -1402,10 +1668,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           resources:
             limits:
               cpu: 500m
-              memory: 1024Mi
+              memory: 2048Mi
             requests:
               cpu: 500m
-              memory: 1024Mi
+              memory: 2048Mi
         ```
 
 `superset.superset.fullnameOverride` <a class="headerlink" href="#helm.superset.superset.fullnameOverride" title="Permanent link">#</a> { #helm.superset.superset.fullnameOverride }

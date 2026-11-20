@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2566,6 +2566,78 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 </div>
 
+## semanticLayer { #helm-values-hopsworks-semanticlayer }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    hopsworks:
+      semanticLayer:
+        dbtCompatibleLayout:
+          enabled: false
+          host: ''
+          timeoutSeconds: 360
+          tlsSecret: null
+        graphqlIngress:
+          annotations:
+            nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+            nginx.ingress.kubernetes.io/proxy-read-timeout: '360'
+            nginx.ingress.kubernetes.io/proxy-send-timeout: '360'
+            nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+        ingress:
+          annotations:
+            nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+            nginx.ingress.kubernetes.io/proxy-read-timeout: '360'
+            nginx.ingress.kubernetes.io/proxy-send-timeout: '360'
+            nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+    ```
+
+<div class="hops-values" markdown>
+
+`hopsworks.semanticLayer.dbtCompatibleLayout.enabled` <a class="headerlink" href="#helm.hopsworks.semanticLayer.dbtCompatibleLayout.enabled" title="Permanent link">#</a> { #helm.hopsworks.semanticLayer.dbtCompatibleLayout.enabled }
+:   Type `bool`, default `false`.
+    serve the semantic gateway the way dbt's Tableau and Power BI connectors expect: Arrow Flight SQL and GraphQL at /api/graphql on port 443 of one host, through two Ingresses sharing host and tlsSecret. Needs global._hopsworks.semanticLayer.enabled
+
+`hopsworks.semanticLayer.dbtCompatibleLayout.host` <a class="headerlink" href="#helm.hopsworks.semanticLayer.dbtCompatibleLayout.host" title="Permanent link">#</a> { #helm.hopsworks.semanticLayer.dbtCompatibleLayout.host }
+:   Type `string`, default `""`.
+    host name the connectors are given; Power BI's connector accepts only names ending in .com
+
+`hopsworks.semanticLayer.dbtCompatibleLayout.timeoutSeconds` <a class="headerlink" href="#helm.hopsworks.semanticLayer.dbtCompatibleLayout.timeoutSeconds" title="Permanent link">#</a> { #helm.hopsworks.semanticLayer.dbtCompatibleLayout.timeoutSeconds }
+:   Type `int`, default `360`.
+    seconds nginx waits on a Flight call or a GraphQL request. Must exceed semantic-gateway.queryTimeoutSeconds plus the 30 s a query may wait for a slot: 360 is 300 + 30 and a 30 s margin
+
+`hopsworks.semanticLayer.dbtCompatibleLayout.tlsSecret` <a class="headerlink" href="#helm.hopsworks.semanticLayer.dbtCompatibleLayout.tlsSecret" title="Permanent link">#</a> { #helm.hopsworks.semanticLayer.dbtCompatibleLayout.tlsSecret }
+:   Type `string`, default `nil`.
+    Secret with the TLS certificate and key for host (kubernetes.io/tls). Null serves the ingress controller's default certificate
+
+`hopsworks.semanticLayer.graphqlIngress.annotations` <a class="headerlink" href="#helm.hopsworks.semanticLayer.graphqlIngress.annotations" title="Permanent link">#</a> { #helm.hopsworks.semanticLayer.graphqlIngress.annotations }
+:   Type `object`.
+    annotations of the Ingress that routes /semantic-layer/api/graphql (dbt's GraphQL metadata API) on the ingress hosts to the semantic gateway, rendered with global._hopsworks.semanticLayer.enabled. The gateway serves TLS only. Timeouts as for semanticLayer.ingress.
+
+    ??? note "Default"
+
+        ```yaml
+        nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+        nginx.ingress.kubernetes.io/proxy-read-timeout: '360'
+        nginx.ingress.kubernetes.io/proxy-send-timeout: '360'
+        nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+        ```
+
+`hopsworks.semanticLayer.ingress.annotations` <a class="headerlink" href="#helm.hopsworks.semanticLayer.ingress.annotations" title="Permanent link">#</a> { #helm.hopsworks.semanticLayer.ingress.annotations }
+:   Type `object`.
+    annotations of the Ingress that routes /semantic-layer/ on the ingress hosts to the semantic gateway, rendered with global._hopsworks.semanticLayer.enabled. The gateway serves TLS only. A JSON answer sends nothing until its query ends, so the read and send timeouts must exceed semantic-gateway.queryTimeoutSeconds plus the 30 s a query may wait for a slot: 360 is 300 + 30 and a 30 s margin.
+
+    ??? note "Default"
+
+        ```yaml
+        nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+        nginx.ingress.kubernetes.io/proxy-read-timeout: '360'
+        nginx.ingress.kubernetes.io/proxy-send-timeout: '360'
+        nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+        ```
+
+</div>
+
 ## service { #helm-values-hopsworks-service }
 
 ??? example "Defaults as YAML"
@@ -3024,6 +3096,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         loadbalancer_external_domain_namenode: null
         loadbalancer_external_domain_online_store_rest_server: null
         loadbalancer_external_domain_opensearch: null
+        loadbalancer_external_domain_semantic_gateway: null
         loadbalancer_external_domain_trino: null
         localhost: 'false'
         log_history_limit: '30'
@@ -3169,6 +3242,14 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         run_ai_url: http://runai-backend-traefik.runai-backend.svc.cluster.local:8080
         saas_entry_point_url: ''
         scikit_learn_version: 1.3.2
+        semantic_gateway_flight_port: '18446'
+        semantic_layer_builds_retained: '20'
+        semantic_layer_enabled: 'false'
+        semantic_layer_gateway_cluster_url: ''
+        semantic_layer_gateway_internal_url: ''
+        semantic_layer_staleness_check_seconds: '30'
+        semantic_query_cleaner_batch_size: '1000'
+        semantic_query_strip_details_after_days: '7'
         service_jwt_exp_leeway_sec: '172800000'
         service_jwt_lifetime_ms: '604800000'
         service_key_rotation_enabled: 'false'
@@ -3224,6 +3305,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         superset_proxy_max_connections: '50'
         superset_proxy_read_timeout_ms: '180000'
         superset_proxy_token_ttl_ms: '900000'
+        superset_semantic_enabled: 'true'
         superset_user_roles: Gamma,sql_lab,Dataset
         support_email_addr: support@hopsworks.ai
         tag_history_archive_max_events: '20000'
@@ -4247,6 +4329,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `nil`.
     The domain name of the external load balancer for opensearch. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
 
+`hopsworks.variables.loadbalancer_external_domain_semantic_gateway` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_semantic_gateway" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_semantic_gateway }
+:   Type `string`, default `nil`.
+    The domain name of the semantic gateway's external load balancer for Arrow Flight SQL clients. Set it to semantic-gateway.externalLoadBalancer.hostname, the name in the gateway's certificate, since clients check it; otherwise, with global._hopsworks.semanticLayer.enabled, the hopsworks-update-lb-domains job will discover the load balancer's address and set it automatically
+
 `hopsworks.variables.loadbalancer_external_domain_trino` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_trino" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_trino }
 :   Type `string`, default `nil`.
     The domain name of the external load balancer for Trino. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
@@ -4734,6 +4820,38 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.scikit_learn_version` <a class="headerlink" href="#helm.hopsworks.variables.scikit_learn_version" title="Permanent link">#</a> { #helm.hopsworks.variables.scikit_learn_version }
 :   Type `string`, default `"1.3.2"`.
 
+`hopsworks.variables.semantic_gateway_flight_port` <a class="headerlink" href="#helm.hopsworks.variables.semantic_gateway_flight_port" title="Permanent link">#</a> { #helm.hopsworks.variables.semantic_gateway_flight_port }
+:   Type `string`, default `"18446"`.
+    Port Arrow Flight SQL clients outside the cluster connect to, at loadbalancer_external_domain_semantic_gateway. semantic-gateway.flightPort, unless the load balancer in front of the gateway listens on another port.
+
+`hopsworks.variables.semantic_layer_builds_retained` <a class="headerlink" href="#helm.hopsworks.variables.semantic_layer_builds_retained" title="Permanent link">#</a> { #helm.hopsworks.variables.semantic_layer_builds_retained }
+:   Type `string`, default `"20"`.
+    Most builds kept per semantic project. Older builds are deleted.
+
+`hopsworks.variables.semantic_layer_enabled` <a class="headerlink" href="#helm.hopsworks.variables.semantic_layer_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.semantic_layer_enabled }
+:   Type `string`, default `"false"`.
+    Turn on the semantic layer in the backend and the UI. Always "true" while global._hopsworks.semanticLayer.enabled installs the semantic gateway; set it alone only for a gateway that runs elsewhere, at semantic_layer_gateway_internal_url.
+
+`hopsworks.variables.semantic_layer_gateway_cluster_url` <a class="headerlink" href="#helm.hopsworks.variables.semantic_layer_gateway_cluster_url" title="Permanent link">#</a> { #helm.hopsworks.variables.semantic_layer_gateway_cluster_url }
+:   Type `string`, default `""`.
+    URL of the gateway's public port for callers inside the cluster. Empty means the public port of the semantic-gateway Service in the release namespace, <https://semantic-gateway>.<namespace>.svc.cluster.local:18443.
+
+`hopsworks.variables.semantic_layer_gateway_internal_url` <a class="headerlink" href="#helm.hopsworks.variables.semantic_layer_gateway_internal_url" title="Permanent link">#</a> { #helm.hopsworks.variables.semantic_layer_gateway_internal_url }
+:   Type `string`, default `""`.
+    URL the backend sends compile requests to. Empty means the internal port of the semantic-gateway Service in the release namespace, <https://semantic-gateway>.<namespace>.svc.cluster.local:18444.
+
+`hopsworks.variables.semantic_layer_staleness_check_seconds` <a class="headerlink" href="#helm.hopsworks.variables.semantic_layer_staleness_check_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.semantic_layer_staleness_check_seconds }
+:   Type `string`, default `"30"`.
+    The session endpoint checks whether a semantic project's sources changed, and recompiles it, at most once per this many seconds.
+
+`hopsworks.variables.semantic_query_cleaner_batch_size` <a class="headerlink" href="#helm.hopsworks.variables.semantic_query_cleaner_batch_size" title="Permanent link">#</a> { #helm.hopsworks.variables.semantic_query_cleaner_batch_size }
+:   Type `string`, default `"1000"`.
+    Rows the hourly semantic query history cleaner deletes or strips per statement.
+
+`hopsworks.variables.semantic_query_strip_details_after_days` <a class="headerlink" href="#helm.hopsworks.variables.semantic_query_strip_details_after_days" title="Permanent link">#</a> { #helm.hopsworks.variables.semantic_query_strip_details_after_days }
+:   Type `string`, default `"7"`.
+    Days after which a semantic layer query history row loses its request, SQL and error; who ran it, its status, rows and duration stay until the row expires, 30 days after the query started (the semantic_query table's TTL).
+
 `hopsworks.variables.service_jwt_exp_leeway_sec` <a class="headerlink" href="#helm.hopsworks.variables.service_jwt_exp_leeway_sec" title="Permanent link">#</a> { #helm.hopsworks.variables.service_jwt_exp_leeway_sec }
 :   Type `string`, default `"172800000"`.
 
@@ -4903,6 +5021,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.superset_proxy_token_ttl_ms` <a class="headerlink" href="#helm.hopsworks.variables.superset_proxy_token_ttl_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.superset_proxy_token_ttl_ms }
 :   Type `string`, default `"900000"`.
     Milliseconds a Superset proxy token (POST /project/{id}/superset/proxy-token) stays valid. It is pinned to one project and not renewable: the client mints a new one when it expires.
+
+`hopsworks.variables.superset_semantic_enabled` <a class="headerlink" href="#helm.hopsworks.variables.superset_semantic_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.superset_semantic_enabled }
+:   Type `string`, default `"true"`.
+    Give each Data owner and Data scientist of a project with Superset and at least one semantic project a database connection of their own to the project's semantic layer, with one schema per semantic project, which runs queries as that member, and let members build dashboards from metrics. Takes effect only with semantic_layer_enabled.
 
 `hopsworks.variables.superset_user_roles` <a class="headerlink" href="#helm.hopsworks.variables.superset_user_roles" title="Permanent link">#</a> { #helm.hopsworks.variables.superset_user_roles }
 :   Type `string`, default `"Gamma,sql_lab,Dataset"`.

@@ -51329,7 +51329,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -51352,7 +51352,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.
 
 | Values | Upstream charts | Keys |
 | --- | --- | --- |
-| [`global`][helm-values-global] |  | 166 |
+| [`global`][helm-values-global] |  | 168 |
 | [`airflow`][helm-values-airflow] |  | 162 |
 | [`arrowflight`][helm-values-arrowflight] |  | 46 |
 | [`certs-operator`][helm-values-certs-operator] |  | 29 |
@@ -51362,7 +51362,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.
 | [`hive`][helm-values-hive] |  | 79 |
 | [`hopsfs`][helm-values-hopsfs] |  | 226 |
 | [`hopsfs-csi`][helm-values-hopsfs-csi] |  | 29 |
-| [`hopsworks`][helm-values-hopsworks] |  | 1041 |
+| [`hopsworks`][helm-values-hopsworks] |  | 1057 |
 | [`hw-envoy-ai-gateway`][helm-values-hw-envoy-ai-gateway] |  | 43 |
 | [`hw-envoy-gateway`][helm-values-hw-envoy-gateway] |  | 40 |
 | [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) | 24 |
@@ -51378,7 +51378,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.
 | [`ray`][helm-values-ray] | [`kuberay-operator` 1.4.0](https://artifacthub.io/packages/helm/kuberay-operator/kuberay-operator/1.4.0) | 2 |
 | [`rondb`][helm-values-rondb] | [`rondb` 26.2.24](https://github.com/logicalclocks/rondb-helm/blob/v26.2.24/values.schema.json) | 498 |
 | [`spark`][helm-values-spark] | [`spark-operator` 2.5.1](https://github.com/kubeflow/spark-operator/blob/v2.5.1/charts/spark-operator-chart/README.md) | 160 |
-| [`superset`][helm-values-superset] | [`mysql` 12.3.5](https://artifacthub.io/packages/helm/bitnami/mysql/12.3.5), [`superset` 0.15.0](https://artifacthub.io/packages/helm/superset/superset/0.15.0) | 30 |
+| [`superset`][helm-values-superset] | [`mysql` 12.3.5](https://artifacthub.io/packages/helm/bitnami/mysql/12.3.5), [`superset` 0.15.0](https://artifacthub.io/packages/helm/superset/superset/0.15.0) | 36 |
 | [`trino`][helm-values-trino] | [`trino` 1.41.0](https://artifacthub.io/packages/helm/trino/trino/1.41.0) | 38 |
 | [`vpa`][helm-values-vpa] |  | 18 |
 
@@ -51388,6 +51388,91 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.
 
     ```yaml
     hopsworkslib: {}
+    semantic-gateway:
+      arrowMemoryLimitBytes: null
+      biTables:
+        enabled: true
+      buildCacheEntries: 100
+      cache:
+        dataVersionSeconds: 30
+        entryMaxBytes: 8388608
+        maxBytes: 268435456
+        ttlSeconds: 300
+      cors:
+        allowedOrigins: []
+      dependencies:
+        hopsworks:
+          consulServiceName: glassfish
+          consulServiceTag: hopsworks
+          podLabels:
+          - app: hopsworks-instance
+          - app: hopsworks-admin
+          port: 8182
+        trino:
+          consulServiceName: trino
+          consulServiceTag: coordinator
+          podLabels:
+            app.kubernetes.io/component: coordinator
+            app.kubernetes.io/name: hopsworks-trino
+          port: 8443
+      externalLoadBalancer:
+        annotations: {}
+        class: null
+        enabled: null
+        hostname: null
+        managed: null
+        nodePort: null
+        nodeSelector: {}
+      flight:
+        maxHeaderBytes: 65536
+        maxMessageBytes: 4194304
+        queuedCalls: 256
+        threads: 64
+      flightPort: 18446
+      graphql:
+        maxFields: 500
+      handleTtlSeconds: 3600
+      hopsworkslib: {}
+      hpa:
+        enabled: false
+        maxReplicas: 4
+        targetCPUUtilizationPercentage: 80
+      httpRequestTimeoutSeconds: 120
+      httpResponseTimeoutSeconds: null
+      image:
+        pullPolicy: null
+        registry: null
+        repository: hopsworks/semantic-gateway
+        tag: null
+      jvmOptions: -XX:MaxRAMPercentage=50
+      maxJsonBytes: 67108864
+      maxJsonRows: 100000
+      maxRows: 1000000
+      networkPolicy:
+        enabled: true
+      nodeSelector: {}
+      podDisruptionBudget:
+        enabled: true
+        minAvailable: 1
+      queryConcurrency: 16
+      queryTimeoutSeconds: 300
+      replicas: 2
+      resources:
+        limits:
+          cpu: '2'
+          memory: 4Gi
+        requests:
+          cpu: 500m
+          memory: 4Gi
+      security:
+        runAsGroup: 1000
+        runAsUser: 1000
+      sessionCacheSeconds: 60
+      shutdownGraceSeconds: 45
+      signingKey:
+        existingSecret: null
+      tolerations: []
+      topologySpreadConstraint: {}
     ```
 
 <div class="hops-values" markdown>
@@ -51395,6 +51480,263 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.
 `hopsworkslib` <a class="headerlink" href="#helm.hopsworkslib" title="Permanent link">#</a> { #helm.hopsworkslib }
 :   Type `object`, default `{}`.
     override hopsworkslib values
+
+`semantic-gateway` <a class="headerlink" href="#helm.semantic-gateway" title="Permanent link">#</a> { #helm.semantic-gateway }
+:   Type `object`, default `{}`.
+    override semantic-gateway values
+
+`semantic-gateway.arrowMemoryLimitBytes` <a class="headerlink" href="#helm.semantic-gateway.arrowMemoryLimitBytes" title="Permanent link">#</a> { #helm.semantic-gateway.arrowMemoryLimitBytes }
+:   Type `string`, default `nil`.
+    bytes of Arrow buffers the queries of a replica hold at once (ARROW_MEMORY_LIMIT_BYTES); a query that needs more fails. Null leaves the gateway's default, half the JVM heap (1 GiB with the default memory limit). The buffers sit outside the heap, so heap + this + the JVM's own memory must fit the memory limit (resources.limits)
+
+`semantic-gateway.biTables.enabled` <a class="headerlink" href="#helm.semantic-gateway.biTables.enabled" title="Permanent link">#</a> { #helm.semantic-gateway.biTables.enabled }
+:   Type `bool`, default `true`.
+    show each semantic project over Flight SQL as tables (a metrics table and one per saved query) and translate BI tools' SQL over them into metric queries (BI_TABLES_ENABLED). Experimental
+
+`semantic-gateway.buildCacheEntries` <a class="headerlink" href="#helm.semantic-gateway.buildCacheEntries" title="Permanent link">#</a> { #helm.semantic-gateway.buildCacheEntries }
+:   Type `int`, default `100`.
+    compiled builds each replica keeps in memory (BUILD_CACHE_ENTRIES)
+
+`semantic-gateway.cache.dataVersionSeconds` <a class="headerlink" href="#helm.semantic-gateway.cache.dataVersionSeconds" title="Permanent link">#</a> { #helm.semantic-gateway.cache.dataVersionSeconds }
+:   Type `int`, default `30`.
+    seconds a replica reuses the backend's answer on the feature group data versions and access a build reads (DATA_VERSION_CACHE_SECONDS). Bounds how long a cached result outlives a new commit or a revoked share
+
+`semantic-gateway.cache.entryMaxBytes` <a class="headerlink" href="#helm.semantic-gateway.cache.entryMaxBytes" title="Permanent link">#</a> { #helm.semantic-gateway.cache.entryMaxBytes }
+:   Type `int`, default `8388608`.
+    largest result, in bytes, the cache keeps (CACHE_ENTRY_MAX_BYTES). A larger result still streams to the client, uncached
+
+`semantic-gateway.cache.maxBytes` <a class="headerlink" href="#helm.semantic-gateway.cache.maxBytes" title="Permanent link">#</a> { #helm.semantic-gateway.cache.maxBytes }
+:   Type `int`, default `268435456`.
+    bytes of query results each replica keeps in its result cache (CACHE_MAX_BYTES), on the heap (resources.limits)
+
+`semantic-gateway.cache.ttlSeconds` <a class="headerlink" href="#helm.semantic-gateway.cache.ttlSeconds" title="Permanent link">#</a> { #helm.semantic-gateway.cache.ttlSeconds }
+:   Type `int`, default `300`.
+    seconds a cached result is served before the query runs on Trino again (CACHE_TTL_SECONDS)
+
+`semantic-gateway.cors.allowedOrigins` <a class="headerlink" href="#helm.semantic-gateway.cors.allowedOrigins" title="Permanent link">#</a> { #helm.semantic-gateway.cors.allowedOrigins }
+:   Type `list`, default `[]`.
+    Browser origins whose pages may call the GraphQL API (CORS_ALLOWED_ORIGINS), such as a spreadsheet add-in's, for example <https://addin.example.com>; "*" allows any. Requests authenticate with the Authorization header, never cookies. None by default
+
+`semantic-gateway.dependencies.hopsworks` <a class="headerlink" href="#helm.semantic-gateway.dependencies.hopsworks" title="Permanent link">#</a> { #helm.semantic-gateway.dependencies.hopsworks }
+:   Type `object`.
+    Payara, reached for sessions and build artifacts (HOPSWORKS_URL). The NetworkPolicy admits its pods to the internal port and lets the gateway reach them
+
+    ??? note "Default"
+
+        ```yaml
+        consulServiceName: glassfish
+        consulServiceTag: hopsworks
+        podLabels:
+        - app: hopsworks-instance
+        - app: hopsworks-admin
+        port: 8182
+        ```
+
+`semantic-gateway.dependencies.hopsworks.podLabels` <a class="headerlink" href="#helm.semantic-gateway.dependencies.hopsworks.podLabels" title="Permanent link">#</a> { #helm.semantic-gateway.dependencies.hopsworks.podLabels }
+:   Type `list`, default `[{"app":"hopsworks-instance"},{"app":"hopsworks-admin"}]`.
+    label sets of the Payara pods, one podSelector each
+
+`semantic-gateway.dependencies.trino` <a class="headerlink" href="#helm.semantic-gateway.dependencies.trino" title="Permanent link">#</a> { #helm.semantic-gateway.dependencies.trino }
+:   Type `object`.
+    the Trino coordinator, reached over JDBC with TLS (TRINO_URL). The NetworkPolicy lets the gateway reach its pods
+
+    ??? note "Default"
+
+        ```yaml
+        consulServiceName: trino
+        consulServiceTag: coordinator
+        podLabels:
+          app.kubernetes.io/component: coordinator
+          app.kubernetes.io/name: hopsworks-trino
+        port: 8443
+        ```
+
+`semantic-gateway.dependencies.trino.podLabels` <a class="headerlink" href="#helm.semantic-gateway.dependencies.trino.podLabels" title="Permanent link">#</a> { #helm.semantic-gateway.dependencies.trino.podLabels }
+:   Type `object`.
+    labels of the Trino coordinator pods
+
+    ??? note "Default"
+
+        ```yaml
+        app.kubernetes.io/component: coordinator
+        app.kubernetes.io/name: hopsworks-trino
+        ```
+
+`semantic-gateway.externalLoadBalancer.annotations` <a class="headerlink" href="#helm.semantic-gateway.externalLoadBalancer.annotations" title="Permanent link">#</a> { #helm.semantic-gateway.externalLoadBalancer.annotations }
+:   Type `object`, default `{}`.
+    annotations of the external Service, merged over global._hopsworks.externalLoadBalancers.annotations
+
+`semantic-gateway.externalLoadBalancer.class` <a class="headerlink" href="#helm.semantic-gateway.externalLoadBalancer.class" title="Permanent link">#</a> { #helm.semantic-gateway.externalLoadBalancer.class }
+:   Type `string`, default `nil`.
+    load balancer class name. If not set, global._hopsworks.externalLoadBalancers.class is used
+
+`semantic-gateway.externalLoadBalancer.enabled` <a class="headerlink" href="#helm.semantic-gateway.externalLoadBalancer.enabled" title="Permanent link">#</a> { #helm.semantic-gateway.externalLoadBalancer.enabled }
+:   Type `string`, default `nil`.
+    Expose the Arrow Flight SQL port outside the cluster on the Service semantic-gateway-external. If not set, global._hopsworks.externalLoadBalancers.enabled is used
+
+`semantic-gateway.externalLoadBalancer.hostname` <a class="headerlink" href="#helm.semantic-gateway.externalLoadBalancer.hostname" title="Permanent link">#</a> { #helm.semantic-gateway.externalLoadBalancer.hostname }
+:   Type `string`, default `nil`.
+    DNS name, or IP address, clients reach the load balancer at. Added to the gateway's certificate, which clients check the name against; set hopsworks.variables.loadbalancer_external_domain_semantic_gateway to the same name so the connection details Hopsworks hands out use it. Set it at install: the certificate's names cannot change later unless the HopsworksCert semantic-gateway is deleted before the upgrade.
+
+`semantic-gateway.externalLoadBalancer.managed` <a class="headerlink" href="#helm.semantic-gateway.externalLoadBalancer.managed" title="Permanent link">#</a> { #helm.semantic-gateway.externalLoadBalancer.managed }
+:   Type `string`, default `nil`.
+    Cloud provider provisions the load balancer (a LoadBalancer Service). False makes it a NodePort Service for a load balancer outside Kubernetes, which on AWS a TargetGroupBinding attaches to global.unmanagedLoadBalancers.semanticGateway.targetGroupId. If not set, global._hopsworks.externalLoadBalancers.managed is used
+
+`semantic-gateway.externalLoadBalancer.nodePort` <a class="headerlink" href="#helm.semantic-gateway.externalLoadBalancer.nodePort" title="Permanent link">#</a> { #helm.semantic-gateway.externalLoadBalancer.nodePort }
+:   Type `string`, default `nil`.
+    Explicit nodePort for the external Service when the load balancer is unmanaged (managed: false), so a load balancer outside Kubernetes can target a fixed port. Null lets Kubernetes allocate one from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
+
+`semantic-gateway.externalLoadBalancer.nodeSelector` <a class="headerlink" href="#helm.semantic-gateway.externalLoadBalancer.nodeSelector" title="Permanent link">#</a> { #helm.semantic-gateway.externalLoadBalancer.nodeSelector }
+:   Type `object`, default `{}`.
+    selector for nodes the AWS TargetGroupBinding routes traffic to
+
+`semantic-gateway.flight.maxHeaderBytes` <a class="headerlink" href="#helm.semantic-gateway.flight.maxHeaderBytes" title="Permanent link">#</a> { #helm.semantic-gateway.flight.maxHeaderBytes }
+:   Type `int`, default `65536`.
+    largest header list, in bytes, a Flight SQL call may send (FLIGHT_MAX_HEADER_BYTES)
+
+`semantic-gateway.flight.maxMessageBytes` <a class="headerlink" href="#helm.semantic-gateway.flight.maxMessageBytes" title="Permanent link">#</a> { #helm.semantic-gateway.flight.maxMessageBytes }
+:   Type `int`, default `4194304`.
+    largest request message, in bytes, a Flight SQL call may send (FLIGHT_MAX_MESSAGE_BYTES)
+
+`semantic-gateway.flight.queuedCalls` <a class="headerlink" href="#helm.semantic-gateway.flight.queuedCalls" title="Permanent link">#</a> { #helm.semantic-gateway.flight.queuedCalls }
+:   Type `int`, default `256`.
+    Flight SQL calls waiting for a free thread (FLIGHT_QUEUED_CALLS). A call past the threads and this queue is refused at once
+
+`semantic-gateway.flight.threads` <a class="headerlink" href="#helm.semantic-gateway.flight.threads" title="Permanent link">#</a> { #helm.semantic-gateway.flight.threads }
+:   Type `int`, default `64`.
+    Flight SQL calls a replica runs at once (FLIGHT_THREADS)
+
+`semantic-gateway.flightPort` <a class="headerlink" href="#helm.semantic-gateway.flightPort" title="Permanent link">#</a> { #helm.semantic-gateway.flightPort }
+:   Type `int`, default `18446`.
+    Port of the Arrow Flight SQL server (FLIGHT_PORT), which dbt's JDBC dialect, ADBC and dbt-sl-sdk clients query, and of externalLoadBalancer, which serves it outside the cluster. hopsworks.variables.semantic_gateway_flight_port tells those clients the port, so change both together. Inside the cluster the ClusterIP Service serves it at 18446 whatever this is.
+
+`semantic-gateway.graphql.maxFields` <a class="headerlink" href="#helm.semantic-gateway.graphql.maxFields" title="Permanent link">#</a> { #helm.semantic-gateway.graphql.maxFields }
+:   Type `int`, default `500`.
+    most fields a GraphQL operation may select, each alias counted (GRAPHQL_MAX_FIELDS). A larger operation is refused before it runs
+
+`semantic-gateway.handleTtlSeconds` <a class="headerlink" href="#helm.semantic-gateway.handleTtlSeconds" title="Permanent link">#</a> { #helm.semantic-gateway.handleTtlSeconds }
+:   Type `int`, default `3600`.
+    seconds a signed handle (a Flight ticket, a prepared statement) stays valid after the gateway issues it (HANDLE_TTL_SECONDS)
+
+`semantic-gateway.hopsworkslib` <a class="headerlink" href="#helm.semantic-gateway.hopsworkslib" title="Permanent link">#</a> { #helm.semantic-gateway.hopsworkslib }
+:   Type `object`, default `{}`.
+    override hopsworkslib values
+
+`semantic-gateway.hpa.enabled` <a class="headerlink" href="#helm.semantic-gateway.hpa.enabled" title="Permanent link">#</a> { #helm.semantic-gateway.hpa.enabled }
+:   Type `bool`, default `false`.
+    Autoscale the Deployment on CPU with an HPA. While enabled, replicas is not rendered and the HPA owns spec.replicas.
+
+`semantic-gateway.hpa.maxReplicas` <a class="headerlink" href="#helm.semantic-gateway.hpa.maxReplicas" title="Permanent link">#</a> { #helm.semantic-gateway.hpa.maxReplicas }
+:   Type `int`, default `4`.
+    most replicas the HPA scales to
+
+`semantic-gateway.hpa.targetCPUUtilizationPercentage` <a class="headerlink" href="#helm.semantic-gateway.hpa.targetCPUUtilizationPercentage" title="Permanent link">#</a> { #helm.semantic-gateway.hpa.targetCPUUtilizationPercentage }
+:   Type `int`, default `80`.
+    average CPU utilization, in percent of the request, the HPA keeps the replicas at
+
+`semantic-gateway.httpRequestTimeoutSeconds` <a class="headerlink" href="#helm.semantic-gateway.httpRequestTimeoutSeconds" title="Permanent link">#</a> { #helm.semantic-gateway.httpRequestTimeoutSeconds }
+:   Type `int`, default `120`.
+    Seconds a client has to send an HTTP request, from its first byte through the TLS handshake to the end of the body (HTTP_REQUEST_TIMEOUT_SECONDS)
+
+`semantic-gateway.httpResponseTimeoutSeconds` <a class="headerlink" href="#helm.semantic-gateway.httpResponseTimeoutSeconds" title="Permanent link">#</a> { #helm.semantic-gateway.httpResponseTimeoutSeconds }
+:   Type `string`, default `nil`.
+    Seconds an HTTP answer may take, from the request read to its last byte written, the query and a slow reader included (HTTP_RESPONSE_TIMEOUT_SECONDS). Null leaves the gateway's default, 2 x (queryTimeoutSeconds + 30) + 240, which is 900 with the default queryTimeoutSeconds and follows it. The gateway refuses to start with less than queryTimeoutSeconds + 30
+
+`semantic-gateway.image.pullPolicy` <a class="headerlink" href="#helm.semantic-gateway.image.pullPolicy" title="Permanent link">#</a> { #helm.semantic-gateway.image.pullPolicy }
+:   Type `string`, default `nil`.
+    image pull policy. If not set, global._hopsworks.imagePullPolicy, then IfNotPresent
+
+`semantic-gateway.image.registry` <a class="headerlink" href="#helm.semantic-gateway.image.registry" title="Permanent link">#</a> { #helm.semantic-gateway.image.registry }
+:   Type `string`, default `nil`.
+    image registry. If not set, global._hopsworks.imageRegistry is used
+
+`semantic-gateway.image.repository` <a class="headerlink" href="#helm.semantic-gateway.image.repository" title="Permanent link">#</a> { #helm.semantic-gateway.image.repository }
+:   Type `string`, default `"hopsworks/semantic-gateway"`.
+    image repository. The image is built from hopsworks-ee
+
+`semantic-gateway.image.tag` <a class="headerlink" href="#helm.semantic-gateway.image.tag" title="Permanent link">#</a> { #helm.semantic-gateway.image.tag }
+:   Type `string`, default `nil`.
+    image tag. If not set, the chart's appVersion, the Hopsworks version the gateway is built with
+
+`semantic-gateway.jvmOptions` <a class="headerlink" href="#helm.semantic-gateway.jvmOptions" title="Permanent link">#</a> { #helm.semantic-gateway.jvmOptions }
+:   Type `string`, default `"-XX:MaxRAMPercentage=50"`.
+    JVM options of the gateway, passed as JAVA_TOOL_OPTIONS. -XX:MaxRAMPercentage=50 makes the heap half the memory limit, leaving the other half for the Arrow buffers and the JVM's own memory (resources.limits). The image adds -XX:+ExitOnOutOfMemoryError, so the pod restarts on an OutOfMemoryError whatever this holds
+
+`semantic-gateway.maxJsonBytes` <a class="headerlink" href="#helm.semantic-gateway.maxJsonBytes" title="Permanent link">#</a> { #helm.semantic-gateway.maxJsonBytes }
+:   Type `int`, default `67108864`.
+    most bytes, counted as JSON text, a JSON or CSV query result holds (MAX_JSON_BYTES). A larger result is refused with 413. Each query slot may hold one on the heap, so queryConcurrency x maxJsonBytes must fit the heap with the cache (resources.limits)
+
+`semantic-gateway.maxJsonRows` <a class="headerlink" href="#helm.semantic-gateway.maxJsonRows" title="Permanent link">#</a> { #helm.semantic-gateway.maxJsonRows }
+:   Type `int`, default `100000`.
+    most rows a JSON query result holds (MAX_JSON_ROWS), which the gateway keeps in memory whole. A larger result is cut off and flagged as truncated
+
+`semantic-gateway.maxRows` <a class="headerlink" href="#helm.semantic-gateway.maxRows" title="Permanent link">#</a> { #helm.semantic-gateway.maxRows }
+:   Type `int`, default `1000000`.
+    most rows an Arrow query result streams (MAX_ROWS). A larger result is cut off, and the X-Semantic-Max-Rows header lets the client tell
+
+`semantic-gateway.networkPolicy.enabled` <a class="headerlink" href="#helm.semantic-gateway.networkPolicy.enabled" title="Permanent link">#</a> { #helm.semantic-gateway.networkPolicy.enabled }
+:   Type `bool`, default `true`.
+    restrict the gateway's traffic: the internal port to the Payara pods, the metrics port to the release namespace, egress to DNS, Payara and Trino
+
+`semantic-gateway.nodeSelector` <a class="headerlink" href="#helm.semantic-gateway.nodeSelector" title="Permanent link">#</a> { #helm.semantic-gateway.nodeSelector }
+:   Type `object`, default `{}`.
+    node selector. If empty, global._hopsworks.nodeSelector is used
+
+`semantic-gateway.podDisruptionBudget.enabled` <a class="headerlink" href="#helm.semantic-gateway.podDisruptionBudget.enabled" title="Permanent link">#</a> { #helm.semantic-gateway.podDisruptionBudget.enabled }
+:   Type `bool`, default `true`.
+    keep minAvailable replicas through voluntary disruptions. Rendered only with more than one replica
+
+`semantic-gateway.podDisruptionBudget.minAvailable` <a class="headerlink" href="#helm.semantic-gateway.podDisruptionBudget.minAvailable" title="Permanent link">#</a> { #helm.semantic-gateway.podDisruptionBudget.minAvailable }
+:   Type `int`, default `1`.
+    replicas kept available. Must be less than replicas
+
+`semantic-gateway.queryConcurrency` <a class="headerlink" href="#helm.semantic-gateway.queryConcurrency" title="Permanent link">#</a> { #helm.semantic-gateway.queryConcurrency }
+:   Type `int`, default `16`.
+    queries each replica runs at once (QUERY_CONCURRENCY). A query that finds no free slot within 30 s is refused with 503. Each slot may hold a JSON answer of maxJsonBytes on the heap (resources.limits)
+
+`semantic-gateway.queryTimeoutSeconds` <a class="headerlink" href="#helm.semantic-gateway.queryTimeoutSeconds" title="Permanent link">#</a> { #helm.semantic-gateway.queryTimeoutSeconds }
+:   Type `int`, default `300`.
+    seconds a query may run on Trino before the gateway cancels it (QUERY_TIMEOUT_SECONDS), counted after the up to 30 s it may wait for a slot. The read and send timeouts of the Ingresses in front of the gateway (hopsworks.semanticLayer) must exceed this plus 30, or nginx answers 504 for a query that then succeeds: raise them with it
+
+`semantic-gateway.replicas` <a class="headerlink" href="#helm.semantic-gateway.replicas" title="Permanent link">#</a> { #helm.semantic-gateway.replicas }
+:   Type `int`, default `2`.
+    Number of replicas. Not rendered while the HPA is enabled: the HPA then owns spec.replicas and this value is its minReplicas.
+
+`semantic-gateway.resources.limits` <a class="headerlink" href="#helm.semantic-gateway.resources.limits" title="Permanent link">#</a> { #helm.semantic-gateway.resources.limits }
+:   Type `object`, default `{"cpu":"2","memory":"4Gi"}`.
+    resource limits of the gateway container. With the defaults, the 4Gi memory limit is a 2 GiB heap (jvmOptions), 1 GiB of Arrow buffers outside the heap (arrowMemoryLimitBytes) and 1 GiB for the JVM's own memory (metaspace, thread stacks, gRPC buffers). The heap holds the result cache (cache.maxBytes, 256 MiB), the query history queue (64 MiB) and a JSON answer in each query slot (queryConcurrency x maxJsonBytes, 16 x 64 MiB): 1344 MiB, leaving the rest of the heap for compiled builds and the queries' working memory. The gateway refuses to start when cache.maxBytes + 64 MiB + queryConcurrency x maxJsonBytes exceeds the heap, so raising queryConcurrency, maxJsonBytes or cache.maxBytes past that needs a larger memory limit, in requests and limits together
+
+`semantic-gateway.resources.requests` <a class="headerlink" href="#helm.semantic-gateway.resources.requests" title="Permanent link">#</a> { #helm.semantic-gateway.resources.requests }
+:   Type `object`, default `{"cpu":"500m","memory":"4Gi"}`.
+    resource requests of the gateway container. Keep the memory request equal to the limit: the JVM sizes itself from the limit
+
+`semantic-gateway.security.runAsGroup` <a class="headerlink" href="#helm.semantic-gateway.security.runAsGroup" title="Permanent link">#</a> { #helm.semantic-gateway.security.runAsGroup }
+:   Type `int`, default `1000`.
+    group the gateway runs as
+
+`semantic-gateway.security.runAsUser` <a class="headerlink" href="#helm.semantic-gateway.security.runAsUser" title="Permanent link">#</a> { #helm.semantic-gateway.security.runAsUser }
+:   Type `int`, default `1000`.
+    user the gateway runs as
+
+`semantic-gateway.sessionCacheSeconds` <a class="headerlink" href="#helm.semantic-gateway.sessionCacheSeconds" title="Permanent link">#</a> { #helm.semantic-gateway.sessionCacheSeconds }
+:   Type `int`, default `60`.
+    seconds the gateway keeps a caller's session, fetched from the backend, before it asks again (SESSION_CACHE_SECONDS)
+
+`semantic-gateway.shutdownGraceSeconds` <a class="headerlink" href="#helm.semantic-gateway.shutdownGraceSeconds" title="Permanent link">#</a> { #helm.semantic-gateway.shutdownGraceSeconds }
+:   Type `int`, default `45`.
+    Seconds requests in flight get to finish when a pod stops (SHUTDOWN_GRACE_SECONDS); the gateway accepts no new ones meanwhile, and flushes its query history for up to 10 s more. The pod's terminationGracePeriodSeconds is this plus 30, which also covers the 5 s the pod keeps serving while it is removed from the Service endpoints
+
+`semantic-gateway.signingKey.existingSecret` <a class="headerlink" href="#helm.semantic-gateway.signingKey.existingSecret" title="Permanent link">#</a> { #helm.semantic-gateway.signingKey.existingSecret }
+:   Type `string`, default `nil`.
+    Secret holding the key the gateway signs handles (Flight tickets, prepared statements) with, under `current`, and optionally a key it also accepts, under `previous`. Null: the chart creates the Secret semantic-gateway-signing with a random `current` and keeps both keys across upgrades by reading it back, which needs global._hopsworks.mode auto; any other mode (ArgoCD) fails the render until this names a Secret you create. Rotate in two rollouts: first add the new key as `previous`, then make it `current` and the old key `previous`. After each edit of the Secret, roll the pods: a helm upgrade does it for the Secret the chart created, whose keys the pods carry a checksum of; for an existingSecret, restart the Deployment. Handles signed with the old key stay valid until they expire (handleTtlSeconds).
+
+`semantic-gateway.tolerations` <a class="headerlink" href="#helm.semantic-gateway.tolerations" title="Permanent link">#</a> { #helm.semantic-gateway.tolerations }
+:   Type `list`, default `[]`.
+    tolerations. If empty, global._hopsworks.tolerations is used
+
+`semantic-gateway.topologySpreadConstraint` <a class="headerlink" href="#helm.semantic-gateway.topologySpreadConstraint" title="Permanent link">#</a> { #helm.semantic-gateway.topologySpreadConstraint }
+:   Type `object`, default `{}`.
+    The default topology spread constraint. If not defined the global topology spread constraint would be used instead.
 
 </div>
 
@@ -51410,7 +51752,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -51501,6 +51843,8 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.
           tls:
             enabled: true
         securityContextEnabled: true
+        semanticLayer:
+          enabled: false
         serviceAccount:
           annotations: {}
           create: true
@@ -51740,6 +52084,14 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.
 `global._hopsworks.securityContextEnabled` <a class="headerlink" href="#helm.global._hopsworks.securityContextEnabled" title="Permanent link">#</a> { #helm.global._hopsworks.securityContextEnabled }
 :   Type `bool`, default `true`.
     Flag to disable templating SecurityContext for Openshift
+
+`global._hopsworks.semanticLayer` <a class="headerlink" href="#helm.global._hopsworks.semanticLayer" title="Permanent link">#</a> { #helm.global._hopsworks.semanticLayer }
+:   Type `object`, default `{"enabled":false}`.
+    The semantic layer, off unless `enabled`. Optional, so an upgrade that reuses the values of a release without it still renders.
+
+`global._hopsworks.semanticLayer.enabled` <a class="headerlink" href="#helm.global._hopsworks.semanticLayer.enabled" title="Permanent link">#</a> { #helm.global._hopsworks.semanticLayer.enabled }
+:   Type `bool`, default `false`.
+    Install the semantic layer: the semantic-gateway subchart (the hosted query service), its /semantic-layer/ path on the Hopsworks ingress hosts, and the backend and UI side (hopsworks.variables.semantic_layer_enabled).
 
 `global._hopsworks.serviceAccount.annotations` <a class="headerlink" href="#helm.global._hopsworks.serviceAccount.annotations" title="Permanent link">#</a> { #helm.global._hopsworks.serviceAccount.annotations }
 :   Type `object`, default `{}`.
@@ -52713,7 +53065,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -53741,7 +54093,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -54023,7 +54375,7 @@ Values under `certs-operator` configure the operator that issues the TLS certifi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -54211,7 +54563,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -54545,7 +54897,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -54996,7 +55348,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -55494,7 +55846,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -55912,7 +56264,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -57077,7 +57429,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 
@@ -57347,7 +57699,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -59909,6 +60261,78 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 </div>
 
+## semanticLayer { #helm-values-hopsworks-semanticlayer }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    hopsworks:
+      semanticLayer:
+        dbtCompatibleLayout:
+          enabled: false
+          host: ''
+          timeoutSeconds: 360
+          tlsSecret: null
+        graphqlIngress:
+          annotations:
+            nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+            nginx.ingress.kubernetes.io/proxy-read-timeout: '360'
+            nginx.ingress.kubernetes.io/proxy-send-timeout: '360'
+            nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+        ingress:
+          annotations:
+            nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+            nginx.ingress.kubernetes.io/proxy-read-timeout: '360'
+            nginx.ingress.kubernetes.io/proxy-send-timeout: '360'
+            nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+    ```
+
+<div class="hops-values" markdown>
+
+`hopsworks.semanticLayer.dbtCompatibleLayout.enabled` <a class="headerlink" href="#helm.hopsworks.semanticLayer.dbtCompatibleLayout.enabled" title="Permanent link">#</a> { #helm.hopsworks.semanticLayer.dbtCompatibleLayout.enabled }
+:   Type `bool`, default `false`.
+    serve the semantic gateway the way dbt's Tableau and Power BI connectors expect: Arrow Flight SQL and GraphQL at /api/graphql on port 443 of one host, through two Ingresses sharing host and tlsSecret. Needs global._hopsworks.semanticLayer.enabled
+
+`hopsworks.semanticLayer.dbtCompatibleLayout.host` <a class="headerlink" href="#helm.hopsworks.semanticLayer.dbtCompatibleLayout.host" title="Permanent link">#</a> { #helm.hopsworks.semanticLayer.dbtCompatibleLayout.host }
+:   Type `string`, default `""`.
+    host name the connectors are given; Power BI's connector accepts only names ending in .com
+
+`hopsworks.semanticLayer.dbtCompatibleLayout.timeoutSeconds` <a class="headerlink" href="#helm.hopsworks.semanticLayer.dbtCompatibleLayout.timeoutSeconds" title="Permanent link">#</a> { #helm.hopsworks.semanticLayer.dbtCompatibleLayout.timeoutSeconds }
+:   Type `int`, default `360`.
+    seconds nginx waits on a Flight call or a GraphQL request. Must exceed semantic-gateway.queryTimeoutSeconds plus the 30 s a query may wait for a slot: 360 is 300 + 30 and a 30 s margin
+
+`hopsworks.semanticLayer.dbtCompatibleLayout.tlsSecret` <a class="headerlink" href="#helm.hopsworks.semanticLayer.dbtCompatibleLayout.tlsSecret" title="Permanent link">#</a> { #helm.hopsworks.semanticLayer.dbtCompatibleLayout.tlsSecret }
+:   Type `string`, default `nil`.
+    Secret with the TLS certificate and key for host (kubernetes.io/tls). Null serves the ingress controller's default certificate
+
+`hopsworks.semanticLayer.graphqlIngress.annotations` <a class="headerlink" href="#helm.hopsworks.semanticLayer.graphqlIngress.annotations" title="Permanent link">#</a> { #helm.hopsworks.semanticLayer.graphqlIngress.annotations }
+:   Type `object`.
+    annotations of the Ingress that routes /semantic-layer/api/graphql (dbt's GraphQL metadata API) on the ingress hosts to the semantic gateway, rendered with global._hopsworks.semanticLayer.enabled. The gateway serves TLS only. Timeouts as for semanticLayer.ingress.
+
+    ??? note "Default"
+
+        ```yaml
+        nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+        nginx.ingress.kubernetes.io/proxy-read-timeout: '360'
+        nginx.ingress.kubernetes.io/proxy-send-timeout: '360'
+        nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+        ```
+
+`hopsworks.semanticLayer.ingress.annotations` <a class="headerlink" href="#helm.hopsworks.semanticLayer.ingress.annotations" title="Permanent link">#</a> { #helm.hopsworks.semanticLayer.ingress.annotations }
+:   Type `object`.
+    annotations of the Ingress that routes /semantic-layer/ on the ingress hosts to the semantic gateway, rendered with global._hopsworks.semanticLayer.enabled. The gateway serves TLS only. A JSON answer sends nothing until its query ends, so the read and send timeouts must exceed semantic-gateway.queryTimeoutSeconds plus the 30 s a query may wait for a slot: 360 is 300 + 30 and a 30 s margin.
+
+    ??? note "Default"
+
+        ```yaml
+        nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+        nginx.ingress.kubernetes.io/proxy-read-timeout: '360'
+        nginx.ingress.kubernetes.io/proxy-send-timeout: '360'
+        nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+        ```
+
+</div>
+
 ## service { #helm-values-hopsworks-service }
 
 ??? example "Defaults as YAML"
@@ -60367,6 +60791,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         loadbalancer_external_domain_namenode: null
         loadbalancer_external_domain_online_store_rest_server: null
         loadbalancer_external_domain_opensearch: null
+        loadbalancer_external_domain_semantic_gateway: null
         loadbalancer_external_domain_trino: null
         localhost: 'false'
         log_history_limit: '30'
@@ -60512,6 +60937,14 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         run_ai_url: http://runai-backend-traefik.runai-backend.svc.cluster.local:8080
         saas_entry_point_url: ''
         scikit_learn_version: 1.3.2
+        semantic_gateway_flight_port: '18446'
+        semantic_layer_builds_retained: '20'
+        semantic_layer_enabled: 'false'
+        semantic_layer_gateway_cluster_url: ''
+        semantic_layer_gateway_internal_url: ''
+        semantic_layer_staleness_check_seconds: '30'
+        semantic_query_cleaner_batch_size: '1000'
+        semantic_query_strip_details_after_days: '7'
         service_jwt_exp_leeway_sec: '172800000'
         service_jwt_lifetime_ms: '604800000'
         service_key_rotation_enabled: 'false'
@@ -60567,6 +61000,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         superset_proxy_max_connections: '50'
         superset_proxy_read_timeout_ms: '180000'
         superset_proxy_token_ttl_ms: '900000'
+        superset_semantic_enabled: 'true'
         superset_user_roles: Gamma,sql_lab,Dataset
         support_email_addr: support@hopsworks.ai
         tag_history_archive_max_events: '20000'
@@ -61590,6 +62024,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `nil`.
     The domain name of the external load balancer for opensearch. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
 
+`hopsworks.variables.loadbalancer_external_domain_semantic_gateway` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_semantic_gateway" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_semantic_gateway }
+:   Type `string`, default `nil`.
+    The domain name of the semantic gateway's external load balancer for Arrow Flight SQL clients. Set it to semantic-gateway.externalLoadBalancer.hostname, the name in the gateway's certificate, since clients check it; otherwise, with global._hopsworks.semanticLayer.enabled, the hopsworks-update-lb-domains job will discover the load balancer's address and set it automatically
+
 `hopsworks.variables.loadbalancer_external_domain_trino` <a class="headerlink" href="#helm.hopsworks.variables.loadbalancer_external_domain_trino" title="Permanent link">#</a> { #helm.hopsworks.variables.loadbalancer_external_domain_trino }
 :   Type `string`, default `nil`.
     The domain name of the external load balancer for Trino. If the load balancer is pre-provisioned then set the domain here, otherwise the hopsworks-update-lb-domains job will discover the domain name and set automatically
@@ -62077,6 +62515,38 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.scikit_learn_version` <a class="headerlink" href="#helm.hopsworks.variables.scikit_learn_version" title="Permanent link">#</a> { #helm.hopsworks.variables.scikit_learn_version }
 :   Type `string`, default `"1.3.2"`.
 
+`hopsworks.variables.semantic_gateway_flight_port` <a class="headerlink" href="#helm.hopsworks.variables.semantic_gateway_flight_port" title="Permanent link">#</a> { #helm.hopsworks.variables.semantic_gateway_flight_port }
+:   Type `string`, default `"18446"`.
+    Port Arrow Flight SQL clients outside the cluster connect to, at loadbalancer_external_domain_semantic_gateway. semantic-gateway.flightPort, unless the load balancer in front of the gateway listens on another port.
+
+`hopsworks.variables.semantic_layer_builds_retained` <a class="headerlink" href="#helm.hopsworks.variables.semantic_layer_builds_retained" title="Permanent link">#</a> { #helm.hopsworks.variables.semantic_layer_builds_retained }
+:   Type `string`, default `"20"`.
+    Most builds kept per semantic project. Older builds are deleted.
+
+`hopsworks.variables.semantic_layer_enabled` <a class="headerlink" href="#helm.hopsworks.variables.semantic_layer_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.semantic_layer_enabled }
+:   Type `string`, default `"false"`.
+    Turn on the semantic layer in the backend and the UI. Always "true" while global._hopsworks.semanticLayer.enabled installs the semantic gateway; set it alone only for a gateway that runs elsewhere, at semantic_layer_gateway_internal_url.
+
+`hopsworks.variables.semantic_layer_gateway_cluster_url` <a class="headerlink" href="#helm.hopsworks.variables.semantic_layer_gateway_cluster_url" title="Permanent link">#</a> { #helm.hopsworks.variables.semantic_layer_gateway_cluster_url }
+:   Type `string`, default `""`.
+    URL of the gateway's public port for callers inside the cluster. Empty means the public port of the semantic-gateway Service in the release namespace, <https://semantic-gateway>.<namespace>.svc.cluster.local:18443.
+
+`hopsworks.variables.semantic_layer_gateway_internal_url` <a class="headerlink" href="#helm.hopsworks.variables.semantic_layer_gateway_internal_url" title="Permanent link">#</a> { #helm.hopsworks.variables.semantic_layer_gateway_internal_url }
+:   Type `string`, default `""`.
+    URL the backend sends compile requests to. Empty means the internal port of the semantic-gateway Service in the release namespace, <https://semantic-gateway>.<namespace>.svc.cluster.local:18444.
+
+`hopsworks.variables.semantic_layer_staleness_check_seconds` <a class="headerlink" href="#helm.hopsworks.variables.semantic_layer_staleness_check_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.semantic_layer_staleness_check_seconds }
+:   Type `string`, default `"30"`.
+    The session endpoint checks whether a semantic project's sources changed, and recompiles it, at most once per this many seconds.
+
+`hopsworks.variables.semantic_query_cleaner_batch_size` <a class="headerlink" href="#helm.hopsworks.variables.semantic_query_cleaner_batch_size" title="Permanent link">#</a> { #helm.hopsworks.variables.semantic_query_cleaner_batch_size }
+:   Type `string`, default `"1000"`.
+    Rows the hourly semantic query history cleaner deletes or strips per statement.
+
+`hopsworks.variables.semantic_query_strip_details_after_days` <a class="headerlink" href="#helm.hopsworks.variables.semantic_query_strip_details_after_days" title="Permanent link">#</a> { #helm.hopsworks.variables.semantic_query_strip_details_after_days }
+:   Type `string`, default `"7"`.
+    Days after which a semantic layer query history row loses its request, SQL and error; who ran it, its status, rows and duration stay until the row expires, 30 days after the query started (the semantic_query table's TTL).
+
 `hopsworks.variables.service_jwt_exp_leeway_sec` <a class="headerlink" href="#helm.hopsworks.variables.service_jwt_exp_leeway_sec" title="Permanent link">#</a> { #helm.hopsworks.variables.service_jwt_exp_leeway_sec }
 :   Type `string`, default `"172800000"`.
 
@@ -62246,6 +62716,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.superset_proxy_token_ttl_ms` <a class="headerlink" href="#helm.hopsworks.variables.superset_proxy_token_ttl_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.superset_proxy_token_ttl_ms }
 :   Type `string`, default `"900000"`.
     Milliseconds a Superset proxy token (POST /project/{id}/superset/proxy-token) stays valid. It is pinned to one project and not renewable: the client mints a new one when it expires.
+
+`hopsworks.variables.superset_semantic_enabled` <a class="headerlink" href="#helm.hopsworks.variables.superset_semantic_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.superset_semantic_enabled }
+:   Type `string`, default `"true"`.
+    Give each Data owner and Data scientist of a project with Superset and at least one semantic project a database connection of their own to the project's semantic layer, with one schema per semantic project, which runs queries as that member, and let members build dashboards from metrics. Takes effect only with semantic_layer_enabled.
 
 `hopsworks.variables.superset_user_roles` <a class="headerlink" href="#helm.hopsworks.variables.superset_user_roles" title="Permanent link">#</a> { #helm.hopsworks.variables.superset_user_roles }
 :   Type `string`, default `"Gamma,sql_lab,Dataset"`.
@@ -62736,7 +63210,7 @@ The LLM Gateway's controller ships in the same subchart, and its values, under `
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: `global._hopsworks.envoyGateway.enabled`, [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -63176,7 +63650,7 @@ See [LLM Gateway][llm-gateway] for what the feature installs and what the cluste
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 ## aiGateway { #helm-values-hw-envoy-ai-gateway-aigateway }
 
@@ -63673,7 +64147,7 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -64080,7 +64554,7 @@ With `kueue.enabled=false` Hopsworks uses a Kueue installed outside its release;
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -64466,7 +64940,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -64961,7 +65435,7 @@ Values under `judge` configure Judge, the active cluster arbitrator service.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -65096,7 +65570,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -65986,7 +66460,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -67928,7 +68402,7 @@ Values under `minio` configure MinIO, an S3-compatible object store deployed ins
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) is `true`.
 
@@ -68183,7 +68657,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -69159,7 +69633,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -69694,7 +70168,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -69848,7 +70322,7 @@ Values under `ray` configure the KubeRay operator, which runs the Ray clusters b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.ray.enabled`](global.md#helm.global._hopsworks.ray.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -69995,7 +70469,7 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -72913,7 +73387,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -74498,7 +74972,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -74778,6 +75252,70 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 
 </div>
 
+## mcp { #helm-values-superset-mcp }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    superset:
+      mcp:
+        enabled: true
+        jwtSecret: null
+        port: 5008
+        replicas: 1
+        resources:
+          limits:
+            cpu: '1'
+            memory: 2Gi
+          requests:
+            cpu: 100m
+            memory: 1Gi
+    ```
+
+<div class="hops-values" markdown>
+
+`superset.mcp` <a class="headerlink" href="#helm.superset.mcp" title="Permanent link">#</a> { #helm.superset.mcp }
+:   Type `object`.
+    Superset's MCP service, which the hops CLI calls to generate charts. Authenticated with JWTs Hopsworks mints per call for the caller's project Superset user
+
+    ??? note "Default"
+
+        ```yaml
+        enabled: true
+        jwtSecret: null
+        port: 5008
+        replicas: 1
+        resources:
+          limits:
+            cpu: '1'
+            memory: 2Gi
+          requests:
+            cpu: 100m
+            memory: 1Gi
+        ```
+
+`superset.mcp.enabled` <a class="headerlink" href="#helm.superset.mcp.enabled" title="Permanent link">#</a> { #helm.superset.mcp.enabled }
+:   Type `bool`, default `true`.
+    run the MCP service
+
+`superset.mcp.jwtSecret` <a class="headerlink" href="#helm.superset.mcp.jwtSecret" title="Permanent link">#</a> { #helm.superset.mcp.jwtSecret }
+:   Type `string`, default `nil`.
+    JWT signing secret. Leave null to generate it once and keep it; a value set here replaces the key, on install and upgrade alike. Set it when the chart is rendered without cluster access (global._hopsworks.mode not auto, as under ArgoCD), or the MCP service is not rendered
+
+`superset.mcp.port` <a class="headerlink" href="#helm.superset.mcp.port" title="Permanent link">#</a> { #helm.superset.mcp.port }
+:   Type `int`, default `5008`.
+    Port the MCP container listens on. Its Service, which the SDK and the CLI call, stays on 5008.
+
+`superset.mcp.replicas` <a class="headerlink" href="#helm.superset.mcp.replicas" title="Permanent link">#</a> { #helm.superset.mcp.replicas }
+:   Type `int`, default `1`.
+    MCP service replicas
+
+`superset.mcp.resources` <a class="headerlink" href="#helm.superset.mcp.resources" title="Permanent link">#</a> { #helm.superset.mcp.resources }
+:   Type `object`, default `{"limits":{"cpu":"1","memory":"2Gi"},"requests":{"cpu":"100m","memory":"1Gi"}}`.
+    MCP service container resources
+
+</div>
+
 ## superset { #helm-values-superset-superset }
 
 ??? example "Defaults as YAML"
@@ -74809,6 +75347,18 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             SESSION_REFRESH_EACH_REQUEST = True # Default: True
             def FLASK_APP_MUTATOR(app: Flask) -> None:
                 app.before_request_funcs.setdefault(None, []).append(make_session_permanent)
+          mcp: |
+            # Read only by the MCP service (templates/mcp.yaml), the one pod with MCP_JWT_SECRET. Without
+            # it the service refuses to start rather than serve unauthenticated.
+            MCP_AUTH_ENABLED = True
+            MCP_JWT_ALGORITHM = "HS256"
+            MCP_JWT_SECRET = os.getenv("MCP_JWT_SECRET")
+            MCP_JWT_ISSUER = "hopsworks"
+            MCP_JWT_AUDIENCE = "superset-mcp"
+            MCP_DEV_USERNAME = None
+            # Set only in the MCP pod, which serves HTTPS with them (templates/mcp.yaml).
+            MCP_SSL_CERTFILE = os.getenv("MCP_SSL_CERTFILE")
+            MCP_SSL_KEYFILE = os.getenv("MCP_SSL_KEYFILE")
           mysql: |
             SQLALCHEMY_DATABASE_URI = f"mysql+mysqldb://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
           proxyConfig: |
@@ -74827,6 +75377,79 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             {{- if .Values.allowAnonymousAccess }}
             AUTH_ROLE_PUBLIC = {{ .Values._publicRoleDefaultName | quote }}
             {{- end }}
+          security_manager: |
+            import hashlib
+            import inspect
+            import logging
+
+            from flask import g
+            from flask_appbuilder.security.sqla.models import (
+                assoc_group_role,
+                assoc_permissionview_role,
+                assoc_user_group,
+                assoc_user_role,
+            )
+            from sqlalchemy import select
+            from superset.security import SupersetSecurityManager
+            from superset.utils.core import get_user_id
+
+            # A security manager set by an earlier override stays the base class.
+            _security_manager = globals().get("CUSTOM_SECURITY_MANAGER") or SupersetSecurityManager
+
+            class HopsworksSecurityManager(_security_manager):
+                def user_view_menu_names(self, permission_name):
+                    """The names Superset's lookup returns, read from the same tables in the same request.
+
+                    Superset tests the user's roles with a correlated EXISTS on every granted permission,
+                    so MySQL reads all of ab_permission_view_role on each call, and a request makes
+                    several. Hopsworks adds a role and its grants per project member, so that table grows
+                    with the cluster. Here the user's role ids are read first and passed as literals,
+                    which lets MySQL start from idx_role_id and read only the user's grants.
+                    """
+                    if g.user.is_anonymous or self.is_guest_user():
+                        return super().user_view_menu_names(permission_name)
+                    user_id = get_user_id()
+                    role_ids = self.session.execute(
+                        select(assoc_user_role.c.role_id)
+                        .where(assoc_user_role.c.user_id == user_id)
+                        .union(
+                            select(assoc_group_role.c.role_id)
+                            .join(assoc_user_group, assoc_user_group.c.group_id == assoc_group_role.c.group_id)
+                            .where(assoc_user_group.c.user_id == user_id)
+                        )
+                    ).scalars().all()
+                    role_ids = [role_id for role_id in role_ids if role_id is not None]
+                    if not role_ids:
+                        return set()
+                    rows = (
+                        self.session.query(self.viewmenu_model.name)
+                        .join(self.permissionview_model)
+                        .join(self.permission_model)
+                        .join(assoc_permissionview_role)
+                        .filter(self.permission_model.name == permission_name)
+                        .filter(assoc_permissionview_role.c.role_id.in_(role_ids))
+                    ).all()
+                    return {row.name for row in rows}
+
+            # sha256 of the lookup's source in each Superset release the override was compared with
+            # (tests/superset-init/compare_permission_lookup.py). Any other source keeps Superset's own
+            # lookup: an upgrade that changes who may read what never runs the older rule.
+            _COMPARED_LOOKUPS = {
+                "b2c316a97189a650972199e72a5c85a288c0df026381c8efdfb617296e5cb84e",  # 6.1.0
+                "b6f3a09a472e511f5e1505896d1e082a8090a2b5f12f850df7a10011d9847ef4",  # 7.0.0rc2
+            }
+            try:
+                _lookup = inspect.getsource(_security_manager.user_view_menu_names)
+            except (OSError, TypeError):
+                _lookup = ""
+            if hashlib.sha256(_lookup.encode()).hexdigest() in _COMPARED_LOOKUPS:
+                CUSTOM_SECURITY_MANAGER = HopsworksSecurityManager
+            else:
+                logging.getLogger("hopsworks").warning(
+                    "Superset's permission lookup differs from the releases the Hopsworks lookup was "
+                    "compared with: Superset's own lookup is in use, which is slow on a cluster with "
+                    "many project members."
+                )
         extraEnv:
           SUPERSET_APP_ROOT: /hopsworks-api/superset
         extraEnvRaw:
@@ -74874,7 +75497,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/hopsworks/superset
-          tag: 6.0.0p4.7
+          tag: 6.1.0.1
         init:
           adminUser:
             email: admin@superset.com
@@ -75078,6 +75701,11 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         serviceAccount:
           create: true
         supersetCeleryBeat:
+          containerSecurityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
           initContainers:
           - command:
             - /bin/sh
@@ -75125,6 +75753,17 @@ Deployed according to the first of these values that is set: [`global._hopsworks
               capabilities:
                 drop:
                 - ALL
+          podSecurityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            limits:
+              cpu: 250m
+              memory: 768Mi
+            requests:
+              cpu: 100m
+              memory: 768Mi
         supersetCeleryFlower:
           initContainers:
           - command:
@@ -75333,10 +75972,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           resources:
             limits:
               cpu: 500m
-              memory: 1024Mi
+              memory: 2048Mi
             requests:
               cpu: 500m
-              memory: 1024Mi
+              memory: 2048Mi
     ```
 
 <div class="hops-values" markdown>
@@ -75372,6 +76011,18 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             SESSION_REFRESH_EACH_REQUEST = True # Default: True
             def FLASK_APP_MUTATOR(app: Flask) -> None:
                 app.before_request_funcs.setdefault(None, []).append(make_session_permanent)
+          mcp: |
+            # Read only by the MCP service (templates/mcp.yaml), the one pod with MCP_JWT_SECRET. Without
+            # it the service refuses to start rather than serve unauthenticated.
+            MCP_AUTH_ENABLED = True
+            MCP_JWT_ALGORITHM = "HS256"
+            MCP_JWT_SECRET = os.getenv("MCP_JWT_SECRET")
+            MCP_JWT_ISSUER = "hopsworks"
+            MCP_JWT_AUDIENCE = "superset-mcp"
+            MCP_DEV_USERNAME = None
+            # Set only in the MCP pod, which serves HTTPS with them (templates/mcp.yaml).
+            MCP_SSL_CERTFILE = os.getenv("MCP_SSL_CERTFILE")
+            MCP_SSL_KEYFILE = os.getenv("MCP_SSL_KEYFILE")
           mysql: |
             SQLALCHEMY_DATABASE_URI = f"mysql+mysqldb://{os.getenv('DB_USER')}:{os.getenv('DB_PASS')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"
           proxyConfig: |
@@ -75390,6 +76041,79 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             {{- if .Values.allowAnonymousAccess }}
             AUTH_ROLE_PUBLIC = {{ .Values._publicRoleDefaultName | quote }}
             {{- end }}
+          security_manager: |
+            import hashlib
+            import inspect
+            import logging
+
+            from flask import g
+            from flask_appbuilder.security.sqla.models import (
+                assoc_group_role,
+                assoc_permissionview_role,
+                assoc_user_group,
+                assoc_user_role,
+            )
+            from sqlalchemy import select
+            from superset.security import SupersetSecurityManager
+            from superset.utils.core import get_user_id
+
+            # A security manager set by an earlier override stays the base class.
+            _security_manager = globals().get("CUSTOM_SECURITY_MANAGER") or SupersetSecurityManager
+
+            class HopsworksSecurityManager(_security_manager):
+                def user_view_menu_names(self, permission_name):
+                    """The names Superset's lookup returns, read from the same tables in the same request.
+
+                    Superset tests the user's roles with a correlated EXISTS on every granted permission,
+                    so MySQL reads all of ab_permission_view_role on each call, and a request makes
+                    several. Hopsworks adds a role and its grants per project member, so that table grows
+                    with the cluster. Here the user's role ids are read first and passed as literals,
+                    which lets MySQL start from idx_role_id and read only the user's grants.
+                    """
+                    if g.user.is_anonymous or self.is_guest_user():
+                        return super().user_view_menu_names(permission_name)
+                    user_id = get_user_id()
+                    role_ids = self.session.execute(
+                        select(assoc_user_role.c.role_id)
+                        .where(assoc_user_role.c.user_id == user_id)
+                        .union(
+                            select(assoc_group_role.c.role_id)
+                            .join(assoc_user_group, assoc_user_group.c.group_id == assoc_group_role.c.group_id)
+                            .where(assoc_user_group.c.user_id == user_id)
+                        )
+                    ).scalars().all()
+                    role_ids = [role_id for role_id in role_ids if role_id is not None]
+                    if not role_ids:
+                        return set()
+                    rows = (
+                        self.session.query(self.viewmenu_model.name)
+                        .join(self.permissionview_model)
+                        .join(self.permission_model)
+                        .join(assoc_permissionview_role)
+                        .filter(self.permission_model.name == permission_name)
+                        .filter(assoc_permissionview_role.c.role_id.in_(role_ids))
+                    ).all()
+                    return {row.name for row in rows}
+
+            # sha256 of the lookup's source in each Superset release the override was compared with
+            # (tests/superset-init/compare_permission_lookup.py). Any other source keeps Superset's own
+            # lookup: an upgrade that changes who may read what never runs the older rule.
+            _COMPARED_LOOKUPS = {
+                "b2c316a97189a650972199e72a5c85a288c0df026381c8efdfb617296e5cb84e",  # 6.1.0
+                "b6f3a09a472e511f5e1505896d1e082a8090a2b5f12f850df7a10011d9847ef4",  # 7.0.0rc2
+            }
+            try:
+                _lookup = inspect.getsource(_security_manager.user_view_menu_names)
+            except (OSError, TypeError):
+                _lookup = ""
+            if hashlib.sha256(_lookup.encode()).hexdigest() in _COMPARED_LOOKUPS:
+                CUSTOM_SECURITY_MANAGER = HopsworksSecurityManager
+            else:
+                logging.getLogger("hopsworks").warning(
+                    "Superset's permission lookup differs from the releases the Hopsworks lookup was "
+                    "compared with: Superset's own lookup is in use, which is slow on a cluster with "
+                    "many project members."
+                )
         extraEnv:
           SUPERSET_APP_ROOT: /hopsworks-api/superset
         extraEnvRaw:
@@ -75437,7 +76161,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/hopsworks/superset
-          tag: 6.0.0p4.7
+          tag: 6.1.0.1
         init:
           adminUser:
             email: admin@superset.com
@@ -75641,6 +76365,11 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         serviceAccount:
           create: true
         supersetCeleryBeat:
+          containerSecurityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+              - ALL
           initContainers:
           - command:
             - /bin/sh
@@ -75688,6 +76417,17 @@ Deployed according to the first of these values that is set: [`global._hopsworks
               capabilities:
                 drop:
                 - ALL
+          podSecurityContext:
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            limits:
+              cpu: 250m
+              memory: 768Mi
+            requests:
+              cpu: 100m
+              memory: 768Mi
         supersetCeleryFlower:
           initContainers:
           - command:
@@ -75896,10 +76636,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           resources:
             limits:
               cpu: 500m
-              memory: 1024Mi
+              memory: 2048Mi
             requests:
               cpu: 500m
-              memory: 1024Mi
+              memory: 2048Mi
         ```
 
 `superset.superset.fullnameOverride` <a class="headerlink" href="#helm.superset.superset.fullnameOverride" title="Permanent link">#</a> { #helm.superset.superset.fullnameOverride }
@@ -75944,7 +76684,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -76252,7 +76992,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795208051` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
