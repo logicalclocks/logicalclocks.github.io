@@ -252,6 +252,30 @@
 - [Query Engine](https://docs.hopsworks.ai/latest/user_guides/projects/trino/query_engine/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/trino/query_engine/index.md))
 - [Trino Catalogs](https://docs.hopsworks.ai/latest/user_guides/projects/trino/catalogs/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/trino/catalogs/index.md))
 - [Sharing](https://docs.hopsworks.ai/latest/user_guides/projects/trino/sharing/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/trino/sharing/index.md))
+
+#### Semantic Layer
+- [Semantic Layer Guides](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/index.md))
+- [Overview](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/overview/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/overview/index.md))
+- [Roles and Permissions](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/roles/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/roles/index.md))
+- [Get Started](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/get_started/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/get_started/index.md))
+- [Ecommerce Blueprint](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/ecommerce_blueprint/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/ecommerce_blueprint/index.md))
+- [Define Metrics](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/define_metrics/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/define_metrics/index.md))
+- [Metric Types](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/metric_types/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/metric_types/index.md))
+- [Time Spine](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/time_spine/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/time_spine/index.md))
+- [Edit Definitions in the UI](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/editor/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/editor/index.md))
+- [Compile and Builds](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/builds/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/builds/index.md))
+- [Validation Rules](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/validation_rules/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/validation_rules/index.md))
+- [Tags](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/tags/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/tags/index.md))
+- [Query Metrics](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/query/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/query/index.md))
+- [Saved Queries](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/saved_queries/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/saved_queries/index.md))
+- [Result Cache](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/caching/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/caching/index.md))
+- [Query History](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/query_history/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/query_history/index.md))
+- [Connect dbt Clients](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/connect_clients/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/connect_clients/index.md))
+- [Connect BI Tools](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/bi_tools/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/bi_tools/index.md))
+- [Excel and ODBC](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/excel_odbc/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/excel_odbc/index.md))
+- [Metric Exports](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/exports/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/exports/index.md))
+- [Dashboards in Superset](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/dashboards/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/dashboards/index.md))
+- [Agent Tools](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/agent_tools/) ([md](https://docs.hopsworks.ai/latest/user_guides/analytics/semantic_layer/agent_tools/index.md))
 - [Superset](https://docs.hopsworks.ai/latest/user_guides/projects/superset/superset/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/superset/superset/index.md))
 
 ### MLOps
@@ -394,6 +418,7 @@
 - [Service Operations](https://docs.hopsworks.ai/latest/setup_installation/admin/operationLogs/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/operationLogs/index.md))
 - [Query Engine (Trino)](https://docs.hopsworks.ai/latest/setup_installation/admin/trino/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/trino/index.md))
 - [Superset](https://docs.hopsworks.ai/latest/setup_installation/admin/superset/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/superset/index.md))
+- [Semantic Layer](https://docs.hopsworks.ai/latest/setup_installation/admin/semantic_layer/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/semantic_layer/index.md))
 - [GPU Scheduling with Run:ai](https://docs.hopsworks.ai/latest/setup_installation/admin/run_ai/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/run_ai/index.md))
 - [Triton Inference Server](https://docs.hopsworks.ai/latest/setup_installation/admin/triton/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/triton/index.md))
 

@@ -395,6 +395,39 @@ From 5.3 the default is 2048, up from 1024, because at 1 GiB the sidecar was OOM
   While the sidecar restarts, the pod reports `Ready=False` and leaves the endpoints of its service, so the agent, healthy and still running, receives no requests.
   Looking for agent restarts finds none.
 
+### Superset 6.1 { #upgrade-superset-61 }
+
+5.3 moves Superset from 6.0.0p4 to 6.1.0.
+The `hopsworks-superset-init-db` Job runs Superset's schema migrations on the existing metadata database once, during the upgrade, and the Superset pods wait for it.
+On a cluster upgraded from a 6.0.0p4 database it ran 6 migrations in about a minute and kept every database connection and dashboard.
+
+- **Back up Superset first.**
+  Run the backup before the upgrade: `kubectl create job -n hopsworks --from=cronjob/create-superset-backup superset-backup-pre-53`.
+  The migrations have no downgrade, and the restore Job loads a dump into whatever image the release runs.
+  To go back to a 6.0 backup, restore it with the 5.2 chart, whose image matches it, then upgrade again.
+- **The Celery worker needs more memory.**
+  The worker's request and limit go from 1 GiB to 2 GiB.
+  Check that a node in the namespace has 2 GiB free for it.
+- **The MCP service runs.**
+  A new `hopsworks-superset-mcp` Deployment serves the `hops superset chart` commands over HTTPS, with a certificate from the cluster's CA and a signing key in the Secret `superset-mcp-jwt`.
+  Under ArgoCD, set `superset.mcp.jwtSecret`, or the service is not deployed; see [MCP service][superset-mcp-service].
+- **Semantic layer dashboards.**
+  With the semantic layer enabled, each Data owner and Data scientist of a project with Superset and a semantic project gets one Superset database connection, which reads the metrics of the project's semantic projects, see [Dashboards in Superset][semantic-superset-dashboards].
+  Set `hopsworks.variables.superset_semantic_enabled: "false"` to keep that off.
+
+### Semantic layer { #upgrade-semantic-layer }
+
+5.3 adds the semantic layer, off by default.
+Before turning it on with `global._hopsworks.semanticLayer.enabled: true`:
+
+- **Room in `ts_1`.**
+  The query history is the table `hopsworks.semantic_query` in RonDB's disk tablespace `ts_1`, which feature groups with disk columns share, and keeps each query for 30 days at about 13,000 bytes.
+  Check the free space of `ts_1` and add a data file when the history will need it, see [Query history storage][semantic-admin-history-storage].
+- **The 5.3 library in `python-feature-pipeline`.**
+  Metric export jobs run in each project's `python-feature-pipeline` environment, and fail before they write with an older Hopsworks library there, see [Who runs an export][semantic-exports-owner].
+- **Memory for the gateway.**
+  Each of the two semantic gateway replicas takes 4 GiB, see [Memory][semantic-admin-memory].
+
 ### Kueue outside the Hopsworks namespace { #upgrade-kueue-external }
 
 Required for a cluster that runs the Kueue bundled with Hopsworks (`global._hopsworks.kueue.enabled=true`); a cluster without Kueue needs nothing.
