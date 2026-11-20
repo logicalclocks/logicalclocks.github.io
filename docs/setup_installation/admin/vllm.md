@@ -56,6 +56,7 @@ A deployment also keeps its stored tag after the tag is no longer advertised.
 Users must pick an advertised tag only when they create a deployment or change its tag, so moving an existing deployment to a new tag is an edit of that deployment.
 
 A deployment runs `<registry>/vllm/vllm-openai:<deployment tag>` or `<registry>/vllm/vllm-omni:<deployment tag>`.
+With `kserve.kserve.servingruntime.vllmopenai.cpu.enabled: true`, the `vllm-openai` runtime runs `<registry>/vllm/vllm-openai-cpu:<deployment tag>` instead, with the same tag.
 The registry is `kserve.kserve.servingruntime.vllmopenai.imageRegistry` or `kserve.kserve.servingruntime.vllmomni.imageRegistry`, and `global._hopsworks.imageRegistry` when that is empty.
 Every tag that deployments use must exist in that registry, so keep the old tags when you mirror a new one.
 
