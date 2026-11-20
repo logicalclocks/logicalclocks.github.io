@@ -709,7 +709,7 @@ Existing vLLM deployments keep the image version they were created with through 
 Move each of them to v0.33.0 by editing the deployment and selecting v0.33.0 as its image version.
 A cluster that pulls from a mirror needs `vllm/vllm-openai:v0.33.0` mirrored before the upgrade, or `vllm/vllm-openai-cpu:v0.33.0` when it runs vLLM on CPU, and keeps the versions its existing deployments use, see [Image tags][vllm-image-tags].
 
-vLLM-Omni deployments stay on `vllm/vllm-omni:v0.32.0`.
+The chart's vLLM-Omni version stays `v0.32.0`, and existing vLLM-Omni deployments keep the version they were created with.
 vLLM-Omni can now be disabled per cluster, see [Disable vLLM-Omni][vllm-disable-omni].
 
 ### Security response headers { #upgrade-security-headers }
