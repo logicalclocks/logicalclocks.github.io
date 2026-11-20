@@ -31,10 +31,10 @@ kserve:
   kserve:
     servingruntime:
       vllmopenai:
-        tag: "v0.33.0"
+        tag: "v0.34.0"
 hopsworks:
   variables:
-    kube_serving_vllm_versions: "v0.33.0,v0.32.0"
+    kube_serving_vllm_versions: "v0.34.0,v0.32.0"
 ```
 
 The advertised tags are returned by the REST API:
@@ -46,7 +46,7 @@ curl -H "authorization: ApiKey <api_key>" \
 
 ```json
 {"items": [
-  {"variant": "VLLM", "tags": ["v0.33.0", "v0.32.0"], "defaultTag": "v0.33.0"},
+  {"variant": "VLLM", "tags": ["v0.34.0", "v0.32.0"], "defaultTag": "v0.34.0"},
   {"variant": "VLLM_OMNI", "tags": ["v0.32.0"], "defaultTag": "v0.32.0"}
 ]}
 ```
