@@ -19,7 +19,7 @@ Each of its pods carries its own HopsFS mount, with a CPU request and a memory l
 To change them per component, see the [Resources Guide](resources.md).
 The strategy is set per deployment.
 Saving a new strategy on a running deployment rolls it out right away and replaces its pods; a stopped deployment uses it the next time it starts.
-A deployment created without a strategy gets `MOUNT` when the driver is enabled, and `DOWNLOAD` without it.
+A deployment created without a strategy gets `RUNAI_STREAMER` when it runs vLLM on GPUs, the driver is enabled and the model has safetensors weights at the top of its files, and `DOWNLOAD` otherwise, including vLLM without GPUs, which runs vLLM's CPU image.
 Updating a deployment without a strategy keeps the one it has, and a deployment created before loading strategies existed keeps downloading its files.
 
 ### Which strategy to choose
@@ -75,7 +75,7 @@ To navigate to the advanced creation form, click on `Advanced options`.
 ### Step 3: Select the loading strategy
 
 Select the strategy in the `Loading strategy` field.
-It lists the strategies the model server of the deployment supports, with its default already selected: `MOUNT`, or `DOWNLOAD` when the cluster has no HopsFS CSI driver.
+It lists the strategies the model server of the deployment supports, with its default already selected: `RUNAI_STREAMER` for vLLM on GPUs, and `DOWNLOAD` otherwise or when the cluster has no HopsFS CSI driver.
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
