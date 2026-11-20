@@ -17,7 +17,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
 | [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523], and from 5.2.5 [Istio 1.30][upgrade-istio-130]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Additional prerequisites][upgrade-additional-prerequisites], [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] and [LLM Gateway][upgrade-llm-gateway] when turned on, [Knative mode deprecated][upgrade-knative-mode-deprecated], with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Additional prerequisites][upgrade-additional-prerequisites], [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, from 5.2.5 or later [Istio 1.31][upgrade-istio-131], [Envoy Gateway][upgrade-envoy-gateway] and [LLM Gateway][upgrade-llm-gateway] when turned on, [Knative mode deprecated][upgrade-knative-mode-deprecated], with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -712,6 +712,30 @@ A page the policy breaks shows a `Content-Security-Policy` error in the browser 
 
 Pages are no longer served from the browser's offline cache, so a page needs the cluster to be reachable.
 
+### Istio 1.31 { #upgrade-istio-131 }
+
+Istio moves from 1.30 to 1.31.
+Istio upgrades in place one minor release at a time, so upgrade to 5.3 from 5.2.5 or later, the release that moves Istio to 1.30, as described in [Istio 1.30][upgrade-istio-130].
+On a cluster still on Istio 1.29, the Istio install hook stops with an error before it changes anything; upgrade to the latest 5.2 release first.
+
+- **Time.**
+  Each wait in the Istio install hook, the install and then istiod and each gateway rolling out, is bounded by `kserve.istio.istioctl.readinessTimeout` (15 minutes), so allow at least an hour for the hook in `helm upgrade --timeout`.
+- **Model deployments.**
+  The Istio ingress gateway and the cluster-local gateway restart once.
+  Each rolls out its new pod before it stops the old one.
+- **Your own image registry.**
+  Mirror `istio/pilot` and `istio/proxyv2` at `1.31.4` before the upgrade.
+  The chart's `vendor_images.sh` lists both.
+- **Sidecars you injected yourself.**
+  The chart injects no Istio sidecar.
+  A workload you gave an Istio sidecar keeps its 1.30 proxy until it restarts, so restart it after the upgrade.
+- **Going back to 5.2.**
+  A `helm rollback` does not run the Istio install hook, so Istio stays on 1.31.
+  A later `helm upgrade`, or an ArgoCD sync, with 5.2.5 or a later 5.2 chart stops in that hook before it changes anything, since 5.2 does not install Istio over 1.31.
+  Do not run `helm upgrade`, or an ArgoCD sync, with a release older than 5.2.5 afterwards: its hook installs Istio 1.29 over 1.31, a downgrade Istio does not support.
+  To go back entirely, restore the backup on a new cluster, as described in [New Cluster Restore][new-cluster-restore].
+  An in-place restore does not apply here, since it runs `helm upgrade` with the release of the backup, whose Istio install hook then runs over Istio 1.31.
+
 ### Knative mode is deprecated { #upgrade-knative-mode-deprecated }
 
 [Knative mode][knative-mode-deprecated] is deprecated in 5.3, and 5.4 removes Knative and Istio.
@@ -856,4 +880,5 @@ Istio 1.30 supports Kubernetes 1.32 to 1.36, and Istio supports the 1.30 release
 - **Going back to an earlier 5.2 release.**
   A `helm rollback` does not run the Istio install hook, so Istio stays on 1.30.
   Do not run `helm upgrade`, or an ArgoCD sync, with a release older than 5.2.5 afterwards: its hook installs Istio 1.29 over 1.30, a downgrade Istio does not support.
-  To go back entirely, restore from the backup, as described in [Disaster Recovery][disaster-recovery].
+  To go back entirely, restore the backup on a new cluster, as described in [New Cluster Restore][new-cluster-restore].
+  An in-place restore does not apply here, since it runs `helm upgrade` with the release of the backup, whose Istio install hook installs Istio 1.29 over 1.30.
