@@ -359,6 +359,7 @@ nav:
           - Superset: setup_installation/admin/superset.md
           - GPU Scheduling with Run:ai: setup_installation/admin/run_ai.md
           - Triton Inference Server: setup_installation/admin/triton.md
+          - vLLM Serving Runtimes: setup_installation/admin/vllm.md
       - Helm Chart Values Reference:
           - setup_installation/common/helm_chart_values/index.md
           - global: setup_installation/common/helm_chart_values/global.md
