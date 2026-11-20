@@ -765,7 +765,7 @@ The 5.4 upgrade refuses to start while Envoy Gateway is off or a Knative-mode de
     List the ones that run:
 
     ```bash
-    kubectl get isvc -A -o json | jq -r '.items[] | select((.status.deploymentMode // .metadata.annotations["serving.kserve.io/deploymentMode"] // "Knative") | test("^(Knative|Serverless)$")) | .metadata.namespace + "/" + .metadata.name'
+    kubectl get isvc -A -l serving.hops.works/id -o json | jq -r '.items[] | select((.status.deploymentMode // .metadata.annotations["serving.kserve.io/deploymentMode"] // "Knative") | test("^(Knative|Serverless)$")) | .metadata.namespace + "/" + .metadata.name'
     ```
 
     Their owners convert each one, as described in [Knative mode is deprecated][knative-mode-deprecated]; each conversion restarts that deployment once.
