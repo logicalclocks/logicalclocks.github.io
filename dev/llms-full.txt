@@ -975,10 +975,6 @@ However, SQL is not mature as a platform for transformations and dimensionality 
 
 You can do aggregation in SQL for data in your data warehouse or database.
 
-## Feature Engineering in Beam
-
-Beam feature engineering pipelines are supported in Java/Scala only.
-
 ================================================================================
 # Streaming Feature Pipelines
 Source: https://docs.hopsworks.ai/latest/concepts/fs/feature_group/streaming_feature_pipelines/
@@ -2385,7 +2381,7 @@ The `hops-factory` skill lists every field type and rule.
 
 ## Hopsworks Java Library
 
-If you want to interact with the Hopsworks Feature Store from environments such as Spark or Beam, you can use the Hopsworks Feature Store (Hopsworks) Java library.
+If you want to interact with the Hopsworks Feature Store from Java environments such as Spark, you can use the Hopsworks Feature Store (Hopsworks) Java library.
 
 !!! note "Feature Store Only"
 
@@ -2439,18 +2435,6 @@ The `artifactId` for the Spark build is `hsfs-spark-spark{spark.version}`, if yo
 ```
 
 Hopsworks provides builds for Spark 3.1, 3.3 and 3.5. The builds are also provided as JAR files which can be downloaded from [Hopsworks repository](https://repo.hops.works/master/hsfs)
-
-### Beam
-
-The `artifactId` for the Beam build is `hsfs-beam`, if you are using Maven as build tool, you can add the following dependency:
-
-```xml
-<dependency>
-    <groupId>com.logicalclocks</groupId>
-    <artifactId>hsfs-beam</artifactId>
-    <version>${hsfs.version}</version>
-</dependency>
-```
 
 ## Next Steps
 
@@ -2646,7 +2630,7 @@ The guides below follow that order: connect a source, write, validate, read, tra
 - [Compute engines](compute_engines.md)
   Which operations run on Python, Spark or Flink.
 - [Client integrations](../integrations/index.md)
-  Databricks, SageMaker, EMR, Azure ML, Flink, Beam and more.
+  Databricks, SageMaker, EMR, Azure ML, Flink and more.
 - [Vector similarity search](vector_similarity_search.md)
   Embeddings in a feature group, nearest-neighbour queries.
 
@@ -14320,12 +14304,11 @@ In order to execute a feature pipeline to write to the Feature Store, as well as
 Hopsworks Feature Store APIs are built around dataframes, that means feature data is inserted into the Feature Store from a Dataframe and likewise when reading data from the Feature Store, it is returned
 as a Dataframe.
 
-As such, Hopsworks supports four computational engines:
+As such, Hopsworks supports three computational engines:
 
 1. [Apache Spark](https://spark.apache.org): Spark Dataframes and Spark Structured Streaming Dataframes are supported, both from Python environments (PySpark) and from Scala environments.
 2. [Python](https://www.python.org/): For pure Python environments without dependencies on Spark, Hopsworks supports [Pandas Dataframes](https://pandas.pydata.org/) and [Polars Dataframes](https://pola.rs/).
-3. [Apache Beam](https://beam.apache.org/) *experimental*: Beam Data Streams are currently supported as an experimental feature from Java/Scala environments.
-4. [Java](https://www.java.com): For pure Java environments without dependencies on Spark, Hopsworks supports writing using List of POJO Objects.
+3. [Java](https://www.java.com): For pure Java environments without dependencies on Spark, Hopsworks supports writing using List of POJO Objects.
 
 Hopsworks supports running [compute on the platform itself](../../concepts/dev/inside.md) in the form of [Jobs](../projects/jobs/pyspark_job.md) or in [Jupyter Notebooks](../projects/jupyter/python_notebook.md).
 Alternatively, you can also connect to Hopsworks using Python or Spark from [external environments](../../concepts/dev/outside.md), given that there is network connectivity.
@@ -14334,16 +14317,16 @@ Alternatively, you can also connect to Hopsworks using Python or Spark from [ext
 
 Hopsworks is aiming to provide functional parity between the computational engines, however, there are certain Hopsworks functionalities which are exclusive to the engines.
 
-| Functionality | Method | Spark | Python | Beam | Java | Comment |
-| --- | --- | --- | --- | --- | --- | --- |
-| Feature Group Creation from dataframes | [`FeatureStore.create_feature_group`][hsfs.feature_store.FeatureStore.create_feature_group] | :white_check_mark: | :white_check_mark: | - | - | Currently Beam/Java doesn't support registering feature group metadata. Thus it needs to be pre-registered before you can write real time features computed by Beam. |
-| Training Dataset Creation from dataframes | [`TrainingDataset.save`][hsfs.training_dataset.TrainingDataset.save] | :white_check_mark: | - | - | - | Functionality was deprecated in version 3.0 |
-| Data validation using Great Expectations for streaming dataframes | [`FeatureGroup.validate`][hsfs.feature_group.FeatureGroup.validate] <br/> [`FeatureGroup.insert_stream`][hsfs.feature_group.FeatureGroup.insert_stream] | - | - | - | - | `insert_stream` does not perform any data validation even when a expectation suite is attached. |
-| Stream ingestion | [`FeatureGroup.insert_stream`][hsfs.feature_group.FeatureGroup.insert_stream] | :white_check_mark: | - | :white_check_mark: | :white_check_mark: | Python/Pandas/Polars has currently no notion of streaming. |
-| Reading from Streaming Storage Connectors | [`KafkaConnector.read_stream`][hsfs.storage_connector.KafkaConnector.read_stream] | :white_check_mark: | - | - | - | Python/Pandas/Polars has currently no notion of streaming. For Beam/Java only write operations are supported |
-| Reading training data from external storage other than S3 | [`FeatureView.get_training_data`][hsfs.feature_view.FeatureView.get_training_data] | :white_check_mark: | - | - | - | Reading training data that was written to external storage using a Storage Connector other than S3 can currently not be read using Hopsworks APIs, instead you will have to use the storage's native client. |
-| Reading External Feature Groups into Dataframe | [`ExternalFeatureGroup.read`][hsfs.feature_group.ExternalFeatureGroup.read] | :white_check_mark: | - | - | - | Reading an External Feature Group directly into a Pandas/Polars Dataframe is not supported, however, you can use the [Query API][hsfs.constructor.query.Query] to create Feature Views/Training Data containing External Feature Groups. |
-| Read Queries containing External Feature Groups into Dataframe | [`Query.read`][hsfs.constructor.query.Query.read] | :white_check_mark: | - | - | - | Reading a Query containing an External Feature Group directly into a Pandas/Polars Dataframe is not supported, however, you can use the Query to create Feature Views/Training Data and write the data to a Storage Connector, from where you can read up the data into a Pandas/Polars Dataframe. |
+| Functionality | Method | Spark | Python | Java | Comment |
+| --- | --- | --- | --- | --- | --- |
+| Feature Group Creation from dataframes | [`FeatureStore.create_feature_group`][hsfs.feature_store.FeatureStore.create_feature_group] | :white_check_mark: | :white_check_mark: | - | Currently Java doesn't support registering feature group metadata. Thus it needs to be pre-registered before you can write real time features computed in Java. |
+| Training Dataset Creation from dataframes | [`TrainingDataset.save`][hsfs.training_dataset.TrainingDataset.save] | :white_check_mark: | - | - | Functionality was deprecated in version 3.0 |
+| Data validation using Great Expectations for streaming dataframes | [`FeatureGroup.validate`][hsfs.feature_group.FeatureGroup.validate] <br/> [`FeatureGroup.insert_stream`][hsfs.feature_group.FeatureGroup.insert_stream] | - | - | - | `insert_stream` does not perform any data validation even when a expectation suite is attached. |
+| Stream ingestion | [`FeatureGroup.insert_stream`][hsfs.feature_group.FeatureGroup.insert_stream] | :white_check_mark: | - | :white_check_mark: | Python/Pandas/Polars has currently no notion of streaming. |
+| Reading from Streaming Storage Connectors | [`KafkaConnector.read_stream`][hsfs.storage_connector.KafkaConnector.read_stream] | :white_check_mark: | - | - | Python/Pandas/Polars has currently no notion of streaming. For Java only write operations are supported |
+| Reading training data from external storage other than S3 | [`FeatureView.get_training_data`][hsfs.feature_view.FeatureView.get_training_data] | :white_check_mark: | - | - | Reading training data that was written to external storage using a Storage Connector other than S3 can currently not be read using Hopsworks APIs, instead you will have to use the storage's native client. |
+| Reading External Feature Groups into Dataframe | [`ExternalFeatureGroup.read`][hsfs.feature_group.ExternalFeatureGroup.read] | :white_check_mark: | - | - | Reading an External Feature Group directly into a Pandas/Polars Dataframe is not supported, however, you can use the [Query API][hsfs.constructor.query.Query] to create Feature Views/Training Data containing External Feature Groups. |
+| Read Queries containing External Feature Groups into Dataframe | [`Query.read`][hsfs.constructor.query.Query.read] | :white_check_mark: | - | - | Reading a Query containing an External Feature Group directly into a Pandas/Polars Dataframe is not supported, however, you can use the Query to create Feature Views/Training Data and write the data to a Storage Connector, from where you can read up the data into a Pandas/Polars Dataframe. |
 
 ## Python
 
@@ -14369,26 +14352,9 @@ Head over to the [Getting Started Guide](https://colab.research.google.com/githu
 Connecting to the Feature Store from an external Spark cluster, such as Cloudera or Databricks, requires configuring it with the Hopsworks client jars, configuration and certificates.
 The [Spark integration guide](../integrations/spark.md) explains step by step how to connect to the Feature Store from an external Spark cluster.
 
-## Beam
-
-### Beam Inside Hopsworks
-
-Beam is only supported as an external client.
-
-### Beam Outside Hopsworks
-
-Connecting to the Feature Store from Beam DataFlowRunner, requires configuring the Hopsworks certificates.
-The [Beam integration guide](../integrations/beam.md) explains step by step how to connect to the Feature Store from Beam Dataflow Runner.
-
-!!! warning
-
-Apache Beam integration with Hopsworks feature store was only tested using Dataflow Runner.
-
-For more details head over to the [Getting Started Guide](https://github.com/logicalclocks/hopsworks-tutorials/tree/master/integrations/java/beam).
-
 ## Java
 
-It is also possible to interact to Hopsworks feature store using pure Java environments without dependencies on Spark or Beam.
+It is also possible to interact to Hopsworks feature store using pure Java environments without dependencies on Spark.
 
 For more details head over to the [Getting Started Guide](https://github.com/logicalclocks/hopsworks-tutorials/tree/master/java).
 
@@ -14459,14 +14425,6 @@ Pick the client you connect from.
     Connect an external Spark cluster.
 
     [Connect from Apache Spark](spark.md)
-
--   <svg class="hops-card-logo" viewBox="0 0 103.75402 144.60986" aria-hidden="true"><g transform="translate(-48.083 -263.72599)"><path d="M114.62478,369.74574a8.5081,8.5081,0,0,0,8.50819,8.50819V361.23756A8.50823,8.50823,0,0,0,114.62478,369.74574Z"/><path d="M114.62478,302.54416a8.5081,8.5081,0,0,0,8.50819,8.50819V294.036A8.50823,8.50823,0,0,0,114.62478,302.54416Z"/><path d="M149.85752,355.0673a31.95182,31.95182,0,0,0-4.48779-9.56738,30.16459,30.16459,0,0,0-7.59473-7.5459,34.29159,34.29159,0,0,0-10.80029-4.88232q10.25684-4.33887,15.584-12.23047a31.00862,31.00862,0,0,0,5.32617-17.75391,41.11393,41.11393,0,0,0-3.40283-17.40869,30.92584,30.92584,0,0,0-9.814-12.08252,44.12955,44.12955,0,0,0-15.68262-7.05225A86.44973,86.44973,0,0,0,98.07529,264.226H48.85752v5.54242l72.89409,22.71047a2,2,0,0,1,1.38136,1.90192v16.275a2,2,0,0,1-1.02211,1.74463L84.76393,336.03086l37.34693,23.63052A2,2,0,0,1,123.133,361.406v16.275a2,2,0,0,1-1.38136,1.90192L48.85752,402.29337v5.54248h52.66992a75.21864,75.21864,0,0,0,20.86084-2.66309,43.55411,43.55411,0,0,0,15.68262-7.94043,34.29293,34.29293,0,0,0,9.86328-13.11816,45.37613,45.37613,0,0,0,3.40283-18.19727A39.65034,39.65034,0,0,0,149.85752,355.0673Z"/></g></svg> **Apache Beam**
-
-    ---
-
-    Feature pipelines on Beam.
-
-    [Connect from Apache Beam](beam.md)
 
 </div>
 <!-- markdownlint-enable MD007 MD030 -->
@@ -15370,58 +15328,6 @@ fs = project.get_feature_store()  # Get the project's default feature store
 
 For more information about how to connect, see the [Login API][hopsworks.login].
 Or continue with the Data Source guide to import your own data to the Feature Store.
-
-================================================================================
-# Apache Beam
-Source: https://docs.hopsworks.ai/latest/user_guides/integrations/beam/
-
-# Apache Beam Dataflow Runner
-
-Connecting to the Feature Store from an Apache Beam Dataflow Runner, requires configuring the Hopsworks certificates.
-For this in your Beam Java application `pom.xml` file include following snippet:
-
-```xml
-    <resources>
-      <resource>
-        <directory>java.io.tmpdir</directory>
-        <includes>
-          <include>**/*.jks</include>
-        </includes>
-      </resource>
-    </resources>
-```
-
-## Generating an API Key
-
-For instructions on how to generate an API key follow this [user guide](../projects/api_key/create_api_key.md).
-For the Beam integration to work correctly make sure you add the following scopes to your API key:
-
-  1. featurestore
-  2. project
-  3. job
-  4. kafka
-
-## Connecting to the Feature Store
-
-You are now ready to connect to the Hopsworks Feature Store from Beam:
-
-```Java
-//Establish connection with Hopsworks.
-HopsworksConnection hopsworksConnection = HopsworksConnection.builder()
-  .host("my_instance")                      // DNS of your Feature Store instance
-  .port(443)                                // Port to reach your Hopsworks instance, defaults to 443
-  .project("my_project")                    // Name of your Hopsworks Feature Store project
-  .apiKeyValue("api_key")                   // The API key to authenticate with the feature store
-  .hostnameVerification(false)              // Disable for self-signed certificates
-  .build();
-
-//get feature store handle
-FeatureStore fs = hopsworksConnection.getFeatureStore();
-```
-
-## Next Steps
-
-For more information and how to integrate Beam feature pipeline  to the Hopsworks Feature store follow the [tutorial](https://github.com/logicalclocks/hopsworks-tutorials/tree/master/integrations/java/beam).
 
 ================================================================================
 # Java
@@ -41408,7 +41314,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `platform_intelligence_llm_base_url` | String | *(empty string)* | Settings.java |
 | `platform_intelligence_llm_model` | String | `gpt-5.4-mini` | Settings.java |
 | `preinstalled_npm_lib_names` | String | `corepack, npm` | Settings.java |
-| `preinstalled_python_lib_names` | String | `pydoop, pyspark, jupyterlab, hdfscontents, pyjks, hops-apache-beam, pyopenssl` | Settings.java |
+| `preinstalled_python_lib_names` | String | `pydoop, pyspark, jupyterlab, hdfscontents, pyjks, pyopenssl` | Settings.java |
 | `project_namespace_labels` | String | *(empty string)* | Settings.java |
 | `project_namespace_network_policy_allowed_namespaces` | String | *(empty string)* | Settings.java |
 | `project_namespace_network_policy_enabled` | Boolean | `true` | Settings.java |
@@ -51423,7 +51329,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -51504,7 +51410,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -52807,7 +52713,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -53835,7 +53741,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -54117,7 +54023,7 @@ Values under `certs-operator` configure the operator that issues the TLS certifi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -54305,7 +54211,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -54639,7 +54545,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -55090,7 +54996,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -55588,7 +55494,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -56006,7 +55912,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -57171,7 +57077,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 
@@ -57441,7 +57347,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -62830,7 +62736,7 @@ The LLM Gateway's controller ships in the same subchart, and its values, under `
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: `global._hopsworks.envoyGateway.enabled`, [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -63270,7 +63176,7 @@ See [LLM Gateway][llm-gateway] for what the feature installs and what the cluste
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 ## aiGateway { #helm-values-hw-envoy-ai-gateway-aigateway }
 
@@ -63767,7 +63673,7 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -64174,7 +64080,7 @@ With `kueue.enabled=false` Hopsworks uses a Kueue installed outside its release;
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -64560,7 +64466,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -65055,7 +64961,7 @@ Values under `judge` configure Judge, the active cluster arbitrator service.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -65190,7 +65096,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -66080,7 +65986,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -68022,7 +67928,7 @@ Values under `minio` configure MinIO, an S3-compatible object store deployed ins
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) is `true`.
 
@@ -68277,7 +68183,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -69253,7 +69159,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -69788,7 +69694,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -69942,7 +69848,7 @@ Values under `ray` configure the KubeRay operator, which runs the Ray clusters b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.ray.enabled`](global.md#helm.global._hopsworks.ray.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -70089,7 +69995,7 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -73007,7 +72913,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -74592,7 +74498,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -76038,7 +75944,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -76346,7 +76252,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795186014` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795196067` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 

@@ -61,7 +61,3 @@ Data warehouses also support data validation, for example, through Great Expecta
 However, SQL is not mature as a platform for transformations and dimensionality reductions, where UDFs are applied row-wise.
 
 You can do aggregation in SQL for data in your data warehouse or database.
-
-## Feature Engineering in Beam
-
-Beam feature engineering pipelines are supported in Java/Scala only.

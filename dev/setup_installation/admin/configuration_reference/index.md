@@ -461,7 +461,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `platform_intelligence_llm_base_url` | String | *(empty string)* | Settings.java |
 | `platform_intelligence_llm_model` | String | `gpt-5.4-mini` | Settings.java |
 | `preinstalled_npm_lib_names` | String | `corepack, npm` | Settings.java |
-| `preinstalled_python_lib_names` | String | `pydoop, pyspark, jupyterlab, hdfscontents, pyjks, hops-apache-beam, pyopenssl` | Settings.java |
+| `preinstalled_python_lib_names` | String | `pydoop, pyspark, jupyterlab, hdfscontents, pyjks, pyopenssl` | Settings.java |
 | `project_namespace_labels` | String | *(empty string)* | Settings.java |
 | `project_namespace_network_policy_allowed_namespaces` | String | *(empty string)* | Settings.java |
 | `project_namespace_network_policy_enabled` | Boolean | `true` | Settings.java |

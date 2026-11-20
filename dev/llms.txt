@@ -144,7 +144,6 @@
 - [Designer](https://docs.hopsworks.ai/latest/user_guides/integrations/mlstudio_designer/) ([md](https://docs.hopsworks.ai/latest/user_guides/integrations/mlstudio_designer/index.md))
 - [Notebooks](https://docs.hopsworks.ai/latest/user_guides/integrations/mlstudio_notebooks/) ([md](https://docs.hopsworks.ai/latest/user_guides/integrations/mlstudio_notebooks/index.md))
 - [Apache Spark](https://docs.hopsworks.ai/latest/user_guides/integrations/spark/) ([md](https://docs.hopsworks.ai/latest/user_guides/integrations/spark/index.md))
-- [Apache Beam](https://docs.hopsworks.ai/latest/user_guides/integrations/beam/) ([md](https://docs.hopsworks.ai/latest/user_guides/integrations/beam/index.md))
 - [Java](https://docs.hopsworks.ai/latest/user_guides/integrations/java/) ([md](https://docs.hopsworks.ai/latest/user_guides/integrations/java/index.md))
 
 #### Kafka
