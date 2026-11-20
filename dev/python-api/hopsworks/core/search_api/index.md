@@ -40,12 +40,22 @@
       heading_level: 2
       show_root_heading: true
 
+::: hopsworks_common.search_results.MetricSearchResult
+    options:
+      heading_level: 2
+      show_root_heading: true
+
 ::: hopsworks_common.search_results.Project
     options:
       heading_level: 2
       show_root_heading: true
 
 ::: hopsworks_common.search_results.SearchResultItem
+    options:
+      heading_level: 2
+      show_root_heading: true
+
+::: hopsworks_common.search_results.SemanticProjectSearchResult
     options:
       heading_level: 2
       show_root_heading: true

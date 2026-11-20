@@ -1373,6 +1373,10 @@
          <lastmod>2026-11-20</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hopsworks/core/semantic_layer_api/</loc>
+         <lastmod>2026-11-20</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/python-api/hopsworks/core/superset_api/</loc>
          <lastmod>2026-11-20</lastmod>
     </url>
@@ -1458,6 +1462,10 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/python-api/hopsworks/secret/</loc>
+         <lastmod>2026-11-20</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/python-api/hopsworks/semantic_layer/</loc>
          <lastmod>2026-11-20</lastmod>
     </url>
     <url>

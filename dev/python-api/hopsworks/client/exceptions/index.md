@@ -85,6 +85,21 @@
       heading_level: 2
       show_root_heading: true
 
+::: hopsworks_common.client.exceptions.SemanticBuildException
+    options:
+      heading_level: 2
+      show_root_heading: true
+
+::: hopsworks_common.client.exceptions.SemanticLayerException
+    options:
+      heading_level: 2
+      show_root_heading: true
+
+::: hopsworks_common.client.exceptions.SupersetException
+    options:
+      heading_level: 2
+      show_root_heading: true
+
 ::: hopsworks_common.client.exceptions.TransformationFunctionException
     options:
       heading_level: 2
