@@ -4,7 +4,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795164394` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795169783` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -43,7 +43,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
             tag: v0.32.0
       kserveUtilsImage:
         name: hopsworks/kserve-utils
-        tag: 0.1.15
+        tag: 0.1.16
       manager:
         serviceAccount:
           annotations: {}
@@ -122,7 +122,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 :   Type `string`, default `"hopsworks/kserve-utils"`.
 
 `kserve.kserveUtilsImage.tag` <a class="headerlink" href="#helm.kserve.kserveUtilsImage.tag" title="Permanent link">#</a> { #helm.kserve.kserveUtilsImage.tag }
-:   Type `string`, default `"0.1.15"`.
+:   Type `string`, default `"0.1.16"`.
 
 `kserve.manager.serviceAccount.annotations` <a class="headerlink" href="#helm.kserve.manager.serviceAccount.annotations" title="Permanent link">#</a> { #helm.kserve.manager.serviceAccount.annotations }
 :   Type `object`, default `{}`.
@@ -769,7 +769,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
           enabled: true
           name: istio
         istioctl:
-          currentVersion: 1.30.8
+          currentVersion: 1.31.4
           installJobName: istioctl-install-job
           jobRetries: 4
           name: istioctl
@@ -780,7 +780,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
               memory: 256Mi
           serviceAccount:
             annotations: {}
-          targetVersion: 1.30.8
+          targetVersion: 1.31.4
           uninstallJobName: istioctl-uninstall-job
         nodeSelector: {}
         pilot:
@@ -903,7 +903,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     Name of the IngressClass. Must match `kserve.controller.gateway.ingressGateway.className`, which is what KServe reads from the `inferenceservice-config` ConfigMap to populate `spec.ingressClassName`.
 
 `kserve.istio.istioctl.currentVersion` <a class="headerlink" href="#helm.kserve.istio.istioctl.currentVersion" title="Permanent link">#</a> { #helm.kserve.istio.istioctl.currentVersion }
-:   Type `string`, default `"1.30.8"`.
+:   Type `string`, default `"1.31.4"`.
 
 `kserve.istio.istioctl.installJobName` <a class="headerlink" href="#helm.kserve.istio.istioctl.installJobName" title="Permanent link">#</a> { #helm.kserve.istio.istioctl.installJobName }
 :   Type `string`, default `"istioctl-install-job"`.
@@ -926,7 +926,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     service account annotations
 
 `kserve.istio.istioctl.targetVersion` <a class="headerlink" href="#helm.kserve.istio.istioctl.targetVersion" title="Permanent link">#</a> { #helm.kserve.istio.istioctl.targetVersion }
-:   Type `string`, default `"1.30.8"`.
+:   Type `string`, default `"1.31.4"`.
 
 `kserve.istio.istioctl.uninstallJobName` <a class="headerlink" href="#helm.kserve.istio.istioctl.uninstallJobName" title="Permanent link">#</a> { #helm.kserve.istio.istioctl.uninstallJobName }
 :   Type `string`, default `"istioctl-uninstall-job"`.
