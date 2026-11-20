@@ -63,6 +63,7 @@ Every issue is an `ERROR` unless the table says `WARNING`.
 | `PHASE` | `ERROR` | `agg` on the metric itself, dbt's newer YAML spec; a metric without a measure takes `type_params.metric_aggregation_params`. |
 | `METRIC_AGGREGATION_PARAMS` | `WARNING` | A simple metric with both `metric_aggregation_params` and a measure; the measure is ignored. |
 | `CYCLE` | `ERROR` | Metrics that read each other in a cycle. |
+| `METRIC_TREE` | `ERROR` | A metric that reads through more than 32 levels of input metrics, or expands to more than 1,000 metric references. |
 | `RELATION` | `ERROR` | A semantic model whose feature group does not exist, or is in a feature store neither the project's nor shared with it. |
 | `EXPR` | `ERROR` | An `expr` that does not compile against the feature group's features, such as a feature name with a typo. |
 | `TIME_DIMENSION` | `ERROR` | A time dimension whose feature is not a date or a timestamp. |
@@ -71,6 +72,8 @@ Every issue is an `ERROR` unless the table says `WARNING`.
 | `METRIC` | `ERROR` | A metric that the planner cannot plan, with the planner's reason, such as an exact percentile on Trino. |
 | `SAVED_QUERY` | `ERROR` | A saved query that the planner cannot plan, with the planner's reason. |
 | `NAME_TOO_LONG` | `ERROR` | A metric or saved query name longer than 255 characters. |
+| `EXPORTS_TOO_LARGE` | `ERROR` | A saved query whose exports take more characters as JSON than are stored; move some of them to another saved query. |
+| `COMPILE_FAILED` | `ERROR` | The compile stopped without recording why, for example because its Payara instance restarted; compile again. |
 | `UNSUPPORTED` | `WARNING` | A metric or saved query of a shape the planner refuses, see [Limits][semantic-metric-types-limits]; its queries are refused, and the build serves the others. |
 | `METRIC_TAGS_NOT_A_MAP`, `METRIC_TAG_UNKNOWN_SCHEMA`, `METRIC_TAG_INVALID_VALUE`, `METRIC_TAG_MANDATORY_MISSING` | `ERROR` | A metric's tags, see [Tag a metric][semantic-tags-metrics]. |
 | `SAVED_QUERY_TAGS_NOT_A_MAP`, `SAVED_QUERY_TAG_UNKNOWN_SCHEMA`, `SAVED_QUERY_TAG_INVALID_VALUE` | `ERROR` | A saved query's tags, checked as a metric's are. |

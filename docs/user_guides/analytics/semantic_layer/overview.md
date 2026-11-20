@@ -67,8 +67,8 @@ A build does not change once its compile ends, and has one of four statuses:
 | `FAILED` | The compile could not run. |
 
 A build records the git commit it was read at, when the root path is inside a Hopsworks git repository.
-Compiling files that have not changed returns their existing build.
-A semantic project keeps its 20 newest builds and the build that answers queries; the `semantic_layer_builds_retained` cluster setting changes the number.
+Compiling files and feature groups that have not changed returns their existing build.
+A semantic project keeps its 20 newest builds and the build that answers queries; an administrator changes the number with `hopsworks.variables.semantic_layer_builds_retained` in the Helm values, see [Cluster variables][semantic-admin-variables].
 
 ## Metrics and group-bys { #semantic-overview-metrics }
 

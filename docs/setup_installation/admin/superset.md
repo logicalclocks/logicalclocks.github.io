@@ -155,7 +155,7 @@ Manual connection management is typically not required, but administrators can:
 
 ## MCP Service { #superset-mcp-service }
 
-The chart runs Superset's MCP service, which the `hops superset chart generate` and `chart types` commands call (see [Charts from the CLI](../../user_guides/projects/superset/superset.md#superset-cli-mcp)).
+The chart runs Superset's MCP service, which the `hops superset chart generate` and `chart types` commands call (see [Charts from the CLI][superset-cli-mcp]).
 
 | Object | Purpose |
 | --- | --- |

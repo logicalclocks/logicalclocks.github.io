@@ -136,9 +136,6 @@ Each export has a Python job, `semantic-export-<semantic project id>-<export>`, 
 - A transfer of the semantic project replaces the jobs with jobs of the new owner at once, with the same names and schedules.
   Removing the owner from the project hands the semantic project over in the same request, see [When the owner leaves the project][semantic-builds-owner-removal].
 
-Data Owners and Data Scientists who can edit the YAML can change an export's saved query, target feature group and schedule, and those changes run as the owner.
-The job reads with the owner's access, under the Trino row filters, column masks and denied columns that apply to the owner, and writes only the export's own feature group.
-
 The job needs the Hopsworks 5.3 library in the `python-feature-pipeline` environment; with an older one, the run fails before writing and the job's log says `update the python-feature-pipeline environment to 5.3`.
 
 ## List exports and their status { #semantic-exports-list }
@@ -216,6 +213,7 @@ A run that started under an earlier definition of the export reports into the me
     print(execution.state)
     ```
 
+Starting a run with an API key needs the `JOB` scope, unlike the other export calls, which need `FEATURESTORE`.
 This run started at 10:15 on 2026-11-07, and replaced the window of the 02:00 run that day, see [Refreshes][semantic-exports-refresh].
 Without `--wait`, the CLI prints `Started export revenue_by_country_daily (execution #42).` and returns.
 In the UI, **Run now** on the **Exports** card starts the run; it shows to Data Owners, and is disabled with the reason for an export that cannot run.
@@ -236,8 +234,6 @@ An export writes only a feature group it created, so a feature group of the same
 ```text
 Feature group revenue_by_country_daily version 1 exists and export 'revenue_by_country_daily' did not create it, so nothing was written. Delete it, or give the export another alias or version.
 ```
-
-The feature group an export creates has `[semantic export <semantic project id>/<export>]` at the end of its description. A run takes over a feature group with its export's mark when the export has none recorded, as after a first run that wrote it but could not report.
 
 - Delete that feature group when nothing needs it, then run the export again.
 - Or change the export's `alias` or `version` in the YAML and compile; the next run creates the new feature group.
@@ -294,7 +290,7 @@ All of these hold:
 
 - The export has no `lookback`, so each run replaces every row.
 - Its saved query has no `limit`, `order_by` or group limit, no filter or time range relative to the current date or time, and calls no function whose value depends on when it runs, such as `CURRENT_DATE`, `now()` or `random()`, and no function the compiler does not know, such as a UDF.
-  The build warns of such a saved query with `EXPORT_SERVING`.
+  The build warns with `EXPORT_SERVING` of a saved query whose result may depend on when it runs, through `CURRENT_DATE`, `now()` or a function the compiler does not know; it gives no warning for `limit`, `order_by` or a group limit.
 - The query asks for the saved query's rows: the same metrics, the same group-bys at the same grains, and the same filters and time range, whether it names the saved query or spells the same query out.
   It may add `having`, `order_by` and `limit` over the saved query's columns, and nothing else: an extra filter is applied before the metrics are computed, so it is not a filter on the export's rows.
 - The saved query's definition, its SQL on the build that answers the query, is the one the export's last run read.
@@ -335,7 +331,7 @@ The exports are under `/hopsworks-api/api/project/<project id>/semantic/projects
 | Method | Path | Does |
 | --- | --- | --- |
 | GET | `exports` | Lists the exports of the build that answers queries, with their state. Data Owners and Data Scientists; an API key needs the `FEATURESTORE` scope. |
-| POST | `exports/<export>/run` | Starts the export's job and answers `{"jobName", "executionId"}`. Data Owners. |
+| POST | `exports/<export>/run` | Starts the export's job and answers `{"jobName", "executionId"}`. Data Owners; an API key needs the `JOB` scope. |
 | PUT | `exports/<export>/status` | The job's report of a run. Accepted only from a running execution of the export's job. |
 
 ```json

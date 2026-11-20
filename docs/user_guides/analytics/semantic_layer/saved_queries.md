@@ -183,7 +183,13 @@ metric_time__month,customer__country,revenue,orders
 2026-02-01,SE,30.0,1
 ```
 
-The totals of a saved query need an empty list of group-bys, which the CLI cannot send, so they are a Python or REST query:
+The totals of a saved query need an empty list of group-bys, which the CLI sends as `--group-by ""`:
+
+```bash
+hops semantic query sales --saved-query revenue_by_country --group-by ""
+```
+
+In Python, `group_by=[]`:
 
 ```python
 import hopsworks

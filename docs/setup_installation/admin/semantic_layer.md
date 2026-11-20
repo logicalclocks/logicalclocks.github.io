@@ -150,7 +150,8 @@ A gateway that cannot open one of its ports when it starts exits, so a pod that 
 
 ## Cluster variables { #semantic-admin-variables }
 
-Set under `hopsworks.variables` at install, or changed later on the [Cluster Configuration][cluster-configuration] page:
+Set as `hopsworks.variables.<variable>` in the Helm values.
+The chart writes them on every install and upgrade, so a change made on the [Cluster Configuration][cluster-configuration] page lasts only until the next `helm upgrade`:
 
 | Variable | Default | Meaning |
 | --- | --- | --- |

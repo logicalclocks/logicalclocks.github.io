@@ -39,7 +39,7 @@ One record per execution attempt of a query that runs, or would run, on Trino:
 | `request` | The metric query as the gateway normalised it, as JSON. |
 | `sql` | The SQL that ran. |
 
-The gateway sends its records to Hopsworks in batches, every 5 seconds or every 200 records, under the credential of the caller whose queries they are, and Hopsworks takes the user from that credential.
+The gateway sends its records to Hopsworks in batches, every 5 seconds or every 200 records.
 A record can be lost: when the gateway's queue is full, when a batch keeps failing after retries, when the caller's credential expires before the batch is sent, or when a gateway replica stops abruptly.
 The gateway's metrics port counts sent records in `semantic_query_records_sent_total`, and lost ones in `semantic_query_records_dropped_total` by reason: `full`, `oversized`, `credential`, `failed` and `rejected`.
 
@@ -141,7 +141,7 @@ Hopsworks keeps each record for 30 days after its query started.
 The 30 days are a time to live in the definition of the table, `hopsworks.semantic_query`: RonDB stops returning a record when its time is up, and purges it.
 An administrator changes the time to live in RonDB, see [Query history storage][semantic-admin-history-storage].
 
-An hourly job on Hopsworks removes the details of older records, under two cluster settings, see [Cluster Configuration][cluster-configuration]:
+An hourly job on Hopsworks removes the details of older records, under two cluster settings that an administrator sets in the Helm values, see [Cluster variables][semantic-admin-variables]:
 
 | Variable | Default | Effect |
 | --- | --- | --- |

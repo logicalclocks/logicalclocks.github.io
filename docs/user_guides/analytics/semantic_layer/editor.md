@@ -28,27 +28,38 @@ A file holds at most 1 MiB, and the root path at most 1,000 definition files and
 A path must end in `.yml` or `.yaml` and stay under the root path; symbolic links are refused.
 Files are read and written as you, so HopsFS permissions apply as in the file browser, and a saved file keeps its permissions.
 
-## Saves never overwrite another edit { #semantic-editor-conflicts }
+## Save conflicts { #semantic-editor-conflicts }
 
 A save names the version of the file it was opened at.
-When someone saved the file after you opened it, in the editor or anywhere else, the save is refused, and the editor shows **The file changed since you opened it** with **Reload**, which opens their version and discards your edits to that file.
+When the file changed in a way your save did not expect, in the editor or anywhere else, the save is refused and the editor says why:
+
+| Conflict | When | Choices |
+| --- | --- | --- |
+| **The file changed since you opened it** | Someone saved the file after you opened it. | **Reload** opens their version and discards your edits to that file; **Keep mine** saves your text over theirs. |
+| **A file of this name was created meanwhile** | Someone created a file of the name before you saved your new one. | **Reload** and **Keep mine**, as above. |
+| **The file was deleted elsewhere** | The file is gone. Your edits are still in the editor. | **Save as new file** saves them under the same name; **Discard changes** drops them. |
+| **Another save of this file is in progress** | Another save of the file was running. Nothing was lost and the file did not change. | **Save again**. |
+
 Two saves of one file from the editor at the same moment are serialised, and the second is refused, even from two semantic projects whose root paths share the file.
 A write outside the editor, from the file browser, Jupyter, a terminal or git, does not wait for an editor save in progress.
 
 ## Read only { #semantic-editor-read-only }
 
-The editor shows the files and their issues without **Save** and **New file**, with the reason under **Read only**, when:
+The editor shows the files without **Save** and **New file**, with the reason under **Read only**, when:
 
 | Case | Reason shown |
 | --- | --- |
 | The semantic project is in a Hopsworks git repository | The definitions are in a git repository. Change them there and pull, which compiles them. |
 | The semantic project is compiled from a `semantic_manifest.json` | dbt generates the manifest. Change the dbt project and generate the manifest again. |
 | You cannot write to the root path in HopsFS | You cannot write to the folder that holds the definitions. |
-| Your role in the project cannot change semantic projects | Only Data Owners and Data Scientists change semantic projects. |
+| Your role in the project cannot change semantic projects | Your role in this project cannot change semantic projects. |
+
+In the first three cases the editor still lists the issues of the files.
+In the last it lists none, and says that definitions are validated as they are edited, which your role cannot do; the issues of each build are under **Builds** on the overview.
 
 ## Over REST { #semantic-editor-rest }
 
-The editor's endpoints are under `/hopsworks-api/api/project/<project id>/semantic/projects/<semantic project id>/`, for Data Owners and Data Scientists; an API key needs the `FEATURESTORE` scope.
+The editor's endpoints are under `/hopsworks-api/api/project/<project id>/semantic/projects/<semantic project id>/`. The GET endpoints, which list and read the files, admit Data Owners, Data Scientists and Observers; the others admit Data Owners and Data Scientists. An API key needs the `FEATURESTORE` scope.
 
 | Method | Path | Does |
 | --- | --- | --- |

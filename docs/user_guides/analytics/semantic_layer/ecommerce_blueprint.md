@@ -10,7 +10,7 @@ It is the canonical example of a semantic layer on Hopsworks: metrics defined on
 The build creates:
 
 - four feature groups of generated orders, written by a backfill of two years and a daily job;
-- the semantic project `<name>`, the blueprint's dbt project with four semantic models, 26 metrics and three saved queries;
+- the semantic project named after `<name>` with hyphens turned into underscores, such as `ecommerce_semantic` for `ecommerce-semantic`, the blueprint's dbt project with four semantic models, 26 metrics and three saved queries;
 - the app `<name>-chat`, where questions in plain language are translated by an LLM into metric queries.
 
 ## Build it { #semantic-ecommerce-blueprint-build }

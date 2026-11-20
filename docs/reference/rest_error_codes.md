@@ -1437,6 +1437,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 560003 | `SUPERSET_DISABLED` | 400 BAD_REQUEST | Superset is disabled |
 | 560004 | `FORBIDDEN` | 403 FORBIDDEN | Forbidden from accessing Superset resource |
 | 560005 | `INVALID_PARAMETER` | 400 BAD_REQUEST | Invalid parameter provided for Superset API request |
+| 560006 | `MCP_UNAVAILABLE` | 503 SERVICE_UNAVAILABLE | Superset's MCP service is not deployed on this cluster |
 
 ## ProxyErrorCode
 

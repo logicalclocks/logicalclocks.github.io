@@ -286,7 +286,7 @@ bob@example.com owns semantic project sales of project demo. Transfer it to a da
 
 Transfer them first, or pick another Data owner to take the member's files.
 A member who leaves the project themselves goes through the same check, so a member who owns semantic projects names a Data owner to take their files, or transfers the semantic projects before leaving.
-A removal by a group mapping is never refused: the longest-serving Data owner who may own them takes the semantic projects, or nobody does, and the exports show `OWNER_NOT_DATA_OWNER` until a Data owner transfers them.
+A removal by a group mapping, or by an administrator from the cluster's project administration, is never refused: the longest-serving Data owner who may own them takes the semantic projects, or nobody does, and the exports show `OWNER_NOT_DATA_OWNER` until a Data owner transfers them.
 
 !!! api "API reference"
 

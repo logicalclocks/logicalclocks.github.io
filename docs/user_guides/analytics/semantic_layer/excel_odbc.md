@@ -43,10 +43,12 @@ Driver={Apache Arrow Flight SQL ODBC Driver};host=semantic.hopsworks.example.com
 | `token` | The API key, sent as `Authorization: Bearer`. |
 | `trustedCerts` | The cluster's CA as a PEM file, which `hops semantic connect <project> --ca-path <file>` writes. Leave it and `useSystemTrustStore=false` out when the system already trusts the gateway's certificate. |
 
+The examples on this page query a semantic project of id 7, `bookings`, built on the bookings model of MetricFlow's tutorial: its metrics `bookings` and `booking_value` are not in the `sales` semantic project of the other pages.
+
 A DSN in `odbc.ini` holds the same keys:
 
 ```ini
-[hopsworks-sales]
+[hopsworks-bookings]
 Driver = Apache Arrow Flight SQL ODBC Driver
 host = semantic.hopsworks.example.com
 port = 18446
@@ -68,7 +70,7 @@ import pyodbc
 
 
 api_key = os.environ["HOPSWORKS_API_KEY"]
-conn = pyodbc.connect("DSN=hopsworks-sales;token=" + api_key, autocommit=True)
+conn = pyodbc.connect("DSN=hopsworks-bookings;token=" + api_key, autocommit=True)
 cursor = conn.cursor()
 print([row.table_name for row in cursor.tables(catalog="semantic_layer")])
 cursor.execute(

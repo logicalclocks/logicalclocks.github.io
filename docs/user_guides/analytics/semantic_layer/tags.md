@@ -9,7 +9,8 @@ Metrics carry tags in their definitions, so a metric's tags change with its YAML
 Both use the tag schemas an administrator defines under `Cluster settings` > `Tag schemas`, described in [Tags][tags-guide].
 
 Schematised tags are a Hopsworks Enterprise feature.
-On other editions a semantic project lists no tags, refuses to attach one, and a compile skips the check of metric tags.
+On other editions a semantic project lists no tags, refuses to attach one, and a compile skips the check of metric tags against their schemas.
+On every edition a compile checks that a metric's or saved query's tags fit in 4,000 characters as JSON, and reports `METRIC_TAG_INVALID_VALUE` or `SAVED_QUERY_TAG_INVALID_VALUE` when they do not.
 
 The examples use two tag schemas: `ownership`, an object with `owner` and `certified` properties, and `domain`, a string.
 
@@ -95,7 +96,7 @@ Hopsworks checks every metric's tags before it stores a build, and each problem 
 | --- | --- |
 | `METRIC_TAGS_NOT_A_MAP` | `tags` is not a map of schema name to value. |
 | `METRIC_TAG_UNKNOWN_SCHEMA` | A tag names no tag schema. |
-| `METRIC_TAG_INVALID_VALUE` | A value does not match its schema. |
+| `METRIC_TAG_INVALID_VALUE` | A value does not match its schema, or the metric's tags take more than 4,000 characters as JSON. |
 | `METRIC_TAG_MANDATORY_MISSING` | A metric lacks a tag that a mandatory tag rule for metrics requires. |
 
 An error makes the build `INVALID`, so the last valid build keeps answering queries until the tags are fixed.
@@ -148,7 +149,8 @@ A new rule for metrics is checked by the next build of each semantic project, wh
 ```bash
 hops search --type semantic_project sales
 hops search --type metric revenue
+hops search --type saved_query revenue
 ```
 
-Search finds semantic projects by name, with their root path, and metrics by name, label and description, with their semantic project.
-Both carry their tags in the search index, so the tag filters of `hops search --tag` and of the search box in the UI header apply to them, as described in [Search][search-guide].
+Search finds semantic projects by name, with their root path, metrics by name, label and description, with their semantic project, and saved queries, with their semantic project.
+Semantic projects and metrics carry their tags in the search index, so the tag filters of `hops search --tag` and of the search box in the UI header apply to them, as described in [Search][search-guide].

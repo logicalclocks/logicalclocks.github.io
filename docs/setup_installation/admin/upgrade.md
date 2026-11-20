@@ -414,9 +414,9 @@ On a cluster upgraded from a 6.0.0p4 database it ran 6 migrations in about a min
   Check that a node in the namespace has 2 GiB free for it.
 - **The MCP service runs.**
   A new `hopsworks-superset-mcp` Deployment serves the `hops superset chart` commands over HTTPS, with a certificate from the cluster's CA and a signing key in the Secret `superset-mcp-jwt`.
-  Under ArgoCD, set `superset.mcp.jwtSecret`, or the service is not deployed; see [MCP service](superset.md#superset-mcp-service).
+  Under ArgoCD, set `superset.mcp.jwtSecret`, or the service is not deployed; see [MCP service][superset-mcp-service].
 - **Semantic layer dashboards.**
-  With the semantic layer enabled, each Data owner and Data scientist of a project with Superset and a semantic project gets one Superset database connection, which reads the metrics of the project's semantic projects, see [Dashboards in Superset](../../user_guides/analytics/semantic_layer/dashboards.md).
+  With the semantic layer enabled, each Data owner and Data scientist of a project with Superset and a semantic project gets one Superset database connection, which reads the metrics of the project's semantic projects, see [Dashboards in Superset][semantic-superset-dashboards].
   Set `hopsworks.variables.superset_semantic_enabled: "false"` to keep that off.
 
 ### Semantic layer { #upgrade-semantic-layer }

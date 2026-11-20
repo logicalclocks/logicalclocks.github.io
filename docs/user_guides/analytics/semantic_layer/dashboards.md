@@ -247,7 +247,7 @@ It takes effect only while the semantic layer and Superset are enabled.
 Set to `false`, or with the semantic layer or Superset turned off, Hopsworks refuses dashboard and Explore requests with 503, and within ten minutes deletes every member's semantic key and secret and the semantic connections.
 A connection that holds datasets stays, with its key revoked, so its charts fail; the datasets, charts and dashboards stay in Superset.
 Superset pods reach the gateway's Arrow Flight SQL port inside the cluster, see [What runs where][semantic-admin-components].
-Change it under **Cluster Settings** > **Configuration**, see [Cluster Configuration][cluster-configuration].
+An administrator changes it as `hopsworks.variables.superset_semantic_enabled` in the Helm values, see [Cluster variables][semantic-admin-variables].
 
 !!! api "API reference"
 

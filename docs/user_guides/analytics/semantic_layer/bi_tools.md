@@ -216,7 +216,7 @@ An administrator turns it on with a host name, such as `semantic.example.com`.
 | Environment ID | The semantic project's id, `7`. |
 | Token | The API key. |
 
-- Use dbt's Tableau connector on a network you trust.
+- dbt's Tableau connector turns off the check of the server certificate (`disableCertificateVerification`), so it would not notice a server impersonating the gateway; use it on a network you trust.
   dbt's Power BI connector checks the server certificate against the Windows trust store, so the layout's TLS Secret needs a certificate Windows trusts.
 - The connectors list the `metrics` table and one table per saved query; dbt Cloud names its `metrics` table `ALL`.
 - Tableau sends every metric as `SUM(<metric>)`, which [means the metric][semantic-bi-metric-columns].
