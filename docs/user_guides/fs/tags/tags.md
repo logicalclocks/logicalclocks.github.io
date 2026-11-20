@@ -415,7 +415,7 @@ Tags on artifacts of every indexed class are searchable, so a governance questio
 An administrator can delete a tag schema from `Cluster settings` > `Tag schemas` with the delete button on its row, or through the API.
 A schema can be deleted only while:
 
-- no tag created from it is attached to a feature group, feature view, training dataset, model, deployment, job, dataset or data source, and
+- no tag created from it is attached to a feature group, feature view, training dataset, model, deployment, job, dataset, data source or semantic project, and
 - it has no archived values in the [tag history][archive-tag-history].
 
 Otherwise the delete is refused with `TAG_SCHEMA_IN_USE` (370014, HTTP 409), and the message says how many tags are created from the schema, per kind of artifact, or how many archived values it has.
