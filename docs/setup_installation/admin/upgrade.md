@@ -749,7 +749,6 @@ The statistics settings added in 5.3 default to the previous behaviour, so an un
 - `statistics_retention_rows_per_entity` keeps that many statistics rows per feature group and feature view, newest first; at the default 0 every row is kept.
 - `statistics_incremental_enabled` (default `false`) is the setting of feature groups that do not set their own `incremental` statistics flag: with it on, each append is merged into the previous statistics instead of profiling the whole table.
   `statistics_incremental_allowed` (default `true`) is the admin switch, which makes every feature group run full profiles when off, and `statistics_incremental_full_profile_every` (default 50) is the number of merged commits after which a feature group gets a full profile again.
-- `kube_img_pull_policy` is now seeded by the chart with its previous default, `Always`.
 
 Like every chart variable, these are rewritten from the values file on each upgrade.
 A change made on the admin variables page, such as turning `statistics_incremental_allowed` off, lasts only until the next upgrade unless it is made in the values file as well.
