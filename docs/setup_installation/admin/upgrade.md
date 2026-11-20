@@ -741,7 +741,8 @@ On a cluster still on Istio 1.29, the Istio install hook stops with an error bef
 [Knative mode][knative-mode-deprecated] is deprecated in 5.3, and 5.4 removes Knative and Istio.
 
 - **New Knative-mode deployments are refused.**
-  Creating a deployment in Knative mode, or switching a Standard-mode deployment to Knative mode, fails with error `240080`, from the UI, the Python SDK and the REST API alike.
+  The UI no longer offers Knative mode.
+  From the Python SDK or the REST API, creating a deployment in Knative mode, or switching a Standard-mode deployment to Knative mode, fails with error `240080`.
   A deployment created without a mode runs in Standard mode, as in 5.2.
 - **Existing Knative-mode deployments keep working.**
   They start, stop, update, roll back and serve as before, and their owners convert them to Standard mode when it suits them.
@@ -755,7 +756,8 @@ Prepare for 5.4 while on 5.3, as described in [5.3.x to 5.4.x][upgrade-53-to-54]
 ## 5.3.x to 5.4.x { #upgrade-53-to-54 }
 
 5.4 is not released yet.
-It removes Knative and Istio: model deployments run in Standard mode only, and Envoy Gateway takes over the external address and ports of the Istio ingress gateway.
+It removes Knative and Istio: model deployments run in Standard mode only, and Envoy Gateway replaces the Istio ingress gateway as the entry point.
+Node ports stay the same; a load balancer address carries over only when you pin or reserve it, as described in step 4.
 The 5.4 upgrade refuses to start while Envoy Gateway is off or a Knative-mode deployment is running, so prepare on 5.3:
 
 1. **Enable Envoy Gateway**, as described in [Envoy Gateway][upgrade-envoy-gateway], and check that every Standard-mode deployment moved.

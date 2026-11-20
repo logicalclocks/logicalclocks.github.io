@@ -272,7 +272,8 @@ Switching the mode clears the scaling settings that do not carry over and re-der
 
 ### Knative mode is deprecated { #knative-mode-deprecated }
 
-Knative mode is deprecated, and Hopsworks 5.4 removes it: Standard mode covers what it offered, including scale to zero when idle through KEDA.
+Knative mode is deprecated, and Hopsworks 5.4 removes it.
+Standard mode scales to zero when idle and on request metrics through KEDA for a predictor without a transformer; a deployment with a transformer keeps at least one instance and scales on CPU or memory.
 Creating a deployment in Knative mode, or switching a Standard-mode deployment to Knative mode, fails with error `240080`, unless your administrator still allows it for the time being.
 Existing Knative-mode deployments keep working until you convert them, and their overview shows a deprecation banner.
 
@@ -293,7 +294,8 @@ my_deployment.start()
 ```
 
 The deployment restarts once.
-Its Knative-only scaling settings are dropped and the Standard-mode defaults fill the gaps; a minimum of zero instances becomes [scale to zero when idle](#scale-to-zero-when-idle) where the cluster supports it, and one instance otherwise.
+Its Knative-only scaling settings are dropped and the Standard-mode defaults fill the gaps.
+A minimum of zero instances becomes [scale to zero when idle](#scale-to-zero-when-idle) for a predictor without a transformer on a cluster with KEDA, and one instance otherwise; a deployment with a transformer also moves from request metrics to CPU.
 A vLLM deployment keeps at least one instance while the LLM Gateway is published, so the LLM Gateway serves it.
 Converting needs the permissions to edit and to start and stop the deployment, which Data Owners have.
 A converted deployment can still roll back to a version saved in Knative mode; the version runs in Standard mode.
