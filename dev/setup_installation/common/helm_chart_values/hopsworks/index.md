@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795107626` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795163083` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -3476,15 +3476,6 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.docker_job_uid_strict` <a class="headerlink" href="#helm.hopsworks.variables.docker_job_uid_strict" title="Permanent link">#</a> { #helm.hopsworks.variables.docker_job_uid_strict }
 :   Type `string`, default `"true"`.
 
-`hopsworks.variables.docker_mounts` <a class="headerlink" href="#helm.hopsworks.variables.docker_mounts" title="Permanent link">#</a> { #helm.hopsworks.variables.docker_mounts }
-:   Type `string`.
-
-    ??? note "Default"
-
-        ```yaml
-        /srv/hops/hadoop/etc/hadoop,/srv/hops/spark,/srv/hops/flink,/srv/hops/apache-livy
-        ```
-
 `hopsworks.variables.docker_operations_allow_hermetic_custom_commands` <a class="headerlink" href="#helm.hopsworks.variables.docker_operations_allow_hermetic_custom_commands" title="Permanent link">#</a> { #helm.hopsworks.variables.docker_operations_allow_hermetic_custom_commands }
 :   Type `string`, default `"false"`.
     Whether a custom-commands build may declare itself hermetic, with HOPSWORKS_BUILD_HERMETIC=true in its environment file, and so keep its layer cache. Custom command layers are never reused otherwise, because the script can fetch anything and nothing declares what. Only the script's author knows whether that is true of their script, and only the operator decides whether that claim is allowed to control cache reuse.
@@ -3782,9 +3773,6 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.flink_user` <a class="headerlink" href="#helm.hopsworks.variables.flink_user" title="Permanent link">#</a> { #helm.hopsworks.variables.flink_user }
 :   Type `string`, default `"flink"`.
-
-`hopsworks.variables.flink_version` <a class="headerlink" href="#helm.hopsworks.variables.flink_version" title="Permanent link">#</a> { #helm.hopsworks.variables.flink_version }
-:   Type `string`, default `"1.17.1.0"`.
 
 `hopsworks.variables.fs_job_activity_time` <a class="headerlink" href="#helm.hopsworks.variables.fs_job_activity_time" title="Permanent link">#</a> { #helm.hopsworks.variables.fs_job_activity_time }
 :   Type `string`, default `"5m"`.
@@ -4313,9 +4301,6 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.max_num_proj_per_user` <a class="headerlink" href="#helm.hopsworks.variables.max_num_proj_per_user" title="Permanent link">#</a> { #helm.hopsworks.variables.max_num_proj_per_user }
 :   Type `string`, default `"10"`.
 
-`hopsworks.variables.max_status_poll_retry` <a class="headerlink" href="#helm.hopsworks.variables.max_status_poll_retry" title="Permanent link">#</a> { #helm.hopsworks.variables.max_status_poll_retry }
-:   Type `string`, default `"5"`.
-
 `hopsworks.variables.mount_hopsfs_ray_job_container` <a class="headerlink" href="#helm.hopsworks.variables.mount_hopsfs_ray_job_container" title="Permanent link">#</a> { #helm.hopsworks.variables.mount_hopsfs_ray_job_container }
 :   Type `string`, default `"true"`.
 
@@ -4686,9 +4671,6 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"10000"`.
     Users whose own limit each instance keeps in memory (100 to 1000000).
 
-`hopsworks.variables.rmyarn_user` <a class="headerlink" href="#helm.hopsworks.variables.rmyarn_user" title="Permanent link">#</a> { #helm.hopsworks.variables.rmyarn_user }
-:   Type `string`, default `"rmyarn"`.
-
 `hopsworks.variables.rondb_default_max_online_tables` <a class="headerlink" href="#helm.hopsworks.variables.rondb_default_max_online_tables" title="Permanent link">#</a> { #helm.hopsworks.variables.rondb_default_max_online_tables }
 :   Type `string`, default `"-1"`.
     How many tables a project's online database may have, unless an administrator sets a limit for the project. Feature groups and Python app tables count; -1 is unlimited.
@@ -5001,21 +4983,45 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.verification_path` <a class="headerlink" href="#helm.hopsworks.variables.verification_path" title="Permanent link">#</a> { #helm.hopsworks.variables.verification_path }
 :   Type `string`, default `"hopsworks-api/api/auth/verify"`.
 
-`hopsworks.variables.yarn_default_payment_type` <a class="headerlink" href="#helm.hopsworks.variables.yarn_default_payment_type" title="Permanent link">#</a> { #helm.hopsworks.variables.yarn_default_payment_type }
-:   Type `string`, default `"NOLIMIT"`.
-
-`hopsworks.variables.yarn_default_quota` <a class="headerlink" href="#helm.hopsworks.variables.yarn_default_quota" title="Permanent link">#</a> { #helm.hopsworks.variables.yarn_default_quota }
-:   Type `string`, default `"60000000"`.
-
 `hopsworks.variables.yarn_user` <a class="headerlink" href="#helm.hopsworks.variables.yarn_user" title="Permanent link">#</a> { #helm.hopsworks.variables.yarn_user }
 :   Type `string`, default `"yarn"`.
 
 `hopsworks.variables.zookeeper_version` <a class="headerlink" href="#helm.hopsworks.variables.zookeeper_version" title="Permanent link">#</a> { #helm.hopsworks.variables.zookeeper_version }
 :   Type `string`, default `"3.7.1"`.
 
+`hopsworks.variables.docker_mounts` <span class="hops-values-deprecated">Deprecated</span> <a class="headerlink" href="#helm.hopsworks.variables.docker_mounts" title="Permanent link">#</a> { #helm.hopsworks.variables.docker_mounts }
+:   Type `string`.
+    Deprecated. Ignored since YARN job support was removed.
+
+    ??? note "Default"
+
+        ```yaml
+        /srv/hops/hadoop/etc/hadoop,/srv/hops/spark,/srv/hops/flink,/srv/hops/apache-livy
+        ```
+
+`hopsworks.variables.flink_version` <span class="hops-values-deprecated">Deprecated</span> <a class="headerlink" href="#helm.hopsworks.variables.flink_version" title="Permanent link">#</a> { #helm.hopsworks.variables.flink_version }
+:   Type `string`, default `"1.17.1.0"`.
+    Deprecated. Ignored since YARN job support was removed.
+
+`hopsworks.variables.max_status_poll_retry` <span class="hops-values-deprecated">Deprecated</span> <a class="headerlink" href="#helm.hopsworks.variables.max_status_poll_retry" title="Permanent link">#</a> { #helm.hopsworks.variables.max_status_poll_retry }
+:   Type `string`, default `"5"`.
+    Deprecated. Ignored since YARN job support was removed.
+
 `hopsworks.variables.mount_hopsfs_in_python_job` <span class="hops-values-deprecated">Deprecated</span> <a class="headerlink" href="#helm.hopsworks.variables.mount_hopsfs_in_python_job" title="Permanent link">#</a> { #helm.hopsworks.variables.mount_hopsfs_in_python_job }
 :   Type `bool`, default `true`.
     Deprecated. Python Apps always mount HopsFS; this remains only for legacy Python jobs.
+
+`hopsworks.variables.rmyarn_user` <span class="hops-values-deprecated">Deprecated</span> <a class="headerlink" href="#helm.hopsworks.variables.rmyarn_user" title="Permanent link">#</a> { #helm.hopsworks.variables.rmyarn_user }
+:   Type `string`, default `"rmyarn"`.
+    Deprecated. Ignored since YARN job support was removed.
+
+`hopsworks.variables.yarn_default_payment_type` <span class="hops-values-deprecated">Deprecated</span> <a class="headerlink" href="#helm.hopsworks.variables.yarn_default_payment_type" title="Permanent link">#</a> { #helm.hopsworks.variables.yarn_default_payment_type }
+:   Type `string`, default `"NOLIMIT"`.
+    Deprecated. Ignored since YARN job support was removed.
+
+`hopsworks.variables.yarn_default_quota` <span class="hops-values-deprecated">Deprecated</span> <a class="headerlink" href="#helm.hopsworks.variables.yarn_default_quota" title="Permanent link">#</a> { #helm.hopsworks.variables.yarn_default_quota }
+:   Type `string`, default `"60000000"`.
+    Deprecated. Ignored since YARN job support was removed.
 
 </div>
 
