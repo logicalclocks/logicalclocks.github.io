@@ -16000,7 +16000,8 @@ This allows tags to be consistent no matter the project or the team generating t
 
 !!! warning "Immutable"
     Tag schemas are immutable.
-    Once defined, a tag schema cannot be edited nor deleted.
+    Once defined, a tag schema cannot be edited.
+    It can be deleted only while it is unused; see [Deleting a tag schema][deleting-a-tag-schema].
 
 ## Step 1: Define a tag schema
 
@@ -16369,9 +16370,9 @@ A `removed_at` of `NULL` means the artifact is still in that state. An `added_on
 tag was attached before Hopsworks began recording attachment times, so the start is unknown; it is
 left empty rather than filled with a guess.
 
-The history outlives what it describes. Deleting the artifact, the tag schema or the project closes
-the open intervals and keeps the rows, so a report over a past quarter still returns what was true
-then.
+The history outlives what it describes.
+Deleting the artifact or the project closes the open intervals and keeps the rows, so a report over a past quarter still returns what was true then.
+A tag schema with history cannot be deleted, see [Deleting a tag schema][deleting-a-tag-schema].
 Deleting a dataset does the same for the HopsFS data sources that point into it, since they are deleted with it.
 
 ## Step 3: Search
@@ -16388,6 +16389,48 @@ Tags on artifacts of every indexed class are searchable, so a governance questio
     <figcaption>Search for tags in the feature store</figcaption>
   </figure>
 </p>
+
+## Deleting a tag schema { #deleting-a-tag-schema }
+
+An administrator can delete a tag schema from `Cluster settings` > `Tag schemas` with the delete button on its row, or through the API.
+A schema can be deleted only while:
+
+- no tag created from it is attached to a feature group, feature view, training dataset, model, deployment, job, dataset or data source, and
+- it has no archived values in the [tag history][archive-tag-history].
+
+Otherwise the delete is refused with `TAG_SCHEMA_IN_USE` (370014, HTTP 409), and the message says how many tags are created from the schema, per kind of artifact, or how many archived values it has.
+Remove the tags with `delete_tag()` to make the schema deletable.
+Archived values are kept, so a schema with tag history cannot be deleted.
+
+A [mandatory][mandatory-tags-guide] schema can be deleted when it is otherwise unused.
+The delete dialog warns where the schema is mandatory, and deleting the schema removes those requirements.
+
+`usage` reports what still refers to a schema before you try:
+
+=== "Python"
+
+    ```python
+    from hopsworks.core.tag_schemas_api import TagSchemasApi
+
+
+    usage = TagSchemasApi().usage("data_privacy")
+    if not usage["deletable"]:
+        # e.g. "Tag schema 'data_privacy' cannot be deleted: 3 tags are created from it
+        # (feature groups, feature views and training datasets: 3)."
+        print(usage["reason"])
+    print(usage["mandatoryIn"])  # e.g. ["feature store, every project"]
+
+    TagSchemasApi().delete("data_privacy")
+    ```
+
+=== "REST"
+
+    ```bash
+    curl -H "Authorization: ApiKey $API_KEY" https://<hopsworks>/hopsworks-api/api/tags/data_privacy/usage
+    curl -X DELETE -H "Authorization: ApiKey $API_KEY" https://<hopsworks>/hopsworks-api/api/tags/data_privacy
+    ```
+
+Both require the platform administrator role.
 
 ================================================================================
 # Mandatory Tags
@@ -45924,6 +45967,61 @@ Before, it created no topics there, so every topic had to exist before ingestion
 - **Kafka changes through a shared feature store are refused.**
   Creating or deleting a topic or a schema, or setting a compatibility level, through a feature store shared from another project fails with `CHANGE_THROUGH_SHARED_FEATURE_STORE` (190027).
   Reading through a shared feature store is unchanged.
+
+### Deleting a tag schema in use is refused { #upgrade-tag-schema-delete }
+
+Up to 5.2, deleting a tag schema deleted every tag created from it, in every project.
+From 5.3, the delete is refused with `TAG_SCHEMA_IN_USE` (370014, HTTP 409) while a tag created from the schema is attached to any artifact, or while the schema has archived values in the [tag history][archive-tag-history].
+The message says how many tags use the schema, per kind of artifact, or how many archived values it has.
+
+- **Automation that deletes tag schemas** has to remove their tags first, with `delete_tag()`.
+  A schema with archived values cannot be deleted, because the history keeps them.
+- **Wait for the dataset tag migration before deleting a tag schema.**
+  Legacy dataset tags stored in HopsFS are moved into the database by a background migration that starts 30 minutes after Hopsworks starts, and the delete does not see tags that have not moved yet.
+  A dataset whose legacy tag names a deleted schema fails the migration and keeps its tags in HopsFS.
+  The migration has finished when the `dataset_tags_xattr_migration_done` setting is `true`.
+
+- **A deleted schema's name can stay taken.**
+  A schema deleted before 5.3 kept its archived values in the tag history, and a new schema of the same name would take them over.
+  Creating a schema under such a name is refused with `TAG_SCHEMA_NAME_HAS_HISTORY` (370015, HTTP 409), so choose another name.
+
+See [Deleting a tag schema][deleting-a-tag-schema].
+
+### The extended attributes endpoint is removed { #upgrade-xattrs-endpoint }
+
+From 5.3, `/project/{id}/xattrs/{path}` answers 404: HopsFS extended attributes can no longer be read, written or deleted through the REST API.
+Tags on datasets, feature groups, models and the other artifacts are managed through their tag APIs, as before.
+
+A dataset whose legacy tags cannot be moved into the database answers tag changes with `TAG_MIGRATION_PENDING` (370013, HTTP 409), and the Hopsworks log names the dataset and the tags that failed.
+A tag fails when its tag schema was deleted or its value no longer validates against the schema.
+Re-creating a deleted schema clears the dataset when its values validate.
+Otherwise an administrator edits the dataset's `user.tags` extended attribute as the HopsFS superuser, which the NameNode container runs as.
+The attribute holds a JSON array with one `{"key": <tag schema>, "value": <tag value as a JSON string>}` entry per tag.
+
+1. **Read the attribute**, with the dataset's HopsFS path, for example `/Projects/<project>/<dataset>`:
+
+    ```bash
+    kubectl exec -n hopsworks deploy/namenode -c namenode -- \
+      /srv/hops/hadoop/bin/hdfs dfs -getfattr -n user.tags -e text /Projects/<project>/<dataset>
+    ```
+
+    The value is the text between the outer quotes:
+
+    ```text
+    user.tags="[{"key":"pii","value":"{\"owner\":\"ann\"}"},{"key":"retired","value":"{\"a\":1}"}]"
+    ```
+
+2. **Write it back** without the tags that failed, or with their values corrected:
+
+    ```bash
+    kubectl exec -n hopsworks deploy/namenode -c namenode -- \
+      /srv/hops/hadoop/bin/hdfs dfs -setfattr -n user.tags \
+      -v '[{"key":"pii","value":"{\"owner\":\"ann\"}"}]' /Projects/<project>/<dataset>
+    ```
+
+    When no tag should be kept, remove the attribute with `-setfattr -x user.tags` instead.
+
+The dataset's tags move into the database the next time they are read, or at the hourly migration pass.
 
 ### Envoy Gateway { #upgrade-envoy-gateway }
 
@@ -80344,6 +80442,8 @@ Do not hand-edit the tables below; regenerate them instead.
 | 370011 | `TAG_PATH_NOT_TAGGABLE` | 400 BAD_REQUEST | Only dataset roots can be tagged. Tagging a file or a directory inside a dataset is no longer supported. |
 | 370012 | `TAG_WRITE_DENIED` | 403 FORBIDDEN | Not allowed to change the tags of this dataset. |
 | 370013 | `TAG_MIGRATION_PENDING` | 409 CONFLICT | This dataset still has legacy tags in HopsFS that could not be migrated. Resolve them before changing its tags. |
+| 370014 | `TAG_SCHEMA_IN_USE` | 409 CONFLICT | The tag schema is still in use and cannot be deleted. |
+| 370015 | `TAG_SCHEMA_NAME_HAS_HISTORY` | 409 CONFLICT | A deleted tag schema of this name left archived values in the tag history. Choose another name. |
 
 ## CloudErrorCode
 
