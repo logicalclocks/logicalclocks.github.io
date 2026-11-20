@@ -745,7 +745,10 @@ One feature monitoring configuration may then cover up to 32 features, and its r
 The statistics settings added in 5.3 default to the previous behaviour, so an untouched cluster computes and keeps statistics as before:
 
 - `statistics_job_driver_memory`, `statistics_job_executor_memory`, `statistics_job_executor_cores` and `statistics_job_max_executors` override the generic Spark job values for the statistics jobs only when set, and are empty by default.
+  Before each ingestion statistics run they are applied to the existing job too.
+  The memory and cores settings are floors, so a job given more in the Jobs UI keeps it, while `statistics_job_max_executors` caps the job's maximum executors.
 - `statistics_job_bytes_per_executor` sizes the executors of a statistics run from the size of the table it profiles; at the default 0 a run keeps the job's configured executors.
+  When it is set, each ingestion statistics run sets the job's maximum executors from the table size, up to `statistics_job_max_executors` or the generic Spark job default.
 - `statistics_retention_rows_per_entity` keeps that many statistics rows per feature group and feature view, newest first; at the default 0 every row is kept.
 - `statistics_incremental_enabled` (default `false`) is the setting of feature groups that do not set their own `incremental` statistics flag: with it on, each append is merged into the previous statistics instead of profiling the whole table.
   `statistics_incremental_allowed` (default `true`) is the admin switch, which makes every feature group run full profiles when off, and `statistics_incremental_full_profile_every` (default 50) is the number of merged commits after which a feature group gets a full profile again.
