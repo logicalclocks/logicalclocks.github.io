@@ -590,20 +590,10 @@ With the topic ID, OnlineFS reads a topic that was deleted and created again und
   An OnlineFS pod of 5.2 reads its project's table each time Kafka gives it partitions, as during the rollout.
   The `onlinefs-drop-legacy-offsets-<hash>-r<revision>` Job waits for the rollout of the OnlineFS Deployment to finish, then drops the listed project tables.
   On a cluster with `global._hopsworks.full_platform: true` it holds the Flyway lease while it drops them, as the schema migrations do.
-- **The init container connects to the DDL SQL node of the release as the `onlinefs` MySQL user, and the Job as `hopsworksroot`**: the `ddl-mysqld` Service of the release, or, when RonDB is managed externally on a release with `global._hopsworks.full_platform: true`, the consul name in `onlinefs.dependencies.mysql.ddlConsulServiceName` (`mysqlddl`).
+- **The init container and the Job connect to the DDL SQL node of the release as `hopsworksroot`**, as the schema migrations do: the `ddl-mysqld` Service of the release, or, when RonDB is managed externally on a release with `global._hopsworks.full_platform: true`, the consul name in `onlinefs.dependencies.mysql.ddlConsulServiceName` (`mysqlddl`).
   A satellite cluster (`global._hopsworks.full_platform: false`) always connects to the Service, also with an external RonDB.
   A cluster that disables the DDL SQL node (`rondb.rondb.meta.ddlMySQLd.enabled: false`) sets `onlinefs.dependencies.mysql.serviceName: mysqld`, and also `onlinefs.dependencies.mysql.ddlConsulServiceName: mysql` when it is not a satellite and RonDB is managed externally.
   `onlinefs.dependencies.mysql.url` overrides both.
-- **The chart's RonDB creates the `onlinefs` user** during the upgrade, with its password in the `onlinefs` key of the `mysql-users-secrets` Secret, and the grants below.
-  With RonDB managed externally, create it before the upgrade and add its password to the Secret, or set `onlinefs.dependencies.mysql.user: hopsworksroot`:
-
-    ```sql
-    CREATE USER 'onlinefs'@'%' IDENTIFIED BY '<password>';
-    GRANT NDB_STORED_USER ON *.* TO 'onlinefs'@'%';
-    GRANT CREATE, SELECT, INSERT, UPDATE ON onlinefs.* TO 'onlinefs'@'%';
-    GRANT SELECT ON *.* TO 'onlinefs'@'%';
-    ```
-
 - **With `onlinefs.rbac.useExistingRole`**, the role needs `get`, `list` and `watch` on `deployments`, and on a cluster with `global._hopsworks.full_platform: true` the lease rules of the chart's `onlinefs-role`, for the Job.
 - **A step that fails keeps the pod from starting.**
   It reads every project table before it writes, so a step that fails while it copies leaves every project table as it is, and the next start copies them again.
@@ -637,7 +627,7 @@ kubectl logs <onlinefs-pod> -c offsets-schema -n <namespace>
 | The error | What it means | What to do |
 | --- | --- | --- |
 | `Hopsworks did not answer with the OnlineFS settings within 900 s` | Hopsworks did not answer within the step's time, `onlinefs.offsetsSchemaBudgetSeconds`. Nothing was changed. | Wait until the `hopsworks-instance` pods are ready. The next start runs the step again. |
-| `Communications link failure`, `UnknownHostException` or `Access denied for user 'onlinefs'` | The step cannot reach or log in to the SQL node. Nothing was changed. | While the upgrade restarts the SQL node, or the chart's RonDB has not created the `onlinefs` user yet, this passes on its own. Otherwise check the SQL node the step connects to, as described above, the user, and the `onlinefs` key of the `mysql-users-secrets` Secret. |
+| `Communications link failure`, `UnknownHostException` or `Access denied for user 'hopsworksroot'` | The step cannot reach or log in to the SQL node. Nothing was changed. | While the upgrade restarts the SQL node, this passes on its own. Otherwise check the SQL node the step connects to, as described above, and the `hopsworksroot` key of the `mysql-users-secrets` Secret. |
 | `Got error 4009 'No data node(s) available'` | RonDB's data nodes are restarting or down, as while the upgrade restarts them. Nothing was changed. | The next start runs the step again once the data nodes are up. |
 | `onlinefs.kafka_offsets has the columns [...], OnlineFS maps [...]` | The table exists with columns OnlineFS does not map, because it was created or changed outside OnlineFS. Nothing was moved. | Do not drop it, it holds the offsets. Change its columns to the ones the message lists after `OnlineFS maps`, keeping its rows. |
 | `Failed to read a per-project kafka_offsets, it is kept as it is`, with the database | The table of that project cannot be read. A single such table stops the whole step: nothing was written, and every project table is kept. | Repair that table, from the RonDB backup if needed. A table that cannot be repaired can be dropped, as described below. |
