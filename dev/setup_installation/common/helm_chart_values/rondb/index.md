@@ -4,13 +4,13 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
 !!! info "Upstream charts"
 
-    - Values under `rondb.rondb` go to [`rondb` 26.2.24](https://github.com/logicalclocks/rondb-helm/blob/v26.2.24/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+    - Values under `rondb.rondb` go to [`rondb` 26.2.26](https://github.com/logicalclocks/rondb-helm/blob/v26.2.26/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
 
 ??? example "Defaults as YAML"
 
@@ -220,7 +220,7 @@ Always deployed.
         ```
 
 `rondb.rondb` <a class="headerlink" href="#helm.rondb.rondb" title="Permanent link">#</a> { #helm.rondb.rondb }
-:   Type `object`, passed to the [`rondb` 26.2.24](https://github.com/logicalclocks/rondb-helm/blob/v26.2.24/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+:   Type `object`, passed to the [`rondb` 26.2.26](https://github.com/logicalclocks/rondb-helm/blob/v26.2.26/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
     override rondb values
 
     ??? note "Default"
@@ -355,7 +355,7 @@ Always deployed.
 
 ## `rondb` chart values { #helm-values-rondb-rondb }
 
-These are the values of the [`rondb` 26.2.24](https://github.com/logicalclocks/rondb-helm/blob/v26.2.24/values.schema.json) chart, set under `rondb.rondb`.
+These are the values of the [`rondb` 26.2.26](https://github.com/logicalclocks/rondb-helm/blob/v26.2.26/values.schema.json) chart, set under `rondb.rondb`.
 The defaults are what Hopsworks deploys: the chart's own, with the `rondb` and `rondb.rondb` overrides above applied.
 Where Hopsworks overrides a value, the entry also gives the chart's own default.
 
@@ -2334,6 +2334,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
                 diskColumns: null
                 mgmd: null
               diskColumnGiB: 2
+              diskColumnVolumeGiB: null
               logGiB: 2
               mgmdGiB: 1
               ndbmtdGiB: 30
@@ -2469,6 +2470,10 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.resources.requests.storage.diskColumnGiB` <a class="headerlink" href="#helm.rondb.rondb.resources.requests.storage.diskColumnGiB" title="Permanent link">#</a> { #helm.rondb.rondb.resources.requests.storage.diskColumnGiB }
 :   Type `integer`, default `2`, minimum `1`.
     This depends on how much data the user is expecting to place on disk
+
+`rondb.rondb.resources.requests.storage.diskColumnVolumeGiB` <a class="headerlink" href="#helm.rondb.rondb.resources.requests.storage.diskColumnVolumeGiB" title="Permanent link">#</a> { #helm.rondb.rondb.resources.requests.storage.diskColumnVolumeGiB }
+:   Type `integer|null`, default `null`, minimum `1`.
+    The size in GiB of the persistent volume that classes.diskColumns gives the disk columns, wherever the chart computes that size: in new installations, and when an upgrade cannot read the existing volume claim template from the cluster, as in argo deployments. An upgrade that can read it keeps the existing size whatever this value. When null, the computed size is diskColumnGiB plus 3% plus 2 GiB, which leaves room for the filesystem: leave it null in a new installation, where a smaller size is rejected. Charts before 26.2.25 sized the volume differently (26.2.24: diskColumnGiB plus 2 GiB) and the volume claim template of an existing StatefulSet cannot change: before such a cluster is upgraded in an argo deployment, with mode upgrade, set this to the request of the rondb-ndbmtd-dc volume claim template of its node-group StatefulSets (252 for 252Gi).
 
 `rondb.rondb.resources.requests.storage.logGiB` <a class="headerlink" href="#helm.rondb.rondb.resources.requests.storage.logGiB" title="Permanent link">#</a> { #helm.rondb.rondb.resources.requests.storage.logGiB }
 :   Type `integer`, default `2`.
@@ -2846,6 +2851,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
           ndbmtdStartupProbe: 240
           restoreNativeBackup: 120
           singleSetupMySQLds: 5
+          waitAllDatanodes: 2
     ```
 
 <div class="hops-values" markdown>
@@ -2869,6 +2875,10 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.timeoutsMinutes.singleSetupMySQLds` <a class="headerlink" href="#helm.rondb.rondb.timeoutsMinutes.singleSetupMySQLds" title="Permanent link">#</a> { #helm.rondb.rondb.timeoutsMinutes.singleSetupMySQLds }
 :   Type `integer`, default `5`.
     This includes the time to start a single MySQLd pod, restoring MySQL metadata and running user-defined MySQL init scripts.
+
+`rondb.rondb.timeoutsMinutes.waitAllDatanodes` <a class="headerlink" href="#helm.rondb.rondb.timeoutsMinutes.waitAllDatanodes" title="Permanent link">#</a> { #helm.rondb.rondb.timeoutsMinutes.waitAllDatanodes }
+:   Type `integer`, default `2`, minimum `0`.
+    Once every node group has a started ndbmtd, how long MySQLd pods and the SQL upgrade Jobs wait for the remaining active ndbmtds to be started before they start anyway. An ndbmtd that is down, e.g. after its host crashed, then does not keep MySQLds from (re)starting while the cluster is operational. Waiting until every node group has a started ndbmtd has no time limit, and the Jobs that restore a backup or set up a new cluster always wait for every active ndbmtd. 0 starts as soon as every node group has a started ndbmtd.
 
 </div>
 

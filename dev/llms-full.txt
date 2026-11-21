@@ -51371,7 +51371,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -51394,7 +51394,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.
 
 | Values | Upstream charts | Keys |
 | --- | --- | --- |
-| [`global`][helm-values-global] |  | 170 |
+| [`global`][helm-values-global] |  | 171 |
 | [`airflow`][helm-values-airflow] |  | 162 |
 | [`arrowflight`][helm-values-arrowflight] |  | 46 |
 | [`certs-operator`][helm-values-certs-operator] |  | 29 |
@@ -51418,10 +51418,10 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.
 | [`onlinefs`][helm-values-onlinefs] |  | 99 |
 | [`prometheus`][helm-values-prometheus] | [`prometheus` 25.20.2](https://artifacthub.io/packages/helm/prometheus-community/prometheus/25.20.2), [`prometheus-adapter` 4.11.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-adapter/4.11.0) | 9 |
 | [`ray`][helm-values-ray] | [`kuberay-operator` 1.4.0](https://artifacthub.io/packages/helm/kuberay-operator/kuberay-operator/1.4.0) | 2 |
-| [`rondb`][helm-values-rondb] | [`rondb` 26.2.24](https://github.com/logicalclocks/rondb-helm/blob/v26.2.24/values.schema.json) | 498 |
+| [`rondb`][helm-values-rondb] | [`rondb` 26.2.26](https://github.com/logicalclocks/rondb-helm/blob/v26.2.26/values.schema.json) | 500 |
 | [`spark`][helm-values-spark] | [`spark-operator` 2.5.1](https://github.com/kubeflow/spark-operator/blob/v2.5.1/charts/spark-operator-chart/README.md) | 160 |
 | [`superset`][helm-values-superset] | [`mysql` 12.3.5](https://artifacthub.io/packages/helm/bitnami/mysql/12.3.5), [`superset` 0.15.0](https://artifacthub.io/packages/helm/superset/superset/0.15.0) | 36 |
-| [`trino`][helm-values-trino] | [`trino` 1.41.0](https://artifacthub.io/packages/helm/trino/trino/1.41.0) | 38 |
+| [`trino`][helm-values-trino] | [`trino` 1.41.0](https://artifacthub.io/packages/helm/trino/trino/1.41.0) | 41 |
 | [`vpa`][helm-values-vpa] |  | 18 |
 
 ## Other values { #helm-values-other }
@@ -51794,7 +51794,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -51881,6 +51881,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.
           namespaceMatchLabels: {}
         ray:
           enabled: false
+        rondbRolloutProgressDeadlineSeconds: 3600
         security:
           tls:
             enabled: true
@@ -52119,6 +52120,10 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.
 
 `global._hopsworks.ray.enabled` <a class="headerlink" href="#helm.global._hopsworks.ray.enabled" title="Permanent link">#</a> { #helm.global._hopsworks.ray.enabled }
 :   Type `bool`, default `false`.
+
+`global._hopsworks.rondbRolloutProgressDeadlineSeconds` <a class="headerlink" href="#helm.global._hopsworks.rondbRolloutProgressDeadlineSeconds" title="Permanent link">#</a> { #helm.global._hopsworks.rondbRolloutProgressDeadlineSeconds }
+:   Type `int`, default `3600`.
+    progressDeadlineSeconds of the Deployments that wait for the RonDB rolling restart before running schema migrations (HopsFS namenode, Hopsworks CA, Hive metastore), and of the Deployments that wait for those services (Hopsworks, Airflow, OnlineFS, the Spark history server, the certs operator). Trino takes it from trino.trino.coordinator.deployment.progressDeadlineSeconds, trino.trino.worker.deployment.progressDeadlineSeconds and trino.trinotest.coordinator.deployment.progressDeadlineSeconds instead. Their new pods make no progress until the restart ends, so the value must exceed the longest RonDB rolling restart plus the service's startup; past it, a waiting Helm 4 upgrade and ArgoCD report the upgrade as failed although the rollout continues. Raise it together with the timeout of helm upgrade on clusters whose RonDB restart takes longer.
 
 `global._hopsworks.security.tls.enabled` <a class="headerlink" href="#helm.global._hopsworks.security.tls.enabled" title="Permanent link">#</a> { #helm.global._hopsworks.security.tls.enabled }
 :   Type `bool`, default `true`.
@@ -53117,7 +53122,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -54145,7 +54150,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -54427,7 +54432,7 @@ Values under `certs-operator` configure the operator that issues the TLS certifi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -54615,7 +54620,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -54949,7 +54954,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -55400,7 +55405,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -55898,7 +55903,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -56316,7 +56321,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -57481,7 +57486,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 
@@ -57751,7 +57756,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -63262,7 +63267,7 @@ The LLM Gateway's controller ships in the same subchart, and its values, under `
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: `global._hopsworks.envoyGateway.enabled`, [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -63702,7 +63707,7 @@ See [LLM Gateway][llm-gateway] for what the feature installs and what the cluste
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 ## aiGateway { #helm-values-hw-envoy-ai-gateway-aigateway }
 
@@ -64199,7 +64204,7 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -64606,7 +64611,7 @@ With `kueue.enabled=false` Hopsworks uses a Kueue installed outside its release;
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -64992,7 +64997,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -65487,7 +65492,7 @@ Values under `judge` configure Judge, the active cluster arbitrator service.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -65622,7 +65627,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -66512,7 +66517,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -68454,7 +68459,7 @@ Values under `minio` configure MinIO, an S3-compatible object store deployed ins
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) is `true`.
 
@@ -68709,7 +68714,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -69685,7 +69690,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -70220,7 +70225,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -70374,7 +70379,7 @@ Values under `ray` configure the KubeRay operator, which runs the Ray clusters b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.ray.enabled`](global.md#helm.global._hopsworks.ray.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -70521,13 +70526,13 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
 !!! info "Upstream charts"
 
-    - Values under `rondb.rondb` go to [`rondb` 26.2.24](https://github.com/logicalclocks/rondb-helm/blob/v26.2.24/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+    - Values under `rondb.rondb` go to [`rondb` 26.2.26](https://github.com/logicalclocks/rondb-helm/blob/v26.2.26/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
 
 ??? example "Defaults as YAML"
 
@@ -70737,7 +70742,7 @@ Always deployed.
         ```
 
 `rondb.rondb` <a class="headerlink" href="#helm.rondb.rondb" title="Permanent link">#</a> { #helm.rondb.rondb }
-:   Type `object`, passed to the [`rondb` 26.2.24](https://github.com/logicalclocks/rondb-helm/blob/v26.2.24/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+:   Type `object`, passed to the [`rondb` 26.2.26](https://github.com/logicalclocks/rondb-helm/blob/v26.2.26/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
     override rondb values
 
     ??? note "Default"
@@ -70872,7 +70877,7 @@ Always deployed.
 
 ## `rondb` chart values { #helm-values-rondb-rondb }
 
-These are the values of the [`rondb` 26.2.24](https://github.com/logicalclocks/rondb-helm/blob/v26.2.24/values.schema.json) chart, set under `rondb.rondb`.
+These are the values of the [`rondb` 26.2.26](https://github.com/logicalclocks/rondb-helm/blob/v26.2.26/values.schema.json) chart, set under `rondb.rondb`.
 The defaults are what Hopsworks deploys: the chart's own, with the `rondb` and `rondb.rondb` overrides above applied.
 Where Hopsworks overrides a value, the entry also gives the chart's own default.
 
@@ -72851,6 +72856,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
                 diskColumns: null
                 mgmd: null
               diskColumnGiB: 2
+              diskColumnVolumeGiB: null
               logGiB: 2
               mgmdGiB: 1
               ndbmtdGiB: 30
@@ -72986,6 +72992,10 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.resources.requests.storage.diskColumnGiB` <a class="headerlink" href="#helm.rondb.rondb.resources.requests.storage.diskColumnGiB" title="Permanent link">#</a> { #helm.rondb.rondb.resources.requests.storage.diskColumnGiB }
 :   Type `integer`, default `2`, minimum `1`.
     This depends on how much data the user is expecting to place on disk
+
+`rondb.rondb.resources.requests.storage.diskColumnVolumeGiB` <a class="headerlink" href="#helm.rondb.rondb.resources.requests.storage.diskColumnVolumeGiB" title="Permanent link">#</a> { #helm.rondb.rondb.resources.requests.storage.diskColumnVolumeGiB }
+:   Type `integer|null`, default `null`, minimum `1`.
+    The size in GiB of the persistent volume that classes.diskColumns gives the disk columns, wherever the chart computes that size: in new installations, and when an upgrade cannot read the existing volume claim template from the cluster, as in argo deployments. An upgrade that can read it keeps the existing size whatever this value. When null, the computed size is diskColumnGiB plus 3% plus 2 GiB, which leaves room for the filesystem: leave it null in a new installation, where a smaller size is rejected. Charts before 26.2.25 sized the volume differently (26.2.24: diskColumnGiB plus 2 GiB) and the volume claim template of an existing StatefulSet cannot change: before such a cluster is upgraded in an argo deployment, with mode upgrade, set this to the request of the rondb-ndbmtd-dc volume claim template of its node-group StatefulSets (252 for 252Gi).
 
 `rondb.rondb.resources.requests.storage.logGiB` <a class="headerlink" href="#helm.rondb.rondb.resources.requests.storage.logGiB" title="Permanent link">#</a> { #helm.rondb.rondb.resources.requests.storage.logGiB }
 :   Type `integer`, default `2`.
@@ -73363,6 +73373,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
           ndbmtdStartupProbe: 240
           restoreNativeBackup: 120
           singleSetupMySQLds: 5
+          waitAllDatanodes: 2
     ```
 
 <div class="hops-values" markdown>
@@ -73386,6 +73397,10 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 `rondb.rondb.timeoutsMinutes.singleSetupMySQLds` <a class="headerlink" href="#helm.rondb.rondb.timeoutsMinutes.singleSetupMySQLds" title="Permanent link">#</a> { #helm.rondb.rondb.timeoutsMinutes.singleSetupMySQLds }
 :   Type `integer`, default `5`.
     This includes the time to start a single MySQLd pod, restoring MySQL metadata and running user-defined MySQL init scripts.
+
+`rondb.rondb.timeoutsMinutes.waitAllDatanodes` <a class="headerlink" href="#helm.rondb.rondb.timeoutsMinutes.waitAllDatanodes" title="Permanent link">#</a> { #helm.rondb.rondb.timeoutsMinutes.waitAllDatanodes }
+:   Type `integer`, default `2`, minimum `0`.
+    Once every node group has a started ndbmtd, how long MySQLd pods and the SQL upgrade Jobs wait for the remaining active ndbmtds to be started before they start anyway. An ndbmtd that is down, e.g. after its host crashed, then does not keep MySQLds from (re)starting while the cluster is operational. Waiting until every node group has a started ndbmtd has no time limit, and the Jobs that restore a backup or set up a new cluster always wait for every active ndbmtd. 0 starts as soon as every node group has a started ndbmtd.
 
 </div>
 
@@ -73439,7 +73454,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -75024,7 +75039,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -76736,7 +76751,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -76757,6 +76772,9 @@ Deployed according to the first of these values that is set: [`global._hopsworks
       catalogsConfigmapName: hopsworks-trino-catalogs
       hopsworkslib: {}
       trinotest:
+        coordinator:
+          deployment:
+            progressDeadlineSeconds: 3600
         initContainers:
           coordinator:
           - null
@@ -76780,6 +76798,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 `trino.trinotest` <a class="headerlink" href="#helm.trino.trinotest" title="Permanent link">#</a> { #helm.trino.trinotest }
 :   Type `object`, default check \[values.yaml\](./values.yaml) for more information, passed to the [`trino` 1.41.0](https://artifacthub.io/packages/helm/trino/trino/1.41.0) chart, whose other values are documented there.
     override trinotest values. Rendered only when global._hopsworks.trino.testCoordinator.enabled is true (see Chart.yaml). An optional single-node coordinator running catalog.management=dynamic with a WRITABLE catalog dir, used by the backend to connection-test user catalogs (CREATE CATALOG / SHOW SCHEMAS / DROP CATALOG) before they are synced to the production coordinator. Mirrors the production coordinator's image, certs, TLS, and PASSWORD auth so the backend's admin credentials and discovery work identically.
+
+`trino.trinotest.coordinator.deployment` <a class="headerlink" href="#helm.trino.trinotest.coordinator.deployment" title="Permanent link">#</a> { #helm.trino.trinotest.coordinator.deployment }
+:   Type `object`, default `{"progressDeadlineSeconds":3600}`.
+    Deployment settings. progressDeadlineSeconds matches the default of global._hopsworks.rondbRolloutProgressDeadlineSeconds: the pods wait for HopsFS, which starts only after the RonDB rolling restart.
 
 `trino.trinotest.initContainers.coordinator[2].name` <a class="headerlink" href="#helm.trino.trinotest.initContainers.coordinator.2.name" title="Permanent link">#</a> { #helm.trino.trinotest.initContainers.coordinator.2.name }
 :   Type `string`, default `"mountable-secrets"`.
@@ -76986,6 +77008,8 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         coordinator:
           additionalJVMConfig:
           - --add-opens=java.base/java.nio=ALL-UNNAMED
+          deployment:
+            progressDeadlineSeconds: 3600
         image:
           registry: docker.hops.works
           repository: hopsworks/trino
@@ -76998,6 +77022,9 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           worker:
           - null
           - name: mountable-secrets
+        worker:
+          deployment:
+            progressDeadlineSeconds: 3600
     ```
 
 <div class="hops-values" markdown>
@@ -77009,6 +77036,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 `trino.trino.coordinator.additionalJVMConfig` <a class="headerlink" href="#helm.trino.trino.coordinator.additionalJVMConfig" title="Permanent link">#</a> { #helm.trino.trino.coordinator.additionalJVMConfig }
 :   Type `list`, default `["--add-opens=java.base/java.nio=ALL-UNNAMED"]`.
     add-opens for java.nio, and the failure is a CONFIGURATION error raised while the catalog is being loaded. On this coordinator that is fatal rather than local, because Trino runs catalog.management=static and exits when a catalog file fails to load -- so one project's Snowflake catalog would stop the whole cluster from starting. Set here rather than left to the operator because the connector is in TRINO_CONNECTORS, i.e. the backend offers it to every project. Other Arrow-based connectors need the same opens, so this is not Snowflake-specific.
+
+`trino.trino.coordinator.deployment` <a class="headerlink" href="#helm.trino.trino.coordinator.deployment" title="Permanent link">#</a> { #helm.trino.trino.coordinator.deployment }
+:   Type `object`, default `{"progressDeadlineSeconds":3600}`.
+    Deployment settings. progressDeadlineSeconds matches the default of global._hopsworks.rondbRolloutProgressDeadlineSeconds: the pods wait for HopsFS, which starts only after the RonDB rolling restart.
 
 `trino.trino.image.registry` <a class="headerlink" href="#helm.trino.trino.image.registry" title="Permanent link">#</a> { #helm.trino.trino.image.registry }
 :   Type `string`, default `"docker.hops.works"`.
@@ -77030,6 +77061,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 :   Type `string`, default `"mountable-secrets"`.
     readOnly is not optional. Without it the query engine gains a write channel into HopsFS as the trino service user; the volume's readOnly makes the kernel refuse writes too. --srcDir bounds what the mount exposes to the backend-owned tree; the mount authenticates as trino, which is in the hdfs superuser group, so srcDir is the only thing containing it.  No preStop unmount: the node plugin owns the mount and unmounts it in NodeUnpublishVolume, and hopsfs-sidecar.sh exits on SIGTERM, so the container terminates cleanly on its own.
 
+`trino.trino.worker.deployment` <a class="headerlink" href="#helm.trino.trino.worker.deployment" title="Permanent link">#</a> { #helm.trino.trino.worker.deployment }
+:   Type `object`, default `{"progressDeadlineSeconds":3600}`.
+    Deployment settings. progressDeadlineSeconds matches the default of global._hopsworks.rondbRolloutProgressDeadlineSeconds: the pods wait for HopsFS, which starts only after the RonDB rolling restart.
+
 </div>
 
 <!-- END GENERATED VALUES -->
@@ -77044,7 +77079,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
