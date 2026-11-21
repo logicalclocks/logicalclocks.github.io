@@ -17,7 +17,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -40,7 +40,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.
 
 | Values | Upstream charts | Keys |
 | --- | --- | --- |
-| [`global`][helm-values-global] |  | 168 |
+| [`global`][helm-values-global] |  | 170 |
 | [`airflow`][helm-values-airflow] |  | 162 |
 | [`arrowflight`][helm-values-arrowflight] |  | 46 |
 | [`certs-operator`][helm-values-certs-operator] |  | 29 |

@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795255865` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -1107,6 +1107,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.
         trino:
           auth:
             refreshPeriod: 5s
+          catalogManagement: static
           egressProbe:
             echoUrl: ''
           enabled: true
@@ -1120,7 +1121,8 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.
             mountWaitSeconds: 300
             storeRoot: /apps/trino
           image:
-            tag: 483-v4
+            tag: 484-v0
+          maxCatalogsCeiling: 250
           mountRetryTimeLimit: 2m
           mountableSecrets:
             csi:
@@ -1148,6 +1150,10 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.
 `global._hopsworks.trino.auth.refreshPeriod` <a class="headerlink" href="#helm.global._hopsworks.trino.auth.refreshPeriod" title="Permanent link">#</a> { #helm.global._hopsworks.trino.auth.refreshPeriod }
 :   Type `string`, default `"5s"`.
     How often the coordinator re-reads password.db and group.db: the delay before a new project member can log in, and before a removed one is refused.
+
+`global._hopsworks.trino.catalogManagement` <a class="headerlink" href="#helm.global._hopsworks.trino.catalogManagement" title="Permanent link">#</a> { #helm.global._hopsworks.trino.catalogManagement }
+:   Type `string`, default `"static"`.
+    How Trino manages user catalogs. `static`: each created, changed or deleted catalog takes a restart of the coordinator and the workers. `dynamic`: the backend applies the change to the running cluster, with no restart, and a catalog Trino cannot load is disabled on its own. `dynamic` needs the catalog-file secrets provider of the Hopsworks Trino image, from 484-v0.
 
 `global._hopsworks.trino.egressProbe` <a class="headerlink" href="#helm.global._hopsworks.trino.egressProbe" title="Permanent link">#</a> { #helm.global._hopsworks.trino.egressProbe }
 :   Type `object`, default `{"echoUrl":""}`.
@@ -1220,12 +1226,16 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795214116` (Hopsworks `5.
     Where the files live in HopsFS. Preset by charts/hopsfs, passed to the sidecar as `--srcDir` and seeded to the backend as `trino_files_path`. Moving it does not move existing files.
 
 `global._hopsworks.trino.image` <a class="headerlink" href="#helm.global._hopsworks.trino.image" title="Permanent link">#</a> { #helm.global._hopsworks.trino.image }
-:   Type `object`, default `{"tag":"483-v4"}`.
+:   Type `object`, default `{"tag":"484-v0"}`.
     The Trino image this release deploys, restated here for the backend.
 
 `global._hopsworks.trino.image.tag` <a class="headerlink" href="#helm.global._hopsworks.trino.image.tag" title="Permanent link">#</a> { #helm.global._hopsworks.trino.image.tag }
-:   Type `string`, default `"483-v4"`.
+:   Type `string`, default `"484-v0"`.
     The Trino image tag, seeded to the backend as `trino_image_tag` so it can tell when its connector-property table is stale. Duplicates trino.image.tag in charts/trino/values.yaml, which cannot be templated; charts/trino fails the render when they disagree. Bump both.
+
+`global._hopsworks.trino.maxCatalogsCeiling` <a class="headerlink" href="#helm.global._hopsworks.trino.maxCatalogsCeiling" title="Permanent link">#</a> { #helm.global._hopsworks.trino.maxCatalogsCeiling }
+:   Type `int`, default `250`.
+    The most user catalogs an administrator may allow on the cluster (the catalog limit on the admin query engine page cannot be set above it). The coordinator holds every catalog in its heap, about 3.5 MB each, so raise this together with the coordinator heap (`trino.trino.coordinator.jvm.maxHeapSize`). A coordinator that runs out of heap loading catalogs does not start again until catalogs are removed or the heap is raised.
 
 `global._hopsworks.trino.mountRetryTimeLimit` <a class="headerlink" href="#helm.global._hopsworks.trino.mountRetryTimeLimit" title="Permanent link">#</a> { #helm.global._hopsworks.trino.mountRetryTimeLimit }
 :   Type `string`, default `"2m"`.
