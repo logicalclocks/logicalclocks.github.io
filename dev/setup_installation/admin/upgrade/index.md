@@ -205,6 +205,13 @@ consul {
 
 This is the form for the default setup, in which the chart configures the cluster DNS through the `coredns` ConfigMap and sets `CONSUL_SERVER` on the CoreDNS Deployment.
 
+### A HopsFS schema migration is recorded as failed { #upgrade-migration-rondb-restart }
+
+After an upgrade from 5.2.4 or earlier to 5.2.5, the new `namenode` pod can stay in `Init:CrashLoopBackOff`, with its `initialize-flyway` container logging ``ERROR: Schema `hops` contains a failed migration to version 3.4.3.4 !`` on every retry.
+The migration started before the upgrade restarted RonDB, and the restart interrupted it.
+This is fixed in 5.2.6, as described under [Schema migrations wait for the RonDB restart][upgrade-migrations-wait-rondb].
+To recover a cluster in that state, contact Hopsworks support.
+
 ## 5.2.x to 5.3.x { #upgrade-52-to-53 }
 
 OpenSearch stays on 3.8.0.
@@ -906,3 +913,38 @@ Istio 1.30 supports Kubernetes 1.32 to 1.36, and Istio supports the 1.30 release
   Do not run `helm upgrade`, or an ArgoCD sync, with a release older than 5.2.5 afterwards: its hook installs Istio 1.29 over 1.30, a downgrade Istio does not support.
   To go back entirely, restore the backup on a new cluster, as described in [New Cluster Restore][new-cluster-restore].
   An in-place restore does not apply here, since it runs `helm upgrade` with the release of the backup, whose Istio install hook installs Istio 1.29 over 1.30.
+
+## Changes from 5.2.6 { #upgrade-changes-from-526 }
+
+These changes ship in 5.2.6 and 5.3.0.
+They apply to an upgrade from 5.1.x to 5.2.6 or later, from an earlier 5.2 release to 5.2.6 or later, and from 5.2.5 or earlier to 5.3.
+5.1.4 and 5.0.16 carry the same changes, so they also apply to an upgrade to 5.1.4 or to 5.0.16.
+
+### Schema migrations wait for the RonDB restart { #upgrade-migrations-wait-rondb }
+
+The pods that run schema migrations, of the HopsFS namenode, the Hopsworks CA and the Hive metastore, wait until the upgrade has restarted RonDB before they migrate.
+
+- **Availability.**
+  The Hopsworks CA is unavailable from the moment the upgrade replaces its pod until the RonDB restart has finished, and so is the Hopsworks admin server when the release changes the Hopsworks schema.
+- **Time.**
+  On a cluster whose RonDB restart takes longer than an hour, raise `global._hopsworks.rondbRolloutProgressDeadlineSeconds` (3600 seconds) together with `helm upgrade --timeout`.
+  Past that deadline, Helm 4 and ArgoCD report the upgrade as failed although the rollout continues.
+- **ArgoCD.**
+  Sync the RonDB StatefulSets in the same sync and sync wave as the Deployments, because those pods wait until the sync has updated the StatefulSets.
+- **If the upgrade fails.**
+  Those pods keep waiting.
+  Fix the cause and run the upgrade again: they continue without being deleted.
+
+### RonDB disk-column volume with ArgoCD { #upgrade-rondb-disk-column-volume }
+
+A cluster that keeps RonDB's on-disk columns on a volume of their own (`rondb.rondb.resources.requests.storage.classes.diskColumns`) and is upgraded with ArgoCD states the size of that volume before the upgrade.
+The chart now sizes that volume larger for a new cluster, and ArgoCD cannot read the size of an existing one, so without the value the sync fails on the `node-group` StatefulSets, whose volume claims Kubernetes does not let change.
+Read the size of the existing volume claim:
+
+```sh
+kubectl get statefulset node-group-0 -n hopsworks \
+  -o jsonpath='{.spec.volumeClaimTemplates[?(@.metadata.name=="rondb-ndbmtd-dc")].spec.resources.requests.storage}'
+```
+
+Set `rondb.rondb.resources.requests.storage.diskColumnVolumeGiB` to that number of GiB, and keep it set in later upgrades.
+An upgrade with Helm keeps the existing size by itself.
