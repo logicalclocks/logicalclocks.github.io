@@ -346,6 +346,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `kube_keystore_path` | String | `/srv/hops/certs-dir/kube/hopsworks/hopsworks__kstore.jks` | Settings.java |
 | `kube_knative_domain_name` | String | `hopsworks.ai` | Settings.java |
 | `kube_knative_lb_domain` | String | *(empty string)* | Settings.java |
+| `kube_knative_mode_allowed` | Boolean | `false` | Settings.java |
 | `kube_kserve_installed` | Boolean | `false` | Settings.java |
 | `kube_kserve_tensorflow_version` | String | *(empty string)* | Settings.java |
 | `kube_master_url` | String | `https://192.168.68.102:6443` | Settings.java |

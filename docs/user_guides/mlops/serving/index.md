@@ -43,6 +43,7 @@ Configure the resources to be allocated for predictor and transformer in a model
 
 Configure autoscaling for your model deployment, including scale metrics and scaling parameters, see the [Autoscaling Guide](autoscaling.md).
 How a deployment scales depends on whether it runs in KServe Standard mode, scaled by KEDA where the cluster has it, or Knative mode, see [Deployment mode](autoscaling.md#deployment-mode).
+Knative mode is [deprecated][knative-mode-deprecated].
 A minimum of 0 instances scales a deployment to zero when idle in either mode, see [Scale to zero when idle](autoscaling.md#scale-to-zero-when-idle).
 
 ### Scheduling

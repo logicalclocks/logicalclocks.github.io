@@ -41,11 +41,10 @@ To navigate to the advanced creation form, click on `Advanced options`.
 ### Step 3: Configure autoscaling
 
 In the `Autoscaling` section of the advanced form, you can configure the scaling parameters for the predictor and/or the transformer (if available).
-The `Knative` checkbox at the top of the section selects the [deployment mode](#deployment-mode) and decides which of the fields below are shown.
-It starts unchecked, so a new deployment runs in Standard mode unless you check it.
-The checkbox is disabled while the deployment is running, because the mode of a running deployment cannot be changed.
+The section shows the fields of the [deployment mode](#deployment-mode) the deployment runs in.
+A new deployment runs in Standard mode: [Knative mode is deprecated][knative-mode-deprecated] and can no longer be selected.
 
-With the checkbox cleared, the deployment runs in Standard mode and the form shows the fields of the autoscaler the cluster provides.
+In Standard mode, the form shows the fields of the autoscaler the cluster provides.
 Its tooltip names the one in effect: KEDA where the cluster has it, KServe's own Horizontal Pod Autoscaler (HPA) otherwise.
 
 - The minimum and maximum instances.
@@ -59,7 +58,7 @@ Its tooltip names the one in effect: KEDA where the cluster has it, KServe's own
 - With a minimum of 0, the idle cooldown and the cold-start timeout.
   A vLLM deployment shows a warning, because the model reloads on every wake.
 
-With the checkbox checked, the deployment runs in Knative mode and you can set the scale metric (concurrent requests or requests per second), the target value, the minimum and maximum instances, and the panic and stable window parameters.
+For an existing Knative-mode deployment, the edit form shows the mode read-only, and you can set the scale metric (concurrent requests or requests per second), the target value, the minimum and maximum instances, and the panic and stable window parameters.
 
 <p align="center">
   <figure>
@@ -234,6 +233,7 @@ In Standard mode a transformer scales on CPU or memory and keeps at least one in
 !!! note "Match the scaling configuration to the mode"
     The `knative_mode` argument selects the [deployment mode](#deployment-mode) of the deployment.
     Leaving it unset deploys in Standard mode for every model server, so a Knative scaling configuration needs `knative_mode=True` passed explicitly.
+    [Knative mode is deprecated][knative-mode-deprecated]: `knative_mode=True` is refused unless your administrator still allows it.
     A scaling configuration that uses fields the chosen mode does not support is rejected, so set both together.
 
 !!! tip "Read the configuration back"
@@ -263,12 +263,42 @@ Inference requests reach both modes through the same Istio endpoint, so the mode
     | Standard | Kubernetes Deployment | [KEDA](https://keda.sh/docs/latest/concepts/) where the cluster has it (the default), else [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) | With KEDA, for a predictor without a transformer, through the KEDA HTTP add-on        |
     | Knative  | Knative service       | [Knative Pod Autoscaler (KPA)](https://knative.dev/docs/serving/autoscaling/)                                                                                                           | Yes                                                                                  |
 
-A new deployment runs in Standard mode for every model server; Knative mode is the opt-in.
+A new deployment runs in Standard mode for every model server.
 An update that leaves the mode unset keeps the stored one.
 
 The two modes are backed by different Kubernetes resources, so the mode of a deployment cannot be changed while it is running.
 Stop the deployment, change the mode, and start it again.
 Switching the mode clears the scaling settings that do not carry over and re-derives the defaults of the new mode.
+
+### Knative mode is deprecated { #knative-mode-deprecated }
+
+Knative mode is deprecated, and Hopsworks 5.4 removes it.
+Standard mode scales to zero when idle and on request metrics through KEDA for a predictor without a transformer; a deployment with a transformer keeps at least one instance and scales on CPU or memory.
+Creating a deployment in Knative mode, or switching a Standard-mode deployment to Knative mode, fails with error `240080`, unless your administrator still allows it for the time being.
+Existing Knative-mode deployments keep working until you convert them, and their overview shows a deprecation banner.
+
+To convert a deployment, use **Convert to Standard mode** on its overview, or stop it, switch off Knative mode and start it again from the Python SDK:
+
+```python
+import hopsworks
+
+
+project = hopsworks.login()
+ms = project.get_model_serving()
+
+my_deployment = ms.get_deployment("my_deployment")
+my_deployment.stop()
+my_deployment.knative_mode = False
+my_deployment.save()
+my_deployment.start()
+```
+
+The deployment restarts once.
+Its Knative-only scaling settings are dropped and the Standard-mode defaults fill the gaps.
+A minimum of zero instances becomes [scale to zero when idle](#scale-to-zero-when-idle) for a predictor without a transformer on a cluster with KEDA, and one instance otherwise; a deployment with a transformer also moves from request metrics to CPU.
+A vLLM deployment keeps at least one instance while the LLM Gateway is published, so the LLM Gateway serves it.
+Converting needs the permissions to edit and to start and stop the deployment, which Data Owners have.
+A converted deployment can still roll back to a version saved in Knative mode; the version runs in Standard mode.
 
 ### Standard-mode autoscaler
 
@@ -285,6 +315,7 @@ KServe's HPA is kept as the fallback for clusters without KEDA and will be retir
     argument: `True` for Knative mode, `False` for Standard mode.
     Leaving it unset uses Standard mode when creating a deployment,
     and keeps the stored mode when updating one.
+    Knative mode is [deprecated][knative-mode-deprecated].
     See [`Model.deploy()`][hsml.model.Model.deploy] in the API reference.
 
 ## Scale metrics
