@@ -36,7 +36,7 @@ Updating a deployment without a strategy keeps the one it has, and a deployment 
   It also holds a single tensor in host memory at a time, where `MOUNT` holds a whole file per GPU.
   Loading a 16 GB model with the streamer takes about as long as downloading it, without the local disk.
   The weights must be in safetensors format, and the vLLM image must include the streamer: the official `vllm/vllm-openai` images do, while the CPU images (`vllm/vllm-openai-cpu`) do not, and a custom image needs `vllm[runai]`.
-  Saving `RUNAI_STREAMER` for a model without safetensors weights at the top of its files is rejected.
+  Saving `RUNAI_STREAMER` for a model without safetensors weights at the top of its files is rejected, and so is saving it for a deployment without GPUs, which runs the CPU image.
   vLLM-Omni cannot use it: the streamer hands over tensors in the order it reads them, and vLLM-Omni's model loaders need them in file order.
   See [Run:ai Model Streamer settings][run-ai-model-streamer-settings] for how it is configured.
 - **`DOWNLOAD`** needs local disk at least as large as the model, and then reads the files at disk speed.
