@@ -30,6 +30,7 @@ Updating a deployment without a strategy keeps the one it has, and a deployment 
   vLLM-Omni keeps its own default, since its diffusion stages refuse the setting.
   Their own default, `lazy`, maps the files into memory and reads them out of order, which is several times slower from a mount: loading a 16 GB model that way took 524 s, against 202 s with `RUNAI_STREAMER`.
   Reading a file whole holds it in host memory while its weights load, once per GPU, and that counts against the deployment's memory limit.
+  A deployment without GPUs keeps its weights in host memory as well, so it needs memory for its largest weight file on top of what the model uses: a 2.2 GB model in a single file took 8.5 GiB to load on CPU, against 5.7 GiB with `DOWNLOAD`.
   For vLLM-Omni it is the only way to read a mounted model.
 - **`RUNAI_STREAMER`** can load a vLLM model faster when the deployment requests several GPUs.
   The streamer reads the safetensors files in large chunks, several at once, and with more than one GPU each GPU reads a share of the files and passes it to the others, so the model is read from HopsFS once instead of once per GPU.
@@ -49,6 +50,7 @@ Each one is only a default: setting it in the deployment's configuration file or
 
 - **`--load-format runai_streamer`** makes vLLM load the weights with the streamer.
   A `load-format` in the configuration file replaces the streamer, and that loader then reads the model from the mount; for vLLM's default loader that is several times slower, so choose `MOUNT`, which has it read each file whole, or `DOWNLOAD` instead.
+  Options in `model-loader-extra-config` that only vLLM's default loader takes, such as `enable_multithread_load` or `num_threads`, keep that loader too, since the streamer refuses them and the deployment would not start.
 - **Distributed streaming**, when a vLLM deployment has more than one GPU: each GPU reads a share of the files and passes it to the others, so the model is read from HopsFS once instead of once per GPU.
   Hopsworks turns it on with `--model-loader-extra-config '{"distributed": true}'`, unless the configuration file sets `model-loader-extra-config`, whose value then replaces it: add `distributed: true` to it to keep distributed streaming.
 - **`RUNAI_STREAMER_MEMORY_LIMIT=0`**, the host memory the streamer stages tensors in: a single buffer the size of the largest tensor.
