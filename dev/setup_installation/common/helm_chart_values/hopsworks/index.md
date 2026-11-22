@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795274213` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795307564` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2949,6 +2949,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         featurestore_online_tablespace: ''
         file_preview_image_size: '10000000'
         file_preview_txt_size: '100'
+        fine_tuning_enabled: true
         flink_dir: /srv/hops/flink
         flink_user: flink
         flink_version: 1.17.1.0
@@ -3207,7 +3208,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         ray_job_worker_gpus: '0'
         ray_job_worker_memory: '4096'
         ray_materialization_dir: /srv/hops/ray/job
-        ray_version: 2.58.0
+        ray_version: 2.59.0
         recovery_path: ''
         reject_remote_user_no_group: 'false'
         remote_auth_need_consent: 'true'
@@ -3849,6 +3850,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.file_preview_txt_size` <a class="headerlink" href="#helm.hopsworks.variables.file_preview_txt_size" title="Permanent link">#</a> { #helm.hopsworks.variables.file_preview_txt_size }
 :   Type `string`, default `"100"`.
+
+`hopsworks.variables.fine_tuning_enabled` <a class="headerlink" href="#helm.hopsworks.variables.fine_tuning_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.fine_tuning_enabled }
+:   Type `bool`, default `true`.
+    rl-post-training, the RL post-training base image (SkyRL; it also needs Ray), is pushed to the cluster registry and its environment active. Off leaves its layers out of the registry.
 
 `hopsworks.variables.flink_dir` <a class="headerlink" href="#helm.hopsworks.variables.flink_dir" title="Permanent link">#</a> { #helm.hopsworks.variables.flink_dir }
 :   Type `string`, default `"/srv/hops/flink"`.
@@ -4686,7 +4691,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"/srv/hops/ray/job"`.
 
 `hopsworks.variables.ray_version` <a class="headerlink" href="#helm.hopsworks.variables.ray_version" title="Permanent link">#</a> { #helm.hopsworks.variables.ray_version }
-:   Type `string`, default `"2.58.0"`.
+:   Type `string`, default `"2.59.0"`.
 
 `hopsworks.variables.recovery_path` <a class="headerlink" href="#helm.hopsworks.variables.recovery_path" title="Permanent link">#</a> { #helm.hopsworks.variables.recovery_path }
 :   Type `string`, default `""`.
