@@ -10,7 +10,7 @@ Hopsworks mounts HopsFS into Airflow, Trino, and the jobs, notebooks and deploym
 A privileged node plugin, run as a DaemonSet, performs the FUSE mount for each pod's inline volume and hands the connection to a `hopsfs-fuse` sidecar in the pod, which runs unprivileged and as a non-root user.
 The pods that mount HopsFS therefore carry no privileged container.
 
-Model deployments whose [loading strategy][loading-strategy-guide] mounts HopsFS, the default for vLLM on GPUs when the driver is on, read their model and deployment files through the driver as well, read-only, at the paths a download would fill (`/mnt/models` and `/mnt/artifacts`), so a pod does not copy the model before it starts.
+Model deployments whose [loading strategy][loading-strategy-guide] mounts HopsFS, the default for vLLM on GPUs with safetensors weights when the driver is on, read their model and deployment files through the driver as well, read-only, at the paths a download would fill (`/mnt/models` and `/mnt/artifacts`), so a pod does not copy the model before it starts.
 
 The driver is on by default (`global._hopsworks.csi.enabled: true`).
 The node plugin is installed whenever something needs it: `global._hopsworks.full_platform`, Airflow or Trino.

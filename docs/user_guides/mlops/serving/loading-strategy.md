@@ -26,9 +26,9 @@ Updating a deployment without a strategy keeps the one it has, and a deployment 
 
 - **`MOUNT`** starts the model server without copying the model first and needs no local disk for it.
   The model server reads the files from HopsFS as it needs them.
-  Hopsworks starts vLLM with `--safetensors-load-strategy eager`, so it reads each safetensors file whole before loading its weights, unless the configuration file sets `safetensors-load-strategy`.
+  Hopsworks starts vLLM with `--safetensors-load-strategy eager`, so it reads each safetensors file whole before loading its weights, unless the configuration file sets `safetensors-load-strategy` or turns on `enable_multithread_load` in `model-loader-extra-config`, which refuses it.
   vLLM-Omni keeps its own default, since its diffusion stages refuse the setting.
-  Their own default, `lazy`, maps the files into memory and reads them out of order, which is several times slower from a mount: loading a 16 GB model that way took 524 s, against 202 s with `RUNAI_STREAMER`.
+  vLLM's own default, `lazy`, maps the files into memory and reads them out of order, which is several times slower from a mount: loading a 16 GB model that way took 524 s, against 202 s with `RUNAI_STREAMER`.
   Reading a file whole holds it in host memory while its weights load, once per GPU, and that counts against the deployment's memory limit.
   A deployment without GPUs keeps its weights in host memory as well, so it needs memory for its largest weight file on top of what the model uses: a 2.2 GB model in a single file took 8.5 GiB to load on CPU, against 5.7 GiB with `DOWNLOAD`.
   For vLLM-Omni it is the only way to read a mounted model.
