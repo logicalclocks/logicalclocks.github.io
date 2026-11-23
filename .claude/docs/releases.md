@@ -23,6 +23,10 @@ Every build writes `releases/fingerprint.txt`, a hash of the files in `FROM_MAIN
 After each successful docs build of `main`, `mkdocs-release-notes.yml` runs `hopsworks-docs sync-release-notes --rebuild`: it rebuilds every release branch whose deployed fingerprint doesn't match `main` with that branch's own workflow, one at a time, then fails if any version, `dev` included, still doesn't match.
 A branch whose rebuild can't be started is reported and left stale, and the others are still rebuilt; a cancelled rebuild is not retried.
 `mkdocs-release-notes.yml` and `mkdocs-release.yml` set `queue: max` on their `concurrency:`, so a new run waits behind a pending one instead of replacing it.
+A push runs the pushed branch's own copy of `mkdocs-release.yml`, and only `main` and `branch-5.0` onwards set `queue: max` and `workflow_dispatch`.
+`branch-4.2` to `branch-4.8` share the `mkdocs-release` group without `queue: max`, so their runs still replace a pending run of any branch, 5.x and `main` included; `branch-4.1` and older have no group, so their runs race the others' `mike deploy --push` and lose with a non-fast-forward on `gh-pages`.
+Merge docs PRs to release branches one at a time, each after the previous release run has started; on 2026-11-16, 12 merges within 3 minutes cancelled 9 deploys.
+Redeploy a cancelled 4.x run with `gh run rerun <id>`, again one at a time, since those branches have no `workflow_dispatch`.
 A red run means a version shows outdated release pages, usually because its docs build is broken; fix the build and run the workflow again.
 `uv run hopsworks-docs sync-release-notes` without `--rebuild` fetches the remote that points at `logicalclocks` and only reports.
 The rebuilds stop after 100 minutes, inside the job's 120: one still running is reported as timed out, and the branches after it as not rebuilt.
