@@ -25,8 +25,9 @@ Saving a deployment without a strategy keeps the one it has, and saving a new on
 - **`DOWNLOAD`** is usually faster than `MOUNT`: the copy reads the files at full speed, and the model server then loads them from local disk.
   It needs local disk at least as large as the model.
 - **`MOUNT`** needs no copy and no local disk, but usually starts a deployment more slowly than `DOWNLOAD`.
-  Hopsworks starts vLLM with `--safetensors-load-strategy eager`, because vLLM's default lazy loading reads a mount several times slower.
-  Each file being loaded is then held in host memory and counts against the deployment's memory limit, so a vLLM deployment without GPUs needs memory for its largest weight file on top of the model.
+  For plain vLLM, Hopsworks adds `--safetensors-load-strategy eager` by default because vLLM's lazy loading reads a mount more slowly.
+  Hopsworks skips this flag for vLLM-Omni, and when the vLLM configuration file sets `safetensors-load-strategy`, enables `enable_multithread_load` in `model-loader-extra-config`, or cannot be read.
+  With eager loading, each file being loaded is held in host memory and counts against the deployment's memory limit, so a CPU-only deployment needs room for its largest weight file in addition to the model.
 
 Each pod that mounts runs its own HopsFS mount container, which the [Resources Guide](resources.md) shows how to size.
 
