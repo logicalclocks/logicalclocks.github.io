@@ -127,6 +127,7 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 To limit a component's local disk, set `disk` in GB on its limits only, for example `Resources(cores=2, memory=256, gpus=1, disk=50)` or `"disk": 50` in a limits dict; the request is set to the same amount.
 To size a component's HopsFS mount, set `hopsfs_mount` on its resources, a dict with the optional keys `cores`, `memory` (MB) and `namenode_connections`, or `"hopsfs_mount"` in a resources dict; a key left out uses the cluster default.
+Saving a deployment whose resources have no `hopsfs_mount` keeps the settings it has, and an empty dict resets them to the cluster defaults.
 
 ### Step 3 (Optional): Define the transformer resource configuration
 
