@@ -6,7 +6,7 @@ description: How an agent deployment speaks A2A, the Agent2Agent protocol, so ot
 
 ## Introduction
 
-The [chat contract][the-chat-contract-for-conversational-agents] is how a person, through the chat panel or the Python client, talks to an agent.
+The [chat contract][the-chat-contract] is how a person, through the chat panel or the Python client, talks to an agent.
 A2A, the [Agent2Agent protocol](https://a2a-protocol.org), is how another agent talks to it.
 An agent written in Google ADK, LangGraph, the Microsoft Agent Framework or anything with an A2A client resolves the agent's Agent Card, sends it a message, and receives a task that moves through a lifecycle, streams its progress, and carries named artifacts.
 
