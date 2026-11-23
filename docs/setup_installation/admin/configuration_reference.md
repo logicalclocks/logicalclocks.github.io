@@ -101,6 +101,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `docker_base_image_python` | String | `python-feature-pipeline` | Settings.java |
 | `docker_base_image_python_app` | String | `python-app-pipeline` | Settings.java |
 | `docker_base_image_python_version` | String | `3.13` | Settings.java |
+| `docker_base_image_ray_rl_post_training` | String | `rl-post-training` | Settings.java |
 | `docker_base_image_ray_tensorflow_training` | String | `ray-tensorflow-training-pipeline` | Settings.java |
 | `docker_base_image_ray_torch_training` | String | `ray-torch-training-pipeline` | Settings.java |
 | `docker_base_image_ray_training` | String | `ray-training-pipeline` | Settings.java |
@@ -461,7 +462,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `platform_intelligence_llm_base_url` | String | *(empty string)* | Settings.java |
 | `platform_intelligence_llm_model` | String | `gpt-5.4-mini` | Settings.java |
 | `preinstalled_npm_lib_names` | String | `corepack, npm` | Settings.java |
-| `preinstalled_python_lib_names` | String | `pydoop, pyspark, jupyterlab, hdfscontents, pyjks, hops-apache-beam, pyopenssl` | Settings.java |
+| `preinstalled_python_lib_names` | String | `pydoop, pyspark, jupyterlab, hdfscontents, pyjks, pyopenssl` | Settings.java |
 | `project_namespace_labels` | String | *(empty string)* | Settings.java |
 | `project_namespace_network_policy_allowed_namespaces` | String | *(empty string)* | Settings.java |
 | `project_namespace_network_policy_enabled` | Boolean | `true` | Settings.java |
@@ -512,7 +513,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `ray_job_worker_gpus` | Integer | `0` | Settings.java |
 | `ray_job_worker_memory` | Integer | `4096` | Settings.java |
 | `ray_materialization_dir` | String | `/srv/hops/ray/job` | Settings.java |
-| `ray_version` | String | `2.9.0` | Settings.java |
+| `ray_version` | String | `2.59.0` | Settings.java |
 | `ray_warehouse_dir` | String | `ray-warehouse` | Settings.java |
 | `reject_remote_user_no_group` | Boolean | `false` | Settings.java |
 | `remote_auth_need_consent` | Boolean | `true` | Settings.java |

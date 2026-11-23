@@ -46,9 +46,14 @@ The `FEATURE ENGINEERING` environments can be used in [Jupyter notebooks](../jup
 
 The `MODEL TRAINING` environments can be used in [Jupyter notebooks](../jupyter/python_notebook.md) or a [Python job](../jobs/python_job.md).
 
-- `tensorflow-training-pipeline` to train TensorFlow models
-- `torch-training-pipeline` to train and fine-tune PyTorch models and LLMs
+- `torch-training-pipeline` to train PyTorch models, and to fine-tune LLMs on one host with LoRA and QLoRA, using TRL, PEFT, Unsloth or DeepSpeed
 - `pandas-training-pipeline` to train XGBoost, Catboost and Sklearn models
+
+The Ray environments are used in [Ray notebooks](../jupyter/ray_notebook.md) and [Ray jobs](../jobs/ray_job.md).
+
+- `ray-training-pipeline` to run Ray Train, Tune and Data workloads
+- `ray-torch-training-pipeline` to train PyTorch models across several nodes with Ray Train
+- `rl-post-training` for reinforcement learning post-training of LLMs with SkyRL, training with FSDP and generating rollouts with vLLM
 
 ### Inference, agents and apps
 

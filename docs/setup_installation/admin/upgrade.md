@@ -209,6 +209,13 @@ consul {
 
 This is the form for the default setup, in which the chart configures the cluster DNS through the `coredns` ConfigMap and sets `CONSUL_SERVER` on the CoreDNS Deployment.
 
+### A HopsFS schema migration is recorded as failed { #upgrade-migration-rondb-restart }
+
+After an upgrade from 5.2.4 or earlier to 5.2.5, the new `namenode` pod can stay in `Init:CrashLoopBackOff`, with its `initialize-flyway` container logging ``ERROR: Schema `hops` contains a failed migration to version 3.4.3.4 !`` on every retry.
+The migration started before the upgrade restarted RonDB, and the restart interrupted it.
+This is fixed in 5.2.6, as described under [Schema migrations wait for the RonDB restart][upgrade-migrations-wait-rondb].
+To recover a cluster in that state, contact Hopsworks support.
+
 ## 5.2.x to 5.3.x { #upgrade-52-to-53 }
 
 OpenSearch stays on 3.8.0.
@@ -399,6 +406,39 @@ From 5.3 the default is 2048, up from 1024, because at 1 GiB the sidecar was OOM
   While the sidecar restarts, the pod reports `Ready=False` and leaves the endpoints of its service, so the agent, healthy and still running, receives no requests.
   Looking for agent restarts finds none.
 
+### Superset 6.1 { #upgrade-superset-61 }
+
+5.3 moves Superset from 6.0.0p4 to 6.1.0.
+The `hopsworks-superset-init-db` Job runs Superset's schema migrations on the existing metadata database once, during the upgrade, and the Superset pods wait for it.
+On a cluster upgraded from a 6.0.0p4 database it ran 6 migrations in about a minute and kept every database connection and dashboard.
+
+- **Back up Superset first.**
+  Run the backup before the upgrade: `kubectl create job -n hopsworks --from=cronjob/create-superset-backup superset-backup-pre-53`.
+  The migrations have no downgrade, and the restore Job loads a dump into whatever image the release runs.
+  To go back to a 6.0 backup, restore it with the 5.2 chart, whose image matches it, then upgrade again.
+- **The Celery worker needs more memory.**
+  The worker's request and limit go from 1 GiB to 2 GiB.
+  Check that a node in the namespace has 2 GiB free for it.
+- **The MCP service runs.**
+  A new `hopsworks-superset-mcp` Deployment serves the `hops superset chart` commands over HTTPS, with a certificate from the cluster's CA and a signing key in the Secret `superset-mcp-jwt`.
+  Under ArgoCD, set `superset.mcp.jwtSecret`, or the service is not deployed; see [MCP service][superset-mcp-service].
+- **Semantic layer dashboards.**
+  With the semantic layer enabled, each Data owner and Data scientist of a project with Superset and a semantic project gets one Superset database connection, which reads the metrics of the project's semantic projects, see [Dashboards in Superset][semantic-superset-dashboards].
+  Set `hopsworks.variables.superset_semantic_enabled: "false"` to keep that off.
+
+### Semantic layer { #upgrade-semantic-layer }
+
+5.3 adds the semantic layer, off by default.
+Before turning it on with `global._hopsworks.semanticLayer.enabled: true`:
+
+- **Room in `ts_1`.**
+  The query history is the table `hopsworks.semantic_query` in RonDB's disk tablespace `ts_1`, which feature groups with disk columns share, and keeps each query for 30 days at about 13,000 bytes.
+  Check the free space of `ts_1` and add a data file when the history will need it, see [Query history storage][semantic-admin-history-storage].
+- **The 5.3 library in `python-feature-pipeline`.**
+  Metric export jobs run in each project's `python-feature-pipeline` environment, and fail before they write with an older Hopsworks library there, see [Who runs an export][semantic-exports-owner].
+- **Memory for the gateway.**
+  Each of the two semantic gateway replicas takes 4 GiB, see [Memory][semantic-admin-memory].
+
 ### Kueue outside the Hopsworks namespace { #upgrade-kueue-external }
 
 Required for a cluster that runs the Kueue bundled with Hopsworks (`global._hopsworks.kueue.enabled=true`); a cluster without Kueue needs nothing.
@@ -502,6 +542,61 @@ Before, it created no topics there, so every topic had to exist before ingestion
   Creating or deleting a topic or a schema, or setting a compatibility level, through a feature store shared from another project fails with `CHANGE_THROUGH_SHARED_FEATURE_STORE` (190027).
   Reading through a shared feature store is unchanged.
 
+### Deleting a tag schema in use is refused { #upgrade-tag-schema-delete }
+
+Up to 5.2, deleting a tag schema deleted every tag created from it, in every project.
+From 5.3, the delete is refused with `TAG_SCHEMA_IN_USE` (370014, HTTP 409) while a tag created from the schema is attached to any artifact, or while the schema has archived values in the [tag history][archive-tag-history].
+The message says how many tags use the schema, per kind of artifact, or how many archived values it has.
+
+- **Automation that deletes tag schemas** has to remove their tags first, with `delete_tag()`.
+  A schema with archived values cannot be deleted, because the history keeps them.
+- **Wait for the dataset tag migration before deleting a tag schema.**
+  Legacy dataset tags stored in HopsFS are moved into the database by a background migration that starts 30 minutes after Hopsworks starts, and the delete does not see tags that have not moved yet.
+  A dataset whose legacy tag names a deleted schema fails the migration and keeps its tags in HopsFS.
+  The migration has finished when the `dataset_tags_xattr_migration_done` setting is `true`.
+
+- **A deleted schema's name can stay taken.**
+  A schema deleted before 5.3 kept its archived values in the tag history, and a new schema of the same name would take them over.
+  Creating a schema under such a name is refused with `TAG_SCHEMA_NAME_HAS_HISTORY` (370015, HTTP 409), so choose another name.
+
+See [Deleting a tag schema][deleting-a-tag-schema].
+
+### The extended attributes endpoint is removed { #upgrade-xattrs-endpoint }
+
+From 5.3, `/project/{id}/xattrs/{path}` answers 404: HopsFS extended attributes can no longer be read, written or deleted through the REST API.
+Tags on datasets, feature groups, models and the other artifacts are managed through their tag APIs, as before.
+
+A dataset whose legacy tags cannot be moved into the database answers tag changes with `TAG_MIGRATION_PENDING` (370013, HTTP 409), and the Hopsworks log names the dataset and the tags that failed.
+A tag fails when its tag schema was deleted or its value no longer validates against the schema.
+Re-creating a deleted schema clears the dataset when its values validate.
+Otherwise an administrator edits the dataset's `user.tags` extended attribute as the HopsFS superuser, which the NameNode container runs as.
+The attribute holds a JSON array with one `{"key": <tag schema>, "value": <tag value as a JSON string>}` entry per tag.
+
+1. **Read the attribute**, with the dataset's HopsFS path, for example `/Projects/<project>/<dataset>`:
+
+    ```bash
+    kubectl exec -n hopsworks deploy/namenode -c namenode -- \
+      /srv/hops/hadoop/bin/hdfs dfs -getfattr -n user.tags -e text /Projects/<project>/<dataset>
+    ```
+
+    The value is the text between the outer quotes:
+
+    ```text
+    user.tags="[{"key":"pii","value":"{\"owner\":\"ann\"}"},{"key":"retired","value":"{\"a\":1}"}]"
+    ```
+
+2. **Write it back** without the tags that failed, or with their values corrected:
+
+    ```bash
+    kubectl exec -n hopsworks deploy/namenode -c namenode -- \
+      /srv/hops/hadoop/bin/hdfs dfs -setfattr -n user.tags \
+      -v '[{"key":"pii","value":"{\"owner\":\"ann\"}"}]' /Projects/<project>/<dataset>
+    ```
+
+    When no tag should be kept, remove the attribute with `-setfattr -x user.tags` instead.
+
+The dataset's tags move into the database the next time they are read, or at the hourly migration pass.
+
 ### Envoy Gateway { #upgrade-envoy-gateway }
 
 New in 5.3 and off by default: [Envoy Gateway][envoy-gateway] routes Standard-mode model deployments through the Kubernetes Gateway API, with Istio still the front door.
@@ -590,20 +685,10 @@ With the topic ID, OnlineFS reads a topic that was deleted and created again und
   An OnlineFS pod of 5.2 reads its project's table each time Kafka gives it partitions, as during the rollout.
   The `onlinefs-drop-legacy-offsets-<hash>-r<revision>` Job waits for the rollout of the OnlineFS Deployment to finish, then drops the listed project tables.
   On a cluster with `global._hopsworks.full_platform: true` it holds the Flyway lease while it drops them, as the schema migrations do.
-- **The init container connects to the DDL SQL node of the release as the `onlinefs` MySQL user, and the Job as `hopsworksroot`**: the `ddl-mysqld` Service of the release, or, when RonDB is managed externally on a release with `global._hopsworks.full_platform: true`, the consul name in `onlinefs.dependencies.mysql.ddlConsulServiceName` (`mysqlddl`).
+- **The init container and the Job connect to the DDL SQL node of the release as `hopsworksroot`**, as the schema migrations do: the `ddl-mysqld` Service of the release, or, when RonDB is managed externally on a release with `global._hopsworks.full_platform: true`, the consul name in `onlinefs.dependencies.mysql.ddlConsulServiceName` (`mysqlddl`).
   A satellite cluster (`global._hopsworks.full_platform: false`) always connects to the Service, also with an external RonDB.
   A cluster that disables the DDL SQL node (`rondb.rondb.meta.ddlMySQLd.enabled: false`) sets `onlinefs.dependencies.mysql.serviceName: mysqld`, and also `onlinefs.dependencies.mysql.ddlConsulServiceName: mysql` when it is not a satellite and RonDB is managed externally.
   `onlinefs.dependencies.mysql.url` overrides both.
-- **The chart's RonDB creates the `onlinefs` user** during the upgrade, with its password in the `onlinefs` key of the `mysql-users-secrets` Secret, and the grants below.
-  With RonDB managed externally, create it before the upgrade and add its password to the Secret, or set `onlinefs.dependencies.mysql.user: hopsworksroot`:
-
-    ```sql
-    CREATE USER 'onlinefs'@'%' IDENTIFIED BY '<password>';
-    GRANT NDB_STORED_USER ON *.* TO 'onlinefs'@'%';
-    GRANT CREATE, SELECT, INSERT, UPDATE ON onlinefs.* TO 'onlinefs'@'%';
-    GRANT SELECT ON *.* TO 'onlinefs'@'%';
-    ```
-
 - **With `onlinefs.rbac.useExistingRole`**, the role needs `get`, `list` and `watch` on `deployments`, and on a cluster with `global._hopsworks.full_platform: true` the lease rules of the chart's `onlinefs-role`, for the Job.
 - **A step that fails keeps the pod from starting.**
   It reads every project table before it writes, so a step that fails while it copies leaves every project table as it is, and the next start copies them again.
@@ -637,7 +722,7 @@ kubectl logs <onlinefs-pod> -c offsets-schema -n <namespace>
 | The error | What it means | What to do |
 | --- | --- | --- |
 | `Hopsworks did not answer with the OnlineFS settings within 900 s` | Hopsworks did not answer within the step's time, `onlinefs.offsetsSchemaBudgetSeconds`. Nothing was changed. | Wait until the `hopsworks-instance` pods are ready. The next start runs the step again. |
-| `Communications link failure`, `UnknownHostException` or `Access denied for user 'onlinefs'` | The step cannot reach or log in to the SQL node. Nothing was changed. | While the upgrade restarts the SQL node, or the chart's RonDB has not created the `onlinefs` user yet, this passes on its own. Otherwise check the SQL node the step connects to, as described above, the user, and the `onlinefs` key of the `mysql-users-secrets` Secret. |
+| `Communications link failure`, `UnknownHostException` or `Access denied for user 'hopsworksroot'` | The step cannot reach or log in to the SQL node. Nothing was changed. | While the upgrade restarts the SQL node, this passes on its own. Otherwise check the SQL node the step connects to, as described above, and the `hopsworksroot` key of the `mysql-users-secrets` Secret. |
 | `Got error 4009 'No data node(s) available'` | RonDB's data nodes are restarting or down, as while the upgrade restarts them. Nothing was changed. | The next start runs the step again once the data nodes are up. |
 | `onlinefs.kafka_offsets has the columns [...], OnlineFS maps [...]` | The table exists with columns OnlineFS does not map, because it was created or changed outside OnlineFS. Nothing was moved. | Do not drop it, it holds the offsets. Change its columns to the ones the message lists after `OnlineFS maps`, keeping its rows. |
 | `Failed to read a per-project kafka_offsets, it is kept as it is`, with the database | The table of that project cannot be read. A single such table stops the whole step: nothing was written, and every project table is kept. | Repair that table, from the RonDB backup if needed. A table that cannot be repaired can be dropped, as described below. |
@@ -701,6 +786,17 @@ Before enabling, as listed under [How to enable it][llm-gateway-enable]:
 Enable with one `helm upgrade`: no predictive pod, Knative pod or `kserve-ingress-gateway` pod restarts, and the AI Gateway's Envoy pods roll once when the first route attaches.
 Data Owners can then turn the LLM Gateway off per project and per deployment, both on by default.
 Disable with one upgrade with `aiGateway.enabled: false`, as described under [Turn it off][llm-gateway-disable], which also lists what a `helm rollback` leaves behind and how to remove it.
+
+### vLLM image versions { #upgrade-vllm-image-versions }
+
+Because of a security fix, new vLLM deployments default to `vllm/vllm-openai:v0.34.0`, which is the only vLLM image version the chart advertises.
+Existing vLLM deployments keep the image version they were created with through the upgrade and later restarts.
+Move each of them to v0.34.0 by editing the deployment and selecting v0.34.0 as its image version.
+Check its vLLM configuration file first against the [vLLM v0.34.0 upgrade notes](https://github.com/vllm-project/vllm/releases/tag/v0.34.0): v0.34.0 no longer starts with `VLLM_USE_V2_MODEL_RUNNER=0`, and an unset `gpu_memory_utilization` now defaults to `1.0`.
+A cluster that pulls from a mirror needs `vllm/vllm-openai:v0.34.0` mirrored before the upgrade, or `vllm/vllm-openai-cpu:v0.34.0` when it runs vLLM on CPU, and keeps the versions its existing deployments use, see [Image tags][vllm-image-tags].
+
+The chart's vLLM-Omni version stays `v0.32.0`, and existing vLLM-Omni deployments keep the version they were created with.
+vLLM-Omni can now be disabled per cluster, see [Disable vLLM-Omni][vllm-disable-omni].
 
 ### Security response headers { #upgrade-security-headers }
 
@@ -857,3 +953,38 @@ Istio 1.30 supports Kubernetes 1.32 to 1.36, and Istio supports the 1.30 release
   Do not run `helm upgrade`, or an ArgoCD sync, with a release older than 5.2.5 afterwards: its hook installs Istio 1.29 over 1.30, a downgrade Istio does not support.
   To go back entirely, restore the backup on a new cluster, as described in [New Cluster Restore][new-cluster-restore].
   An in-place restore does not apply here, since it runs `helm upgrade` with the release of the backup, whose Istio install hook installs Istio 1.29 over 1.30.
+
+## Changes from 5.2.6 { #upgrade-changes-from-526 }
+
+These changes ship in 5.2.6 and 5.3.0.
+They apply to an upgrade from 5.1.x to 5.2.6 or later, from an earlier 5.2 release to 5.2.6 or later, and from 5.2.5 or earlier to 5.3.
+5.1.4 and 5.0.16 carry the same changes, so they also apply to an upgrade to 5.1.4 or to 5.0.16.
+
+### Schema migrations wait for the RonDB restart { #upgrade-migrations-wait-rondb }
+
+The pods that run schema migrations, of the HopsFS namenode, the Hopsworks CA and the Hive metastore, wait until the upgrade has restarted RonDB before they migrate.
+
+- **Availability.**
+  The Hopsworks CA is unavailable from the moment the upgrade replaces its pod until the RonDB restart has finished, and so is the Hopsworks admin server when the release changes the Hopsworks schema.
+- **Time.**
+  On a cluster whose RonDB restart takes longer than an hour, raise `global._hopsworks.rondbRolloutProgressDeadlineSeconds` (3600 seconds) together with `helm upgrade --timeout`.
+  Past that deadline, Helm 4 and ArgoCD report the upgrade as failed although the rollout continues.
+- **ArgoCD.**
+  Sync the RonDB StatefulSets in the same sync and sync wave as the Deployments, because those pods wait until the sync has updated the StatefulSets.
+- **If the upgrade fails.**
+  Those pods keep waiting.
+  Fix the cause and run the upgrade again: they continue without being deleted.
+
+### RonDB disk-column volume with ArgoCD { #upgrade-rondb-disk-column-volume }
+
+A cluster that keeps RonDB's on-disk columns on a volume of their own (`rondb.rondb.resources.requests.storage.classes.diskColumns`) and is upgraded with ArgoCD states the size of that volume before the upgrade.
+The chart now sizes that volume larger for a new cluster, and ArgoCD cannot read the size of an existing one, so without the value the sync fails on the `node-group` StatefulSets, whose volume claims Kubernetes does not let change.
+Read the size of the existing volume claim:
+
+```sh
+kubectl get statefulset node-group-0 -n hopsworks \
+  -o jsonpath='{.spec.volumeClaimTemplates[?(@.metadata.name=="rondb-ndbmtd-dc")].spec.resources.requests.storage}'
+```
+
+Set `rondb.rondb.resources.requests.storage.diskColumnVolumeGiB` to that number of GiB, and keep it set in later upgrades.
+An upgrade with Helm keeps the existing size by itself.

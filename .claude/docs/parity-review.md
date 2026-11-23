@@ -45,7 +45,7 @@ Status: `[ ]` pending, `[x]` reviewed OK, `[!]` reviewed with a follow-up noted 
 | [ ] | `user_guides/fs/data_source/creation/snowflake.md` | modified | +5/-2 |
 | [ ] | `user_guides/fs/data_source/creation/kafka.md` | modified | +7/-3 |
 | [ ] | `user_guides/fs/data_source/creation/hopsfs.md` | modified | +5/-2 |
-| [ ] | `user_guides/fs/data_source/creation/s3.md` | modified | +4/-1 |
+| [x] | `user_guides/fs/data_source/creation/s3.md` | modified | creation form recaptured, S3-compatible form capture added |
 | [ ] | `user_guides/fs/data_source/creation/glue.md` | modified | +7/-3 |
 | [ ] | `user_guides/fs/data_source/creation/redshift.md` | modified | +5/-2 |
 | [ ] | `user_guides/fs/data_source/creation/adls.md` | modified | +6/-2 |
