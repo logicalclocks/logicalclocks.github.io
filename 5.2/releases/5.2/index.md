@@ -2,6 +2,39 @@
 
 The releases of Hopsworks 5.2, newest first.
 
+## 5.2.6 { #hopsworks-5-2-6 }
+
+Helm chart 5.2.6 · Released on 2026-11-23 · Changes since [5.2.5][hopsworks-5-2-5] · Python client [5.2.4](https://github.com/logicalclocks/hopsworks-api/releases/tag/5.2.4), unchanged
+
+### What's changed
+
+- [HELM] Fixed `helm upgrade` leaving a schema migration recorded as failed, so that every retry failed, when it ran during the RonDB rolling restart, such as the HopsFS migration of an upgrade to 5.2.5: the pods that run migrations now wait until the upgrade has restarted RonDB, and the Hopsworks CA is unavailable until then ([Schema migrations wait for the RonDB restart][docs-upgrade-migrations-wait-rondb]).
+- [HELM] Fixed RonDB's MySQL servers staying in `Init` when they restarted while a data node was down, although its node group kept serving from another data node: they now wait for one started data node per node group, then at most `rondb.rondb.timeoutsMinutes.waitAllDatanodes` minutes for the others, and start about 2 minutes sooner when `rondb.rondb.clusterSize.activeDataReplicas` is below 3, as with the default of 2.
+- [HELM] Fixed the data nodes of a new RonDB cluster filling their disk at first start: the volume that `rondb.rondb.resources.requests.storage.classes.diskColumns` gives the on-disk columns is now sized `diskColumnGiB` plus 3% plus 2 GiB instead of plus 2 GiB, which was too small above about 60 GiB, and the install-time check of `rondb.rondb.resources.requests.storage.ndbmtdGiB` now counts the on-disk columns that share its volume and 3% plus 2 GiB for the filesystem, so an install that would fill it fails at render.
+- Addressed vulnerabilities in Istio.
+
+### Breaking changes
+
+- [HELM] Mirror `istio/pilot` and `istio/proxyv2` at `1.30.8` to your registry before the upgrade when `global._hopsworks.imageRegistry` points at your own, or the Istio install hook fails: Istio moves from 1.29 to 1.30 ([Istio 1.30][docs-upgrade-istio-130]).
+- [HELM] Under ArgoCD, if `rondb.rondb.resources.requests.storage.classes.diskColumns` gives RonDB's on-disk columns a volume of their own, set `rondb.rondb.resources.requests.storage.diskColumnVolumeGiB` to the size of its existing volume claim before the upgrade, or the sync fails on the `node-group` StatefulSets: the chart now sizes that volume larger than earlier releases did, and ArgoCD's render cannot read the existing size ([RonDB disk-column volume with ArgoCD][docs-upgrade-rondb-disk-column-volume]).
+
+### Upgrade steps
+
+Follow [Changes from 5.2.6][docs-upgrade-changes-from-526] in the upgrade guide.
+
+### Upgraded components
+
+| Component | 5.2.5 | 5.2.6 |
+| --------- | ----- | ----- |
+| Istio | 1.29.7 | 1.30.8 |
+| KServe utilities | 0.1.12 | 0.1.14 |
+
+### Configuration changes
+
+- [HELM] Added `global._hopsworks.rondbRolloutProgressDeadlineSeconds` (default `3600`), the progress deadline of the Deployments whose new pods wait for the RonDB restart during an upgrade, and changed the default of `trino.trino.coordinator.deployment.progressDeadlineSeconds`, `trino.trino.worker.deployment.progressDeadlineSeconds` and `trino.trinotest.coordinator.deployment.progressDeadlineSeconds`, which Trino takes instead, from `600` to `3600` ([Schema migrations wait for the RonDB restart][docs-upgrade-migrations-wait-rondb]).
+- [HELM] Added `rondb.rondb.resources.requests.storage.diskColumnVolumeGiB` (default empty, which is `diskColumnGiB` plus 3% plus 2 GiB), the size of the volume of RonDB's on-disk columns on install and in a render without cluster access, such as under ArgoCD; a Helm upgrade keeps the size of the existing volume ([RonDB disk-column volume with ArgoCD][docs-upgrade-rondb-disk-column-volume]).
+- [HELM] Added `rondb.rondb.timeoutsMinutes.waitAllDatanodes` (default `2`), how long a starting MySQL server waits for the remaining data nodes once every node group has a started one.
+
 ## 5.2.5 { #hopsworks-5-2-5 }
 
 Helm chart 5.2.5 · Released on 2026-11-17 · Changes since [5.2.4][hopsworks-5-2-4] · Python client [5.2.4](https://github.com/logicalclocks/hopsworks-api/releases/tag/5.2.4)
@@ -709,3 +742,7 @@ Follow [Before every upgrade][docs-upgrade-before] and [5.1.x to 5.2.x][docs-upg
 [values-kafka-broker-annotations]: https://docs.hopsworks.ai/5.2/setup_installation/common/helm_chart_values/kafka/#helm.kafka.cluster.kafka.externalLoadBalancer.brokerAnnotations
 [values-hopsfs-topology]: https://docs.hopsworks.ai/5.2/setup_installation/common/helm_chart_values/hopsfs/#helm.hopsfs.namenode.topology.enabled
 [values-airflow-manifest]: https://docs.hopsworks.ai/5.2/setup_installation/common/helm_chart_values/airflow/#helm.airflow.hopsworks
+[docs-upgrade-changes-from-526]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-changes-from-526
+[docs-upgrade-migrations-wait-rondb]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-migrations-wait-rondb
+[docs-upgrade-rondb-disk-column-volume]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-rondb-disk-column-volume
+[docs-upgrade-istio-130]: https://docs.hopsworks.ai/5.2/setup_installation/admin/upgrade/#upgrade-istio-130
