@@ -4,7 +4,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795341851` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -40,7 +40,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
             cpu:
               enabled: false
             imageRegistry: ''
-            tag: v0.32.0
+            tag: v0.34.0
       kserveUtilsImage:
         name: hopsworks/kserve-utils
         tag: 0.1.16
@@ -78,7 +78,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
               cpu:
                 enabled: false
               imageRegistry: ''
-              tag: v0.32.0
+              tag: v0.34.0
         ```
 
 `kserve.activator.minReplicas` <a class="headerlink" href="#helm.kserve.activator.minReplicas" title="Permanent link">#</a> { #helm.kserve.activator.minReplicas }
@@ -1300,7 +1300,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
             env: []
             image: vllm/vllm-openai
             imageRegistry: ''
-            tag: v0.32.0
+            tag: v0.34.0
         storage:
           caBundleConfigMapName: ''
           caBundleVolumeMountPath: /etc/ssl/custom-certs
@@ -1626,7 +1626,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
         env: []
         image: vllm/vllm-openai
         imageRegistry: ''
-        tag: v0.32.0
+        tag: v0.34.0
         ```
 
 `kserve.kserve.servingruntime.vllmopenai.cpu` <a class="headerlink" href="#helm.kserve.kserve.servingruntime.vllmopenai.cpu" title="Permanent link">#</a> { #helm.kserve.kserve.servingruntime.vllmopenai.cpu }

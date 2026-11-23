@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795341851` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -140,9 +140,10 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795341851` (Hopsworks `5.
             imageRegistry: ''
             tag: ''
           vllmomni:
+            enabled: true
             tag: v0.32.0
           vllmopenai:
-            tag: v0.32.0
+            tag: v0.34.0
       imageDigests: {}
       unmanagedLoadBalancers: {}
     ```
@@ -448,9 +449,10 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795341851` (Hopsworks `5.
             imageRegistry: ''
             tag: ''
           vllmomni:
+            enabled: true
             tag: v0.32.0
           vllmopenai:
-            tag: v0.32.0
+            tag: v0.34.0
         ```
 
 `global.imageDigests` <a class="headerlink" href="#helm.global.imageDigests" title="Permanent link">#</a> { #helm.global.imageDigests }
@@ -1020,9 +1022,10 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795341851` (Hopsworks `5.
             imageRegistry: ''
             tag: ''
           vllmomni:
+            enabled: true
             tag: v0.32.0
           vllmopenai:
-            tag: v0.32.0
+            tag: v0.34.0
     ```
 
 <div class="hops-values" markdown>
@@ -1043,9 +1046,10 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795341851` (Hopsworks `5.
           imageRegistry: ''
           tag: ''
         vllmomni:
+          enabled: true
           tag: v0.32.0
         vllmopenai:
-          tag: v0.32.0
+          tag: v0.34.0
         ```
 
 `global._kserve.servingruntime.tritonserver` <a class="headerlink" href="#helm.global._kserve.servingruntime.tritonserver" title="Permanent link">#</a> { #helm.global._kserve.servingruntime.tritonserver }
@@ -1093,11 +1097,15 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795341851` (Hopsworks `5.
     Default Triton image tag, for example `26.09-py3`. Each deployment pins its own tag, so changing this does not move running deployments.
 
 `global._kserve.servingruntime.vllmomni` <a class="headerlink" href="#helm.global._kserve.servingruntime.vllmomni" title="Permanent link">#</a> { #helm.global._kserve.servingruntime.vllmomni }
-:   Type `object`, default `{"tag":"v0.32.0"}`.
+:   Type `object`, default `{"enabled":true,"tag":"v0.32.0"}`.
     vLLM-Omni runtime image tag. Drives both the kserve ClusterServingRuntime image and the kube_serving_vllm_omni_versions hopsworks variable seed.
 
+`global._kserve.servingruntime.vllmomni.enabled` <a class="headerlink" href="#helm.global._kserve.servingruntime.vllmomni.enabled" title="Permanent link">#</a> { #helm.global._kserve.servingruntime.vllmomni.enabled }
+:   Type `bool`, default `true`.
+    Render the `vllm-omni` ClusterServingRuntime and offer vLLM-Omni deployments. When false, no vLLM-Omni image is rendered, the kube_serving_vllm_omni_versions variable is seeded empty, which tells the backend vLLM-Omni is not enabled, and the vllm-omni registry is left out of Knative's `registries-skipping-tag-resolving`. Disabling it does not stop vLLM-Omni deployments that are already running: stop or delete them first.
+
 `global._kserve.servingruntime.vllmopenai` <a class="headerlink" href="#helm.global._kserve.servingruntime.vllmopenai" title="Permanent link">#</a> { #helm.global._kserve.servingruntime.vllmopenai }
-:   Type `object`, default `{"tag":"v0.32.0"}`.
+:   Type `object`, default `{"tag":"v0.34.0"}`.
     vLLM-OpenAI runtime image tag. Drives both the kserve ClusterServingRuntime image and the kube_serving_vllm_versions hopsworks variable seed.
 
 </div>
