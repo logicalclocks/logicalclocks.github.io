@@ -55,11 +55,18 @@ The option is shown when your administrator has configured it (see below).
 1. Tick the `GitHub` checkbox and click `Log in with GitHub`.
 2. Hopsworks shows a one-time code.
    Click `Open GitHub's device page`, which also copies the code, paste the code on the GitHub page and authorize the request.
+   Enter a code on that page only when you started the login yourself: whoever started it gets access to your GitHub account.
 3. Hopsworks notices the authorization within a few seconds and saves the login as the `github.com` host of the GitHub provider, with your GitHub login as the username.
 
 The login is stored the same way as a personal access token, so everything that uses your Git provider credential uses it: Git operations on repositories, jobs, apps and agent deployments started from a Git repository, Jupyter and the terminal.
-It replaces a token saved earlier for `github.com`.
+It replaces a token saved earlier for `github.com`, and Hopsworks asks you to confirm before it does.
 Other GitHub hosts, GitLab and BitBucket are configured with a token.
+
+!!! warning "Organizations may need to approve the login"
+    The login is an OAuth app token, not a personal access token.
+    An organization that [restricts OAuth apps](https://docs.github.com/en/organizations/managing-oauth-access-to-your-organizations-data/about-oauth-app-access-restrictions), which GitHub turns on by default for new organizations, keeps its private repositories out of the login's reach until one of its owners approves the app.
+    Being logged in therefore does not mean every repository you can see on GitHub can be cloned.
+    If clones of an organization's repositories fail after you logged in, including ones that worked with the token the login replaced, ask an owner of that organization to approve the app (GitHub's authorization page has a `Request` button next to each organization), or remove the login and configure a personal access token again.
 
 !!! notice "Administrator setup"
     The login needs a GitHub OAuth app.
@@ -67,6 +74,9 @@ Other GitHub hosts, GitLab and BitBucket are configured with a token.
     No client secret is needed.
     The login requests the `repo` and `workflow` scopes.
     If GitHub is reached through the proxy set in `git_github_https_proxy`, the login uses that proxy too.
+    The login supports an `http://` proxy, with or without a user name and password in the URL (percent-encode special characters); a proxy without a port is taken to listen on 1080, as git does.
+    With an `https://` or SOCKS proxy the login fails and says so, while git itself keeps working: users then configure a token.
+    If your organization restricts OAuth apps, approve this app for it, or its members' logins cannot reach the organization's private repositories.
 
 ### Step 3: Provider is configured
 
