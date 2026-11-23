@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795445882` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -64,7 +64,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         enabled: false
       opensearchReindex:
         enabled: true
-      payaraVersion: 6.2025.11-jdk21.4
+      payaraVersion: 6.2025.11-jdk21.5
       payaraconfigmapName: post-boot-commands
       podAnnotations: {}
       podDisruptionBudget:
@@ -310,7 +310,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     Bring the featurestore search index up to date after an upgrade, when what the index holds has changed. The hook keys its request with the index generation, featurestore-index-5.3, which the chart bumps only with a change to what the backend indexes: a generation already requested is answered with that run, so patch upgrades and ArgoCD syncs do not request it again, and a cluster that missed it gets it on its next upgrade. 5.3 adds data sources and changes nothing already indexed, so the request has scope ADDITIVE: the backend queues the existing data sources and datasets into the index as it is, without emptying it, and search stays complete for every other artifact meanwhile. Datasets are included because 5.2, which added them to search, kept the 5.1 generation, so a cluster that rebuilt under 5.1 never queued them. A full rebuild stays available from the Featurestore search index card and the REST API. Progress shows under Cluster Settings > Service Operations > OpenSearch Index Commands. A failed hook Job is removed after global._hopsworks.jobs.ttlSecondsAfterFinished in the default mode, or when the hook next renders; with global._hopsworks.mode set, as under ArgoCD, delete post-upgrade-opensearch-reindex-job by hand if you turn this off after a failed attempt.
 
 `hopsworks.payaraVersion` <a class="headerlink" href="#helm.hopsworks.payaraVersion" title="Permanent link">#</a> { #helm.hopsworks.payaraVersion }
-:   Type `string`, default `"6.2025.11-jdk21.4"`.
+:   Type `string`, default `"6.2025.11-jdk21.5"`.
 
 `hopsworks.payaraconfigmapName` <a class="headerlink" href="#helm.hopsworks.payaraconfigmapName" title="Permanent link">#</a> { #helm.hopsworks.payaraconfigmapName }
 :   Type `string`, default `"post-boot-commands"`.
@@ -1535,17 +1535,17 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           tag: null
         filebeat:
           imageName: filebeat
-          tag: 8.19.23
+          tag: 8.19.25
         migration:
           pullPolicy: IfNotPresent
           tag: null
         postInstall:
           pullPolicy: IfNotPresent
-          tag: 6.2025.11-jdk21.4
+          tag: 6.2025.11-jdk21.5
         registry: null
         worker:
           pullPolicy: IfNotPresent
-          tag: 6.2025.11-jdk21.4
+          tag: 6.2025.11-jdk21.5
     ```
 
 <div class="hops-values" markdown>
@@ -1570,7 +1570,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"filebeat"`.
 
 `hopsworks.image.filebeat.tag` <a class="headerlink" href="#helm.hopsworks.image.filebeat.tag" title="Permanent link">#</a> { #helm.hopsworks.image.filebeat.tag }
-:   Type `string`, default `"8.19.23"`.
+:   Type `string`, default `"8.19.25"`.
 
 `hopsworks.image.migration.pullPolicy` <a class="headerlink" href="#helm.hopsworks.image.migration.pullPolicy" title="Permanent link">#</a> { #helm.hopsworks.image.migration.pullPolicy }
 :   Type `string`, default `"IfNotPresent"`.
@@ -1584,7 +1584,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     pull policy for the admin sidecar's payara-node image. admindeployment.yaml already read this key before it was declared here, and its fallback cannot reach global._hopsworks.imagePullPolicy, so the sidecar was pinned to IfNotPresent with no way to override it.
 
 `hopsworks.image.postInstall.tag` <a class="headerlink" href="#helm.hopsworks.image.postInstall.tag" title="Permanent link">#</a> { #helm.hopsworks.image.postInstall.tag }
-:   Type `string`, default `"6.2025.11-jdk21.4"`.
+:   Type `string`, default `"6.2025.11-jdk21.5"`.
 
 `hopsworks.image.registry` <a class="headerlink" href="#helm.hopsworks.image.registry" title="Permanent link">#</a> { #helm.hopsworks.image.registry }
 :   Type `string`, default `nil`.
@@ -1594,7 +1594,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"IfNotPresent"`.
 
 `hopsworks.image.worker.tag` <a class="headerlink" href="#helm.hopsworks.image.worker.tag" title="Permanent link">#</a> { #helm.hopsworks.image.worker.tag }
-:   Type `string`, default `"6.2025.11-jdk21.4"`.
+:   Type `string`, default `"6.2025.11-jdk21.5"`.
 
 </div>
 

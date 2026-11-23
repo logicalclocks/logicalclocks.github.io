@@ -4,7 +4,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795445882` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -37,7 +37,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         image:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/prometheus/prometheus-adapter
-          tag: 0.12.0-alpine-h2.1
+          tag: 0.12.0-alpine-h3.2
         nameOverride: hopsworks-prometheus-adapter
         nodeSelector: {}
         prometheus:
@@ -117,7 +117,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         image:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/prometheus/prometheus-adapter
-          tag: 0.12.0-alpine-h2.1
+          tag: 0.12.0-alpine-h3.2
         nameOverride: hopsworks-prometheus-adapter
         nodeSelector: {}
         prometheus:

@@ -4,7 +4,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795445882` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -713,7 +713,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           registry: docker.hops.works
           repository: prometheus/statsd-exporter
-          tag: 0.31.0-alpine-h2.0
+          tag: 0.31.0-alpine-h3.0
         name: airflow-statsd
         nodeSelector: {}
         probe:
@@ -755,7 +755,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           registry: docker.hops.works
           repository: prometheus/statsd-exporter
-          tag: 0.31.0-alpine-h2.0
+          tag: 0.31.0-alpine-h3.0
         name: airflow-statsd
         nodeSelector: {}
         probe:
@@ -797,7 +797,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
     repository under the image registry root
 
 `airflow.statsd.image.tag` <a class="headerlink" href="#helm.airflow.statsd.image.tag" title="Permanent link">#</a> { #helm.airflow.statsd.image.tag }
-:   Type `string`, default `"0.31.0-alpine-h2.0"`.
+:   Type `string`, default `"0.31.0-alpine-h3.0"`.
     image tag
 
 `airflow.statsd.name` <a class="headerlink" href="#helm.airflow.statsd.name" title="Permanent link">#</a> { #helm.airflow.statsd.name }

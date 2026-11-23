@@ -4,7 +4,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795445882` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -38,7 +38,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
         image:
           registry: docker.hops.works
           repository: prometheus/elasticsearch-exporter
-          tag: 1.11.0-alpine-h2.1
+          tag: 1.11.0-alpine-h3.2
         nodeSelector: {}
         resources:
           limits:
@@ -99,7 +99,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
         image:
           registry: docker.hops.works
           repository: prometheus/elasticsearch-exporter
-          tag: 1.11.0-alpine-h2.1
+          tag: 1.11.0-alpine-h3.2
         nodeSelector: {}
         resources:
           limits:
@@ -162,7 +162,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
         startup_timeout: 5000
         tolerations: []
         topologySpreadConstraint: {}
-        version: 3.8.0.3
+        version: 3.8.0.4
     ```
 
 <div class="hops-values" markdown>
@@ -248,7 +248,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
     The default topology spread constraint. If not defined the global topology spread constraint would be used instead.
 
 `olk.dashboard.version` <a class="headerlink" href="#helm.olk.dashboard.version" title="Permanent link">#</a> { #helm.olk.dashboard.version }
-:   Type `string`, default `"3.8.0.3"`.
+:   Type `string`, default `"3.8.0.4"`.
 
 </div>
 
@@ -265,7 +265,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
         extraNamespaces: []
         fullnameOverride: null
         image:
-          tag: 8.19.23
+          tag: 8.19.25
         kubernetesMetadata:
           cronjob: null
           deployment: null
@@ -349,7 +349,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
     full name override
 
 `olk.filebeat.image.tag` <a class="headerlink" href="#helm.olk.filebeat.image.tag" title="Permanent link">#</a> { #helm.olk.filebeat.image.tag }
-:   Type `string`, default `"8.19.23"`.
+:   Type `string`, default `"8.19.25"`.
 
 `olk.filebeat.kubernetesMetadata.cronjob` <a class="headerlink" href="#helm.olk.filebeat.kubernetesMetadata.cronjob" title="Permanent link">#</a> { #helm.olk.filebeat.kubernetesMetadata.cronjob }
 :   Type `bool|null`, default `nil`.
@@ -529,7 +529,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
           type: ClusterIP
         tolerations: []
         topologySpreadConstraint: {}
-        version: 9.5.6.0
+        version: 9.5.6.1
         workers: 4
     ```
 
@@ -640,7 +640,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
     The default topology spread constraint. If not defined the global topology spread constraint would be used instead.
 
 `olk.logstash.version` <a class="headerlink" href="#helm.olk.logstash.version" title="Permanent link">#</a> { #helm.olk.logstash.version }
-:   Type `string`, default `"9.5.6.0"`.
+:   Type `string`, default `"9.5.6.1"`.
 
 `olk.logstash.workers` <a class="headerlink" href="#helm.olk.logstash.workers" title="Permanent link">#</a> { #helm.olk.logstash.workers }
 :   Type `int`, default `4`.
@@ -738,7 +738,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
         topologySpreadConstraint: {}
         transport_port: 9300
         ttlSecondsAfterFinished: null
-        version: 3.8.0.1
+        version: 3.8.0.2
     ```
 
 <div class="hops-values" markdown>
@@ -964,7 +964,7 @@ Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._ho
     TTL in seconds for the create-repos Job. Overrides global default.
 
 `olk.opensearch.version` <a class="headerlink" href="#helm.olk.opensearch.version" title="Permanent link">#</a> { #helm.olk.opensearch.version }
-:   Type `string`, default `"3.8.0.1"`.
+:   Type `string`, default `"3.8.0.2"`.
 
 </div>
 

@@ -4,7 +4,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795445882` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -49,7 +49,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works/superset
           repository: mysql
-          tag: 8.4.13-ubuntu24.04-h1
+          tag: 8.4.13-ubuntu24.04-h2
         metrics:
           enabled: true
           image:
@@ -57,7 +57,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             pullPolicy: IfNotPresent
             registry: docker.hops.works/superset
             repository: mysqld-exporter
-            tag: 0.20.0-alpine-h2.1
+            tag: 0.20.0-alpine-h3.2
           resources:
             limits:
               cpu: 100m
@@ -81,7 +81,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             pullPolicy: IfNotPresent
             registry: docker.hops.works/superset
             repository: os-shell
-            tag: 12-alpine-h2.1
+            tag: 12-alpine-h3.1
       superset:
         redis:
           enabled: true
@@ -140,7 +140,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           pullPolicy: IfNotPresent
           registry: docker.hops.works/superset
           repository: mysql
-          tag: 8.4.13-ubuntu24.04-h1
+          tag: 8.4.13-ubuntu24.04-h2
         metrics:
           enabled: true
           image:
@@ -148,7 +148,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             pullPolicy: IfNotPresent
             registry: docker.hops.works/superset
             repository: mysqld-exporter
-            tag: 0.20.0-alpine-h2.1
+            tag: 0.20.0-alpine-h3.2
           resources:
             limits:
               cpu: 100m
@@ -172,7 +172,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
             pullPolicy: IfNotPresent
             registry: docker.hops.works/superset
             repository: os-shell
-            tag: 12-alpine-h2.1
+            tag: 12-alpine-h3.1
         ```
 
 </div>
@@ -601,7 +601,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         initImage:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/superset/dockerize
-          tag: 0.14.0-alpine-h2.1
+          tag: 0.14.0-alpine-h3.2
         initialization:
           enabled: true
           timeoutSeconds: 1800
@@ -711,7 +711,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
               pullPolicy: IfNotPresent
               registry: docker.hops.works/superset
               repository: redis-exporter
-              tag: 1.90.0-alpine-h2.1
+              tag: 1.90.0-alpine-h3.1
             resources:
               limits:
                 cpu: 100m
@@ -1265,7 +1265,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         initImage:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/superset/dockerize
-          tag: 0.14.0-alpine-h2.1
+          tag: 0.14.0-alpine-h3.2
         initialization:
           enabled: true
           timeoutSeconds: 1800
@@ -1375,7 +1375,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
               pullPolicy: IfNotPresent
               registry: docker.hops.works/superset
               repository: redis-exporter
-              tag: 1.90.0-alpine-h2.1
+              tag: 1.90.0-alpine-h3.1
             resources:
               limits:
                 cpu: 100m
