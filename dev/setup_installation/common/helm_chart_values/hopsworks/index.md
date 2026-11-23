@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795445882` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795453098` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2848,6 +2848,8 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         default_python_job_environment: pandas-training-pipeline
         disable_password_login: 'false'
         disable_registration: 'false'
+        dlt_files_credentials_duration_seconds: '3600'
+        dlt_files_listing_timeout_seconds: '3600'
         dlt_schema_fetch_job_deadline_seconds: '1800'
         docker_base_image_python_version: '3.13'
         docker_cgroup_cpu_period: '100000'
@@ -2918,6 +2920,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         enable_fix_receivers_timer: 'true'
         enable_gcs_storage_connectors: 'true'
         enable_gmail_storage_connectors: 'true'
+        enable_google_drive_storage_connectors: 'true'
         enable_hopsworks_storage_connectors: 'true'
         enable_jupyter_python_kernel_non_kubernetes: 'false'
         enable_kafka_storage_connectors: 'true'
@@ -2928,6 +2931,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         enable_public_apps: false
         enable_read_only_git_repositories: 'false'
         enable_redshift_storage_connectors: 'true'
+        enable_sftp_storage_connectors: 'true'
         enable_sharepoint_storage_connectors: 'true'
         enable_snowflake_storage_connectors: 'true'
         enable_user_search: 'true'
@@ -3281,6 +3285,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         serving_tracing_max_traces_per_minute: '60'
         serving_tracing_online_ttl_hours: '36'
         serving_tracing_pause_free_percent: '20'
+        sftp_allow_private_ranges: 'false'
         spark_dir: /srv/hops/spark
         spark_executor_min_memory: '1024'
         spark_hops_utils_dir: /srv/hops/artifacts
@@ -3534,6 +3539,14 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.disable_registration` <a class="headerlink" href="#helm.hopsworks.variables.disable_registration" title="Permanent link">#</a> { #helm.hopsworks.variables.disable_registration }
 :   Type `string`, default `"false"`.
 
+`hopsworks.variables.dlt_files_credentials_duration_seconds` <a class="headerlink" href="#helm.hopsworks.variables.dlt_files_credentials_duration_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.dlt_files_credentials_duration_seconds }
+:   Type `string`, default `"3600"`.
+    Lifetime in seconds of the temporary credentials a files ingestion job assumes from an S3 data source's IAM role; the role's maximum session duration must allow it.
+
+`hopsworks.variables.dlt_files_listing_timeout_seconds` <a class="headerlink" href="#helm.hopsworks.variables.dlt_files_listing_timeout_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.dlt_files_listing_timeout_seconds }
+:   Type `string`, default `"3600"`.
+    Seconds a files ingestion job may spend listing its prefix before the run fails; deletions are never mirrored after an incomplete listing.
+
 `hopsworks.variables.dlt_schema_fetch_job_deadline_seconds` <a class="headerlink" href="#helm.hopsworks.variables.dlt_schema_fetch_job_deadline_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.dlt_schema_fetch_job_deadline_seconds }
 :   Type `string`, default `"1800"`.
     activeDeadlineSeconds for dlthub schema-fetch Kubernetes Jobs. Kills schema-fetch pods that never get to run (unschedulable, volume mount failures), which would otherwise be reported as in-progress forever.
@@ -3755,6 +3768,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"true"`.
     Enables Gmail data sources and their sync jobs into Delta feature groups.
 
+`hopsworks.variables.enable_google_drive_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_google_drive_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_google_drive_storage_connectors }
+:   Type `string`, default `"true"`.
+    Enables Google Drive data sources (files ingestion into a dataset).
+
 `hopsworks.variables.enable_hopsworks_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_hopsworks_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_hopsworks_storage_connectors }
 :   Type `string`, default `"true"`.
 
@@ -3786,6 +3803,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.enable_redshift_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_redshift_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_redshift_storage_connectors }
 :   Type `string`, default `"true"`.
+
+`hopsworks.variables.enable_sftp_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_sftp_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_sftp_storage_connectors }
+:   Type `string`, default `"true"`.
+    Enables SFTP data sources (files ingestion into a dataset).
 
 `hopsworks.variables.enable_sharepoint_storage_connectors` <a class="headerlink" href="#helm.hopsworks.variables.enable_sharepoint_storage_connectors" title="Permanent link">#</a> { #helm.hopsworks.variables.enable_sharepoint_storage_connectors }
 :   Type `string`, default `"true"`.
@@ -4950,6 +4971,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.serving_tracing_pause_free_percent` <a class="headerlink" href="#helm.hopsworks.variables.serving_tracing_pause_free_percent" title="Permanent link">#</a> { #helm.hopsworks.variables.serving_tracing_pause_free_percent }
 :   Type `string`, default `"20"`.
     Tracing of model and feature view deployments is paused while less than this percentage of the online feature store's disk tablespace or of RonDB DataMemory is free, and resumes once both are 10 points above it.
+
+`hopsworks.variables.sftp_allow_private_ranges` <a class="headerlink" href="#helm.hopsworks.variables.sftp_allow_private_ranges" title="Permanent link">#</a> { #helm.hopsworks.variables.sftp_allow_private_ranges }
+:   Type `string`, default `"false"`.
+    Lets an SFTP data source's Test Connection reach private or cluster-internal addresses.
 
 `hopsworks.variables.spark_dir` <a class="headerlink" href="#helm.hopsworks.variables.spark_dir" title="Permanent link">#</a> { #helm.hopsworks.variables.spark_dir }
 :   Type `string`, default `"/srv/hops/spark"`.
