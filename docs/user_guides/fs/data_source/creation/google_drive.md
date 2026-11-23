@@ -157,7 +157,7 @@ Copy the files under the folder into a dataset with a [files ingestion job][file
 The prefix of the job is a folder path below the shared folder, by folder names, and a run reads `gdrive://<folder ID>/<prefix>`, so an empty prefix copies the whole shared folder.
 The index feature group, when turned on, records `gdrive` in `source_type` and the same `gdrive://` URL in `source_url`.
 
-## Troubleshooting { #troubleshooting }
+## Troubleshooting
 
 A run that cannot reach the folder fails before listing anything.
 Its execution on the job page shows `root path '<folder ID>' not found or not readable` followed by Google's answer, and the same text is in the execution logs.
