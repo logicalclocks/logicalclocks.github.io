@@ -183,7 +183,7 @@ This workflow is especially useful when you want to:
 - Materialize source data inside Hopsworks.
 - Schedule recurring ingestions.
 - Use full-load or incremental ingestion strategies.
-- Build managed feature groups from SQL, CRM, or REST API sources.
+- Build managed feature groups from SQL, CRM, Google Sheets, or REST API sources.
 
 For the full workflow, including schema selection, ingestion job configuration, loading strategies, and REST pagination, see [Ingest Data with dltHub][ingest-data-with-dlthub].
 
