@@ -67,20 +67,15 @@ The staging memory counts against the deployment's memory limit, unlike the page
 
 ### Step 1: Create a new deployment
 
-If you have at least one model already trained and saved in the Model Registry, navigate to the deployments page by clicking on the `Deployments` tab on the navigation menu on the left.
-Once in the deployments page, you can create a new deployment by either clicking on `New deployment` (if there are no existing deployments) or on `Create new deployment` in the top-right corner.
+If you have at least one model already trained and saved in the Model Registry, navigate to the deployments page by clicking on the `Model Deployments` tab on the navigation menu on the left.
+Once in the deployments page, click on `New model deployment` in the top-right corner to open the deployment creation form.
 
-### Step 2: Go to advanced options
+### Step 2: Select the loading strategy
 
-A simplified creation form will appear including the most common deployment fields from all available configurations.
-To navigate to the advanced creation form, click on `Advanced options`.
+Select the strategy in the `Model loading` field of the `Deployment configuration` card: `Stream to GPU` is `RUNAI_STREAMER`, `Download to local disk` is `DOWNLOAD` and `Stream from HopsFS` is `MOUNT`.
+It lists the strategies the model server of the deployment supports, with its default already selected: `Stream to GPU` for vLLM, except vLLM-Omni, on GPUs with safetensors files at the top of the model's files, and `Download to local disk` otherwise or when the cluster has no HopsFS CSI driver.
 
-### Step 3: Select the loading strategy
-
-Select the strategy in the `Model loading` field: `Stream to GPU` is `RUNAI_STREAMER`, `Download to local disk` is `DOWNLOAD` and `Stream from HopsFS` is `MOUNT`.
-It lists the strategies the model server of the deployment supports, with its default already selected: `Stream to GPU` for vLLM on GPUs, and `Download to local disk` otherwise or when the cluster has no HopsFS CSI driver.
-
-Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
+Once you are done with the changes, click on `Create new model deployment` at the bottom of the page to create the deployment for your model.
 
 ## Code
 

@@ -68,7 +68,7 @@ To navigate to the advanced creation form, click on `Advanced options`.
 
 ### Step 3: Configure resources
 
-In the `Resource allocation` section of the form, you can optionally set the resources to be allocated to the predictor and/or the transformer (if available).
+In the `Resources per Instance` card of the form, you can optionally set the resources to be allocated to the predictor and/or the transformer (if available).
 Moreover, you can choose the minimum number of replicas for each of these components.
 `Disk (GB)` limits a component's local disk; leave it empty for no limit.
 When the selected loading strategy mounts HopsFS, each component also shows `Mount memory (MB)`, `Mount cores` and `Namenode connections` for its HopsFS mount, prefilled with the cluster defaults.
