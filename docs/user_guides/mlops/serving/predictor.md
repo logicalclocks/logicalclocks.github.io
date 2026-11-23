@@ -447,6 +447,10 @@ They are first-class fields on the predictor configuration.
 
 Both the `VLLM` and `VLLM_OMNI` variants run the official upstream vLLM images published on [Docker Hub](https://hub.docker.com): [`vllm/vllm-openai`](https://hub.docker.com/r/vllm/vllm-openai) and [`vllm/vllm-omni`](https://hub.docker.com/r/vllm/vllm-omni) respectively.
 
+!!! note "vLLM-Omni can be disabled per cluster"
+    The `VLLM_OMNI` variant is offered only on clusters where the administrator has not disabled it, see [vLLM serving runtimes][vllm-disable-omni].
+    On a cluster where it is disabled, an existing vLLM-Omni deployment cannot be started or updated until you switch it to the `VLLM` variant; it can still be stopped and deleted.
+
 !!! tip "Python SDK"
     From the Python SDK, the variant is selected with the `vllm_variant` keyword
     argument. See [`Model.deploy()`][hsml.model.Model.deploy] in the API reference.
@@ -458,7 +462,7 @@ If not set, Hopsworks picks the **highest** image version advertised for the cho
 Set it explicitly to pin a deployment to a specific image, which is useful when you need a stable, reproducible runtime.
 
 The list of available versions per variant is advertised by the cluster administrator through the
-`kube_serving_vllm_versions` and `kube_serving_vllm_omni_versions` Hopsworks variables.
+`kube_serving_vllm_versions` and `kube_serving_vllm_omni_versions` Hopsworks variables, see [vLLM serving runtimes][vllm-image-tags].
 
 Hopsworks ships exactly one default image version for each of the **vLLM** and **vLLM-Omni** variants.
 Any additional versions exposed in the **Version** dropdown are managed by the cluster administrator.
