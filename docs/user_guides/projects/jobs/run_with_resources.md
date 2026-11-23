@@ -53,9 +53,15 @@ A Spark job uses the names of its own configuration:
 ```python
 spark_job = project.get_job_api().get_job("my_spark_job")
 execution = spark_job.run(
-    resources={"spark.executor.memory": 16384, "spark.executor.instances": 8}
+    resources={
+        "spark.executor.memory": 16384,
+        "spark.dynamicAllocation.maxExecutors": 8,
+    }
 )
 ```
+
+A Spark job uses dynamic allocation unless you turned it off, and the number of executors then follows `spark.dynamicAllocation.minExecutors` and `spark.dynamicAllocation.maxExecutors`.
+`spark.executor.instances` sets the number of executors of a job with static executors, and has no effect while dynamic allocation is on.
 
 !!! api "API reference"
 
@@ -87,9 +93,10 @@ HopsworksLaunchOperator(
     project_id=42,
     job_name="profiles_fg",
     job_resources={"resourceConfig": {"memory": 16384}},
-    wait_for_completion=True,
 )
 ```
+
+The operator starts the execution and returns; to wait for it, add a `HopsworksJobSuccessSensor` after it, as in [Write your own DAG][write-your-own-dag].
 
 !!! warning "`job_resources`, not `resources`"
     Airflow keeps the operator argument `resources` for the resources of the Airflow task itself.
@@ -103,8 +110,9 @@ Memory is in MB, as in the job configuration.
 
 | Job type | Fields |
 | --- | --- |
-| Python, Jupyter Notebook, Docker, ingestion and agent jobs | `resourceConfig`: `cores`, `memory`, `gpus`, `shmSize`, `diskGb` |
+| Python, Jupyter Notebook, ingestion and agent jobs | `resourceConfig`: `cores`, `memory`, `gpus`, `shmSize`, `diskGb` |
 | | `hopsfsMountConfig`: `memory`, `cores`, `namenodeConnections` |
+| Docker | `resourceConfig`: `cores`, `memory`, `gpus`, `shmSize`, `diskGb` |
 | Spark and PySpark | `spark.driver.cores`, `spark.driver.memory`, `spark.driver.memoryOverheadFactor`, `driverDiskGb` |
 | | `spark.executor.cores`, `spark.executor.memory`, `spark.executor.memoryOverheadFactor`, `executorDiskGb`, `spark.executor.instances` |
 | | `spark.dynamicAllocation.enabled`, `spark.dynamicAllocation.minExecutors`, `spark.dynamicAllocation.maxExecutors`, `spark.dynamicAllocation.initialExecutors` |
@@ -114,9 +122,15 @@ Memory is in MB, as in the job configuration.
 
 A field that is not in the list for the job's type, or a value that is not valid for the field, is refused when the execution is started, and nothing runs.
 
+A Docker job does not mount HopsFS, so it takes no `hopsfsMountConfig`.
+
 !!! note "Ingestion jobs with several tables"
     A table that has resources of its own keeps them.
     The resources given for the execution replace only those of the job.
+
+!!! note "Ingestion jobs on a cluster without the HopsFS CSI driver"
+    On such a cluster the HopsFS mount runs inside the ingestion container and has no memory or cores of its own.
+    Of `hopsfsMountConfig` only `namenodeConnections` is accepted; give the mount more memory or cores through `resourceConfig`.
 
 !!! note "Spark jobs on a cluster with Kueue"
     Dynamic allocation is off for Spark jobs that run under Kueue.
