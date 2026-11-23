@@ -420,6 +420,7 @@
 - [Semantic Layer](https://docs.hopsworks.ai/latest/setup_installation/admin/semantic_layer/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/semantic_layer/index.md))
 - [GPU Scheduling with Run:ai](https://docs.hopsworks.ai/latest/setup_installation/admin/run_ai/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/run_ai/index.md))
 - [Triton Inference Server](https://docs.hopsworks.ai/latest/setup_installation/admin/triton/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/triton/index.md))
+- [vLLM Serving Runtimes](https://docs.hopsworks.ai/latest/setup_installation/admin/vllm/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/vllm/index.md))
 
 ### Helm Chart Values Reference
 - [Helm chart values reference](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/) ([md](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/index.md))
