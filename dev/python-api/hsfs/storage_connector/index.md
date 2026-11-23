@@ -40,6 +40,11 @@
       heading_level: 2
       show_root_heading: true
 
+::: hsfs.storage_connector.GoogleDriveConnector
+    options:
+      heading_level: 2
+      show_root_heading: true
+
 ::: hsfs.storage_connector.GoogleSheetsConnector
     options:
       heading_level: 2
@@ -96,6 +101,11 @@
       show_root_heading: true
 
 ::: hsfs.storage_connector.SapHanaConnector
+    options:
+      heading_level: 2
+      show_root_heading: true
+
+::: hsfs.storage_connector.SftpConnector
     options:
       heading_level: 2
       show_root_heading: true

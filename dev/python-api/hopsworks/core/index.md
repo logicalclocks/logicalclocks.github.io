@@ -35,6 +35,11 @@
       heading_level: 2
       show_root_heading: true
 
+::: hsfs.core.files_ingestion.FilesIngestionJob
+    options:
+      heading_level: 2
+      show_root_heading: true
+
 ::: hsfs.core.multi_table_ingestion.MultiTableIngestionJob
     options:
       heading_level: 2
