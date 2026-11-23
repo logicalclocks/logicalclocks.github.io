@@ -102,6 +102,7 @@ HopsworksLaunchOperator(
 
 Provide the Airflow task name (`task_id`) and the Hopsworks job information (`project_id`, `job_name`, `args`).
 Set `wait_for_completion=True` to block until the job execution finishes.
+To give the execution more resources than the job has, without changing the job, pass `job_resources`; see [How To Run a Job with Different Resources][how-to-run-a-job-with-different-resources].
 
 Wait for a job's most recent execution to be successful:
 
