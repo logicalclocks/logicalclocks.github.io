@@ -10,7 +10,7 @@ Hopsworks mounts HopsFS into Airflow, Trino, and the jobs, notebooks and deploym
 A privileged node plugin, run as a DaemonSet, performs the FUSE mount for each pod's inline volume and hands the connection to a `hopsfs-fuse` sidecar in the pod, which runs unprivileged and as a non-root user.
 The pods that mount HopsFS therefore carry no privileged container.
 
-Model deployments whose [loading strategy][loading-strategy-guide] mounts HopsFS, the default for vLLM on GPUs with safetensors weights when the driver is on, read their model and deployment files through the driver as well, read-only, at the paths a download would fill (`/mnt/models` and `/mnt/artifacts`), so a pod does not copy the model before it starts.
+Model deployments whose [loading strategy][loading-strategy-guide] mounts HopsFS read their files through the driver as well, read-only, instead of copying them to the pod.
 
 The driver is on by default (`global._hopsworks.csi.enabled: true`).
 The node plugin is installed whenever something needs it: `global._hopsworks.full_platform`, Airflow or Trino.
@@ -127,7 +127,7 @@ Trino requires the driver: its password file, group file, access-control rules, 
 `global._hopsworks.csi.enabled: false` therefore renders only together with `global._hopsworks.trino.enabled: false`, and the render fails otherwise, rather than leaving every Trino pod in `ContainerCreating`.
 
 With the driver off, Airflow and the workloads Hopsworks launches go back to mounting HopsFS from a privileged container in the pod.
-Model deployments are the exception: one whose [loading strategy][loading-strategy-guide] is `MOUNT` or `RUNAI_STREAMER` reads its files through the driver, so it fails to start until its strategy is changed to `DOWNLOAD`, which the edit form does when the deployment is saved.
+Model deployments that mount HopsFS are the exception: they fail to start until their [loading strategy][loading-strategy-guide] is changed to `DOWNLOAD`, which the edit form does when the deployment is saved.
 On OpenShift the chart grants no SCC for that container, because the SCC it ships is for the node plugin only.
 The Airflow pods are then admitted only if the cluster already grants the Airflow service account `privileged`; without that grant `restricted-v2` rejects them and the Airflow Deployments stay at zero replicas.
 The same holds for the workloads Hopsworks launches.

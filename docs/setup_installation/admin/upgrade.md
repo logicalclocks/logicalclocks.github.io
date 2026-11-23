@@ -834,10 +834,8 @@ On a cluster still on Istio 1.29, the Istio install hook stops with an error bef
 
 ### Storage initializer of model deployments { #upgrade-storage-initializer }
 
-A model deployment that downloads its files starts with a storage initializer, an init container that copies the model files to the pod.
-From 5.3 its limits are 2 cores and 2 GiB, up from 1 core and 1 GiB, because the copy was CPU-bound at 1 core; its requests stay 100m and 100Mi.
-Kubernetes counts a pod's limits as the larger of its containers' sum and its largest init container, so in a namespace with a `limits.cpu` or `limits.memory` ResourceQuota, or a LimitRange, a small predictor's pod can now be refused.
-Pods pick up the new limits when they are next created.
+The storage initializer, the init container that copies a downloading model deployment's files, now has limits of 2 cores and 2 GiB instead of 1 core and 1 GiB, because the copy was CPU-bound.
+A pod's limits count its largest init container, so a small predictor can now exceed a `limits.cpu` or `limits.memory` ResourceQuota or a LimitRange.
 Set `kserve.storageInitializer.resources` to keep the old limits.
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }

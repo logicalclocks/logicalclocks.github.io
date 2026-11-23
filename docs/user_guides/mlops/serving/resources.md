@@ -25,12 +25,9 @@ For each component, you can set minimum (requests) and maximum (limits) resource
     A cluster can instead give vLLM deployments a fixed-size volume for their model files; their predictor then takes no disk setting, and the form shows the volume's size.
 
 !!! note "HopsFS mount"
-    With a [loading strategy][loading-strategy-guide] that mounts HopsFS (`MOUNT` or `RUNAI_STREAMER`), every predictor and transformer instance carries its own HopsFS mount, a container that serves the model and deployment files to it.
-    For each component you can set the mount's memory (limit in MB, 512 to 1048576), cores (CPU request, 0.001 to 64 and at most the cluster's mount CPU limit) and namenode connections (1 to 32); a setting left empty uses the cluster default.
-    The default CPU request of a model deployment's mount is 0.5 cores, set by `kube_scheduling_model_hopsfsmount_cpu_requests` in the [cluster configuration][cluster-configuration].
-    Cores is a request only: the mount can use more while it loads a model, up to the cluster's mount CPU limit (none by default).
-    The mount's memory and cores count towards the project's resource quota, if it has one, beside the component's own resources.
-    With `DOWNLOAD` there is no mount, and the settings are kept but unused.
+    With a [loading strategy][loading-strategy-guide] that mounts HopsFS, every predictor and transformer instance runs its own HopsFS mount container.
+    Per component you can set its memory (limit in MB, 512 to 1048576), cores (CPU request, 0.001 to 64) and namenode connections (1 to 32); an empty setting uses the cluster default, 0.5 cores for a model mount (`kube_scheduling_model_hopsfsmount_cpu_requests` in the [cluster configuration][cluster-configuration]).
+    The mount's memory and cores count towards the project's resource quota.
 
 !!! tip "Automatic downscale of inactive instances"
     Setting the number of instances to **0** for a component enables **scale-to-zero**: its instances scale down to zero after a period without requests and the next request wakes it.
@@ -126,8 +123,8 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   ```
 
 To limit a component's local disk, set `disk` in GB on its limits only, for example `Resources(cores=2, memory=256, gpus=1, disk=50)` or `"disk": 50` in a limits dict; the request is set to the same amount.
-To size a component's HopsFS mount, set `hopsfs_mount` on its resources, a dict with the optional keys `cores`, `memory` (MB) and `namenode_connections`, or `"hopsfs_mount"` in a resources dict; a key left out uses the cluster default.
-Saving a deployment whose resources have no `hopsfs_mount` keeps the settings it has, and an empty dict resets them to the cluster defaults.
+To size a component's HopsFS mount, set `hopsfs_mount` on its resources to a dict with any of the keys `cores`, `memory` (MB) and `namenode_connections`.
+Leaving it out keeps a deployment's settings, and an empty dict resets them to the cluster defaults.
 
 ### Step 3 (Optional): Define the transformer resource configuration
 
