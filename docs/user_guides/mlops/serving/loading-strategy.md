@@ -77,8 +77,8 @@ To navigate to the advanced creation form, click on `Advanced options`.
 
 ### Step 3: Select the loading strategy
 
-Select the strategy in the `Loading strategy` field.
-It lists the strategies the model server of the deployment supports, with its default already selected: `RUNAI_STREAMER` for vLLM on GPUs, and `DOWNLOAD` otherwise or when the cluster has no HopsFS CSI driver.
+Select the strategy in the `Model loading` field: `Stream to GPU` is `RUNAI_STREAMER`, `Download to local disk` is `DOWNLOAD` and `Stream from HopsFS` is `MOUNT`.
+It lists the strategies the model server of the deployment supports, with its default already selected: `Stream to GPU` for vLLM on GPUs, and `Download to local disk` otherwise or when the cluster has no HopsFS CSI driver.
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
