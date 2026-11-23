@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
+_Generated from the Hopsworks Helm chart `5.2.6` (Hopsworks `5.2.4`)._
 
 ## General { #helm-values-global-general }
 
@@ -87,6 +87,7 @@ _Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
           enabled: false
         ray:
           enabled: false
+        rondbRolloutProgressDeadlineSeconds: 3600
         security:
           tls:
             enabled: true
@@ -300,6 +301,10 @@ _Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 `global._hopsworks.ray.enabled` <a class="headerlink" href="#helm.global._hopsworks.ray.enabled" title="Permanent link">#</a> { #helm.global._hopsworks.ray.enabled }
 :   Type `bool`, default `false`.
+
+`global._hopsworks.rondbRolloutProgressDeadlineSeconds` <a class="headerlink" href="#helm.global._hopsworks.rondbRolloutProgressDeadlineSeconds" title="Permanent link">#</a> { #helm.global._hopsworks.rondbRolloutProgressDeadlineSeconds }
+:   Type `int`, default `3600`.
+    progressDeadlineSeconds of the Deployments that wait for the RonDB rolling restart before running schema migrations (HopsFS namenode, Hopsworks CA, Hive metastore), and of the Deployments that wait for those services (Hopsworks, Airflow, OnlineFS, the Spark history server, the certs operator). Trino takes it from trino.trino.coordinator.deployment.progressDeadlineSeconds, trino.trino.worker.deployment.progressDeadlineSeconds and trino.trinotest.coordinator.deployment.progressDeadlineSeconds instead. Their new pods make no progress until the restart ends, so the value must exceed the longest RonDB rolling restart plus the service's startup; past it, a waiting Helm 4 upgrade and ArgoCD report the upgrade as failed although the rollout continues. Raise it together with the timeout of helm upgrade on clusters whose RonDB restart takes longer.
 
 `global._hopsworks.security.tls.enabled` <a class="headerlink" href="#helm.global._hopsworks.security.tls.enabled" title="Permanent link">#</a> { #helm.global._hopsworks.security.tls.enabled }
 :   Type `bool`, default `true`.

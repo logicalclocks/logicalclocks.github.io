@@ -17,7 +17,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
+_Generated from the Hopsworks Helm chart `5.2.6` (Hopsworks `5.2.4`)._
 
 ## Common values { #helm-values-common }
 
@@ -40,7 +40,7 @@ _Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 
 | Values | Upstream charts | Keys |
 | --- | --- | --- |
-| [`global`][helm-values-global] |  | 147 |
+| [`global`][helm-values-global] |  | 148 |
 | [`airflow`][helm-values-airflow] |  | 151 |
 | [`arrowflight`][helm-values-arrowflight] |  | 46 |
 | [`certs-operator`][helm-values-certs-operator] |  | 29 |
@@ -62,10 +62,10 @@ _Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
 | [`onlinefs`][helm-values-onlinefs] |  | 94 |
 | [`prometheus`][helm-values-prometheus] | [`prometheus` 25.20.2](https://artifacthub.io/packages/helm/prometheus-community/prometheus/25.20.2), [`prometheus-adapter` 4.11.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-adapter/4.11.0) | 9 |
 | [`ray`][helm-values-ray] | [`kuberay-operator` 1.4.0](https://artifacthub.io/packages/helm/kuberay-operator/kuberay-operator/1.4.0) | 2 |
-| [`rondb`][helm-values-rondb] | [`rondb` 26.2.24](https://github.com/logicalclocks/rondb-helm/blob/v26.2.24/values.schema.json) | 498 |
+| [`rondb`][helm-values-rondb] | [`rondb` 26.2.26](https://github.com/logicalclocks/rondb-helm/blob/v26.2.26/values.schema.json) | 500 |
 | [`spark`][helm-values-spark] | [`spark-operator` 2.5.1](https://github.com/kubeflow/spark-operator/blob/v2.5.1/charts/spark-operator-chart/README.md) | 160 |
 | [`superset`][helm-values-superset] | [`mysql` 12.3.5](https://artifacthub.io/packages/helm/bitnami/mysql/12.3.5), [`superset` 0.15.0](https://artifacthub.io/packages/helm/superset/superset/0.15.0) | 25 |
-| [`trino`][helm-values-trino] | [`trino` 1.41.0](https://artifacthub.io/packages/helm/trino/trino/1.41.0) | 38 |
+| [`trino`][helm-values-trino] | [`trino` 1.41.0](https://artifacthub.io/packages/helm/trino/trino/1.41.0) | 41 |
 | [`vpa`][helm-values-vpa] |  | 18 |
 
 ## Other values { #helm-values-other }

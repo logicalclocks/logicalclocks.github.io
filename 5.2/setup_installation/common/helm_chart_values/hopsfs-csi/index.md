@@ -4,7 +4,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
+_Generated from the Hopsworks Helm chart `5.2.6` (Hopsworks `5.2.4`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 

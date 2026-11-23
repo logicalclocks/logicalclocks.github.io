@@ -4,7 +4,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.2.5` (Hopsworks `5.2.4`)._
+_Generated from the Hopsworks Helm chart `5.2.6` (Hopsworks `5.2.4`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -25,6 +25,9 @@ Deployed according to the first of these values that is set: [`global._hopsworks
       catalogsConfigmapName: hopsworks-trino-catalogs
       hopsworkslib: {}
       trinotest:
+        coordinator:
+          deployment:
+            progressDeadlineSeconds: 3600
         initContainers:
           coordinator:
           - null
@@ -48,6 +51,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 `trino.trinotest` <a class="headerlink" href="#helm.trino.trinotest" title="Permanent link">#</a> { #helm.trino.trinotest }
 :   Type `object`, default check \[values.yaml\](./values.yaml) for more information, passed to the [`trino` 1.41.0](https://artifacthub.io/packages/helm/trino/trino/1.41.0) chart, whose other values are documented there.
     override trinotest values. Rendered only when global._hopsworks.trino.testCoordinator.enabled is true (see Chart.yaml). An optional single-node coordinator running catalog.management=dynamic with a WRITABLE catalog dir, used by the backend to connection-test user catalogs (CREATE CATALOG / SHOW SCHEMAS / DROP CATALOG) before they are synced to the production coordinator. Mirrors the production coordinator's image, certs, TLS, and PASSWORD auth so the backend's admin credentials and discovery work identically.
+
+`trino.trinotest.coordinator.deployment` <a class="headerlink" href="#helm.trino.trinotest.coordinator.deployment" title="Permanent link">#</a> { #helm.trino.trinotest.coordinator.deployment }
+:   Type `object`, default `{"progressDeadlineSeconds":3600}`.
+    Deployment settings. progressDeadlineSeconds matches the default of global._hopsworks.rondbRolloutProgressDeadlineSeconds: the pods wait for HopsFS, which starts only after the RonDB rolling restart.
 
 `trino.trinotest.initContainers.coordinator[2].name` <a class="headerlink" href="#helm.trino.trinotest.initContainers.coordinator.2.name" title="Permanent link">#</a> { #helm.trino.trinotest.initContainers.coordinator.2.name }
 :   Type `string`, default `"mountable-secrets"`.
@@ -254,6 +261,8 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         coordinator:
           additionalJVMConfig:
           - --add-opens=java.base/java.nio=ALL-UNNAMED
+          deployment:
+            progressDeadlineSeconds: 3600
         image:
           registry: docker.hops.works
           repository: hopsworks/trino
@@ -266,6 +275,9 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           worker:
           - null
           - name: mountable-secrets
+        worker:
+          deployment:
+            progressDeadlineSeconds: 3600
     ```
 
 <div class="hops-values" markdown>
@@ -277,6 +289,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 `trino.trino.coordinator.additionalJVMConfig` <a class="headerlink" href="#helm.trino.trino.coordinator.additionalJVMConfig" title="Permanent link">#</a> { #helm.trino.trino.coordinator.additionalJVMConfig }
 :   Type `list`, default `["--add-opens=java.base/java.nio=ALL-UNNAMED"]`.
     add-opens for java.nio, and the failure is a CONFIGURATION error raised while the catalog is being loaded. On this coordinator that is fatal rather than local, because Trino runs catalog.management=static and exits when a catalog file fails to load -- so one project's Snowflake catalog would stop the whole cluster from starting. Set here rather than left to the operator because the connector is in TRINO_CONNECTORS, i.e. the backend offers it to every project. Other Arrow-based connectors need the same opens, so this is not Snowflake-specific.
+
+`trino.trino.coordinator.deployment` <a class="headerlink" href="#helm.trino.trino.coordinator.deployment" title="Permanent link">#</a> { #helm.trino.trino.coordinator.deployment }
+:   Type `object`, default `{"progressDeadlineSeconds":3600}`.
+    Deployment settings. progressDeadlineSeconds matches the default of global._hopsworks.rondbRolloutProgressDeadlineSeconds: the pods wait for HopsFS, which starts only after the RonDB rolling restart.
 
 `trino.trino.image.registry` <a class="headerlink" href="#helm.trino.trino.image.registry" title="Permanent link">#</a> { #helm.trino.trino.image.registry }
 :   Type `string`, default `"docker.hops.works"`.
@@ -297,6 +313,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 `trino.trino.initContainers.worker[1].name` <a class="headerlink" href="#helm.trino.trino.initContainers.worker.1.name" title="Permanent link">#</a> { #helm.trino.trino.initContainers.worker.1.name }
 :   Type `string`, default `"mountable-secrets"`.
     readOnly is not optional. Without it the query engine gains a write channel into HopsFS as the trino service user; the volume's readOnly makes the kernel refuse writes too. --srcDir bounds what the mount exposes to the backend-owned tree; the mount authenticates as trino, which is in the hdfs superuser group, so srcDir is the only thing containing it.  No preStop unmount: the node plugin owns the mount and unmounts it in NodeUnpublishVolume, and hopsfs-sidecar.sh exits on SIGTERM, so the container terminates cleanly on its own.
+
+`trino.trino.worker.deployment` <a class="headerlink" href="#helm.trino.trino.worker.deployment" title="Permanent link">#</a> { #helm.trino.trino.worker.deployment }
+:   Type `object`, default `{"progressDeadlineSeconds":3600}`.
+    Deployment settings. progressDeadlineSeconds matches the default of global._hopsworks.rondbRolloutProgressDeadlineSeconds: the pods wait for HopsFS, which starts only after the RonDB rolling restart.
 
 </div>
 
