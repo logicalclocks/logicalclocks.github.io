@@ -4,7 +4,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -46,6 +46,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           initContainers:
             extraAnnotations: []
             labels: []
+          items: []
           labels:
           - key: job-type
             value: check-image-exist
@@ -83,6 +84,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           initContainers:
             extraAnnotations: []
             labels: []
+          items: []
           labels:
           - key: job-type
             value: check-image-exist
@@ -117,6 +119,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         initContainers:
           extraAnnotations: []
           labels: []
+        items: []
         labels:
         - key: job-type
           value: check-image-exist
@@ -168,6 +171,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 `hw-kyverno.policies.addCertificatesVolume.initContainers.labels` <a class="headerlink" href="#helm.hw-kyverno.policies.addCertificatesVolume.initContainers.labels" title="Permanent link">#</a> { #helm.hw-kyverno.policies.addCertificatesVolume.initContainers.labels }
 :   Type `list`, default `[]`.
     Init-specific labels that opt a pod's init containers into certificate volume injection. ORed with the dedicated init-container annotation and extraAnnotations. Defaults to empty so third-party operator-injected init containers are not silently mutated.
+
+`hw-kyverno.policies.addCertificatesVolume.items` <a class="headerlink" href="#helm.hw-kyverno.policies.addCertificatesVolume.items" title="Permanent link">#</a> { #helm.hw-kyverno.policies.addCertificatesVolume.items }
+:   Type `list`, default `[]`.
+    The files to mount from the certificates ConfigMap, as `key` and `path` pairs. Empty mounts every key as a file named after it. A path may name a subdirectory and a key cannot, so list `{key: java-cacerts, path: java/cacerts}` (next to `{key: ca-certificates.crt, path: ca-certificates.crt}`) to keep a default truststore for JDKs whose `cacerts` links to `/etc/ssl/certs/java/cacerts`, as in the Hopsworks Spark images. When set, only the listed keys are mounted.
 
 `hw-kyverno.policies.addCertificatesVolume.labels` <a class="headerlink" href="#helm.hw-kyverno.policies.addCertificatesVolume.labels" title="Permanent link">#</a> { #helm.hw-kyverno.policies.addCertificatesVolume.labels }
 :   Type `list`.

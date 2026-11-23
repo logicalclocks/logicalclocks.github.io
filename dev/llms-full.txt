@@ -3212,12 +3212,9 @@ This has the advantage that cheap storage can be turned into a cloud native data
 These kinds of storages are often the source for raw data from which features can be engineered.
 
 In this guide, you will configure a Data Source in Hopsworks to save all the authentication information needed in order to set up a connection to your AWS S3 bucket.
+The same data source also connects to an S3-compatible store such as MinIO, Dell ECS or Ceph, see [S3-compatible storage][data-source-s3-compatible].
 When you're finished, you'll be able to read files using Spark through Hopsworks APIs.
 You can also use the connector to write out training data from the Feature Store, in order to make it accessible by third parties.
-
-!!! note
-    Currently, it is only possible to create data sources in the Hopsworks UI.
-You cannot create a data source programmatically.
 
 ## Prerequisites
 
@@ -3228,9 +3225,12 @@ Before you begin this guide you'll need to retrieve the following information fr
 - **Path (Optional):** If needed, a path can be defined to ensure that all operations are restricted to a specific location within the bucket.
 - **Region (Optional):** You will need an S3 region to have complete control over data when managing the feature group that relies on this data source.
   The region is identified by its code.
+  An S3-compatible store requires it.
+- **Endpoint (S3-compatible storage only):** The address of the store, as `http(s)://host[:port]`.
 - **Authentication Method:** You can authenticate using Access Key/Secret, or use IAM roles.
   If you want to use an IAM role it either needs to be attached to the entire Hopsworks cluster or Hopsworks needs to be able to assume the role.
-  See [IAM role documentation](../../../../setup_installation/admin/roleChaining.md) for more information.
+  See [IAM role documentation][aws-iam-role-chaining] for more information.
+  An S3-compatible store authenticates with Access Key/Secret only.
 - **Server Side Encryption details:** If your bucket has server side encryption (SSE) enabled, make sure you know which algorithm it is using (AES256 or SSE-KMS).
   If you are using SSE-KMS, you need the resource ARN of the managed key.
 
@@ -3240,7 +3240,7 @@ Before you begin this guide you'll need to retrieve the following information fr
 
 Head to the `Data Sources` view on Hopsworks (1) and click `New data source` (2).
 The `Add a data source` catalog lists the available sources, grouped under `Object storage`, `Data warehouse`, `Database`, `Streaming` and `API & SaaS`.
-Pick the `AWS S3` card to open the creation form.
+Pick the `S3` card to open the creation form.
 
 <figure markdown>
   ![Data Source Creation](../../../../assets/images/guides/fs/data_source/data_source_overview.png)
@@ -3250,10 +3250,12 @@ Pick the `AWS S3` card to open the creation form.
 ### Step 2: Enter Bucket Information
 
 Enter the details for your S3 connector.
-The `Source` line at the top of the form shows `AWS S3`, and `Change source` takes you back to the catalog.
+The `Source` line at the top of the form shows `S3`, and `Change source` takes you back to the catalog.
 Start by giving it a **name** and an optional **description**.
 And set the name of the S3 Bucket you want to point the connector to.
 Optionally, specify the region if you wish to have a Hopsworks-managed feature group stored using this connector.
+For an S3-compatible store, fill in the **Endpoint** as well; the form then offers **Path-style access**, see [S3-compatible storage][data-source-s3-compatible].
+Under the region, the form shows the URL that requests go to, built from the bucket, path, endpoint, path style and region, for example `https://landing.s3.eu-north-1.amazonaws.com/...` on AWS.
 
 <figure markdown>
   ![S3 Connector Creation](../../../../assets/images/guides/fs/data_source/s3_creation.png)
@@ -3268,16 +3270,16 @@ Choose instance role if you have an EC2 instance profile attached to your Hopswo
 
 #### Temporary Credentials
 
-Choose temporary credentials if you are using [AWS Role chaining](../../../../setup_installation/admin/roleChaining.md) to control the access permission on a project and user role base.
+Choose temporary credentials if you are using [AWS Role chaining][aws-iam-role-chaining] to control the access permission on a project and user role base.
 Once you have selected *Temporary Credentials* select the role that give access to the specified bucket.
-For this role to appear in the list it needs to have been configured by an administrator, see the [AWS Role chaining documentation](../../../../setup_installation/admin/roleChaining.md) for more details.
+For this role to appear in the list it needs to have been configured by an administrator, see the [AWS Role chaining documentation][aws-iam-role-chaining] for more details.
 
 !!! warning "Session Duration"
     By default, the session duration that the role will be assumed for is 1 hour or 3600 seconds.
-    This means if you want to use the data source for example to write [training data to S3](../usage.md#writing-training-data), the training dataset creation cannot take longer than one hour.
+    This means if you want to use the data source for example to write [training data to S3][writing-training-data], the training dataset creation cannot take longer than one hour.
 
     Your administrator can change the default session duration for AWS data sources, by first [increasing the max session duration of the IAM Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html#id_roles_use_view-role-max-session) that you are assuming.
-    And then changing the `fs_data_source_session_duration` [configuration variable](../../../../setup_installation/admin/variables.md) to the appropriate value in seconds.
+    And then changing the `fs_data_source_session_duration` [configuration variable][cluster-configuration] to the appropriate value in seconds.
 
 #### Access Key/Secret
 
@@ -3303,11 +3305,11 @@ If you have SSE-KMS enabled for your bucket, you can find the key ARN in the "Pr
 
 Here you can specify any additional spark options that you wish to add to the spark context at runtime.
 Multiple options can be added as key - value pairs.
+Options starting with `fs.s3a.` configure Spark's S3A client, for example `fs.s3a.endpoint` to reach a regional AWS endpoint.
 
-To connect to a S3 compatible storage other than AWS S3, you can add the option with key as `fs.s3a.endpoint` and the endpoint you want to use as value.
-The data source will then be able to read from your specified S3 compatible storage.
-
-You can also add options to configure the S3A client. For example, to disable SSL certificate verification, you can add the option with key as `fs.s3a.connection.ssl.enabled` and value as `false`. You can also configure other options such as `fs.s3a.path.style.access` if you use s3 compliant storage which does not support virtual hosting.
+To connect to an S3-compatible store, set the **Endpoint** instead of the `fs.s3a.endpoint` and `fs.s3a.path.style.access` options.
+Spark reads those options in full, the Python engine and the Arrow Flight server only in part, and the backend not at all, so browsing and deleting data still reach AWS.
+The endpoint reaches every Hopsworks client, and a data source cannot have both.
 
 !!! warning "Spark Configuration"
     When using the data source within a Spark application, the credentials are set at application level.
@@ -3319,9 +3321,91 @@ You can also add options to configure the S3A client. For example, to disable SS
 
 Click on "Save Credentials".
 
+## S3-compatible storage { #data-source-s3-compatible }
+
+An S3 data source with an **Endpoint** connects to an S3-compatible store instead of AWS.
+The backend, Spark, the Python engine and the Arrow Flight server all use the endpoint, so browsing, reading, writing and deleting data all reach the store.
+
+Set these fields:
+
+- **Endpoint:** `http(s)://host[:port]`, without a path, for example `https://s3.example.com:9021`.
+  The scheme decides whether the connection uses TLS.
+  When the store's certificate comes from a private CA, an administrator makes the cluster trust it, see [Private CA Trust][private-ca-trust].
+  Hopsworks refuses `localhost` and loopback, link-local and unspecified addresses.
+- **Path-style access:** Turn it on when the store does not resolve a host name per bucket, which is the case for most on-premises stores.
+  The bucket is then sent in the URL path, `https://s3.example.com:9021/landing/...`, instead of the host name, `https://landing.s3.example.com:9021/...`; the request URL under the region shows which.
+  With it off, Delta tables read through the Arrow Flight server still use path-style requests, since the server's Delta reader cannot build virtual-hosted URLs for a custom endpoint, so the store must accept both.
+- **Region:** The region the store is configured with.
+  Left empty, it is `us-east-1`, which stores without regions accept; the field shows it as its placeholder.
+  A store configured with another region refuses requests signed for `us-east-1`, so set its region here.
+- **Access Key/Secret:** Required.
+  Instance roles and temporary credentials go through AWS, so the form does not offer them with an endpoint.
+
+<figure markdown>
+  ![S3 data source form with an endpoint, path-style access, an optional region, the request URL and access keys](../../../../assets/images/guides/fs/data_source/s3_compatible_creation.png)
+  <figcaption>S3 Connector on an S3-compatible store</figcaption>
+</figure>
+
+The data source can also be created with the Python API:
+
+```python
+import hopsworks
+from hsfs.storage_connector import S3Connector
+
+
+project = hopsworks.login()
+fs = project.get_feature_store()
+
+sc = S3Connector(
+    id=None,
+    name="ecs_landing",
+    featurestore_id=fs.id,
+    bucket="landing",
+    region="us-east-1",
+    access_key="<access key>",
+    secret_key="<secret key>",
+    endpoint="https://s3.example.com:9021",
+    path_style_access=True,
+)
+sc.save()
+```
+
+What the store must support:
+
+- Signature Version 4 requests signed with an access key and secret key.
+- `Content-MD5` on multi-object deletes, which Hopsworks sends when it deletes the data of a feature group.
+- Conditional writes (`If-None-Match`), for Delta tables written by the Python engine, which uses them to commit.
+
+Things to know:
+
+- Changing the endpoint or the bucket of a data source points it at different storage.
+  Data already written stays where it is, so feature groups on the data source no longer find it.
+- With an endpoint, Hopsworks sends a checksum only where an operation requires one, and `Content-MD5` on multi-object deletes, because stores such as Dell ECS refuse the CRC32 and CRC64NVME checksums that recent AWS SDKs add by default.
+  The Spark options `fs.s3a.checksum.generation` and `fs.s3a.create.checksum.algorithm` turn them back on for Spark.
+- An update that leaves the endpoint out, as an older client sends it, keeps the stored endpoint.
+  To remove the endpoint, set it to an empty string.
+- Spark sets the endpoint for the data source's bucket only, so other buckets in the same Spark application still reach AWS.
+  A data source with an endpoint raises an error for a path in another bucket.
+- Spark creates one S3 client per bucket and reuses it for the life of the application.
+  A data source whose bucket name the application already used on another store, or with another endpoint, raises an error, and works in a new Spark application process, such as a new job run.
+  This includes a Glue table whose location is in a bucket with that name, and a data source without an endpoint reading a path in a bucket with that name.
+  It holds across a reconnect to Hopsworks and across a new SparkContext in the same process, since Hadoop keeps its S3 clients for the process.
+  A changed region or key also takes effect in the next Spark application.
+- The endpoint needs Hopsworks 5.3 or later on the cluster and in the Python or Java client.
+  An older client ignores the endpoint and sends requests to AWS.
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-class"></code> [`S3Connector`][hsfs.storage_connector.S3Connector]
+        - <code class="doc-symbol doc-symbol-attribute"></code> [`endpoint`][hsfs.storage_connector.S3Connector.endpoint]
+        - <code class="doc-symbol doc-symbol-attribute"></code> [`path_style_access`][hsfs.storage_connector.S3Connector.path_style_access]
+        - <code class="doc-symbol doc-symbol-method"></code> [`save`][hsfs.storage_connector.StorageConnector.save]
+
+    <a class="hops-api-cta" href="../../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+
 ## Next Steps
 
-Move on to the [usage guide for data sources](../usage.md) to see how you can use your newly created S3 connector.
+Move on to the [usage guide for data sources][data-source-usage] to see how you can use your newly created S3 connector.
 
 ================================================================================
 # AWS Glue
@@ -42759,6 +42843,162 @@ More details about using temporary credentials can be found in the [Temporary Cr
 Project member can see the list of role they can assume by going the _Project Settings_ -> [Assuming IAM Roles](../../user_guides/projects/iam_role/iam_role_chaining.md) page.
 
 ================================================================================
+# Private CA Trust
+Source: https://docs.hopsworks.ai/latest/setup_installation/admin/private_ca/
+
+# Private CA Trust { #private-ca-trust }
+
+## Introduction
+
+Hopsworks connects to external services from the Hopsworks server and from the jobs, notebooks and services it runs.
+When a service presents a certificate issued by a private certificate authority (CA), every component that connects to it must trust that CA.
+An [S3 data source on an S3-compatible store][data-source-s3-compatible] served over TLS is the common case.
+
+The Hopsworks Helm chart ships a [Kyverno](https://kyverno.io) policy for this.
+It mounts a CA bundle, the ConfigMap `ca-pemstore`, over `/etc/ssl/certs` in the pods of the Hopsworks namespace and of the project namespaces, and copies the ConfigMap into project namespaces as they are created.
+The bundle replaces the directory, so it holds the public root CAs as well as the private one.
+
+## Prerequisites { #private-ca-prerequisites }
+
+- Kyverno installed in the cluster, engine only.
+  The chart is tested with the Kyverno Helm chart 3.3.3 (Kyverno 1.13.1).
+- The certificates of the private CA in PEM format, one file each: the root CA, and every intermediate CA between it and the service's certificate, such as an issuing CA.
+- `kubectl`, `docker` and `keytool` (from a Java runtime) on the machine that builds the bundle.
+
+## Build the bundle { #private-ca-bundle }
+
+Add the root CA and every intermediate CA to the bundle.
+The clients differ in what they accept: boto3 does not trust a service through an intermediate CA alone, and no client fetches an intermediate CA that the service does not send.
+`openssl s_client -connect <host>:<port> -showcerts` lists the certificates a service sends.
+
+The bundle has these keys:
+
+- `ca-certificates.crt`: the public root CAs and the private CA certificates, read by Python, DuckDB and other clients that use the system bundle.
+- `java-cacerts`: the Java truststore with the private CA certificates added, mounted at `/etc/ssl/certs/java/cacerts`, where the Java runtime of the Hopsworks Spark images looks for it.
+- `private-ca.crt`: the root CA alone.
+- `private-ca-<n>.crt`: each intermediate CA alone, one key per certificate.
+  The Hopsworks server imports every `.crt` and `.pem` file of the bundle into its own truststore when it starts, the first certificate of each file only.
+
+Start from the files of an image the workloads use, so the public roots match theirs, and add the private CA certificates:
+
+```bash
+IMAGE=<a Hopsworks Spark image>
+ROOT=root-ca.crt
+INTERMEDIATES=(issuing-ca.crt)
+mkdir bundle
+
+cid=$(docker create "$IMAGE")
+docker cp -L "$cid:/etc/ssl/certs/ca-certificates.crt" bundle/ca-certificates.crt
+docker cp -L "$cid:/etc/ssl/certs/java/cacerts" bundle/java-cacerts
+docker rm "$cid"
+
+files=(--from-file=private-ca.crt="$ROOT")
+n=0
+for cert in "$ROOT" "${INTERMEDIATES[@]}"; do
+  cat "$cert" >> bundle/ca-certificates.crt
+  keytool -importcert -noprompt -keystore bundle/java-cacerts -storepass changeit -alias "private-ca-$n" -file "$cert"
+  [ "$cert" = "$ROOT" ] || files+=(--from-file="private-ca-$n.crt=$cert")
+  n=$((n + 1))
+done
+
+kubectl -n hopsworks create configmap ca-pemstore \
+  --from-file=ca-certificates.crt=bundle/ca-certificates.crt \
+  --from-file=java-cacerts=bundle/java-cacerts \
+  "${files[@]}"
+```
+
+Create the ConfigMap with `kubectl create`, or with `kubectl apply --server-side`.
+A client-side `kubectl apply` stores the whole bundle in an annotation, which exceeds the 256 KiB annotation limit.
+
+## Configure the chart { #private-ca-values }
+
+```yaml
+global:
+  _hopsworks:
+    kyverno:
+      enabled: true
+      policies:
+        addCertificatesVolume:
+          enabled: true
+          preconditions:
+            enabled: false
+hw-kyverno:
+  policies:
+    addCertificatesVolume:
+      items:
+        - {key: ca-certificates.crt, path: ca-certificates.crt}
+        - {key: java-cacerts, path: java/cacerts}
+        - {key: private-ca.crt, path: private-ca.crt}
+      envs:
+        - {name: SSL_CERT_FILE, value: /etc/ssl/certs/ca-certificates.crt}
+        - {name: REQUESTS_CA_BUNDLE, value: /etc/ssl/certs/ca-certificates.crt}
+        - {name: AWS_CA_BUNDLE, value: /etc/ssl/certs/ca-certificates.crt}
+```
+
+- `preconditions.enabled: false` mounts the bundle into every pod of the Hopsworks namespace and of the project namespaces, which covers Spark, Python and notebook workloads.
+  With the preconditions on, the policy only reaches the pods that opt in: the admin server, the Arrow Flight server, HopsFS, and the docker and git jobs listed in `hw-kyverno.policies.addCertificatesVolume.labels`.
+- `items` places the Java truststore in the `java` subdirectory, which a ConfigMap key cannot name.
+  It also lists the other keys to mount, and a key without an entry is not mounted, so add one per intermediate CA key, such as `- {key: private-ca-1.crt, path: private-ca-1.crt}`.
+  List only keys the ConfigMap has: a pod waits in `ContainerCreating` while an entry names a missing key.
+- `envs` points the clients that do not read `/etc/ssl/certs` at the bundle: boto3 reads `AWS_CA_BUNDLE`, and the `requests` library reads `REQUESTS_CA_BUNDLE`.
+- Leave `hw-kyverno.policies.addCertificatesVolume.labels` unset: a value replaces the default list rather than extending it.
+
+All values are listed in [Kyverno values][helm-values-hw-kyverno].
+
+## Apply { #private-ca-apply }
+
+1. Create `ca-pemstore` in the Hopsworks namespace before enabling the policy.
+   A pod the policy mutates waits in `ContainerCreating` until the ConfigMap exists in its namespace.
+2. Upgrade Hopsworks with the values above.
+3. Copy the bundle into the project namespaces that existed before the policy.
+   The policy copies it when a namespace is created or updated, so annotate the existing ones:
+
+    ```bash
+    for ns in $(kubectl get ns -l hopsworks.ai/project -o jsonpath='{.items[*].metadata.name}'); do
+      kubectl annotate ns "$ns" hopsworks.ai/ca-resync="$(date +%s)" --overwrite
+    done
+    kubectl get configmap ca-pemstore -A
+    ```
+
+4. Restart the Hopsworks server instances, so that they copy the truststore that the admin server imported the CA into when the upgrade restarted it.
+   Scale them to 0 and back rather than restarting them one by one, which can leave an instance with stale configuration:
+
+    ```bash
+    replicas=$(kubectl -n hopsworks get deployment hopsworks-instance -o jsonpath='{.spec.replicas}')
+    kubectl -n hopsworks scale deployment hopsworks-instance --replicas=0
+    kubectl -n hopsworks wait pod -l app=hopsworks-instance --for=delete --timeout=10m
+    kubectl -n hopsworks scale deployment hopsworks-instance --replicas="$replicas"
+    kubectl -n hopsworks rollout status deployment hopsworks-instance
+    ```
+
+5. Restart the Arrow Flight server, `kubectl -n hopsworks rollout restart deployment/arrowflight-deployment`, and any running notebook servers.
+   Other pods get the bundle when they are next created.
+
+## Verify { #private-ca-verify }
+
+- In a pod of a project namespace, `/etc/ssl/certs/ca-certificates.crt` and `/etc/ssl/certs/java/cacerts` exist.
+- `keytool -list -keystore /etc/ssl/certs/java/cacerts -storepass changeit -alias private-ca-0` finds the root CA.
+- An S3 data source on the store, created with its `https://` endpoint, lists the bucket's tables in the data source view.
+
+## Rotate the CA { #private-ca-rotation }
+
+1. Replace `ca-pemstore` in the Hopsworks namespace.
+   The policy keeps the copies in the project namespaces in step with it.
+2. If the new chain has a different number of intermediate CAs, its `private-ca-<n>.crt` keys change.
+   Set `items` to list exactly the keys of the new ConfigMap, and upgrade Hopsworks with it.
+   A pod created while an entry names a key the ConfigMap lacks waits in `ContainerCreating` until the two match.
+3. Restart the admin server, and wait for it, so that it imports the new certificates before the instances copy its truststore:
+
+    ```bash
+    kubectl -n hopsworks rollout restart deployment/hopsworks-admin
+    kubectl -n hopsworks rollout status deployment/hopsworks-admin
+    ```
+
+4. Scale the instances to 0 and back, and restart the Arrow Flight server and any running notebook servers, as in steps 4 and 5 of [Apply][private-ca-apply].
+
+Other workloads read the bundle when they start, so the change reaches the ones started afterwards.
+
+================================================================================
 # Configure Project Mapping
 Source: https://docs.hopsworks.ai/latest/setup_installation/admin/configure-project-mapping/
 
@@ -51478,7 +51718,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -51516,7 +51756,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.
 | [`hw-envoy-gateway`][helm-values-hw-envoy-gateway] |  | 40 |
 | [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) | 24 |
 | [`hw-kueue`][helm-values-hw-kueue] |  | 63 |
-| [`hw-kyverno`][helm-values-hw-kyverno] |  | 60 |
+| [`hw-kyverno`][helm-values-hw-kyverno] |  | 61 |
 | [`judge`][helm-values-judge] |  | 23 |
 | [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 1.3.1](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/1.3.1) | 104 |
 | [`kserve`][helm-values-kserve] |  | 293 |
@@ -51901,7 +52141,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -53237,7 +53477,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -54265,7 +54505,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -54547,7 +54787,7 @@ Values under `certs-operator` configure the operator that issues the TLS certifi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -54735,7 +54975,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -55069,7 +55309,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -55520,7 +55760,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -56018,7 +56258,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -56436,7 +56676,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -57601,7 +57841,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 
@@ -57871,7 +58111,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -63387,7 +63627,7 @@ The LLM Gateway's controller ships in the same subchart, and its values, under `
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: `global._hopsworks.envoyGateway.enabled`, [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -63827,7 +64067,7 @@ See [LLM Gateway][llm-gateway] for what the feature installs and what the cluste
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 ## aiGateway { #helm-values-hw-envoy-ai-gateway-aigateway }
 
@@ -64324,7 +64564,7 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -64731,7 +64971,7 @@ With `kueue.enabled=false` Hopsworks uses a Kueue installed outside its release;
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -65117,7 +65357,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -65159,6 +65399,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           initContainers:
             extraAnnotations: []
             labels: []
+          items: []
           labels:
           - key: job-type
             value: check-image-exist
@@ -65196,6 +65437,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
           initContainers:
             extraAnnotations: []
             labels: []
+          items: []
           labels:
           - key: job-type
             value: check-image-exist
@@ -65230,6 +65472,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         initContainers:
           extraAnnotations: []
           labels: []
+        items: []
         labels:
         - key: job-type
           value: check-image-exist
@@ -65281,6 +65524,10 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 `hw-kyverno.policies.addCertificatesVolume.initContainers.labels` <a class="headerlink" href="#helm.hw-kyverno.policies.addCertificatesVolume.initContainers.labels" title="Permanent link">#</a> { #helm.hw-kyverno.policies.addCertificatesVolume.initContainers.labels }
 :   Type `list`, default `[]`.
     Init-specific labels that opt a pod's init containers into certificate volume injection. ORed with the dedicated init-container annotation and extraAnnotations. Defaults to empty so third-party operator-injected init containers are not silently mutated.
+
+`hw-kyverno.policies.addCertificatesVolume.items` <a class="headerlink" href="#helm.hw-kyverno.policies.addCertificatesVolume.items" title="Permanent link">#</a> { #helm.hw-kyverno.policies.addCertificatesVolume.items }
+:   Type `list`, default `[]`.
+    The files to mount from the certificates ConfigMap, as `key` and `path` pairs. Empty mounts every key as a file named after it. A path may name a subdirectory and a key cannot, so list `{key: java-cacerts, path: java/cacerts}` (next to `{key: ca-certificates.crt, path: ca-certificates.crt}`) to keep a default truststore for JDKs whose `cacerts` links to `/etc/ssl/certs/java/cacerts`, as in the Hopsworks Spark images. When set, only the listed keys are mounted.
 
 `hw-kyverno.policies.addCertificatesVolume.labels` <a class="headerlink" href="#helm.hw-kyverno.policies.addCertificatesVolume.labels" title="Permanent link">#</a> { #helm.hw-kyverno.policies.addCertificatesVolume.labels }
 :   Type `list`.
@@ -65612,7 +65859,7 @@ Values under `judge` configure Judge, the active cluster arbitrator service.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -65747,7 +65994,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -66637,7 +66884,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -68579,7 +68826,7 @@ Values under `minio` configure MinIO, an S3-compatible object store deployed ins
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) is `true`.
 
@@ -68834,7 +69081,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -69810,7 +70057,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -70345,7 +70592,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -70499,7 +70746,7 @@ Values under `ray` configure the KubeRay operator, which runs the Ray clusters b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.ray.enabled`](global.md#helm.global._hopsworks.ray.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -70646,7 +70893,7 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -73574,7 +73821,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -75159,7 +75406,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -76871,7 +77118,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -77199,7 +77446,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 

@@ -17,7 +17,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795429998` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -55,7 +55,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795419951` (Hopsworks `5.
 | [`hw-envoy-gateway`][helm-values-hw-envoy-gateway] |  | 40 |
 | [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) | 24 |
 | [`hw-kueue`][helm-values-hw-kueue] |  | 63 |
-| [`hw-kyverno`][helm-values-hw-kyverno] |  | 60 |
+| [`hw-kyverno`][helm-values-hw-kyverno] |  | 61 |
 | [`judge`][helm-values-judge] |  | 23 |
 | [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 1.3.1](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/1.3.1) | 104 |
 | [`kserve`][helm-values-kserve] |  | 293 |
