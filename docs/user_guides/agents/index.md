@@ -1,6 +1,6 @@
 # Agents
 
-This section serves to provide guides and examples for the common usage of agent tasks and agent deployments through the Hopsworks UI and APIs.
+This section serves to provide guides and examples for the common usage of agent tasks, agent deployments and coding agents through the Hopsworks UI and APIs.
 
 - [Agent Tasks][how-to-run-an-agent-task]: Fire-and-forget agent executions that run as first-class Hopsworks jobs.
 - [Agent Deployments][how-to-run-an-agent-deployment]: Served conversational agents, the chat contract they answer by, and how to deploy, trace and talk to them.
@@ -9,3 +9,4 @@ This section serves to provide guides and examples for the common usage of agent
 - [Evaluation][evaluating-an-agent]: Suites of tasks graded by checks, the runs that execute them, and the gate a release reads.
 - [Monitoring][monitoring-live-traffic]: Grading the traffic an agent actually served, on a schedule.
 - [Failure Analysis][from-feedback-to-a-regression-suite]: Turning feedback into regression tasks, with a reviewer deciding and a model drafting.
+- [Coding Agents][coding-agents]: Coding agents such as Claude Code and Codex running on an LLM deployed in your project, from the Terminal or your own machine.

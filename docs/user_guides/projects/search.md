@@ -8,7 +8,7 @@ For what search is and how its scope relates to project membership, see the [sea
 
 ## What you can search
 
-Search returns ten classes of artifact, each on its own tab:
+Search has a tab for each of eleven classes of artifact, and an `All` tab that combines them:
 
 | Tab | What it contains |
 | --- | --- |
@@ -17,6 +17,8 @@ Search returns ten classes of artifact, each on its own tab:
 | Feature Views | Feature views. |
 | Training Datasets | Training datasets. |
 | Features | Individual features, matched by feature name. |
+| Data Sources | Data sources of the project's Feature Store. |
+| Datasets | Datasets, including those shared with the project. |
 | Jobs | Jobs, excluding those that are apps. |
 | Apps | Jobs of type PythonApp. |
 | Models | Models in a model registry. |
@@ -26,6 +28,10 @@ Search returns ten classes of artifact, each on its own tab:
 Apps and agents are not separate kinds of artifact, which is why they are not separate tabs in the sense the others are.
 An app is a job, and an agent is a deployment.
 They appear as their own tabs because the question "which agents are tagged for production" is worth asking on its own, and each tab excludes the other: a job that is an app is reported under Apps and not under Jobs.
+
+In a project's search, a data source is found from the project that owns it, the same way the data source list shows it.
+Sharing a Feature Store with another project lets that project read a data source by name, but does not list it or make it searchable in that project's search.
+A search across all projects returns data sources like the other classes, with the limited details the [search concept page][search-concept] describes for a project you are not a member of.
 
 Each tab shows the number of matches next to its name, so you can see where the results are without visiting every tab.
 
@@ -72,7 +78,7 @@ curl -H "Authorization: ApiKey $API_KEY" \
   "https://$HOPSWORKS_HOST/hopsworks-api/api/project/$PROJECT_ID/elastic/featurestore?searchTerm=fraud&docType=ALL"
 ```
 
-`docType` accepts `ALL`, `FEATURE`, `FEATUREGROUP`, `FEATUREVIEW`, `TRAININGDATASET`, `JOB`, `APP`, `MODEL`, `DEPLOYMENT` and `AGENT`, and defaults to `ALL`.
+`docType` accepts `ALL`, `FEATURE`, `FEATUREGROUP`, `FEATUREVIEW`, `TRAININGDATASET`, `DATASOURCE`, `DATASET`, `JOB`, `APP`, `MODEL`, `DEPLOYMENT` and `AGENT`, and defaults to `ALL`.
 `from` and `size` page the results, with `size` capped at 10000.
 
 Tag and keyword filters are JSON arrays in the `tags` and `keywords` query parameters.
@@ -90,10 +96,11 @@ The response carries one bucket per class, each with its own total, for example 
 ### API key scopes { #search-api-key-scopes }
 
 Search results are filtered to the scopes of the API key you use, so a key cannot discover a class it was not minted for.
-A `FEATURESTORE` key sees feature groups, feature views, training datasets and features, `JOB` sees jobs and apps, `MODELREGISTRY` sees models, and `SERVING` sees deployments and agents.
+A `FEATURESTORE` key sees feature groups, feature views, training datasets, features and data sources, `DATASET_VIEW` sees datasets, `JOB` sees jobs and apps, `MODELREGISTRY` sees models, and `SERVING` sees deployments and agents.
 
 Naming a `docType` the key does not carry the scope for is rejected, rather than returned empty, so a missing scope is distinguishable from a genuinely empty result.
 A `docType=ALL` request is instead narrowed to the classes the key does carry, which is what makes `ALL` usable from a single-scope key.
+The tag vocabulary the `featurestore/tagfacets` endpoint returns for the filter panel is narrowed the same way, so a key does not learn the tag values of a class it cannot search.
 
 A search made with a JWT, as the UI and the Python client do after logging in, is not scope-restricted; it is limited by project membership alone.
 

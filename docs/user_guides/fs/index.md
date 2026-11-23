@@ -85,7 +85,7 @@ The guides below follow that order: connect a source, write, validate, read, tra
 - [Compute engines](compute_engines.md)
   Which operations run on Python, Spark or Flink.
 - [Client integrations](../integrations/index.md)
-  Databricks, SageMaker, EMR, Azure ML, Flink, Beam and more.
+  Databricks, SageMaker, EMR, Azure ML, Flink and more.
 - [Vector similarity search](vector_similarity_search.md)
   Embeddings in a feature group, nearest-neighbour queries.
 

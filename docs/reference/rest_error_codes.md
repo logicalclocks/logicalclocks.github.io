@@ -199,6 +199,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 120012 | `FEATURE_FLAG_NOT_ENABLED` | 400 BAD_REQUEST | Platform feature not enabled |
 | 120013 | `REQUEST_TOO_LARGE` | 413 REQUEST_ENTITY_TOO_LARGE | The request body is larger than this endpoint accepts |
 | 120014 | `LENGTH_REQUIRED` | 411 LENGTH_REQUIRED | This endpoint requires a Content-Length |
+| 120015 | `TOO_MANY_REQUESTS` | 429 TOO_MANY_REQUESTS | Too many requests |
 
 ## JobErrorCode
 
@@ -297,6 +298,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 130091 | `SYNC_JOB_MANAGED` | 403 FORBIDDEN | This job runs a data source sync; delete or rename it through the sync. |
 | 130092 | `PYTHON_APP_BUSY` | 409 CONFLICT | Another start, stop or cleanup of this app is in progress. Try again in a minute. |
 | 130093 | `PYTHON_APP_AGENT_INVALID` | 400 BAD_REQUEST | The agent the app names is not an agent deployment of this project. |
+| 130094 | `DLT_JOB_FILE_COLUMNS_INVALID` | 400 BAD_REQUEST | The file columns of the ingestion job are not valid. |
 
 ## RequestErrorCode
 
@@ -436,6 +438,9 @@ Do not hand-edit the tables below; regenerate them instead.
 | 150126 | `PROJECT_OWNER_TRANSFER_PROJECT_NOT_READY` | 409 CONFLICT | The project is being created or removed, so its owner cannot be changed. |
 | 150127 | `PROJECT_OWNER_TRANSFER_INCOMPLETE` | 500 INTERNAL_SERVER_ERROR | The owner was changed, but not every follow-up step completed. The new owner or an administrator finishes them by transferring the project to the new owner again. |
 | 150128 | `PROJECT_OWNER_TRANSFER_IN_PROGRESS` | 409 CONFLICT | An ownership transfer of this project is still in progress. Try again once it has finished. |
+| 150129 | `TEAM_ROLE_CHANGE_IN_PROGRESS` | 409 CONFLICT | The role is being changed by someone else, try again. |
+| 150130 | `ROLE_NOT_ASSIGNABLE` | 403 FORBIDDEN | Your role cannot give this role, or change this member's role: it has permissions your role does not. |
+| 150131 | `MEMBER_OWNS_SEMANTIC_PROJECTS` | 409 CONFLICT | The member owns semantic projects, which must be transferred to another data owner first. |
 
 ## UserErrorCode
 
@@ -513,6 +518,9 @@ Do not hand-edit the tables below; regenerate them instead.
 | 160074 | `ACCOUNT_DELETION_PENDING_CLEANUP` | 409 CONFLICT | Account still has records awaiting background cleanup. Retry shortly. |
 | 160075 | `LLM_PROVIDER_NOT_FOUND` | 404 NOT_FOUND | LLM provider not found. |
 | 160076 | `LLM_API_KEY_MISSING` | 400 BAD_REQUEST | No API key is saved for this LLM provider. |
+| 160077 | `RATE_LIMIT_OUT_OF_RANGE` | 400 BAD_REQUEST | The user's REST API rate limit is out of range. |
+| 160078 | `LLM_PROVIDER_HAS_NO_KEY` | 400 BAD_REQUEST | This LLM provider has no API key to save or test. |
+| 160079 | `LLM_MODEL_NOT_AVAILABLE` | 400 BAD_REQUEST | There is no running vLLM deployment available to use as the LLM. |
 
 ## MetadataErrorCode
 
@@ -690,6 +698,17 @@ Do not hand-edit the tables below; regenerate them instead.
 | 240066 | `TRITON_IMAGE_TAG_NOT_AVAILABLE` | 400 BAD_REQUEST | Triton image tag not available |
 | 240067 | `TRITON_MODEL_REPOSITORY_NOT_VALID` | 400 BAD_REQUEST | Triton model repository not valid |
 | 240068 | `TRITON_OPTION_NOT_SUPPORTED` | 400 BAD_REQUEST | Option not supported in Triton deployments |
+| 240069 | `TRACES_QUERY_NOT_VALID` | 400 BAD_REQUEST | Trace query not valid |
+| 240070 | `PREDICTION_METRICS_UNAVAILABLE` | 503 SERVICE_UNAVAILABLE | Prediction latency metrics are unavailable: Prometheus did not answer |
+| 240071 | `RESERVED_DEPLOYMENT_NAME` | 400 BAD_REQUEST | The deployment name is reserved for the project's inference endpoint |
+| 240072 | `LLM_GATEWAY_NOT_SUPPORTED` | 400 BAD_REQUEST | The project's inference endpoint only serves KServe deployments |
+| 240073 | `EVAL_CHECK_NOT_FOUND` | 404 NOT_FOUND | Check file not found in the project |
+| 240074 | `EVAL_CHECK_TOO_LARGE` | 400 BAD_REQUEST | Check file or package larger than a check is expected to be |
+| 240075 | `RESOURCES_NOT_VALID` | 400 BAD_REQUEST | Resource configuration not valid |
+| 240076 | `MODEL_VOLUME_CONFIG_UNAVAILABLE` | 503 SERVICE_UNAVAILABLE | The LLM model volume configuration is temporarily unavailable. Retry shortly. |
+| 240077 | `SERVING_SHARING_NOT_SUPPORTED` | 400 BAD_REQUEST | Only a vLLM deployment served by the LLM gateway can be shared with other projects. |
+| 240078 | `SERVING_SHARING_DISABLED` | 400 BAD_REQUEST | Sharing deployments with other projects is disabled on this cluster. |
+| 240079 | `SERVING_SHARING_PROJECT_NOT_FOUND` | 404 NOT_FOUND | The project to share the deployment with does not exist or is the owner of the deployment. |
 
 ## InferenceErrorCode
 
@@ -929,7 +948,6 @@ Do not hand-edit the tables below; regenerate them instead.
 | 270216 | `FILE_DELETION_ERROR` | 400 BAD_REQUEST | Failed to delete file |
 | 270217 | `FILE_READ_ERROR` | 400 BAD_REQUEST | Failed to read file |
 | 270218 | `DOCKER_FULLNAME_ERROR` | 400 BAD_REQUEST | Failed to retrieve full docker image name |
-| 270219 | `CONNECTION_CHECKER_LAUNCH_ERROR` | 400 BAD_REQUEST | Failed to launch process to start docker container for testing connection |
 | 270220 | `CONNECTION_CHECKER_ERROR` | 400 BAD_REQUEST | Failure in testing connection for storage connector |
 | 270221 | `ERROR_CREATING_ONLINE_FEATURESTORE_KAFKA_OFFSET_TABLE` | 500 INTERNAL_SERVER_ERROR | An error occurred when trying to create the kafka offset table for an online feature store |
 | 270222 | `ERROR_CONSTRUCTING_VALIDATION_REPORT_DIRECTORY_PATH` | 500 INTERNAL_SERVER_ERROR | An error occurred while constructing validation report directory path |
@@ -1070,6 +1088,11 @@ Do not hand-edit the tables below; regenerate them instead.
 | 270366 | `ONLINEFS_FORBIDDEN` | 403 FORBIDDEN | Only the OnlineFS service user may read the OnlineFS runtime configuration. |
 | 270367 | `ONLINEFS_CONFIG_ENCRYPTION_ERROR` | 500 INTERNAL_SERVER_ERROR | Could not encrypt or decrypt the OnlineFS Kafka connection. |
 | 270368 | `ONLINEFS_CONFIG_CONFLICT` | 409 CONFLICT | The master encryption password changed while the OnlineFS configuration was saved; save it again. |
+| 270369 | `ONLINE_TABLE_QUOTA_EXCEEDED` | 400 BAD_REQUEST | The project has as many online tables as its quota allows. |
+| 270370 | `GMAIL_ACCESS_TOKEN_ERROR` | 400 BAD_REQUEST | Google refused to issue a Gmail access token for the data source's credentials. |
+| 270371 | `MAIL_SYNC_JOB_ERROR` | 400 BAD_REQUEST | The mail sync job could not be set up. |
+| 270372 | `EMBEDDING_INDEX_QUOTA_EXCEEDED` | 400 BAD_REQUEST | The project has as many embedding indices as its quota allows. |
+| 270373 | `OUTLOOK_ACCESS_TOKEN_ERROR` | 400 BAD_REQUEST | Microsoft refused to issue an Outlook access token for the data source's credentials. |
 
 ## AirflowErrorCode
 
@@ -1206,6 +1229,8 @@ Do not hand-edit the tables below; regenerate them instead.
 | 370011 | `TAG_PATH_NOT_TAGGABLE` | 400 BAD_REQUEST | Only dataset roots can be tagged. Tagging a file or a directory inside a dataset is no longer supported. |
 | 370012 | `TAG_WRITE_DENIED` | 403 FORBIDDEN | Not allowed to change the tags of this dataset. |
 | 370013 | `TAG_MIGRATION_PENDING` | 409 CONFLICT | This dataset still has legacy tags in HopsFS that could not be migrated. Resolve them before changing its tags. |
+| 370014 | `TAG_SCHEMA_IN_USE` | 409 CONFLICT | The tag schema is still in use and cannot be deleted. |
+| 370015 | `TAG_SCHEMA_NAME_HAS_HISTORY` | 409 CONFLICT | A deleted tag schema of this name left archived values in the tag history. Choose another name. |
 
 ## CloudErrorCode
 
@@ -1414,6 +1439,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 560003 | `SUPERSET_DISABLED` | 400 BAD_REQUEST | Superset is disabled |
 | 560004 | `FORBIDDEN` | 403 FORBIDDEN | Forbidden from accessing Superset resource |
 | 560005 | `INVALID_PARAMETER` | 400 BAD_REQUEST | Invalid parameter provided for Superset API request |
+| 560006 | `MCP_UNAVAILABLE` | 503 SERVICE_UNAVAILABLE | Superset's MCP service is not deployed on this cluster |
 
 ## ProxyErrorCode
 
@@ -1439,6 +1465,53 @@ Do not hand-edit the tables below; regenerate them instead.
 | 580008 | `MOUNTABLE_SECRET_INVALID_ARCHIVE` | 400 BAD_REQUEST | The uploaded archive could not be expanded into a mountable secret |
 | 580009 | `MOUNTABLE_SECRETS_STORE_MISSING` | 503 SERVICE_UNAVAILABLE | The mountable secret store does not exist on this cluster |
 | 580010 | `MOUNTABLE_SECRET_PROJECT_DELETED` | 410 GONE | The project was deleted while the mountable secret was being uploaded |
+
+## ProjectRoleErrorCode
+
+| Code | Name | HTTP status | Message |
+| --- | --- | --- | --- |
+| 590000 | `PROJECT_ROLE_NOT_FOUND` | 404 NOT_FOUND | Project role not found |
+| 590001 | `PROJECT_ROLE_ALREADY_EXISTS` | 409 CONFLICT | A project role with this name already exists |
+| 590002 | `PROJECT_ROLE_IN_USE` | 409 CONFLICT | The project role is in use: members holding it block changes and deletion, group mappings giving it block deletion |
+| 590003 | `PROJECT_ROLE_VERSION_CONFLICT` | 409 CONFLICT | The project role was changed by someone else |
+| 590004 | `PROJECT_ROLE_INVALID_NAME` | 400 BAD_REQUEST | Invalid project role name |
+| 590005 | `PROJECT_ROLE_INVALID_BASE` | 400 BAD_REQUEST | A project role must be based on Data owner or Data scientist |
+| 590006 | `PROJECT_ROLE_INVALID_PERMISSION` | 400 BAD_REQUEST | Invalid permission for this project role |
+| 590007 | `PROJECT_ROLES_NOT_ENABLED` | 400 BAD_REQUEST | Custom project roles are not enabled |
+| 590008 | `PROJECT_ROLE_INVALID_DESCRIPTION` | 400 BAD_REQUEST | Invalid project role description |
+| 590009 | `PROJECT_ROLE_UNKNOWN` | 400 BAD_REQUEST | The role is neither a built-in nor a custom project role |
+| 590010 | `PROJECT_ROLE_BUSY` | 409 CONFLICT | The project role is being assigned or changed by someone else, try again |
+| 590011 | `PROJECT_ROLE_VERSION_REQUIRED` | 400 BAD_REQUEST | The version of the project role being changed is required |
+| 590012 | `PROJECT_ROLE_REMOVES_NOTHING` | 400 BAD_REQUEST | A project role must remove at least one permission from its base role |
+
+## SemanticLayerErrorCode
+
+| Code | Name | HTTP status | Message |
+| --- | --- | --- | --- |
+| 600000 | `SEMANTIC_LAYER_DISABLED` | 404 NOT_FOUND | The semantic layer is not enabled on this cluster |
+| 600001 | `SEMANTIC_LAYER_NOT_FOUND` | 404 NOT_FOUND | Semantic project not found |
+| 600002 | `SEMANTIC_LAYER_BUILD_NOT_FOUND` | 404 NOT_FOUND | Semantic layer build not found |
+| 600003 | `SEMANTIC_LAYER_FORBIDDEN` | 403 FORBIDDEN | Not allowed to access this semantic project |
+| 600004 | `SEMANTIC_LAYER_ILLEGAL_ARGUMENT` | 400 BAD_REQUEST | Illegal argument provided |
+| 600005 | `SEMANTIC_LAYER_ALREADY_EXISTS` | 409 CONFLICT | A semantic project with this name already exists in the project |
+| 600006 | `SEMANTIC_LAYER_BUILD_NOT_VALID` | 409 CONFLICT | Only a valid build can be promoted |
+| 600007 | `SEMANTIC_LAYER_ARTIFACT_NOT_FOUND` | 404 NOT_FOUND | The build has no compiled document |
+| 600008 | `SEMANTIC_LAYER_ROOT_PATH_NOT_FOUND` | 404 NOT_FOUND | The semantic project's root path does not exist |
+| 600009 | `SEMANTIC_LAYER_STORAGE_ERROR` | 500 INTERNAL_SERVER_ERROR | Failed to read or write the semantic layer files |
+| 600010 | `SEMANTIC_LAYER_GATEWAY_ERROR` | 502 BAD_GATEWAY | The semantic layer gateway could not compile the files |
+| 600011 | `SEMANTIC_LAYER_SETTINGS_CHANGED` | 409 CONFLICT | The semantic project's settings changed while its files were read; compile again |
+| 600012 | `SEMANTIC_LAYER_INVALID_QUERY` | 400 BAD_REQUEST | Unknown metric or group-by, or the metrics share no time dimension |
+| 600013 | `SEMANTIC_LAYER_NO_VALID_BUILD` | 409 CONFLICT | The semantic project has no valid build |
+| 600014 | `SEMANTIC_LAYER_DASHBOARDS_DISABLED` | 503 SERVICE_UNAVAILABLE | Superset dashboards from the semantic layer are not enabled |
+| 600015 | `SEMANTIC_LAYER_SUPERSET_ERROR` | 503 SERVICE_UNAVAILABLE | Superset did not answer |
+| 600020 | `SEMANTIC_LAYER_EXPORT_NOT_FOUND` | 404 NOT_FOUND | Export not found in the semantic project's current build |
+| 600021 | `SEMANTIC_LAYER_EXPORT_NOT_RUNNABLE` | 409 CONFLICT | The export has no job that can run |
+| 600022 | `SEMANTIC_LAYER_EXPORT_STATUS_REFUSED` | 403 FORBIDDEN | Only the running execution of the export's job reports its status |
+| 600060 | `SEMANTIC_LAYER_FILE_NOT_FOUND` | 404 NOT_FOUND | The definition file does not exist |
+| 600061 | `SEMANTIC_LAYER_FILE_CHANGED` | 412 PRECONDITION_FAILED | The definition file is not the version the request names |
+| 600062 | `SEMANTIC_LAYER_PRECONDITION_REQUIRED` | 428 PRECONDITION_REQUIRED | A write of a definition file needs If-Match or If-None-Match: * |
+| 600063 | `SEMANTIC_LAYER_READ_ONLY` | 409 CONFLICT | The semantic project's files cannot be edited here |
+| 600064 | `SEMANTIC_LAYER_VALIDATION_BUSY` | 429 TOO_MANY_REQUESTS | Too many validations are running; try again shortly |
 
 ## SchemaRegistryErrorCode
 

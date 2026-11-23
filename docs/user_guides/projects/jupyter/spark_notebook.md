@@ -40,15 +40,26 @@ configuration page and select `Ray`.
 
 Resource allocation for the Spark driver and executors can be configured, also the number of executors and whether dynamic execution should be enabled.
 
-- `Driver memory`: Number of cores to allocate for the Spark driver
+- `Driver memory`: Number of MBs to allocate for the Spark driver
 
-- `Driver virtual cores`: Number of MBs to allocate for the Spark driver
+- `Driver virtual cores`: Number of cores to allocate for the Spark driver
 
-- `Executor memory`: Number of cores to allocate for each Spark executor
+- `Driver disk`: Local disk limit of the Jupyter server, which runs the Spark driver, in GB.
+  Empty means no limit; a server that writes more is evicted and its running kernels stop.
+  Files under `/hopsfs` don't count.
 
-- `Executor virtual cores`: Number of MBs to allocate for each Spark executor
+- `Executor memory`: Number of MBs to allocate for each Spark executor
+
+- `Executor virtual cores`: Number of cores to allocate for each Spark executor
+
+- `Executor disk`: Local disk limit of each Spark executor, in GB.
+  Empty means no limit; an executor that writes more is evicted.
 
 - `Dynamic/Static`: Run the Spark application in static or dynamic allocation mode (see [spark docs](https://spark.apache.org/docs/latest/configuration.html#dynamic-allocation) for details).
+
+- `HopsFS mount`: Memory (MB), cores and namenode connections of the container that serves `/hopsfs` in the Jupyter server.
+  Prefilled with the cluster defaults; raise them for large datasets or many concurrent reads and writes on `/hopsfs`.
+  The mount's memory and cores count towards the project's resource quota, if it has one.
 
 <p align="center">
   <figure>

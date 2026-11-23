@@ -16,8 +16,8 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | Upgrade | OpenSearch | What needs action |
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
-| [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], and from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Additional prerequisites][upgrade-additional-prerequisites], [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, [Envoy Gateway][upgrade-envoy-gateway] and [LLM Gateway][upgrade-llm-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523], and from 5.2.5 [Istio 1.30][upgrade-istio-130]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Additional prerequisites][upgrade-additional-prerequisites], [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, from 5.2.5 or later [Istio 1.31][upgrade-istio-131], [Envoy Gateway][upgrade-envoy-gateway] and [LLM Gateway][upgrade-llm-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -184,6 +184,38 @@ Shares of a whole feature group, and the online and embedding access of a subset
 The upgrade can fail on the `consul-server-acl-init` Job with `spec.template: field is immutable`.
 Delete that Job and run the upgrade again.
 
+### `opensearch-index-upgrade` gets no answer from `elastic.service.consul` { #upgrade-consul-dns-missing }
+
+The upgrade can fail on the `opensearch-index-upgrade` hook with `FATAL: no answer from https://elastic.service.consul:9200`, and fail the same way when it is run again.
+One cause is that the Consul block is missing from the cluster DNS, because something outside the chart has reset the DNS configuration since the last upgrade.
+An update of the EKS CoreDNS add-on with conflict resolution `OVERWRITE` does that.
+Check the `Corefile` before changing anything:
+
+```sh
+kubectl get configmap coredns -n kube-system -o jsonpath='{.data.Corefile}'
+```
+
+If it has a `consul` block, the cause is another one: see **No answer from the cluster** under [If the hook fails][opensearch-hook-fails].
+If the block is missing, a chart release with the [CoreDNS configuration hook][upgrade-coredns-hook] puts it back by itself.
+With an earlier release, add it at the end of the `Corefile`, wait a minute for CoreDNS to load it, and run the upgrade again:
+
+```text
+consul {
+  errors
+  cache 30
+  forward . {$CONSUL_SERVER}
+}
+```
+
+This is the form for the default setup, in which the chart configures the cluster DNS through the `coredns` ConfigMap and sets `CONSUL_SERVER` on the CoreDNS Deployment.
+
+### A HopsFS schema migration is recorded as failed { #upgrade-migration-rondb-restart }
+
+After an upgrade from 5.2.4 or earlier to 5.2.5, the new `namenode` pod can stay in `Init:CrashLoopBackOff`, with its `initialize-flyway` container logging ``ERROR: Schema `hops` contains a failed migration to version 3.4.3.4 !`` on every retry.
+The migration started before the upgrade restarted RonDB, and the restart interrupted it.
+This is fixed in 5.2.6, as described under [Schema migrations wait for the RonDB restart][upgrade-migrations-wait-rondb].
+To recover a cluster in that state, contact Hopsworks support.
+
 ## 5.2.x to 5.3.x { #upgrade-52-to-53 }
 
 OpenSearch stays on 3.8.0.
@@ -241,6 +273,54 @@ An upgrade from a release that already uses Strimzi 1.3 crosses none of this.
   To keep the earlier foreground deletion, set `kafka.strimzi-kafka-operator.featureGates: "-UseBackgroundPodDeletion"`.
 - **Under ArgoCD, the `ignoreDifferences` entry for the Kafka CRD is no longer needed.**
   Strimzi 1.3.1's Kafka CRD no longer has the empty map that the entry in [Under ArgoCD][kafka4-argocd] ignores, and the entry matches nothing on it, so it can stay.
+
+### CoreDNS configuration hook { #upgrade-coredns-hook }
+
+From the 5.2.x patch release that carries this hook, and in 5.3, an upgrade configures the cluster DNS for the Consul domain before its other hooks run.
+The other hooks reach services by their Consul names, so an upgrade used to fail on its first hook when the Consul block was missing from the cluster DNS, as described under [`opensearch-index-upgrade` gets no answer][upgrade-consul-dns-missing].
+The hook is rendered when `consul.autoConfigureCoreDNS` is on, which is the default.
+
+- **What runs.**
+  The `consul-coredns-pre-upgrade` hook runs the same step as the `consul-coredns-autoconf` Job, which still runs after the release is applied.
+  It then waits until `consul.service.consul` has resolved 20 times in a row, for at most 3 minutes, because the CoreDNS pods load a changed configuration one by one.
+  On a cluster whose DNS is in order it changes nothing and adds about 20 seconds.
+- **The hook does not fail the upgrade by itself.**
+  It works with the roles of the previous release, so it cannot follow a change of `consul.corednsConfigMapName` or `consul.corednsDeploymentName` made in the same upgrade; the `consul-coredns-autoconf` Job applies that change afterwards.
+  When the hook cannot read or write the DNS configuration, or the name does not resolve in time, it says so in its log and the upgrade continues.
+  Its Job gives up after 4 minutes, under the 5 minutes Helm waits for a hook by default.
+- **The log says what the hook did.**
+  The Job is kept after it finishes, for one day by default, so that its log can be read:
+
+    ```sh
+    kubectl logs -n hopsworks job/$(kubectl get jobs -n hopsworks -o name --sort-by=.metadata.creationTimestamp | grep consul-coredns-pre-upgrade | tail -n 1 | cut -d/ -f2)
+    ```
+
+  Its lines start with `>> coredns pre-upgrade hook:`.
+
+    | Line | Meaning | What to do |
+    | ---- | ------- | ---------- |
+    | `consul.service.consul resolved 20 times in a row` | The hook did its work. | Nothing. |
+    | `could not read the Service` or `does not exist yet` | The hook could not find the Consul DNS Service and left the DNS configuration alone. | Nothing, unless a later hook fails on a Consul name: then check that Service and run the upgrade again. |
+    | `configure-dns.sh ended with status` | The hook could not read or write the DNS configuration; the error is above that line. | Nothing in an upgrade that changes one of the two names above. Otherwise check the Role `consul-autoconfigcoredns-update-dns-role` in `kube-system` and those two values. |
+    | `did not resolve 20 times in a row` | Consul names do not resolve reliably yet. | If a later hook fails on a Consul name, check the endpoints of the Consul DNS Service, the Consul server pods and the logs of the CoreDNS pods, then run the upgrade again. |
+
+- **When the hook's Job gets no pod.**
+  With `global._hopsworks.mode: upgrade`, as under ArgoCD, the chart cannot see whether the service account of the hook exists.
+  Turning `consul.autoConfigureCoreDNS` on for an existing installation in that mode creates the Job before its service account: the Job gets no pod, its events say `error looking up service account hopsworks/consul-autoconfigcoredns-account: serviceaccount "consul-autoconfigcoredns-account" not found`, and the upgrade or sync fails on the hook after 4 minutes.
+  Helm reports `pre-upgrade hooks failed` with `job consul-coredns-pre-upgrade-<hash>-r<revision> failed: DeadlineExceeded`, and nothing else of the release has been applied at that point.
+  The Job carries the annotation `hopsworks.ai/no-pod` for this case.
+  Under ArgoCD, apply the service account, the two Roles and the two RoleBindings of the Job first, with the values of the application, then sync:
+
+    ```sh
+    helm template hopsworks hopsworks/hopsworks --version <version> --namespace hopsworks --values <values> \
+      --show-only charts/consul/templates/consul-autoconfigcoredns-ServiceAccount.yaml \
+      --show-only charts/consul/templates/consul-autoconfigcoredns-role.yaml \
+      --show-only charts/consul/templates/consul-autoconfigcoredns-rolebinding.yaml \
+      | kubectl apply -f -
+    ```
+
+  With Helm, run that upgrade without `global._hopsworks.mode`, so that it takes its default, `auto`: the chart then sees that the service account is missing and leaves the hook out.
+  Applying the objects by hand does not work with Helm, which refuses objects it did not create.
 
 ### ICEBERG feature groups in Trino { #upgrade-iceberg-trino }
 
@@ -326,6 +406,39 @@ From 5.3 the default is 2048, up from 1024, because at 1 GiB the sidecar was OOM
   While the sidecar restarts, the pod reports `Ready=False` and leaves the endpoints of its service, so the agent, healthy and still running, receives no requests.
   Looking for agent restarts finds none.
 
+### Superset 6.1 { #upgrade-superset-61 }
+
+5.3 moves Superset from 6.0.0p4 to 6.1.0.
+The `hopsworks-superset-init-db` Job runs Superset's schema migrations on the existing metadata database once, during the upgrade, and the Superset pods wait for it.
+On a cluster upgraded from a 6.0.0p4 database it ran 6 migrations in about a minute and kept every database connection and dashboard.
+
+- **Back up Superset first.**
+  Run the backup before the upgrade: `kubectl create job -n hopsworks --from=cronjob/create-superset-backup superset-backup-pre-53`.
+  The migrations have no downgrade, and the restore Job loads a dump into whatever image the release runs.
+  To go back to a 6.0 backup, restore it with the 5.2 chart, whose image matches it, then upgrade again.
+- **The Celery worker needs more memory.**
+  The worker's request and limit go from 1 GiB to 2 GiB.
+  Check that a node in the namespace has 2 GiB free for it.
+- **The MCP service runs.**
+  A new `hopsworks-superset-mcp` Deployment serves the `hops superset chart` commands over HTTPS, with a certificate from the cluster's CA and a signing key in the Secret `superset-mcp-jwt`.
+  Under ArgoCD, set `superset.mcp.jwtSecret`, or the service is not deployed; see [MCP service][superset-mcp-service].
+- **Semantic layer dashboards.**
+  With the semantic layer enabled, each Data owner and Data scientist of a project with Superset and a semantic project gets one Superset database connection, which reads the metrics of the project's semantic projects, see [Dashboards in Superset][semantic-superset-dashboards].
+  Set `hopsworks.variables.superset_semantic_enabled: "false"` to keep that off.
+
+### Semantic layer { #upgrade-semantic-layer }
+
+5.3 adds the semantic layer, off by default.
+Before turning it on with `global._hopsworks.semanticLayer.enabled: true`:
+
+- **Room in `ts_1`.**
+  The query history is the table `hopsworks.semantic_query` in RonDB's disk tablespace `ts_1`, which feature groups with disk columns share, and keeps each query for 30 days at about 13,000 bytes.
+  Check the free space of `ts_1` and add a data file when the history will need it, see [Query history storage][semantic-admin-history-storage].
+- **The 5.3 library in `python-feature-pipeline`.**
+  Metric export jobs run in each project's `python-feature-pipeline` environment, and fail before they write with an older Hopsworks library there, see [Who runs an export][semantic-exports-owner].
+- **Memory for the gateway.**
+  Each of the two semantic gateway replicas takes 4 GiB, see [Memory][semantic-admin-memory].
+
 ### Kueue outside the Hopsworks namespace { #upgrade-kueue-external }
 
 Required for a cluster that runs the Kueue bundled with Hopsworks (`global._hopsworks.kueue.enabled=true`); a cluster without Kueue needs nothing.
@@ -341,6 +454,46 @@ What changes for users and operators ([details](kueue_external.md#what-changes))
 - A workload whose pods are not all ready 30 minutes after admission is evicted and queued again (Kueue 0.19 `waitForPodsReady`).
 - The Ray autoscaler and job-submitter sidecars count against quota (Kueue 0.19).
 - A workload without a priority class gets the WorkloadPriorityClass named `default`, when one exists (Kueue 0.20).
+- Disk limits need Kueue to leave `ephemeral-storage` out of its quota checks, which the upgrade script sets up.
+  It stops before changing the cluster when it cannot read the queues, or when disk is budgeted but some ClusterQueues do not cover it ([Disk limits][kueue-disk-limits]).
+
+### Kafka node pool settings apply on every upgrade { #upgrade-kafka-node-pools }
+
+From 5.2.5, and in 5.3, a Helm upgrade applies the Kafka node pool settings in your values again.
+On a cluster whose Strimzi CRDs serve only `v1`, which is the case for a cluster installed on 5.2, earlier 5.2 releases left the two `KafkaNodePool` resources as they were on every Helm upgrade.
+A change of the replicas, storage, resources, JVM options or placement of the brokers or controllers had no effect, and a deleted pool did not come back.
+The `kafka-kraft-migration` pre-upgrade hook now applies both pools on every Helm upgrade.
+Under ArgoCD, and with Helm when `global._hopsworks.mode` is set, the pools are part of the release and are applied with it, so they were not affected, and the hook still leaves them to the release.
+
+- **The first upgrade with the fix applies what your values say.**
+  That includes settings that earlier upgrades ignored, and it overwrites a change made to a pool by hand, such as a replica count set with `kubectl`, because the hook applies every field the chart renders.
+  Compare the live pools with your values before upgrading:
+
+    ```sh
+    kubectl get kafkanodepools -n hopsworks -o yaml
+    ```
+
+  Strimzi replaces the Kafka pods one by one for a change of placement, resources or JVM options, and adds brokers for a higher replica count.
+- **A setting removed from the values can stay on a pool.**
+  The hook applies the pools server-side as the field manager `kafka-kraft-migration`, and Kubernetes removes a field that the values no longer set only when that manager is its only owner.
+  Helm owns the fields it set at install, and keeps owning each one whose value no upgrade has changed since, so such a field stays on the pool.
+  Check the pool after removing a setting, and remove the field from the pool by hand if it is still there.
+- **`kafka.migrationJob.enabled` stays on.**
+  The hook is the only thing that applies node pool settings during a Helm upgrade without `global._hopsworks.mode`, so with the switch off, pool changes are not applied.
+- **The upgrade fails when the pools cannot be applied.**
+  When the hook cannot read the `KafkaNodePool` CRD or the pools, or the cluster rejects the apply, the upgrade fails on the `kafka-kraft-migration` hook, where it used to continue without applying anything.
+  The log of the hook has the error:
+
+    ```sh
+    kubectl logs -n hopsworks job/kafka-kraft-migration
+    ```
+
+- **When the hook leaves the pools alone.**
+  When `v1beta2` has been removed from the `KafkaNodePool` CRD while a pool still carries ownership records written at that version, the cluster rejects every server-side apply to that pool.
+  The hook then applies nothing, and its log says `Not applying the node pools in this upgrade` and names the pools.
+  Pool changes are applied by the first upgrade after those records are cleared.
+  The `strimzi-crd-upgrade` hook clears them later in the same upgrade when it is enabled (`kafka.crdUpgradeJob.enabled`), the chart runs the Strimzi operator (`kafka.strimzi-kafka-operator.enabled`), and every Strimzi CRD stores only `v1`.
+  Otherwise whoever manages the Strimzi CRDs has to clear them, and until then every upgrade leaves the pools as they are.
 
 ### Bring your own Kafka: Hopsworks creates and deletes topics { #upgrade-byok-topics }
 
@@ -388,6 +541,61 @@ Before, it created no topics there, so every topic had to exist before ingestion
 - **Kafka changes through a shared feature store are refused.**
   Creating or deleting a topic or a schema, or setting a compatibility level, through a feature store shared from another project fails with `CHANGE_THROUGH_SHARED_FEATURE_STORE` (190027).
   Reading through a shared feature store is unchanged.
+
+### Deleting a tag schema in use is refused { #upgrade-tag-schema-delete }
+
+Up to 5.2, deleting a tag schema deleted every tag created from it, in every project.
+From 5.3, the delete is refused with `TAG_SCHEMA_IN_USE` (370014, HTTP 409) while a tag created from the schema is attached to any artifact, or while the schema has archived values in the [tag history][archive-tag-history].
+The message says how many tags use the schema, per kind of artifact, or how many archived values it has.
+
+- **Automation that deletes tag schemas** has to remove their tags first, with `delete_tag()`.
+  A schema with archived values cannot be deleted, because the history keeps them.
+- **Wait for the dataset tag migration before deleting a tag schema.**
+  Legacy dataset tags stored in HopsFS are moved into the database by a background migration that starts 30 minutes after Hopsworks starts, and the delete does not see tags that have not moved yet.
+  A dataset whose legacy tag names a deleted schema fails the migration and keeps its tags in HopsFS.
+  The migration has finished when the `dataset_tags_xattr_migration_done` setting is `true`.
+
+- **A deleted schema's name can stay taken.**
+  A schema deleted before 5.3 kept its archived values in the tag history, and a new schema of the same name would take them over.
+  Creating a schema under such a name is refused with `TAG_SCHEMA_NAME_HAS_HISTORY` (370015, HTTP 409), so choose another name.
+
+See [Deleting a tag schema][deleting-a-tag-schema].
+
+### The extended attributes endpoint is removed { #upgrade-xattrs-endpoint }
+
+From 5.3, `/project/{id}/xattrs/{path}` answers 404: HopsFS extended attributes can no longer be read, written or deleted through the REST API.
+Tags on datasets, feature groups, models and the other artifacts are managed through their tag APIs, as before.
+
+A dataset whose legacy tags cannot be moved into the database answers tag changes with `TAG_MIGRATION_PENDING` (370013, HTTP 409), and the Hopsworks log names the dataset and the tags that failed.
+A tag fails when its tag schema was deleted or its value no longer validates against the schema.
+Re-creating a deleted schema clears the dataset when its values validate.
+Otherwise an administrator edits the dataset's `user.tags` extended attribute as the HopsFS superuser, which the NameNode container runs as.
+The attribute holds a JSON array with one `{"key": <tag schema>, "value": <tag value as a JSON string>}` entry per tag.
+
+1. **Read the attribute**, with the dataset's HopsFS path, for example `/Projects/<project>/<dataset>`:
+
+    ```bash
+    kubectl exec -n hopsworks deploy/namenode -c namenode -- \
+      /srv/hops/hadoop/bin/hdfs dfs -getfattr -n user.tags -e text /Projects/<project>/<dataset>
+    ```
+
+    The value is the text between the outer quotes:
+
+    ```text
+    user.tags="[{"key":"pii","value":"{\"owner\":\"ann\"}"},{"key":"retired","value":"{\"a\":1}"}]"
+    ```
+
+2. **Write it back** without the tags that failed, or with their values corrected:
+
+    ```bash
+    kubectl exec -n hopsworks deploy/namenode -c namenode -- \
+      /srv/hops/hadoop/bin/hdfs dfs -setfattr -n user.tags \
+      -v '[{"key":"pii","value":"{\"owner\":\"ann\"}"}]' /Projects/<project>/<dataset>
+    ```
+
+    When no tag should be kept, remove the attribute with `-setfattr -x user.tags` instead.
+
+The dataset's tags move into the database the next time they are read, or at the hourly migration pass.
 
 ### Envoy Gateway { #upgrade-envoy-gateway }
 
@@ -458,6 +666,106 @@ Clients keep their endpoint, Knative-mode deployments stay on Istio, and no depl
     - Every Standard-mode deployment answers through the usual endpoint, with both URL shapes.
     - The Knative-mode deployments are unchanged.
 
+!!! warning "Headers with underscores"
+    Once a deployment has moved, the Gateway drops request headers whose names contain an underscore, such as `session_id`, which Istio passed on.
+    The request still succeeds, but a predictor or transformer script that reads such a header no longer receives it.
+    Send the value in a header whose name uses hyphens instead.
+
+### OnlineFS offsets move to `onlinefs.kafka_offsets` { #upgrade-onlinefs-offsets }
+
+From 5.3, OnlineFS keeps its consumer offsets in one table, `onlinefs.kafka_offsets`, in the RonDB it writes to, with the ID of the Kafka topic each offset was saved for, in place of a `kafka_offsets` table in the online feature store of each project.
+With the topic ID, OnlineFS reads a topic that was deleted and created again under the same name from its start, as after a restore that rebuilt Kafka, instead of resuming at an offset of the earlier topic ([Consumer offsets][onlinefs-offsets]).
+
+- **No step before `helm upgrade`.**
+  Each OnlineFS pod runs an `offsets-schema` init container before OnlineFS starts.
+  It creates the table, copies the offsets of every project into it, and lists each copied project database in `onlinefs.kafka_offsets_moved`.
+  For each consumer group, topic and partition it keeps the highest offset the project tables hold, with the topic's current ID, and leaves out the offsets of topics Kafka no longer has.
+  A pod that starts later copies only project tables not listed yet.
+- **The project tables stay until every OnlineFS pod runs 5.3.**
+  An OnlineFS pod of 5.2 reads its project's table each time Kafka gives it partitions, as during the rollout.
+  The `onlinefs-drop-legacy-offsets-<hash>-r<revision>` Job waits for the rollouts of the RonDB StatefulSets and of the OnlineFS Deployment to finish, then drops the listed project tables.
+  On a cluster with `global._hopsworks.full_platform: true` it holds the Flyway lease while it drops them, as the schema migrations do.
+- **The init container and the Job connect to the DDL SQL node of the release as `hopsworksroot`**, as the schema migrations do: the `ddl-mysqld` Service of the release, or, when RonDB is managed externally on a release with `global._hopsworks.full_platform: true`, the consul name in `onlinefs.dependencies.mysql.ddlConsulServiceName` (`mysqlddl`).
+  A satellite cluster (`global._hopsworks.full_platform: false`) always connects to the Service, also with an external RonDB.
+  A cluster that disables the DDL SQL node (`rondb.rondb.meta.ddlMySQLd.enabled: false`) sets `onlinefs.dependencies.mysql.serviceName: mysqld`, and also `onlinefs.dependencies.mysql.ddlConsulServiceName: mysql` when it is not a satellite and RonDB is managed externally.
+  `onlinefs.dependencies.mysql.url` overrides both.
+- **With `onlinefs.rbac.useExistingRole`**, the role needs `get`, `list` and `watch` on `deployments` and `statefulsets`, `get` and `watch` on `statefulsets/status`, and on a cluster with `global._hopsworks.full_platform: true` the lease rules of the chart's `onlinefs-role`, for the Job.
+- **A step that fails keeps the pod from starting.**
+  It reads every project table before it writes, so a step that fails while it copies leaves every project table as it is, and the next start copies them again.
+  The pod stays in `Init:Error` or `Init:CrashLoopBackOff`, and the log names the database:
+
+    ```sh
+    kubectl logs <onlinefs-pod> -c offsets-schema -n <namespace>
+    ```
+
+  The step gives up after `onlinefs.offsetsSchemaBudgetSeconds`, 900 seconds by default, its wait for Hopsworks to answer with the OnlineFS settings included, and Kubernetes starts it again.
+  Fix the cause, as described in [If the offsets-schema step fails][upgrade-onlinefs-offsets-failures], and the next start of the pod runs it again.
+- **Records written during the rollout can be written to the online feature store twice, never skipped.**
+  A new OnlineFS pod resumes a partition from the offset copied when the first new pod started, so it writes again the records the pods of the earlier release processed since.
+- **On satellite clusters**, upgraded after central as [Strimzi 1.3][upgrade-strimzi-13] requires, a project created after central's upgrade has no offsets table on a satellite that is not upgraded yet.
+  The satellite's OnlineFS logs `Failed to save offsets` for that project and keeps writing its rows, but reads the project's online topics again from their start when it restarts, and once more at the satellite's upgrade.
+- **Rolling OnlineFS back to 5.2** after the Job dropped the project tables makes it read every online topic again from its earliest retained record, because the tables it reads are gone.
+  Before the Job ran, it resumes from the project tables, at the offsets they held when the 5.3 pods started.
+  An offset set in [Kafka offsets][onlinefs-offsets-admin] that OnlineFS had not applied yet waits in `onlinefs.kafka_offsets`, and applies once OnlineFS is upgraded again if the topic was not created again meanwhile and Kafka still has the offset.
+- **A restore needs no step for the offsets on a Kafka that gives its topics IDs**, as the Kafka the chart installs does.
+  `onlinefs.kafka_offsets` is in the RonDB backup like any other database, and after a restore that rebuilt Kafka, OnlineFS reads the recreated topics from their start.
+  An offset saved without a topic ID, by a consumer group of an earlier Kafka connection or on a Kafka that gives no IDs, has nothing to check against, and OnlineFS resumes from it.
+
+#### If the offsets-schema step fails { #upgrade-onlinefs-offsets-failures }
+
+A step that fails logs `Failed to set up onlinefs.kafka_offsets, OnlineFS does not start`, followed by the error, in the `offsets-schema` container of a pod that is not `Running`:
+
+```sh
+kubectl logs <onlinefs-pod> -c offsets-schema -n <namespace>
+```
+
+| The error | What it means | What to do |
+| --- | --- | --- |
+| `Hopsworks did not answer with the OnlineFS settings within 900 s` | Hopsworks did not answer within the step's time, `onlinefs.offsetsSchemaBudgetSeconds`. Nothing was changed. | Wait until the `hopsworks-instance` pods are ready. The next start runs the step again. |
+| `Communications link failure`, `UnknownHostException` or `Access denied for user 'hopsworksroot'` | The step cannot reach or log in to the SQL node. Nothing was changed. | While the upgrade restarts the SQL node, this passes on its own. Otherwise check the SQL node the step connects to, as described above, and the `hopsworksroot` key of the `mysql-users-secrets` Secret. |
+| `Got error 4009 'No data node(s) available'` | RonDB's data nodes are restarting or down, as while the upgrade restarts them. Nothing was changed. | The next start runs the step again once the data nodes are up. |
+| `onlinefs.kafka_offsets has the columns [...], OnlineFS maps [...]` | The table exists with columns OnlineFS does not map, because it was created or changed outside OnlineFS. Nothing was moved. | Do not drop it, it holds the offsets. Change its columns to the ones the message lists after `OnlineFS maps`, keeping its rows. |
+| `Failed to read a per-project kafka_offsets, it is kept as it is`, with the database | The table of that project cannot be read. A single such table stops the whole step: nothing was written, and every project table is kept. | Repair that table, from the RonDB backup if needed. A table that cannot be repaired can be dropped, as described below. |
+| A Kafka error, such as `org.apache.kafka.common.errors.TimeoutException` | The step could not ask Kafka for the IDs of the topics. Nothing was written. | Check that OnlineFS reaches Kafka, as for its own consumers. |
+| `onlinefs.kafka_offsets was not set up within 900 s` | The step ran out of time while it copied the offsets. A project table counts as copied only once every offset is written, so the next start reads every project table and writes every offset again, and needs as long. | Raise `onlinefs.offsetsSchemaBudgetSeconds` and run `helm upgrade`. Offsets written already keep their values. |
+
+The Job logs each table it drops, and `Dropped <n> per-project kafka_offsets, none is left` when it is done:
+
+```sh
+kubectl get jobs -n <namespace> | grep onlinefs-drop-legacy-offsets
+kubectl logs job/<job> -c drop-legacy-offsets -n <namespace>
+```
+
+It fails, and drops no table that is not listed, when a project table was not copied, as while OnlineFS is scaled to 0, or a `DROP TABLE` statement fails.
+Until a Job drops them, the tables stay, and each OnlineFS pod logs them as waiting for the drop Job when it starts.
+The Job of the next `helm upgrade` runs again; the tables can also be dropped by hand once every OnlineFS pod runs 5.3, as below.
+
+The commands below run SQL as the RonDB `root` user on the chart's `mysqlds-0` pod; with an external RonDB, run the statements on one of its SQL nodes instead.
+A project table that cannot be repaired can be dropped, so that the step moves the others:
+
+```sh
+NAMESPACE=hopsworks
+ROOT_PW=$(kubectl get secret mysql-users-secrets -n "$NAMESPACE" -o jsonpath='{.data.root}' | base64 -d)
+kubectl exec mysqlds-0 -n "$NAMESPACE" -c mysqld -- env MYSQL_PWD="$ROOT_PW" mysql -uroot -e \
+  'DROP TABLE `<database>`.kafka_offsets'
+```
+
+OnlineFS then has no offsets for the online topics of that project and reads them from their earliest retained record, so it writes the records Kafka still retains to the online feature store again, and skips none.
+
+The move has finished when every OnlineFS pod is `Running`, the Job has completed, and no project table is left:
+
+```sh
+kubectl exec mysqlds-0 -n "$NAMESPACE" -c mysqld -- env MYSQL_PWD="$ROOT_PW" mysql -uroot -N -e \
+  "SELECT table_schema FROM information_schema.tables WHERE table_name = 'kafka_offsets' AND table_schema <> 'onlinefs'"
+```
+
+[Kafka offsets][onlinefs-offsets-admin] in `Cluster Settings` → `OnlineFS` then shows the moved offsets as the current offset of each partition.
+
+### Search index rebuild { #upgrade-53-search-reindex }
+
+After the upgrade, the `post-upgrade-opensearch-reindex-job` hook indexes the existing data sources, which 5.3 adds to search, and datasets, which a cluster upgraded from 5.1 may lack, without emptying the index.
+No action is needed unless `hopsworks.opensearchReindex.enabled` is `false` or the hook's log reports a run already in progress: then request a reindex with `scope=ADDITIVE` through the [REST API][search-index-rebuild] once no run is in progress.
+
 ### LLM Gateway { #upgrade-llm-gateway }
 
 The [LLM Gateway][llm-gateway] is new in 5.3 and off by default.
@@ -478,6 +786,51 @@ Before enabling, as listed under [How to enable it][llm-gateway-enable]:
 Enable with one `helm upgrade`: no predictive pod, Knative pod or `kserve-ingress-gateway` pod restarts, and the AI Gateway's Envoy pods roll once when the first route attaches.
 Data Owners can then turn the LLM Gateway off per project and per deployment, both on by default.
 Disable with one upgrade with `aiGateway.enabled: false`, as described under [Turn it off][llm-gateway-disable], which also lists what a `helm rollback` leaves behind and how to remove it.
+
+### vLLM image versions { #upgrade-vllm-image-versions }
+
+Because of a security fix, new vLLM deployments default to `vllm/vllm-openai:v0.34.0`, which is the only vLLM image version the chart advertises.
+Existing vLLM deployments keep the image version they were created with through the upgrade and later restarts.
+Move each of them to v0.34.0 by editing the deployment and selecting v0.34.0 as its image version.
+Check its vLLM configuration file first against the [vLLM v0.34.0 upgrade notes](https://github.com/vllm-project/vllm/releases/tag/v0.34.0): v0.34.0 no longer starts with `VLLM_USE_V2_MODEL_RUNNER=0`, and an unset `gpu_memory_utilization` now defaults to `1.0`.
+A cluster that pulls from a mirror needs `vllm/vllm-openai:v0.34.0` mirrored before the upgrade, or `vllm/vllm-openai-cpu:v0.34.0` when it runs vLLM on CPU, and keeps the versions its existing deployments use, see [Image tags][vllm-image-tags].
+
+The chart's vLLM-Omni version stays `v0.32.0`, and existing vLLM-Omni deployments keep the version they were created with.
+vLLM-Omni can now be disabled per cluster, see [Disable vLLM-Omni][vllm-disable-omni].
+
+### Security response headers { #upgrade-security-headers }
+
+Hopsworks now sets [security response headers][security-headers] itself, including a Content-Security-Policy that the UI enforces.
+An upgrade needs no action.
+The policy allows what the Hopsworks UI loads from the Hopsworks origin only.
+If the UI calls model deployments on another host or port, or another site frames the UI, add that origin to `hopsworks.payara.securityHeaders.extraSources`, as described under [Model deployments on another host or port][security-headers-inference] and [Embedding Hopsworks in another site][security-headers-embedding].
+A page the policy breaks shows a `Content-Security-Policy` error in the browser console; set `cspMode: report-only` while [finding what it needs][security-headers-troubleshooting].
+
+Pages are no longer served from the browser's offline cache, so a page needs the cluster to be reachable.
+
+### Istio 1.31 { #upgrade-istio-131 }
+
+Istio moves from 1.30 to 1.31.
+Istio upgrades in place one minor release at a time, so upgrade to 5.3 from 5.2.5 or later, the release that moves Istio to 1.30, as described in [Istio 1.30][upgrade-istio-130].
+On a cluster still on Istio 1.29, the Istio install hook stops with an error before it changes anything; upgrade to the latest 5.2 release first.
+
+- **Time.**
+  Each wait in the Istio install hook, the install and then istiod and each gateway rolling out, is bounded by `kserve.istio.istioctl.readinessTimeout` (15 minutes), so allow at least an hour for the hook in `helm upgrade --timeout`.
+- **Model deployments.**
+  The Istio ingress gateway and the cluster-local gateway restart once.
+  Each rolls out its new pod before it stops the old one.
+- **Your own image registry.**
+  Mirror `istio/pilot` and `istio/proxyv2` at `1.31.4` before the upgrade.
+  The chart's `vendor_images.sh` lists both.
+- **Sidecars you injected yourself.**
+  The chart injects no Istio sidecar.
+  A workload you gave an Istio sidecar keeps its 1.30 proxy until it restarts, so restart it after the upgrade.
+- **Going back to 5.2.**
+  A `helm rollback` does not run the Istio install hook, so Istio stays on 1.31.
+  A later `helm upgrade`, or an ArgoCD sync, with 5.2.5 or a later 5.2 chart stops in that hook before it changes anything, since 5.2 does not install Istio over 1.31.
+  Do not run `helm upgrade`, or an ArgoCD sync, with a release older than 5.2.5 afterwards: its hook installs Istio 1.29 over 1.31, a downgrade Istio does not support.
+  To go back entirely, restore the backup on a new cluster, as described in [New Cluster Restore][new-cluster-restore].
+  An in-place restore does not apply here, since it runs `helm upgrade` with the release of the backup, whose Istio install hook then runs over Istio 1.31.
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
@@ -545,3 +898,68 @@ Python apps pull their Envoy sidecar from `global._hopsworks.imageRegistry`, as 
 The default registry, `docker.hops.works`, has the image.
 A cluster whose `global._hopsworks.imageRegistry` is its own registry mirrors `envoyproxy/envoy:v1.38.0` there, at the path `envoyproxy/envoy`, before the upgrade, or its Python apps cannot start; the chart's `vendor_images.sh` does not list the image.
 The chart now writes `python_app_envoy_image` on every upgrade, replacing a value set by hand, so a cluster that pointed it at another image mirrors that image as above.
+
+## Changes from 5.2.5 { #upgrade-changes-from-525 }
+
+These changes ship in 5.2.5.
+They apply to an upgrade from 5.1.x to 5.2.5 or later, and from 5.2.4 or earlier to a later 5.2 release.
+
+### Istio 1.30 { #upgrade-istio-130 }
+
+Istio moves from 1.29 to 1.30.
+Istio 1.30 supports Kubernetes 1.32 to 1.36, and Istio supports the 1.30 release until about December 2026; 5.3 moves to Istio 1.31.
+
+- **Time.**
+  Each wait in the Istio install hook, the install and then istiod and each gateway rolling out, is bounded by `kserve.istio.istioctl.readinessTimeout` (15 minutes), so allow at least an hour for the hook in `helm upgrade --timeout`.
+- **Model deployments.**
+  The Istio ingress gateway and the cluster-local gateway restart once.
+  Each rolls out its new pod before it stops the old one.
+- **Your own image registry.**
+  Mirror `istio/pilot` and `istio/proxyv2` at `1.30.8` before the upgrade.
+  The chart's `vendor_images.sh` lists both.
+- **Sidecars you injected yourself.**
+  The chart injects no Istio sidecar.
+  A workload you gave an Istio sidecar keeps its 1.29 proxy until it restarts, so restart it after the upgrade.
+- **If the hook fails.**
+  Fix the cause and run `helm upgrade` again.
+  The hook stops with an error, and changes nothing, when istiod or the gateways run a release other than 1.29 or 1.30.
+- **Going back to an earlier 5.2 release.**
+  A `helm rollback` does not run the Istio install hook, so Istio stays on 1.30.
+  Do not run `helm upgrade`, or an ArgoCD sync, with a release older than 5.2.5 afterwards: its hook installs Istio 1.29 over 1.30, a downgrade Istio does not support.
+  To go back entirely, restore the backup on a new cluster, as described in [New Cluster Restore][new-cluster-restore].
+  An in-place restore does not apply here, since it runs `helm upgrade` with the release of the backup, whose Istio install hook installs Istio 1.29 over 1.30.
+
+## Changes from 5.2.6 { #upgrade-changes-from-526 }
+
+These changes ship in 5.2.6 and 5.3.0.
+They apply to an upgrade from 5.1.x to 5.2.6 or later, from an earlier 5.2 release to 5.2.6 or later, and from 5.2.5 or earlier to 5.3.
+5.1.4 and 5.0.16 carry the same changes, so they also apply to an upgrade to 5.1.4 or to 5.0.16.
+
+### Schema migrations wait for the RonDB restart { #upgrade-migrations-wait-rondb }
+
+The pods that run schema migrations, of the HopsFS namenode, the Hopsworks CA and the Hive metastore, wait until the upgrade has restarted RonDB before they migrate.
+
+- **Availability.**
+  The Hopsworks CA is unavailable from the moment the upgrade replaces its pod until the RonDB restart has finished, and so is the Hopsworks admin server when the release changes the Hopsworks schema.
+- **Time.**
+  On a cluster whose RonDB restart takes longer than an hour, raise `global._hopsworks.rondbRolloutProgressDeadlineSeconds` (3600 seconds) together with `helm upgrade --timeout`.
+  Past that deadline, Helm 4 and ArgoCD report the upgrade as failed although the rollout continues.
+- **ArgoCD.**
+  Sync the RonDB StatefulSets in the same sync and sync wave as the Deployments, because those pods wait until the sync has updated the StatefulSets.
+- **If the upgrade fails.**
+  Those pods keep waiting.
+  Fix the cause and run the upgrade again: they continue without being deleted.
+
+### RonDB disk-column volume with ArgoCD { #upgrade-rondb-disk-column-volume }
+
+A cluster that keeps RonDB's on-disk columns on a volume of their own (`rondb.rondb.resources.requests.storage.classes.diskColumns`) and is upgraded with ArgoCD states the size of that volume before the upgrade.
+The chart now sizes that volume larger for a new cluster, and ArgoCD cannot read the size of an existing one, so without the value the sync fails on the `node-group` StatefulSets, whose volume claims Kubernetes does not let change.
+Read the size of the existing volume claim:
+
+```sh
+kubectl get statefulset node-group-0 -n hopsworks \
+  -o jsonpath='{.spec.volumeClaimTemplates[?(@.metadata.name=="rondb-ndbmtd-dc")].spec.resources.requests.storage}'
+```
+
+Set `rondb.rondb.resources.requests.storage.diskColumnVolumeGiB` to that number of GiB, and keep it set in later upgrades.
+An upgrade with Helm keeps the existing size by itself.

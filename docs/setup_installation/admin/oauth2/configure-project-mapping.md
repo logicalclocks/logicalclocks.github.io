@@ -51,6 +51,8 @@ This will take you to the create mapping page shown below
 
 Here you can enter your OAuth2 group and map it to a project from the *Project* drop down list.
 You can also choose the *Project role* users will be assigned when they are added to the project.
+It can be a built-in role or a [custom project role][custom-project-roles].
+When several mappings put a user in the same project, the rule in [Give a custom role to members][give-a-custom-project-role] picks their role.
 
 Finally, click on *Create mapping* and go back to mappings. You should see the newly created mapping(s) as shown below.
 

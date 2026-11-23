@@ -26,7 +26,7 @@ Click `Add members` to open a dialog where you can invite users. Select one or m
   </figure>
 </p>
 
-Each member can be assigned one of three roles, depending on the level of access they need.
+Each member is given one of the roles below, depending on the level of access they need.
 
 ### Data owner
 
@@ -72,6 +72,15 @@ They can:
 - Access and use feature groups that have been explicitly shared with them
 - Create feature views and training datasets using only the features they have been granted access to
 
+### Custom roles
+
+A cluster administrator can define custom roles, each a Data owner or a Data scientist with some permissions removed, as described in [Custom Project Roles][custom-project-roles].
+They are listed under _Custom roles_ in the role picker, and the members list shows a member's custom role by name, with its base role in the tooltip.
+A member holding a custom role is refused what the role removed, with a message naming the permission.
+In the UI, the buttons for what the role removed are disabled, and their tooltip names the permission.
+
+You can give only roles that fit inside your own role, and change only members whose role fits inside your own.
+
 ## Step 3: Confirm member invitation
 
 The invited user will now appear in the members list and will have immediate access to the project based on their assigned role.
@@ -85,18 +94,19 @@ The invited user will now appear in the members list and will have immediate acc
 
 ## Step 4: Manage members
 
-To change a member's role or remove them from the project, click the `Manage members` button. From there, you can modify roles or delete members as needed.
+To change a member's role, click the edit button (:material-pencil:) in their row and pick the new role.
+To remove them from the project, click the delete button (:material-delete:) in their row.
 
 <p align="center">
   <figure>
-    <img src="../../../../assets/images/guides/project/members/manage_members.png" alt="Manage project members dialog">
-    <figcaption>Managing members of project</figcaption>
+    <img src="../../../../assets/images/guides/project/members/manage_members.png" alt="A member's role picker open in the members list, with the built-in and custom roles">
+    <figcaption>Changing a member's role</figcaption>
   </figure>
 </p>
 
 ### What happens to a removed member's files
 
-Each member has a private home directory in the project, `/Projects/<project>/Users/<username>`, holding their notebooks, their SSH key and their agent configuration.
+Each member has a [private home directory][user-home-directories] in the project, `/Projects/<project>/Users/<username>`, holding their notebooks, their SSH key and their agent configuration.
 
 When a member is removed, that directory and everything under it is transferred to another data owner. The files keep their contents and their paths; only the owner changes. The removed member loses access, as they do to the rest of the project.
 
@@ -118,9 +128,17 @@ Two cases where nothing is transferred, and one where the removal is refused:
 | The member being removed has no home directory | Nothing to transfer |
 | Removing the member would leave the project with no data owner | The removal is refused. Give another member the data owner role first |
 
+### What happens to the semantic projects a removed member owns
+
+The export jobs of a [semantic project][semantic-builds-owner] run as its owner, so removing the owner hands the semantic project over in the same request, to the data owner chosen to take the member's files when that data owner's role allows _Semantic layer: Run exports_, and otherwise to the data owner doing the removal.
+The remove dialog says who receives them.
+When neither can take them, the removal is refused with `MEMBER_OWNS_SEMANTIC_PROJECTS` and a message that names the semantic projects; transfer them first, see [When the owner leaves the project][semantic-builds-owner-removal].
+A member who owns semantic projects and leaves the project themselves names a data owner to take their files, or transfers the semantic projects first.
+
 ## Transfer ownership
 
 The project owner can hand the project to another Data owner of the project.
+A member holding a custom role based on Data owner is not eligible until they are given the built-in Data owner role.
 In the project settings, click `Transfer ownership` in the `Project ownership` section, choose the new owner, type `confirm` and click `Transfer ownership`.
 The new owner takes over what is special about the owner: they can delete the project, and they cannot be removed or have their role changed.
 The previous owner stays a Data owner, so the new owner can afterwards change their role or remove them like any other member.
@@ -151,17 +169,21 @@ project = hopsworks.login()
 # Add a member
 project.add_member("alice@example.com", "Data scientist")
 
-# List members
+# Give a custom role
+project.add_member("bob@example.com", "ML engineer")
+
+# List members; custom_role is None for a built-in role
 for member in project.get_members():
-    print(member.email, member.role)
+    print(member.email, member.role, member.custom_role)
 
 # Change a member's role
 project.get_members_api().update_role("alice@example.com", "Observer")
 
-# Remove a member. Their files go to the longest-serving data owner
+# Remove a member. Their files go to the longest-serving data owner,
+# and the semantic projects they own to you
 project.remove_member("alice@example.com")
 
-# Name the data owner that takes over their files
+# Name the data owner that takes over their files and semantic projects
 project.remove_member("alice@example.com", new_file_owner="carol@example.com")
 
 # Delete their files instead of handing them over
@@ -171,6 +193,7 @@ project.remove_member("alice@example.com", delete_home_dir=True)
 project.transfer_ownership("carol@example.com")
 ```
 
-Roles are the same as in the UI: `Data owner`, `Data scientist`, `Observer`, and `Feature store restricted`.
+Roles are the same as in the UI: `Data owner`, `Data scientist`, `Observer`, `Feature store restricted`, and the custom roles of the cluster.
+For a member holding a custom role, `role` is the base role and `custom_role` the custom role's name.
 A data scientist removing a member can only remove themselves.
 The project owner's role cannot be changed and the owner cannot be removed until they have transferred the project.

@@ -12,10 +12,12 @@ A client sends every request to the same URL and picks the deployment with the r
 <inference endpoint>/v1/<project>/v1/completions
 <inference endpoint>/v1/<project>/v1/embeddings
 <inference endpoint>/v1/<project>/v1/models
+<inference endpoint>/v1/<project>/v1/anthropic/v1/messages
 ```
 
 `<project>` is the project's namespace, and the project name works wherever it works for deployments.
 `GET .../v1/models` lists the project's started LLM deployments.
+The `anthropic/` prefix serves the Anthropic Messages API, translated to the OpenAI API of the vLLM deployment, for clients such as [Claude Code][coding-agents]; its `count_tokens` operation answers `422`.
 It runs on top of [Envoy Gateway][envoy-gateway], and the Hopsworks backend adds and removes its routes as deployments start and stop.
 
 --8<-- "setup_installation/admin/llm_gateway/request-flow.html"
@@ -107,14 +109,47 @@ Its filter chain checks the API key before anything else, so `GET /v1/models` ne
 ## Access to the LLM Gateway { #llm-gateway-access }
 
 Project members with an allowed role can use their project's LLM Gateway.
+Members of other projects can use the deployments shared with them, through the owning project's LLM Gateway.
 Two switches, both on by default, narrow what it serves:
 
 - The project switch turns the LLM Gateway off for a whole project, which then answers `404`.
 - The deployment switch keeps one LLM deployment off the LLM Gateway while the others stay on it.
   The deployment is still reachable on its per-deployment path.
 
-Only the project's Data Owners change either switch.
+Only the project's Data Owners change these switches.
 A change takes effect without restarting a deployment: the backend adds or removes the project's routes.
+
+### Sharing with projects { #llm-gateway-sharing }
+
+A Data Owner shares a vLLM deployment that the LLM Gateway serves with all projects or with selected projects, as described under [Sharing with projects][serving-sharing].
+Members of the projects it is shared with use the owning project's LLM Gateway with their own API keys, with the owning project's namespace in the URL, for these operations only:
+
+- Chat completions, `/v1/chat/completions`
+- Completions, `/v1/completions`
+- Embeddings, `/v1/embeddings`
+- Responses, `/v1/responses`
+- Anthropic messages, `/anthropic/v1/messages`
+
+Listing models and every other path are refused for them with `403`, and they have no access to the deployment's per-deployment path.
+A deployment shared with all projects admits every user with an allowed platform role, an administrator included, whatever the project.
+A member of the owning project is held to their role there, so sharing never widens the access of a Feature store restricted or Observer member of it.
+
+A new vLLM deployment that the LLM Gateway serves is shared with all projects.
+A deployment that existed before the upgrade that introduced sharing stays project-only until a Data Owner shares it.
+Turning the LLM Gateway on for the project does not share anything: a deployment created while the project's LLM Gateway was off stays project-only until a Data Owner shares it.
+
+The cluster variable `serving_sharing_enabled` controls the feature:
+
+| Variable | Default | Effect |
+| --- | --- | --- |
+| `serving_sharing_enabled` | `true` | When `false`, no deployment is shared, the **Share with other projects** setting of the deployment forms is disabled, the Overview shows no sharing badge, the Terminal lists no shared deployment and the sharing API answers error code `240078` |
+
+Set it with the Hopsworks Helm chart value `hopsworks.variables.serving_sharing_enabled`.
+The chart writes the value on every install and upgrade, so a change made in [Cluster Configuration][cluster-configuration] lasts until the next upgrade.
+A change reaches the LLM Gateway's routes within about a minute.
+The sharing choices of the Data Owners are kept while it is `false`, and apply again when it is `true`.
+
+### External users { #llm-gateway-access-external }
 
 External users reach a deployment through its External access groups, described in [External access][serving-external-access], and those groups also grant its use through the LLM Gateway.
 An external user whose groups are listed for a deployment can send requests with that deployment as the `model`, and no others, to these operations only:
@@ -127,6 +162,10 @@ An external user whose groups are listed for a deployment can send requests with
 
 Every listing, `GET .../v1/models` under any prefix, and every other path are refused for them with `403`.
 `model-serving-authenticator` makes the check on the request body, which the AI Gateway sends to it up to its 50Mi buffer limit (`kserve.envoyGateway.aiGateway.bufferLimit`).
+
+Requests authenticate with `Authorization: Bearer <api key>` or `ApiKey <api key>`, or with `x-api-key: <api key>` when no `Authorization` header is sent.
+When both are sent, an `x-api-key` that holds a Hopsworks API key must match the one in `Authorization`, or the request is refused with `401`.
+Any other `x-api-key` value is left to the client and not checked.
 
 ## Reserved deployment names { #llm-gateway-reserved-names }
 
@@ -146,10 +185,10 @@ Starting it again later has the same effect again.
 
 ## Identity headers { #llm-gateway-identity }
 
-For a request that passes the check, `model-serving-authenticator` returns three headers that Envoy adds to the request, for members and external users alike:
+For a request that passes the check, `model-serving-authenticator` returns three headers that Envoy adds to the request, for members, members of other projects and external users alike:
 
 - `x-hopsworks-user`, the username.
-- `x-hopsworks-project`, the project's namespace.
+- `x-hopsworks-project`, the namespace of the project that owns the deployment.
 - `x-hopsworks-project-id`, its numeric id.
 
 The rate limits, the traces, the access logs and the usage metrics are keyed on them.
@@ -277,7 +316,7 @@ Model name, token counts, status, timing, user and session stay, because they ar
 
 - Administrators, in Cluster Settings, LLM Gateway Traces, which lists the traces of every project, filtered by project and deployment, with the project, deployment, user, session, status and timing of each.
   This page never returns prompt or answer content: the backend does not read the `messages` column, keeps only an allowlist of span attributes (model, token counts, session, user, project, operation and HTTP status), keeps events without their attributes, and returns only `Error code: <status>` of a span's status, without the upstream error response.
-- Project members with the role Data Owner or Data Scientist, in Project settings, LLM Gateway Traces, which shows their project's traces with a filter on the deployment, and in the Overview of each exposed deployment, which shows that deployment's traces.
+- Project members with the role Data Owner or Data Scientist, in Project settings, LLM Gateway, which shows their project's traces with a filter on the deployment, and in the Overview of each exposed deployment, which shows that deployment's traces.
   The backend returns only the project's own spans.
 
 No Grafana datasource is provisioned for the traces table.
@@ -329,12 +368,14 @@ The `OpenSearchCleaner` deletes an index older than `elastic_logs_index_expirati
 The ext_proc sidecar's metrics follow the OpenTelemetry generative AI conventions, for example `gen_ai_client_token_usage` and `gen_ai_server_request_duration_seconds`.
 They are labelled with the model, the backend, `<Hopsworks namespace>/<project namespace>-<deployment>-aibackend`, and `hopsworks_user`, taken from `x-hopsworks-user`.
 Prometheus sets their `namespace` label to the project's namespace, so token usage can be summed per project, per deployment and per user.
-The number of `hopsworks_user` values is bounded by the number of project members and of external users granted access to a deployment.
+A deployment shared with all projects admits every user of the cluster, so the number of `hopsworks_user` values is bounded by the number of users of the cluster, external users granted access to a deployment included.
 
 Grafana shows them in the ModelServing folder:
 
 - The LLM Gateway (Agent Router) dashboard has tokens, requests, errors and latency per project and deployment, for one project at a time, a `user` variable with panels for tokens and requests per user, and a table of usage by project, user and model over the dashboard's time range.
 - The vLLM Deployment Metrics dashboard has an LLM Gateway row for each deployment.
+
+Project members see the project's token usage by deployment and by user in Project settings, LLM Gateway, above the traces.
 
 The access logs carry the same user, model and token counts per request, for audits.
 
@@ -346,6 +387,7 @@ The access logs carry the same user, model and token counts per request, for aud
 - While the LLM Gateway is published, a vLLM deployment created without a minimum number of instances gets a minimum of 1, so it does not scale to zero when idle and the LLM Gateway serves it.
   An explicit minimum of 0 is allowed, and a deployment with it is not served by the LLM Gateway.
 - Any member of the project can reach every one of its deployments through the LLM Gateway, unless a Data Owner turns it off for the project or for a deployment, as described under [Access to the LLM Gateway][llm-gateway-access].
+- Sharing is per deployment and has no finer grain: a deployment shared with a project is open to every member of it with an allowed role, and one shared with all projects to every user with an allowed role.
 - External providers, MCP and `InferencePool` backends are not part of it.
 - On RonDB 26.02 (26.02.11 and 26.02.13 tested), the queries behind the trace pages can stop a RonDB data node with error 2341, `DBQACC (Line: 2154) Check m_curr_acc->oprec_pool.getValidPtr(loopPtr) failed`.
   It happens when one statement reads the `messages` column and looks up parent spans by primary key, which the project trace list, the session view and the message search do, with the table in memory or on disk alike.

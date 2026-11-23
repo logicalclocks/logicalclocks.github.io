@@ -25,6 +25,7 @@ nav:
           - AI Systems: concepts/mlops/prediction_services.md
           - Agents and LLM Systems: concepts/mlops/agents.md
           - Projects and Governance: concepts/projects/governance.md
+          - Project and User Isolation: concepts/projects/isolation.md
           - Data Storage and Sharing: concepts/projects/storage.md
       - MLOps Dictionary ↗: https://www.hopsworks.ai/mlops-dictionary?utm_source=web&utm_medium=docs
       - Feature Store:
@@ -141,7 +142,6 @@ nav:
                   - Designer: user_guides/integrations/mlstudio_designer.md
                   - Notebooks: user_guides/integrations/mlstudio_notebooks.md
               - Apache Spark: user_guides/integrations/spark.md
-              - Apache Beam: user_guides/integrations/beam.md
               - Java: user_guides/integrations/java.md
             # TODO: update the docs and uncomment:
             #   - Databricks:
@@ -237,6 +237,29 @@ nav:
               - Query Engine: user_guides/projects/trino/query_engine.md
               - Trino Catalogs: user_guides/projects/trino/catalogs.md
               - Sharing: user_guides/projects/trino/sharing.md
+          - Semantic Layer:
+              - user_guides/analytics/semantic_layer/index.md
+              - Overview: user_guides/analytics/semantic_layer/overview.md
+              - Roles and Permissions: user_guides/analytics/semantic_layer/roles.md
+              - Get Started: user_guides/analytics/semantic_layer/get_started.md
+              - Ecommerce Blueprint: user_guides/analytics/semantic_layer/ecommerce_blueprint.md
+              - Define Metrics: user_guides/analytics/semantic_layer/define_metrics.md
+              - Metric Types: user_guides/analytics/semantic_layer/metric_types.md
+              - Time Spine: user_guides/analytics/semantic_layer/time_spine.md
+              - Edit Definitions in the UI: user_guides/analytics/semantic_layer/editor.md
+              - Compile and Builds: user_guides/analytics/semantic_layer/builds.md
+              - Validation Rules: user_guides/analytics/semantic_layer/validation_rules.md
+              - Tags: user_guides/analytics/semantic_layer/tags.md
+              - Query Metrics: user_guides/analytics/semantic_layer/query.md
+              - Saved Queries: user_guides/analytics/semantic_layer/saved_queries.md
+              - Result Cache: user_guides/analytics/semantic_layer/caching.md
+              - Query History: user_guides/analytics/semantic_layer/query_history.md
+              - Connect dbt Clients: user_guides/analytics/semantic_layer/connect_clients.md
+              - Connect BI Tools: user_guides/analytics/semantic_layer/bi_tools.md
+              - Excel and ODBC: user_guides/analytics/semantic_layer/excel_odbc.md
+              - Metric Exports: user_guides/analytics/semantic_layer/exports.md
+              - Dashboards in Superset: user_guides/analytics/semantic_layer/dashboards.md
+              - Agent Tools: user_guides/analytics/semantic_layer/agent_tools.md
           - Superset: user_guides/projects/superset/superset.md
       - MLOps:
           - user_guides/mlops/index.md
@@ -290,6 +313,7 @@ nav:
               - Evaluation: user_guides/agents/evaluation/index.md
               - Monitoring: user_guides/agents/monitoring/index.md
               - Failure Analysis: user_guides/agents/failure_analysis/index.md
+          - Coding Agents: user_guides/agents/coding_agents/index.md
       - Migration 3.X to 4.0: user_guides/migration/40_migration.md
   - Administration:
       - setup_installation/index.md
@@ -307,8 +331,10 @@ nav:
           - Python Build Performance: setup_installation/admin/build_performance.md
           - User Management: setup_installation/admin/user.md
           - Project Management: setup_installation/admin/project.md
+          - Custom Project Roles: setup_installation/admin/project_roles.md
           - Configure Alerts: setup_installation/admin/alert.md
           - IAM Role Chaining: setup_installation/admin/roleChaining.md
+          - Private CA Trust: setup_installation/admin/private_ca.md
           - Configure Project Mapping: setup_installation/admin/configure-project-mapping.md
           - Airflow 3 operator notes: setup_installation/admin/airflow3.md
           - Search Index: setup_installation/admin/search_index.md
@@ -321,6 +347,7 @@ nav:
           - Model Serving Ingress Gateway: setup_installation/admin/model_serving_gateway.md
           - Kafka Quotas: setup_installation/admin/kafka_quotas.md
           - OnlineFS Configuration: setup_installation/admin/onlinefs.md
+          - Security Response Headers: setup_installation/admin/security_headers.md
           - Uninstalling Hopsworks: setup_installation/admin/uninstall.md
           - Upgrades:
               - Upgrading Hopsworks: setup_installation/admin/upgrade.md
@@ -356,8 +383,10 @@ nav:
           - Service Operations: setup_installation/admin/operationLogs.md
           - Query Engine (Trino): setup_installation/admin/trino.md
           - Superset: setup_installation/admin/superset.md
+          - Semantic Layer: setup_installation/admin/semantic_layer.md
           - GPU Scheduling with Run:ai: setup_installation/admin/run_ai.md
           - Triton Inference Server: setup_installation/admin/triton.md
+          - vLLM Serving Runtimes: setup_installation/admin/vllm.md
       - Helm Chart Values Reference:
           - setup_installation/common/helm_chart_values/index.md
           - global: setup_installation/common/helm_chart_values/global.md
@@ -495,6 +524,7 @@ plugins:
         concepts/fs/feature_view/feature_monitoring.md: concepts/fs/feature_group/feature_monitoring.md#monitoring-a-feature-view
         concepts/fs/feature_view/versioning.md: concepts/fs/feature_group/versioning.md#feature-view-and-training-data-versioning
         user_guides/integrations/flink.md: user_guides/integrations/index.md
+        user_guides/integrations/beam.md: user_guides/integrations/index.md
         tutorials/index.md: index.md
         setup_installation/common/arrow_flight_duckdb.md: user_guides/fs/feature_view/training-data.md
         user_guides/agents/chat_contract/index.md: user_guides/agents/deployments/index.md#the-chat-contract

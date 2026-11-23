@@ -7,6 +7,20 @@ Use dashes for unordered lists.
 Use proper sentences: capital letter, ending punctuation.
 Never write a warning or restriction without explaining why, except one a security fix needs, which says only that, as the security rule in `.claude/CLAUDE.md` says.
 
+## Upgrade guide
+
+The reader of `docs/setup_installation/admin/upgrade.md` is an operator in the middle of an upgrade.
+
+- A section says what to do, what the operator will see, and what can fail.
+  Leave out everything the reader doesn't act on.
+- Leave out how the chart implements a change (annotations, ConfigMaps, helpers), chart versions the release pins, values nobody needs to set, and how things behaved before.
+- The "why" behind a warning is one clause, not the mechanism.
+- A behaviour change that needs no action goes in the release notes, not here.
+- Don't document a pitfall of a setting the docs don't describe.
+- Recovery from one release's bug is the symptom plus a fix or a pointer to support.
+  A manual procedure, such as hand-written SQL or edits of `flyway_schema_history`, stays out unless every case was tested.
+- When a section passes about 15 lines, cut before adding.
+
 ## Markdown Lint Rules
 
 Markdownlint config is in `.markdownlint.yaml`.

@@ -16,8 +16,8 @@ Once a mapping is created, project membership is controlled through Hopsworks gr
 See [Cluster Configuration](./variables.md) on how to change variable values in Hopsworks.
 
 <figure>
- <a  href="../../../../assets/images/admin/project-mapping/configuration-variables.png">
-   <img src="../../../../assets/images/admin/project-mapping/configuration-variables.png" alt="Enable Hopsworks mapping" />
+ <a  href="../../../assets/images/admin/project-mapping/configuration-variables.png">
+   <img src="../../../assets/images/admin/project-mapping/configuration-variables.png" alt="Enable Hopsworks mapping" />
  </a>
  <figcaption>Enable Hopsworks mapping</figcaption>
 </figure>
@@ -25,8 +25,8 @@ See [Cluster Configuration](./variables.md) on how to change variable values in 
 If you can not find the variable ```hw_group_mapping_sync_enabled``` create it by clicking on **New variable**.
 
 <figure>
- <a  href="../../../../assets/images/admin/project-mapping/configuration-hw-mapping.png">
-   <img src="../../../../assets/images/admin/project-mapping/configuration-hw-mapping.png" alt="Create Hopsworks mapping enabled variable" />
+ <a  href="../../../assets/images/admin/project-mapping/configuration-hw-mapping.png">
+   <img src="../../../assets/images/admin/project-mapping/configuration-hw-mapping.png" alt="Create Hopsworks mapping enabled variable" />
  </a>
  <figcaption>Create Hopsworks group mapping enabled variable</figcaption>
 </figure>
@@ -38,28 +38,30 @@ corner of the navigation bar and choosing *Cluster Settings* from the dropdown m
 Choose *Project Mapping* under *Security & Access* in the left sidebar, then create a new mapping by clicking on *Create new mapping*.
 
 <figure>
- <a  href="../../../../assets/images/admin/project-mapping/project-mapping-empty.png">
-   <img src="../../../../assets/images/admin/project-mapping/project-mapping-empty.png" alt="Project mapping tab" />
+ <a  href="../../../assets/images/admin/project-mapping/project-mapping-empty.png">
+   <img src="../../../assets/images/admin/project-mapping/project-mapping-empty.png" alt="Project mapping tab" />
  </a>
  <figcaption>Project mapping</figcaption>
 </figure>
 
 This will take you to the create mapping page shown below
 <figure>
- <a  href="../../../../assets/images/admin/project-mapping/create-hw-mapping.png">
-   <img src="../../../../assets/images/admin/project-mapping/create-hw-mapping.png" alt="Create mapping" />
+ <a  href="../../../assets/images/admin/project-mapping/create-hw-mapping.png">
+   <img src="../../../assets/images/admin/project-mapping/create-hw-mapping.png" alt="Create mapping" />
  </a>
  <figcaption>Create mapping</figcaption>
 </figure>
 
 Here you can enter your Hopsworks group and map it to a project from the *Project* drop down list.
 You can also choose the *Project role* users will be assigned when they are added to the project.
+It can be a built-in role or a [custom project role][custom-project-roles].
+When several mappings put a user in the same project, the rule in [Give a custom role to members][give-a-custom-project-role] picks their role.
 
 Finally, click on *Create mapping* and go back to mappings. You should see the newly created mapping(s) as shown below.
 
 <figure>
- <a  href="../../../../assets/images/admin/project-mapping/group-to-project-mappings.png">
-   <img src="../../../../assets/images/admin/project-mapping/group-to-project-mappings.png" alt="Project mappings" />
+ <a  href="../../../assets/images/admin/project-mapping/group-to-project-mappings.png">
+   <img src="../../../assets/images/admin/project-mapping/group-to-project-mappings.png" alt="Project mappings" />
  </a>
  <figcaption>Project mappings</figcaption>
 </figure>
@@ -69,8 +71,8 @@ Finally, click on *Create mapping* and go back to mappings. You should see the n
 From the list of mappings click on the edit button (:material-pencil:). This will open a popup that will allow you to change the *group*, *project name*, and *project role* of a mapping.
 
 <figure>
- <a  href="../../../../assets/images/admin/project-mapping/edit-hw-mapping.png">
-   <img src="../../../../assets/images/admin/project-mapping/edit-hw-mapping.png" alt="Edit mapping" />
+ <a  href="../../../assets/images/admin/project-mapping/edit-hw-mapping.png">
+   <img src="../../../assets/images/admin/project-mapping/edit-hw-mapping.png" alt="Edit mapping" />
  </a>
  <figcaption>Edit mapping</figcaption>
 </figure>
