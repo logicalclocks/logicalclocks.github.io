@@ -67,6 +67,10 @@ The `INFERENCE / AGENTS / APPS` environments can be used in a deployment using a
 - `vllm-inference-pipeline` to load and serve LLMs with vLLM inference engine
 - `minimal-inference-pipeline` to install your own custom framework, contains a minimal set of dependencies
 
+A TensorFlow Serving deployment runs its transformer in `tensorflow-inference-pipeline` unless the deployment names another environment.
+A cluster installed with the Helm value `hopsworks.variables.tensorflow_inference_enabled` set to `false` has no `tensorflow-inference-pipeline`, which keeps 3.65 GB of image layers out of its registry.
+On such a cluster a deployment that would run in it is refused, because its image is not in the registry, so name another environment for the transformer, such as `pandas-inference-pipeline`.
+
 ## Next steps
 
 In this guide you learned how to find the bundled python environments and where they can be used.
