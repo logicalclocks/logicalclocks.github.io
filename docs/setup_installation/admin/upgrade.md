@@ -787,6 +787,17 @@ Enable with one `helm upgrade`: no predictive pod, Knative pod or `kserve-ingres
 Data Owners can then turn the LLM Gateway off per project and per deployment, both on by default.
 Disable with one upgrade with `aiGateway.enabled: false`, as described under [Turn it off][llm-gateway-disable], which also lists what a `helm rollback` leaves behind and how to remove it.
 
+### vLLM image versions { #upgrade-vllm-image-versions }
+
+Because of a security fix, new vLLM deployments default to `vllm/vllm-openai:v0.34.0`, which is the only vLLM image version the chart advertises.
+Existing vLLM deployments keep the image version they were created with through the upgrade and later restarts.
+Move each of them to v0.34.0 by editing the deployment and selecting v0.34.0 as its image version.
+Check its vLLM configuration file first against the [vLLM v0.34.0 upgrade notes](https://github.com/vllm-project/vllm/releases/tag/v0.34.0): v0.34.0 no longer starts with `VLLM_USE_V2_MODEL_RUNNER=0`, and an unset `gpu_memory_utilization` now defaults to `1.0`.
+A cluster that pulls from a mirror needs `vllm/vllm-openai:v0.34.0` mirrored before the upgrade, or `vllm/vllm-openai-cpu:v0.34.0` when it runs vLLM on CPU, and keeps the versions its existing deployments use, see [Image tags][vllm-image-tags].
+
+The chart's vLLM-Omni version stays `v0.32.0`, and existing vLLM-Omni deployments keep the version they were created with.
+vLLM-Omni can now be disabled per cluster, see [Disable vLLM-Omni][vllm-disable-omni].
+
 ### Security response headers { #upgrade-security-headers }
 
 Hopsworks now sets [security response headers][security-headers] itself, including a Content-Security-Policy that the UI enforces.
