@@ -705,6 +705,10 @@
          <lastmod>2026-11-24</lastmod>
     </url>
     <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/fs/data_source/files_ingestion/</loc>
+         <lastmod>2026-11-24</lastmod>
+    </url>
+    <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/fs/data_source/usage/</loc>
          <lastmod>2026-11-24</lastmod>
     </url>
@@ -730,6 +734,10 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/gmail/</loc>
+         <lastmod>2026-11-24</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/google_drive/</loc>
          <lastmod>2026-11-24</lastmod>
     </url>
     <url>
@@ -766,6 +774,10 @@
     </url>
     <url>
          <loc>https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sap_hana/</loc>
+         <lastmod>2026-11-24</lastmod>
+    </url>
+    <url>
+         <loc>https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sftp/</loc>
          <lastmod>2026-11-24</lastmod>
     </url>
     <url>

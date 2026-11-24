@@ -88,7 +88,10 @@
 - [Gmail](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/gmail/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/gmail/index.md))
 - [Outlook](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/outlook/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/outlook/index.md))
 - [SharePoint](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sharepoint/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sharepoint/index.md))
+- [SFTP](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sftp/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/sftp/index.md))
+- [Google Drive](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/google_drive/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/creation/google_drive/index.md))
 - [Usage](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/usage/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/usage/index.md))
+- [Copy files into a dataset](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/files_ingestion/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/data_source/files_ingestion/index.md))
 
 #### Feature Group
 - [Feature Group User Guides](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/) ([md](https://docs.hopsworks.ai/latest/user_guides/fs/feature_group/index.md))
