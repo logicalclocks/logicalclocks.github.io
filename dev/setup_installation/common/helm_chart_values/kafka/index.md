@@ -4,7 +4,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795469364` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795507966` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -41,7 +41,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
         createGlobalResources: true
         defaultImageRegistry: docker.hops.works
         defaultImageRepository: strimzi
-        defaultImageTag: 1.3.1
+        defaultImageTag: 1.3.1-h1
         deploymentStrategy:
           rollingUpdate:
             maxSurge: 0
@@ -152,7 +152,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
         createGlobalResources: true
         defaultImageRegistry: docker.hops.works
         defaultImageRepository: strimzi
-        defaultImageTag: 1.3.1
+        defaultImageTag: 1.3.1-h1
         deploymentStrategy:
           rollingUpdate:
             maxSurge: 0
@@ -264,7 +264,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
             startingNodePort: null
           image:
             name: kafka
-            tag: 1.3.1-kafka-4.3.1-h1
+            tag: 1.3.1-kafka-4.3.1-h2
           jvmOptions: {}
           nodeSelector: {}
           podAntiAffinity:
@@ -483,8 +483,8 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
     Explicit nodePort for broker 0 when the load balancer is unmanaged (managed: false); broker N gets startingNodePort + N, as with startingAdvertisedPort. Null lets Kubernetes allocate them from the cluster's node-port range; a set value must lie in that range (30000-32767 by default), which the API server enforces at install.
 
 `kafka.cluster.kafka.image` <a class="headerlink" href="#helm.kafka.cluster.kafka.image" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.image }
-:   Type `object`, default `{"name":"kafka","tag":"1.3.1-kafka-4.3.1-h1"}`.
-    a tag docker.hops.works does not carry, because only the `-h<N>` builds are published there. So clearing it also means pointing `strimzi-kafka-operator.defaultImageRegistry` at `quay.io` (or mirroring the plain upstream tags), and the same applies to the operator's Kafka Exporter and Cruise Control defaults if those are ever turned on.
+:   Type `object`, default `{"name":"kafka","tag":"1.3.1-kafka-4.3.1-h2"}`.
+    Broker image, overriding the one the operator would pick from its own version map. Hopsworks brokers need `io.hops.kafka.HopsAclAuthorizer` and `HopsPrincipalBuilder` on the broker classpath, and Strimzi offers no way to add a broker plugin, so the image carries it: upstream's Strimzi image with that jar added, built by `docker-images/strimzi-kafka`. `name` is appended to `strimzi-kafka-operator.defaultImageRegistry` and `.defaultImageRepository`, not to the global Hopsworks registry: the broker image sits beside the operator's own images and always has, since the fork published it to that same repository with the authorizer in it. The tag names the Strimzi and Kafka versions the image was built from, and both must match the `strimzi-kafka-operator` dependency and `cluster.kafka.version` above; the trailing `-h<N>` is the image revision, which moves with any change to the image.  Setting `name` to null drops `.spec.kafka.image` and lets the operator resolve the broker from its own `STRIMZI_KAFKA_IMAGES` map, which is what a deployment that does not use the Hopsworks authorizer wants. That map resolves `<defaultImageRegistry>/<defaultImageRepository>/kafka:<defaultImageTag>-kafka-<version>`, a tag neither docker.hops.works nor quay.io carries while `defaultImageTag` has its `-h<N>` revision. So clearing it also means pointing `strimzi-kafka-operator.defaultImageRegistry` at `quay.io` (or mirroring the plain upstream tags) and setting `defaultImageTag` to the plain Strimzi version, which moves the operator to upstream's image as well; the same applies to the operator's Kafka Exporter and Cruise Control defaults if those are ever turned on.
 
 `kafka.cluster.kafka.jvmOptions` <a class="headerlink" href="#helm.kafka.cluster.kafka.jvmOptions" title="Permanent link">#</a> { #helm.kafka.cluster.kafka.jvmOptions }
 :   Type `object`, default `{}`.
