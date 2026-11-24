@@ -18,6 +18,9 @@ You can access the admin page of your Hopsworks cluster by clicking on your name
 You can then choose _Monitoring_ under _Observability_ in the left sidebar.
 The _Monitoring_ page gives you access to several of the observability tools that are already deployed to help you manage the health of the cluster.
 
+For logs from an individual platform pod, see [Inspect Kubernetes resources][cluster-overview-kubernetes].
+For a support archive, see [Collect a support archive][hopsworks-collect-logs].
+
 <figure>
   <img src="../../../../assets/images/admin/monitoring/monitoring_tab.png" alt="monitoring page" />
   <figcaption>Monitoring page</figcaption>

@@ -222,6 +222,8 @@ OpenSearch stays on 3.8.0.
 An upgrade from 5.2.0 or 5.2.1 also gets the [changes from 5.2.2][upgrade-changes-from-522].
 An upgrade from 5.2.0 also crosses two changes of 5.2.1, described under 5.1.x to 5.2.x: [Feature groups shared with a subset of their features][upgrade-trino-subset-shares], and the OpenSearch [Security configuration][opensearch-security-configuration], which addresses a vulnerability.
 
+Before upgrading, review the [cluster overview permissions][upgrade-cluster-overview-access], [debug terminal credentials][upgrade-debug-terminal-credentials], and [Trino resource defaults][upgrade-trino-resource-defaults].
+
 ### Additional upgrade prerequisites { #upgrade-additional-prerequisites }
 
 The identity running Helm or syncing ArgoCD must have permission to manage `ValidatingAdmissionPolicy` and `ValidatingAdmissionPolicyBinding` resources in the `admissionregistration.k8s.io` API group.
@@ -242,6 +244,49 @@ Every release must select a distinct set of project namespaces.
 Add these labels to existing and pre-created project namespaces and include them in `hopsworks.variables.project_namespace_labels` before upgrading.
 
 Project pod admission can be turned off with `global._hopsworks.projectPodSecurity.enabled: false`, which skips these prerequisites, but we recommend keeping it on.
+
+### Cluster overview permissions { #upgrade-cluster-overview-access }
+
+A custom Kubernetes role for Hopsworks needs these permissions for the [cluster overview][hopsworks-cluster-overview].
+
+- `get` and `list` on `statefulsets`, `daemonsets`, `replicasets`, and `controllerrevisions` in the `apps` API group for workload and revision information.
+- `get` and `list` on `limitranges` and `resourcequotas` in the core API group for checking a Recommendations values file against namespace limits.
+- `get` and `list` on `nodes` in the core API group for node information.
+
+The chart-generated ClusterRole includes these permissions.
+Sections that depend on permissions or metrics may have partial data.
+Check that Hopsworks can list pods across namespaces before relying on per-node pod counts.
+Check access to persistent volumes before relying on placement estimates for workloads with local volumes.
+
+### Debug terminal credentials on upgrade { #upgrade-debug-terminal-credentials }
+
+The chart provisions dedicated MySQL and OpenSearch identities for cluster diagnostics, including on satellite installs, while the terminal remains off by default.
+The passwords are stored in the `admin-debug-credentials` Secret.
+An install that supplies its own standard MySQL or OpenSearch user Secret can leave those Secrets as they are.
+
+If your deployment process renders in install or upgrade mode without access to live Kubernetes Secrets, including Argo CD, create `admin-debug-credentials` before rendering.
+Create it in each release namespace with the keys `admindebuguser` and `admin_debug` and set `rondb.adminDebug.createCredentialsSecret: false`.
+Use your normal secret management process to provide the passwords.
+
+If your values replace the `rondb.rondb.mysql.users` list, preserve the chart's `admindebuguser` entry.
+The RonDB users Job provisions that account, and the Hopsworks CA waits for the current upgrade's users Job before applying grants when the chart manages it.
+If the CA is waiting in its init container, check the matching RonDB users Job.
+Plan for an OpenSearch rollout when the diagnostic identity is added.
+
+End existing admin debug sessions before upgrading.
+Upgrade the chart and backend together and wait for both Hopsworks deployments to roll out before opening new sessions.
+Set `hopsworks.adminDebug.serviceAccountName` in Helm to choose the terminal's account, or leave it empty to run without a mounted Kubernetes token.
+See [Configure the debug terminal][hopsworks-configure-debug-terminal].
+
+### Trino resource defaults { #upgrade-trino-resource-defaults }
+
+With Trino enabled and the default sizing, the coordinator requests 4 CPU and 8 GiB of memory, and each of the two workers requests 2 CPU and 8 GiB of memory.
+Their limits match their requests, and their JVM heaps are 6 GiB.
+Recheck your node and namespace headroom for these requests and for overlapping pods during a rolling upgrade.
+
+The defaults set `query.max-memory` to `4GB` and `query.max-memory-per-node` to `2GB`.
+The default resource group runs two queries concurrently and queues up to 50.
+Review any overrides under `trino.trino` when comparing the new defaults with your current installation.
 
 ### Strimzi 1.3 { #upgrade-strimzi-13 }
 
