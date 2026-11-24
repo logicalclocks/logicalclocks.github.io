@@ -807,7 +807,12 @@ Move each of them to v0.34.0 by editing the deployment and selecting v0.34.0 as 
 Check its vLLM configuration file first against the [vLLM v0.34.0 upgrade notes](https://github.com/vllm-project/vllm/releases/tag/v0.34.0): v0.34.0 no longer starts with `VLLM_USE_V2_MODEL_RUNNER=0`, and an unset `gpu_memory_utilization` now defaults to `1.0`.
 A cluster that pulls from a mirror needs `vllm/vllm-openai:v0.34.0` mirrored before the upgrade, or `vllm/vllm-openai-cpu:v0.34.0` when it runs vLLM on CPU, and keeps the versions its existing deployments use, see [Image tags][vllm-image-tags].
 
-The chart's vLLM-Omni version stays `v0.32.0`, and existing vLLM-Omni deployments keep the version they were created with.
+New vLLM-Omni deployments default to `vllm/vllm-omni:v0.34.0`.
+To update an existing Omni deployment, edit it and select `v0.34.0` as its image version.
+Before updating, check custom deployment files against the [vLLM-Omni v0.34.0 release notes](https://github.com/vllm-project/vllm-omni/releases/tag/v0.34.0).
+Every stage must use a supported Model Runner V2 profile.
+Remove `--shm-threshold-bytes` from custom launch arguments and select a supported model for deployments using JoyAI-Image-Edit, whose first-party support was removed.
+A cluster that pulls from a mirror needs `vllm/vllm-omni:v0.34.0` mirrored before the upgrade.
 vLLM-Omni can now be disabled per cluster, see [Disable vLLM-Omni][vllm-disable-omni].
 
 ### Security response headers { #upgrade-security-headers }
