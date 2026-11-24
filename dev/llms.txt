@@ -230,6 +230,7 @@
 - [Run Spark Job](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/spark_job/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/spark_job/index.md))
 - [Run Ray Job](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/ray_job/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/ray_job/index.md))
 - [Scheduling](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/schedule_job/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/schedule_job/index.md))
+- [Run with Different Resources](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/run_with_resources/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/run_with_resources/index.md))
 - [Batch Feature Pipelines](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/batch_feature_pipeline/) ([md](https://docs.hopsworks.ai/latest/user_guides/projects/jobs/batch_feature_pipeline/index.md))
 
 #### K8s Scheduling

@@ -92,14 +92,14 @@ HopsworksLaunchOperator(
     project_id=42,
     job_name="profiles_fg",
     args="",
-    wait_for_completion=True,
 )
 ```
 
 Provide the Airflow task name (`task_id`) and the Hopsworks job information (`project_id`, `job_name`, `args`).
-Set `wait_for_completion=True` to block until the job execution finishes.
+The operator starts the execution and returns; add the sensor below to wait until it finishes.
+To give the execution more resources than the job has, without changing the job, pass `job_resources`; see [How To Run a Job with Different Resources][how-to-run-a-job-with-different-resources].
 
-Wait for a job's most recent execution to be successful:
+Wait for the execution a launch task started to be successful:
 
 ```python
 from hopsworks.airflow.sensors import HopsworksJobSuccessSensor
@@ -109,8 +109,11 @@ HopsworksJobSuccessSensor(
     task_id="wait_for_profiles_fg",
     project_id=42,
     job_name="profiles_fg",
+    launch_task_id="profiles_fg_0",
 )
 ```
+
+`launch_task_id` is the `task_id` of the `HopsworksLaunchOperator` whose execution the sensor waits for.
 
 Wait for a HopsFS path to exist (replaces the Airflow 1.x `HopsworksHdfsSensor` plugin):
 
