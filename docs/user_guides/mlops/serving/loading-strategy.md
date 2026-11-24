@@ -18,6 +18,9 @@ A new deployment without a strategy gets `RUNAI_STREAMER` when it runs vLLM, not
 Every other deployment gets `DOWNLOAD`, as do the deployments that existed before loading strategies.
 Saving a deployment without a strategy keeps the one it has, and saving a new one on a running deployment replaces its pods right away.
 
+If an update removes all GPUs or selects a model without top-level safetensors files, a deployment using `RUNAI_STREAMER` must switch strategies.
+The Python SDK gained the `loading_strategy` setting in 5.3, so if you use an older SDK, make the change in the web UI or upgrade to SDK 5.3 or later and save the update with `DOWNLOAD` or `MOUNT`.
+
 ### Which strategy to choose
 
 - **`RUNAI_STREAMER`** loads vLLM models fastest, especially on several GPUs: each GPU reads a share of the files and passes it to the others, so the model is read from HopsFS once.
