@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795507966` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795511784` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -3320,6 +3320,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         tag_history_retention_days: '0'
         tensorboard_max_last_accessed: '1140000'
         tensorboard_max_reload_threads: '1'
+        tensorflow_inference_enabled: true
         tensorflow_version: 2.20.0
         tf_spark_connector_version: ''
         trino_default_catalog: delta
@@ -5083,6 +5084,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.tensorboard_max_reload_threads` <a class="headerlink" href="#helm.hopsworks.variables.tensorboard_max_reload_threads" title="Permanent link">#</a> { #helm.hopsworks.variables.tensorboard_max_reload_threads }
 :   Type `string`, default `"1"`.
+
+`hopsworks.variables.tensorflow_inference_enabled` <a class="headerlink" href="#helm.hopsworks.variables.tensorflow_inference_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.tensorflow_inference_enabled }
+:   Type `bool`, default `true`.
+    tensorflow-inference-pipeline, the TensorFlow inference base image, is pushed to the cluster registry and its environment active. A TensorFlow Serving deployment's transformer runs in it unless the deployment names another environment, as does any deployment that names it. Off leaves its layers (3.65 GB compressed above python-feature-pipeline) out of the registry, and the backend refuses such deployments; one already using it fails at its first restart after the next upgrade.
 
 `hopsworks.variables.tensorflow_version` <a class="headerlink" href="#helm.hopsworks.variables.tensorflow_version" title="Permanent link">#</a> { #helm.hopsworks.variables.tensorflow_version }
 :   Type `string`, default `"2.20.0"`.
