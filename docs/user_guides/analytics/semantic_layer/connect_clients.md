@@ -376,7 +376,7 @@ Each key is at least 32 characters.
 
 - With `signingKey.existingSecret: null`, a pre-install and pre-upgrade hook Job, `semantic-gateway-signing-init`, creates the Secret `semantic-gateway-signing` with a random key when it holds none, and leaves a key that exists alone.
   This works under ArgoCD too.
-  Uninstalling Hopsworks deletes the Secret.
+  Uninstalling Hopsworks deletes the Secret, with `hopsworks.cleanupOnUninstall.enabled`, `true` by default.
 - To manage the key yourself, create a Secret and name it in `existingSecret`; the hook Job then does not run:
 
 ```bash

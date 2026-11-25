@@ -428,8 +428,10 @@ On a cluster upgraded from a 6.0.0p4 database it ran 6 migrations in about a min
 
 ### Semantic layer { #upgrade-semantic-layer }
 
-5.3 adds the semantic layer and installs it by default.
-Check the following before the upgrade, or leave the semantic layer out with `global._hopsworks.semanticLayer.enabled: false`, see [Install or leave it out][semantic-admin-enable]:
+5.3 adds the semantic layer and installs it by default on a full platform with Trino and the nginx ingress class, see [Install or leave it out][semantic-admin-enable].
+A satellite, a release with Trino off, and a release with another ingress class get none of it by default.
+With another ingress class, such as the AWS Load Balancer Controller or the OpenShift router, set `global._hopsworks.semanticLayer.enabled: true` to install it, and give its Ingresses that controller's settings, see [Ingress annotations][semantic-admin-ingress].
+Check the following before the upgrade, or leave the semantic layer out with `global._hopsworks.semanticLayer.enabled: false`:
 
 - **Room in `ts_1`.**
   The query history is the table `hopsworks.semantic_query` in RonDB's disk tablespace `ts_1`, which feature groups with disk columns share, and keeps each query for 30 days at about 13,000 bytes.
@@ -437,7 +439,7 @@ Check the following before the upgrade, or leave the semantic layer out with `gl
 - **The 5.3 library in `python-feature-pipeline`.**
   Metric export jobs run in each project's `python-feature-pipeline` environment, and fail before they write with an older Hopsworks library there, see [Who runs an export][semantic-exports-owner].
 - **Memory for the gateway.**
-  Each of the two semantic gateway replicas takes 4 GiB, see [Memory][semantic-admin-memory].
+  The semantic gateway runs one replica of 4 GiB by default, see [Memory][semantic-admin-memory].
 - **Arrow Flight SQL from outside the cluster.**
   The gateway's Flight SQL load balancer is off by default, so BI tools and other Flight SQL clients outside the cluster reach the gateway only after `semantic-gateway.externalLoadBalancer.enabled: true`, see [The Flight SQL load balancer][semantic-connect-admin-lb].
   Until then, the connection details give the gateway's Service, which clients inside the cluster reach.
@@ -445,7 +447,7 @@ Check the following before the upgrade, or leave the semantic layer out with `gl
 
 The upgrade runs a new pre-upgrade hook Job, `semantic-gateway-signing-init`.
 It creates the Secret `semantic-gateway-signing` with a random key when the Secret holds none, and leaves a key that exists alone.
-It touches only that Secret, causes no outage and finishes in seconds.
+It touches only that Secret, and the gateway's pods start once it has run.
 With `semantic-gateway.signingKey.existingSecret` set it does not run, see [The signing key][semantic-connect-admin-signing-key].
 
 ### Kueue outside the Hopsworks namespace { #upgrade-kueue-external }
