@@ -101,7 +101,10 @@ Artifacts whose media type the caller did not accept are left out, and their nam
 A stored task keeps small parts inline and large ones beside the database.
 A `raw` part larger than 256 KiB is written to the deployment's artifact storage when its task is saved.
 The stored task then carries a `url` part in its place, pointing at `/a2a/artifacts/...` under the deployment's URL, with the size and the SHA-256 digest of the bytes under `metadata.hopsworks`.
-When a task is still larger than 2 MiB, its largest remaining parts are stored the same way.
+The 2 MiB cap applies to everything a task holds: its artifacts, its history and its status.
+When a task is larger, its largest remaining parts are stored the same way, large text parts included.
+When it still does not fit, its oldest history messages are dropped first, and then the content of its largest parts is omitted and replaced by a line that gives the size.
+The task's `metadata.hopsworks` then says `truncated: true`, with the counts in `dropped_history_messages` and `omitted_parts`.
 An administrator can change both limits, see [cluster settings][a2a-cluster-settings].
 
 A streaming caller receives the bytes inline in the events.
@@ -148,6 +151,7 @@ An agent that wants one task at a time per context sets `AgentApp(a2a=A2AConfig(
 ## Where tasks are kept { #a2a-task-store }
 
 On a deployment, tasks are kept in the project's online database, in tables Hopsworks creates when the deployment is created or started.
+The tables are readable by the deployment's own database user and by the project's Data Owners.
 Any replica reads, lists, cancels, answers or follows (`SubscribeToTask`) a task, whichever replica ran it, and a task outlives the pod that ran it.
 A deployment with several instances needs no setting for this.
 Finished tasks are deleted after a retention period, 30 days by default, see [cluster settings][a2a-cluster-settings].
@@ -192,6 +196,7 @@ agent_app = AgentApp(name="Support agent", memory_routes=False)
 In a private agent a task, a conversation, its memory, its open questions and its push notification configs belong to the caller.
 The caller is the principal the gateway verified from the request's credential and passed to the agent in the `x-hopsworks-principal` header.
 This holds over A2A and over the chat routes alike.
+Private mode separates the callers of the agent's API; the tasks stay in the project's online database, as [above][a2a-task-store].
 
 - Another caller's task is answered as `TaskNotFoundError`, for `GetTask` and `CancelTask`, and `ListTasks` lists only the caller's own.
 - A new task by another caller on the same `contextId` starts an empty conversation.
@@ -286,6 +291,8 @@ Each notification is an HTTP `POST` of one event of the task, as JSON, for examp
 | `Authorization` | `<scheme> <credentials>` from the config's `authentication`, when one was given |
 
 The push config is stored encrypted, with a key per deployment.
+A deployment serves push notifications only when Hopsworks gave it its encryption key.
+Otherwise its card says `pushNotifications: false` and its manifest says `push_notifications: false`.
 
 ### Where a webhook may be
 
@@ -300,6 +307,9 @@ A URL that is not allowed is refused at registration as an invalid-params error 
 
 Both lists are [cluster settings][a2a-cluster-settings].
 The cluster's own inference gateway is always listed, so one agent deployment can notify another when the gateway is served over HTTPS.
+For that, give the push config a callback key of the receiving deployment as its credential, `{"scheme": "ApiKey", "credentials": "<callback key>"}`.
+A callback key is issued by `POST /hopsworks-api/api/project/{projectId}/serving/{servingId}/agents/callback-key`, which answers `{"key": "...", "expiresAt": "..."}`.
+The key opens only `POST /a2a/notifications` of that deployment, and expires after the task retention period.
 Redirects are not followed.
 
 ### Delivery
@@ -324,6 +334,7 @@ On a deployment the card served at the deployment's public URL carries a signatu
 Hopsworks signs the card when the deployment starts, with a key the cluster holds, and only signs a card whose interface URLs are the deployment's own.
 The cluster publishes the matching public keys as a JSON Web Key Set at `https://<hopsworks>/hopsworks-api/api/agents/jwks.json`, which needs no credential.
 The signature is ES256, and the previous key stays listed after a rotation.
+The signature's protected header names the project, the deployment and the serving id the card was signed for, as `hw_project`, `hw_deployment` and `hw_serving_id`.
 The manifest says whether the card is signed, as `signed: true` or `signed: false`; a card built for a local run is not signed.
 
 A client verifies the card with the official SDK and [PyJWT](https://pyjwt.readthedocs.io), reading the keys from the address of the cluster it trusts:
@@ -358,6 +369,7 @@ async def verified_card():
 
 An administrator sets these variables on the [Cluster Configuration][cluster-configuration] page.
 A deployment reads them when it starts, so restart a running deployment to apply a change.
+Hopsworks reads the reaper interval when it starts.
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
@@ -366,6 +378,7 @@ A deployment reads them when it starts, so restart a running deployment to apply
 | `agent_deployment_artifact_inline_bytes` | `262144` | The size in bytes above which a `raw` part of a task is stored beside the database and served by URL. |
 | `agent_deployment_task_max_bytes` | `2097152` | The most a stored task holds inline, in bytes, all parts together. |
 | `agent_deployment_task_retention_days` | `30` | How many days a finished task is kept, with its events and its push notification configs. |
+| `agent_deployment_task_reaper_interval_ms` | `15000` | How often, in milliseconds, Hopsworks ends the tasks whose lease nobody renews and delivers the terminal notifications a replica could not. |
 
 ## Calling an agent over A2A from Python
 
@@ -406,6 +419,12 @@ The base URL is the one the deployment page shows under *A2A*, and the key is an
 The manifest describes the agent's A2A face under `capabilities.custom.hopsworks.a2a`: the bindings, `task_store`, `private`, `push_notifications`, `extended_card`, `signed`, `serialize_context` and `retry_lost_tasks`.
 It says `a2a: {enabled: false, reason: "sdk_missing"}` when the `a2a-sdk` package is not installed, and `reason: "no_database"` when the deployment has [no database for its tasks][a2a-task-store].
 gRPC, per-agent hostnames and a client for calling other agents from a handler are not in this release.
+
+!!! note "Not yet available"
+
+    - Completing an OAuth authorization that an agent asked for with `AUTH_REQUIRED` through a Hopsworks callback.
+    - Callback keys on clusters whose inference gateway is Envoy Gateway.
+    - Tooling to rotate the card signing key.
 
 ## The Hopsworks extension
 
