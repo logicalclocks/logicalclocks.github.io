@@ -64,13 +64,14 @@ This is useful for databases where Hopsworks lists tables only, such as Oracle a
 
 The ingestion job runs the query against the database configured in the data source, the same one `Fetch Schema` used, so qualify tables of other schemas or databases in the query itself.
 A feature group is ingested from either a table or a query, never both.
+The query must be a single `SELECT` or `WITH` statement, since the ingestion only reads from the data source.
 Give each result column a unique name, for example with `AS` for the `id` of both sides of a join, since the job refuses a query that returns two columns with the same name rather than guess which is which.
 
 A full load runs the query as written.
 An incremental load, or a full load with a source cursor field, wraps the query in a derived table and filters the cursor field over its result, so:
 
 - The query must return the source cursor field as one of its columns.
-- SQL Server and Teradata reject an `ORDER BY` inside a derived table, and SQL Server rejects a `WITH` clause there; leave them out of a query you load incrementally, since the ingested rows are not ordered anyway.
+- SQL Server and Teradata reject an `ORDER BY` inside a derived table, and SQL Server rejects a `WITH` clause there; leave them out of a query loaded incrementally or with a source cursor field, since the ingested rows are not ordered anyway.
 
 Each feature group ingested from a query keeps its own progress, so two feature groups can load different queries over the same table independently.
 
