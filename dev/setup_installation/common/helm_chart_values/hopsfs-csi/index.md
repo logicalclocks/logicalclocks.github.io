@@ -4,7 +4,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795540258` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795603003` (Hopsworks `5.3.0`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 
@@ -37,7 +37,7 @@ Deployed when `global._hopsworks.csi.enabled` is `true`.
             requests:
               cpu: 10m
               memory: 64Mi
-          tag: v2.16.0
+          tag: v2.20.1
         nodeDriverRegistrar:
           pullPolicy: IfNotPresent
           repository: registry.k8s.io/sig-storage/csi-node-driver-registrar
@@ -48,7 +48,7 @@ Deployed when `global._hopsworks.csi.enabled` is `true`.
             requests:
               cpu: 40m
               memory: 128Mi
-          tag: v2.14.0
+          tag: v2.18.1
         registry: docker.hops.works
       tolerations:
       - operator: Exists
@@ -118,7 +118,7 @@ Deployed when `global._hopsworks.csi.enabled` is `true`.
             requests:
               cpu: 10m
               memory: 64Mi
-          tag: v2.16.0
+          tag: v2.20.1
         nodeDriverRegistrar:
           pullPolicy: IfNotPresent
           repository: registry.k8s.io/sig-storage/csi-node-driver-registrar
@@ -129,7 +129,7 @@ Deployed when `global._hopsworks.csi.enabled` is `true`.
             requests:
               cpu: 40m
               memory: 128Mi
-          tag: v2.14.0
+          tag: v2.18.1
         registry: docker.hops.works
         ```
 
