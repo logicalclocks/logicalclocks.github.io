@@ -132,29 +132,31 @@ For Claude Agent SDK deployments, `AgentApp` makes all packaged skills available
 Choose a subset with `platform_skills=["hops-data-discovery", "hops-analytics"]`, or turn them off with `platform_skills="none"`.
 For example, an agent with its own SQL tool can omit `hops-trino-sql`.
 You can also set `HOPSWORKS_AGENT_SKILLS` in the agent's environment to `all`, `none`, or comma-separated skill names.
-An explicit `platform_skills` argument takes precedence.
+The environment setting accepts spaces and trailing commas, and a blank value uses the framework default.
+An explicit selection in `platform_skills` takes precedence.
+If the default Claude selection cannot be prepared, the agent logs a warning and starts without the packaged skills.
+An explicit selection reports a startup error if it cannot be prepared.
 The separate `AgentApp(skills=...)` argument describes capabilities advertised in the A2A Agent Card.
 
-Pass the prepared directory and names to the Claude Agent SDK when creating the client for your handler:
+Use the app’s `claude_options()` helper when creating the Claude client for your handler.
 
 ```python
 from claude_agent_sdk import ClaudeAgentOptions, ClaudeSDKClient
 from hopsworks_agents.protocol import AgentApp
 
 agent_app = AgentApp(framework="claude_agents", platform_skills=["hops-data-discovery"])
-skills = agent_app.platform_skills
 options = ClaudeAgentOptions(
-    setting_sources=["project"],
-    add_dirs=skills.claude_dirs,
-    skills=skills.names,
+    **agent_app.platform_skills.claude_options(),
     allowed_tools=["Bash(hops *)"],
 )
 client = ClaudeSDKClient(options=options)
 ```
 
-Claude discovers the linked playbooks and their supporting files in the additional project directory.
-Passing the names enables the `Skill` tool for each selected skill.
-The Bash rule lets Claude run `hops` commands under the deployment's identity, so choose the commands your agent should be allowed to run.
+The helper sets `setting_sources=["project"]`, supplies the additional skill directory through `add_dirs`, and passes `skills="all"` to enable the SDK’s Skill tool for discovered skills.
+Only the selected Hopsworks skills appear in the additional directory, so the agent’s own project skills stay discoverable even with `platform_skills="none"`.
+Skill selection controls model context.
+The example’s Bash rule authorizes `hops` commands under the deployment’s API key, independently of which skills are selected.
+Narrow that rule to the commands your agent should run.
 
 For LangGraph, LlamaIndex, OpenAI Agents and custom agents, opt in with the same `platform_skills` argument.
 Append `agent_app.platform_skills.catalogue()` to the system prompt and register `agent_app.platform_skills.read_skill` as a tool.
