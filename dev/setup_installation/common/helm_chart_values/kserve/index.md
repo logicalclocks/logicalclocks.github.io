@@ -4,7 +4,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795603003` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795609101` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -48,9 +48,6 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
         serviceAccount:
           annotations: {}
       servingTerminationGracePeriodSeconds: 120
-      storageInitializer:
-        image: hopsworks/storage-initializer
-        tag: 5.3.0-SNAPSHOT
       webhook:
         minReplicas: 1
         podDisruptionBudget:
@@ -131,12 +128,6 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 `kserve.servingTerminationGracePeriodSeconds` <a class="headerlink" href="#helm.kserve.servingTerminationGracePeriodSeconds" title="Permanent link">#</a> { #helm.kserve.servingTerminationGracePeriodSeconds }
 :   Type `int`, default `120`.
     Grace period in seconds the model-serving-webhook stamps onto every serving pod, replacing the value Knative derives from the revision timeout. Must cover the in-pod log archive a disk-logging component uploads to the project's Logs dataset as it terminates (roughly fifteen seconds including SDK import and login). A ceiling, not a delay: a pod with nothing to archive exits as soon as its containers do.
-
-`kserve.storageInitializer.image` <a class="headerlink" href="#helm.kserve.storageInitializer.image" title="Permanent link">#</a> { #helm.kserve.storageInitializer.image }
-:   Type `string`, default `"hopsworks/storage-initializer"`.
-
-`kserve.storageInitializer.tag` <a class="headerlink" href="#helm.kserve.storageInitializer.tag" title="Permanent link">#</a> { #helm.kserve.storageInitializer.tag }
-:   Type `string`, default `"5.3.0-SNAPSHOT"`.
 
 `kserve.webhook.minReplicas` <a class="headerlink" href="#helm.kserve.webhook.minReplicas" title="Permanent link">#</a> { #helm.kserve.webhook.minReplicas }
 :   Type `int`, default `1`.
@@ -1931,6 +1922,46 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 `kserve.servingWebhook.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.kserve.servingWebhook.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.kserve.servingWebhook.ttlSecondsAfterFinished }
 :   Type `string`, default `nil`.
     TTL in seconds for the serving-mwh Job. Overrides global default.
+
+</div>
+
+## storageInitializer { #helm-values-kserve-storageinitializer }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    kserve:
+      storageInitializer:
+        image: hopsworks/storage-initializer
+        resources:
+          limits:
+            cpu: '2'
+            memory: 2Gi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        tag: 5.3.0-SNAPSHOT
+    ```
+
+<div class="hops-values" markdown>
+
+`kserve.storageInitializer.image` <a class="headerlink" href="#helm.kserve.storageInitializer.image" title="Permanent link">#</a> { #helm.kserve.storageInitializer.image }
+:   Type `string`, default `"hopsworks/storage-initializer"`.
+
+`kserve.storageInitializer.resources.limits.cpu` <a class="headerlink" href="#helm.kserve.storageInitializer.resources.limits.cpu" title="Permanent link">#</a> { #helm.kserve.storageInitializer.resources.limits.cpu }
+:   Type `string`, default `"2"`.
+
+`kserve.storageInitializer.resources.limits.memory` <a class="headerlink" href="#helm.kserve.storageInitializer.resources.limits.memory" title="Permanent link">#</a> { #helm.kserve.storageInitializer.resources.limits.memory }
+:   Type `string`, default `"2Gi"`.
+
+`kserve.storageInitializer.resources.requests.cpu` <a class="headerlink" href="#helm.kserve.storageInitializer.resources.requests.cpu" title="Permanent link">#</a> { #helm.kserve.storageInitializer.resources.requests.cpu }
+:   Type `string`, default `"100m"`.
+
+`kserve.storageInitializer.resources.requests.memory` <a class="headerlink" href="#helm.kserve.storageInitializer.resources.requests.memory" title="Permanent link">#</a> { #helm.kserve.storageInitializer.resources.requests.memory }
+:   Type `string`, default `"100Mi"`.
+
+`kserve.storageInitializer.tag` <a class="headerlink" href="#helm.kserve.storageInitializer.tag" title="Permanent link">#</a> { #helm.kserve.storageInitializer.tag }
+:   Type `string`, default `"5.3.0-SNAPSHOT"`.
 
 </div>
 

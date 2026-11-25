@@ -17,7 +17,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795603003` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795609101` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -50,7 +50,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795603003` (Hopsworks `5.
 | [`hive`][helm-values-hive] |  | 79 |
 | [`hopsfs`][helm-values-hopsfs] |  | 226 |
 | [`hopsfs-csi`][helm-values-hopsfs-csi] |  | 29 |
-| [`hopsworks`][helm-values-hopsworks] |  | 1064 |
+| [`hopsworks`][helm-values-hopsworks] |  | 1065 |
 | [`hw-envoy-ai-gateway`][helm-values-hw-envoy-ai-gateway] |  | 43 |
 | [`hw-envoy-gateway`][helm-values-hw-envoy-gateway] |  | 40 |
 | [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) | 24 |
@@ -58,7 +58,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795603003` (Hopsworks `5.
 | [`hw-kyverno`][helm-values-hw-kyverno] |  | 61 |
 | [`judge`][helm-values-judge] |  | 23 |
 | [`kafka`][helm-values-kafka] | [`strimzi-kafka-operator` 1.3.1](https://artifacthub.io/packages/helm/strimzi/strimzi-kafka-operator/1.3.1) | 104 |
-| [`kserve`][helm-values-kserve] |  | 293 |
+| [`kserve`][helm-values-kserve] |  | 297 |
 | [`minio`][helm-values-minio] |  | 42 |
 | [`olk`][helm-values-olk] | [`prometheus-elasticsearch-exporter` 5.8.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-elasticsearch-exporter/5.8.0) | 165 |
 | [`onlinefs`][helm-values-onlinefs] |  | 99 |

@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795603003` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795609101` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -3048,6 +3048,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         kube_scheduling_jobinit_cpu_requests: 0.5
         kube_scheduling_jobinit_memory_limits_mb: 512
         kube_scheduling_jobinit_memory_requests_mb: 256
+        kube_scheduling_model_hopsfsmount_cpu_requests: 0.5
         kube_serving_max_num_instances: '10'
         kube_serving_min_num_instances: '-1'
         kube_serving_vllm_omni_versions: v0.32.0
@@ -4176,6 +4177,9 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.kube_scheduling_jobinit_memory_requests_mb` <a class="headerlink" href="#helm.hopsworks.variables.kube_scheduling_jobinit_memory_requests_mb" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_scheduling_jobinit_memory_requests_mb }
 :   Type `int`, default `256`.
+
+`hopsworks.variables.kube_scheduling_model_hopsfsmount_cpu_requests` <a class="headerlink" href="#helm.hopsworks.variables.kube_scheduling_model_hopsfsmount_cpu_requests" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_scheduling_model_hopsfsmount_cpu_requests }
+:   Type `float`, default `0.5`.
 
 `hopsworks.variables.kube_serving_max_num_instances` <a class="headerlink" href="#helm.hopsworks.variables.kube_serving_max_num_instances" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_serving_max_num_instances }
 :   Type `string`, default `"10"`.
