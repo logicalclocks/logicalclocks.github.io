@@ -195,9 +195,9 @@ Run `hops job list` in the agent container to check authenticated access without
 !!! api "API reference"
 
     - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.deploy_agent`][hsml.model_serving.ModelServing.deploy_agent]
-    - [Claude Agent SDK for Python](https://github.com/anthropics/claude-agent-sdk-python)
+    - <code class="doc-symbol doc-symbol-docs"></code> [Claude Agent SDK for Python](https://github.com/anthropics/claude-agent-sdk-python)
 
-    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+    <a class="hops-api-cta" href="../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ### Deploy from a Git repository
 
@@ -762,4 +762,4 @@ for trace in agent.traces(search="customer-7", search_field="subject", limit=20)
     - <code class="doc-symbol doc-symbol-method"></code> [`Project.get_agent_serving`][hopsworks_common.project.Project.get_agent_serving]
     - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.deploy_agent`][hsml.model_serving.ModelServing.deploy_agent]
 
-    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+    <a class="hops-api-cta" href="../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
