@@ -336,6 +336,7 @@
 
 #### Agent Deployments
 - [How To Run An Agent Deployment](https://docs.hopsworks.ai/latest/user_guides/agents/deployments/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/deployments/index.md))
+- [A2A](https://docs.hopsworks.ai/latest/user_guides/agents/a2a/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/a2a/index.md))
 - [Agent Memory](https://docs.hopsworks.ai/latest/user_guides/agents/memory/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/memory/index.md))
 - [Feedback](https://docs.hopsworks.ai/latest/user_guides/agents/feedback/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/feedback/index.md))
 - [Evaluation](https://docs.hopsworks.ai/latest/user_guides/agents/evaluation/) ([md](https://docs.hopsworks.ai/latest/user_guides/agents/evaluation/index.md))
