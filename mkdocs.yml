@@ -306,6 +306,8 @@ nav:
           - HopsFS CSI Driver: setup_installation/admin/hopsfs_csi.md
           - Dedicated Node Pools: setup_installation/admin/node_pools.md
           - Private Registries and Air Gap: setup_installation/admin/private_registry.md
+          - Shared Load Balancers on AWS: setup_installation/admin/shared_load_balancers.md
+          - Satellite Clusters: setup_installation/admin/satellite_clusters.md
           - KEDA Autoscaling: setup_installation/admin/keda.md
           - Model Serving Ingress Gateway: setup_installation/admin/model_serving_gateway.md
           - Kafka Quotas: setup_installation/admin/kafka_quotas.md
