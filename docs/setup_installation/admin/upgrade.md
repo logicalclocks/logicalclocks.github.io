@@ -428,8 +428,8 @@ On a cluster upgraded from a 6.0.0p4 database it ran 6 migrations in about a min
 
 ### Semantic layer { #upgrade-semantic-layer }
 
-5.3 adds the semantic layer, off by default.
-Before turning it on with `global._hopsworks.semanticLayer.enabled: true`:
+5.3 adds the semantic layer and installs it by default.
+Check the following before the upgrade, or leave the semantic layer out with `global._hopsworks.semanticLayer.enabled: false`, see [Install or leave it out][semantic-admin-enable]:
 
 - **Room in `ts_1`.**
   The query history is the table `hopsworks.semantic_query` in RonDB's disk tablespace `ts_1`, which feature groups with disk columns share, and keeps each query for 30 days at about 13,000 bytes.
@@ -438,6 +438,9 @@ Before turning it on with `global._hopsworks.semanticLayer.enabled: true`:
   Metric export jobs run in each project's `python-feature-pipeline` environment, and fail before they write with an older Hopsworks library there, see [Who runs an export][semantic-exports-owner].
 - **Memory for the gateway.**
   Each of the two semantic gateway replicas takes 4 GiB, see [Memory][semantic-admin-memory].
+- **A load balancer for Arrow Flight SQL.**
+  With `global._hopsworks.externalLoadBalancers.enabled`, as by default, the upgrade creates the LoadBalancer Service `semantic-gateway-external` on port 18446.
+  Set `semantic-gateway.externalLoadBalancer.enabled: false` to leave it out, see [The Flight SQL load balancer][semantic-connect-admin-lb].
 
 ### Kueue outside the Hopsworks namespace { #upgrade-kueue-external }
 

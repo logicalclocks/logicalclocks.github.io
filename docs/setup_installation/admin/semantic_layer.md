@@ -1,29 +1,31 @@
 ---
-description: How to turn on the Hopsworks Semantic Layer with Helm, what runs where, the semantic gateway's values, its memory and time limits, the cluster variables, the endpoints for clients outside the cluster, and the storage of the query history.
+description: How Helm installs the Hopsworks Semantic Layer and how to leave it out, what runs where, the semantic gateway's values, its memory and time limits, the cluster variables, the endpoints for clients outside the cluster, and the storage of the query history.
 ---
 
 # Semantic Layer { #semantic-admin }
 
 The Semantic Layer compiles metric definitions written in YAML over feature groups, answers metric queries over REST and Arrow Flight SQL, and answers metadata over GraphQL.
-This page turns it on and configures it; [Semantic Layer Guides][semantic-layer-guides] cover its use.
+This page covers what it installs and how to configure it; [Semantic Layer Guides][semantic-layer-guides] cover its use.
 
-## Turn it on { #semantic-admin-enable }
+## Install or leave it out { #semantic-admin-enable }
 
-```yaml
-global:
-  _hopsworks:
-    semanticLayer:
-      enabled: true
-```
-
-`global._hopsworks.semanticLayer.enabled`, `false` by default, installs:
+`global._hopsworks.semanticLayer.enabled`, `true` by default, installs:
 
 - the `semantic-gateway` subchart, the semantic gateway;
 - the Ingresses that route `/semantic-layer/` and `/semantic-layer/api/graphql` on the Hopsworks ingress hosts to the gateway;
 - the backend and UI side: the cluster variable `semantic_layer_enabled` is `true`, and projects show **Semantic Layer** in their sidebar.
 
-While it is off, the semantic layer endpoints answer 404 `SEMANTIC_LAYER_DISABLED`.
 Queries run on Trino, so Trino must be installed too.
+To leave the semantic layer out:
+
+```yaml
+global:
+  _hopsworks:
+    semanticLayer:
+      enabled: false
+```
+
+While it is off, the semantic layer endpoints answer 404 `SEMANTIC_LAYER_DISABLED`.
 
 ## What runs where { #semantic-admin-components }
 
@@ -155,7 +157,7 @@ The chart writes them on every install and upgrade, so a change made on the [Clu
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
-| `semantic_layer_enabled` | `"false"` | The backend and UI side; `true` while `global._hopsworks.semanticLayer.enabled`. Set it alone only for a gateway that runs elsewhere. |
+| `semantic_layer_enabled` | `"true"` | The backend and UI side; `true` while `global._hopsworks.semanticLayer.enabled`, `false` otherwise. Set it alone only for a gateway that runs elsewhere. |
 | `semantic_layer_gateway_internal_url` | `""` | Where Payara sends compile requests; empty is the gateway's internal port in the release namespace. |
 | `semantic_layer_gateway_cluster_url` | `""` | The gateway's public port for callers inside the cluster; empty is the `semantic-gateway` Service in the release namespace. |
 | `superset_semantic_enabled` | `"true"` | The members' semantic connections in Superset and dashboards from metrics. |

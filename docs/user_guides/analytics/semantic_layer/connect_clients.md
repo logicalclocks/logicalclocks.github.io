@@ -341,7 +341,7 @@ Any replica of the gateway serves a handle, so a client can fetch from another r
 
 ## For administrators { #semantic-connect-admin }
 
-The semantic gateway is installed with `global._hopsworks.semanticLayer.enabled: true`.
+The semantic gateway is installed with `global._hopsworks.semanticLayer.enabled`, `true` by default.
 GraphQL needs nothing more: the `hopsworks` chart adds an Ingress for `/semantic-layer/api/graphql` on the ingress hosts.
 Clients outside the cluster reach the Flight SQL port through a load balancer.
 
