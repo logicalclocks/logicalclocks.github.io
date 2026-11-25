@@ -440,6 +440,7 @@ Check the following before the upgrade, or leave the semantic layer out with `gl
   Each of the two semantic gateway replicas takes 4 GiB, see [Memory][semantic-admin-memory].
 - **Arrow Flight SQL from outside the cluster.**
   The gateway's Flight SQL load balancer is off by default, so BI tools and other Flight SQL clients outside the cluster reach the gateway only after `semantic-gateway.externalLoadBalancer.enabled: true`, see [The Flight SQL load balancer][semantic-connect-admin-lb].
+  Until then, the connection details give the gateway's Service, which clients inside the cluster reach.
   REST and GraphQL go through the Hopsworks ingress and need nothing.
 
 The upgrade runs a new pre-upgrade hook Job, `semantic-gateway-signing-init`.
