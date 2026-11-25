@@ -746,7 +746,7 @@ On a cluster still on Istio 1.29, the Istio install hook stops with an error bef
   A deployment created without a mode runs in Standard mode, as in 5.2.
 - **Existing Knative-mode deployments keep working.**
   They start, stop, update, roll back and serve as before, and their owners convert them to Standard mode when it suits them.
-  `helm upgrade` prints how many Knative-mode deployments are running.
+  `helm upgrade` prints how many Knative-mode deployments of the installation are running.
 - **Escape hatch.**
   `hopsworks.variables.kube_knative_mode_allowed: "true"` allows creating Knative-mode deployments again, until 5.4.
   The chart writes the value on every upgrade, so set it in your values file; a change in the admin UI lasts only until the next upgrade.
@@ -762,13 +762,14 @@ The 5.4 upgrade refuses to start while Envoy Gateway is off or a Knative-mode de
 
 1. **Enable Envoy Gateway**, as described in [Envoy Gateway][upgrade-envoy-gateway], and check that every Standard-mode deployment moved.
 2. **Convert the Knative-mode deployments.**
-    List the ones that run:
+    List the ones that run in this installation, `<namespace>` being its namespace:
 
     ```bash
-    kubectl get isvc -A -l serving.hops.works/id -o json | jq -r '.items[] | select((.status.deploymentMode // .metadata.annotations["serving.kserve.io/deploymentMode"] // "Knative") | test("^(Knative|Serverless)$")) | .metadata.namespace + "/" + .metadata.name'
+    kubectl get isvc -A -l serving.hops.works/id,hopsworks-deployment=<namespace> -o json | jq -r '.items[] | select((.status.deploymentMode // .metadata.annotations["serving.kserve.io/deploymentMode"] // "Knative") | test("^(Knative|Serverless)$")) | .metadata.namespace + "/" + .metadata.name'
     ```
 
     Their owners convert each one, as described in [Knative mode is deprecated][knative-mode-deprecated]; each conversion restarts that deployment once.
+    The `hopsworks-deployment` label keeps out the deployments of other Hopsworks installations on the same cluster.
     A stopped Knative-mode deployment may stay as it is: the 5.4 upgrade converts it.
 3. **HTTPS at the gateway.**
     With `kserve.knative.https.enabled`, check that the Secret named in `kserve.knative.https.credentialsName` has the type `kubernetes.io/tls`: Envoy Gateway accepts no other type, where Istio also accepted a generic Secret.
@@ -779,7 +780,9 @@ The 5.4 upgrade refuses to start while Envoy Gateway is off or a Knative-mode de
 
 4. **The gateway address.**
     With a `LoadBalancer` Service, note the address of the Istio ingress gateway.
-    On MetalLB you pin it on the Envoy Gateway Service after the upgrade; with a cloud load balancer, reserve the address with your provider, or plan to move your DNS records to the new one.
+    On MetalLB, the 5.4 upgrade releases that address when it removes the Istio Service, and MetalLB can give it to another Service at once when it belongs to a pool it assigns automatically.
+    Reserve it before the upgrade, for example in an `IPAddressPool` with `autoAssign: false`, and request it on the Envoy Gateway Service with MetalLB's `loadBalancerIPs` annotation in `kserve.envoyGateway.service.annotations` of the 5.4 upgrade values; if you cannot reserve it, plan to move your DNS records to the new address.
+    With a cloud load balancer, reserve the address with your provider, or plan to move your DNS records to the new one.
     With `NodePort`, the node ports stay the same.
 5. **AWS with unmanaged load balancers.**
     Note the target groups bound to the Istio ingress gateway through `global.unmanagedLoadBalancers.istio`: in 5.4 they move to the Envoy Gateway Service, and the 5.4 upgrade notes give the exact steps.

@@ -277,7 +277,8 @@ Standard mode scales to zero when idle and on request metrics through KEDA for a
 Creating a deployment in Knative mode, or switching a Standard-mode deployment to Knative mode, fails with error `240080`, unless your administrator still allows it for the time being.
 Existing Knative-mode deployments keep working until you convert them, and their overview shows a deprecation banner.
 
-To convert a deployment, use **Convert to Standard mode** on its overview, or stop it, switch off Knative mode and start it again from the Python SDK:
+To convert a deployment, use **Convert to Standard mode** on its overview, or switch off Knative mode from the Python SDK while the deployment is stopped.
+A running deployment is stopped first and started again afterwards; a stopped one stays stopped:
 
 ```python
 import hopsworks
@@ -287,13 +288,16 @@ project = hopsworks.login()
 ms = project.get_model_serving()
 
 my_deployment = ms.get_deployment("my_deployment")
-my_deployment.stop()
+was_running = my_deployment.is_running()
+if was_running:
+    my_deployment.stop()
 my_deployment.knative_mode = False
 my_deployment.save()
-my_deployment.start()
+if was_running:
+    my_deployment.start()
 ```
 
-The deployment restarts once.
+A running deployment restarts once.
 Its Knative-only scaling settings are dropped and the Standard-mode defaults fill the gaps.
 A minimum of zero instances becomes [scale to zero when idle](#scale-to-zero-when-idle) for a predictor without a transformer on a cluster with KEDA, and one instance otherwise; a deployment with a transformer also moves from request metrics to CPU.
 A vLLM deployment keeps at least one instance while the LLM Gateway is published, so the LLM Gateway serves it.
