@@ -309,6 +309,7 @@ nav:
           - Agent Tasks: user_guides/agents/tasks/index.md
           - Agent Deployments:
               - user_guides/agents/deployments/index.md
+              - A2A: user_guides/agents/a2a/index.md
               - Agent Memory: user_guides/agents/memory/index.md
               - Feedback: user_guides/agents/feedback/index.md
               - Evaluation: user_guides/agents/evaluation/index.md
