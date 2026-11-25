@@ -158,13 +158,16 @@ A semantic model reads it when the project has a Trino catalog created from that
 The compile reads the table as `<catalog>.<schema>.<table>`, with the data source's schema as `<schema>`, or its database when it names no schema.
 Queries run on Trino as the member who asks, like any other query on the catalog.
 
-Only a project catalog of the project counts:
+A catalog counts when it is a project catalog of the project, or one another project [shares][sharing-a-catalog] with it:
 
 - not a private catalog, since a semantic project serves every member of the project and only the owner reads a private catalog, so a data source whose credentials each member provides has no catalog that counts;
-- not a catalog shared with the project by another project;
-- not a catalog waiting for its first restart, being deleted, or one the query engine refused; a catalog being edited counts, since the query engine keeps the definition it loaded until the restart.
+- not a catalog waiting for its first restart, being deleted, or one the query engine refused; a catalog being edited counts, since the query engine keeps the definition it loaded until the restart;
+- a shared catalog only while its share is active, once the query engine's rules grant it.
 
-When a data source has several such catalogs, the oldest is read.
+The project's own catalogs come first, and among several of a kind, the oldest is read.
+Through a share of a whole catalog, schema or table, a semantic model reads every column of the table.
+Through a share narrowed to columns, it reads the shared columns without a mask: a masked column, and a column the table gained after the share was saved, are unknown to the model, so no metric aggregates masked values unnoticed.
+A table the share does not grant, or one whose shared columns are all masked, does not resolve.
 A catalog created from a data source before Hopsworks 5.3 counts when it takes its credentials from the data source.
 An external feature group over a SQL query or a path names no table, and does not resolve.
 
