@@ -63,8 +63,6 @@ semantic-gateway:
   externalLoadBalancer:
     enabled: true
     hostname: semantic.hopsworks.example.com
-  signingKey:
-    existingSecret: semantic-gateway-signing-key
 
 hopsworks:
   variables:
@@ -105,8 +103,9 @@ Under `semantic-gateway:`:
 | `handleTtlSeconds` | `3600` | Seconds a Flight ticket or prepared statement stays valid. |
 | `cache.maxBytes`, `cache.ttlSeconds`, `cache.entryMaxBytes`, `cache.dataVersionSeconds` | `268435456`, `300`, `8388608`, `30` | The [result cache][semantic-result-cache-admin]. |
 | `arrowMemoryLimitBytes` | `null` | Arrow buffers a replica's queries hold at once; null is half the JVM heap. |
-| `signingKey.existingSecret` | `null` | The Secret with the handle signing key, see [The signing key][semantic-connect-admin-signing-key]. |
-| `externalLoadBalancer.*` | | The Flight SQL load balancer: `enabled`, `class`, `annotations`, `managed`, `nodePort`, `nodeSelector`, `hostname`. |
+| `signingKey.existingSecret` | `null` | The Secret with the handle signing key; null has a hook Job create it, see [The signing key][semantic-connect-admin-signing-key]. |
+| `ttlSecondsAfterFinished` | `null` | Seconds the signing key's hook Job is kept after it finishes; null is the global Job TTL. |
+| `externalLoadBalancer.*` | `enabled: false` | The Flight SQL load balancer, off unless enabled: `enabled`, `class`, `annotations`, `managed`, `nodePort`, `nodeSelector`, `hostname`. |
 | `networkPolicy.enabled` | `true` | The gateway's NetworkPolicy, which limits the gateway's traffic and who reaches each of its ports. Keep it on, on a CNI that enforces NetworkPolicies. |
 | `image.registry`, `image.repository`, `image.tag`, `image.pullPolicy` | `null`, `hopsworks/semantic-gateway`, `null`, `null` | The gateway image; the tag defaults to the chart's version. |
 | `nodeSelector`, `tolerations`, `topologySpreadConstraint` | empty | Scheduling; the global values apply when empty. |

@@ -58,7 +58,7 @@ Before the release's resources are deleted, while the operators and Hopsworks st
 
 After the release's resources are deleted:
 
-- Secrets and ConfigMaps that services and setup Jobs created at runtime, such as webhook certificates and Consul tokens, are deleted;
+- Secrets and ConfigMaps that services and setup Jobs created at runtime, such as webhook certificates, Consul tokens and the semantic gateway's signing key, are deleted;
 - the data volumes listed under `wipeDataOnUninstall` are deleted, and so are the Kafka node pools;
 - the KEDA CustomResourceDefinitions are deleted;
 - the HopsFS CSIDriver object and, on OpenShift, the SCC the chart ships are deleted, as described in [HopsFS CSI Driver][hopsfs-csi-uninstall];

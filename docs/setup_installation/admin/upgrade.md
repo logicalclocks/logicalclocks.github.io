@@ -438,9 +438,14 @@ Check the following before the upgrade, or leave the semantic layer out with `gl
   Metric export jobs run in each project's `python-feature-pipeline` environment, and fail before they write with an older Hopsworks library there, see [Who runs an export][semantic-exports-owner].
 - **Memory for the gateway.**
   Each of the two semantic gateway replicas takes 4 GiB, see [Memory][semantic-admin-memory].
-- **A load balancer for Arrow Flight SQL.**
-  With `global._hopsworks.externalLoadBalancers.enabled`, as by default, the upgrade creates the LoadBalancer Service `semantic-gateway-external` on port 18446.
-  Set `semantic-gateway.externalLoadBalancer.enabled: false` to leave it out, see [The Flight SQL load balancer][semantic-connect-admin-lb].
+- **Arrow Flight SQL from outside the cluster.**
+  The gateway's Flight SQL load balancer is off by default, so BI tools and other Flight SQL clients outside the cluster reach the gateway only after `semantic-gateway.externalLoadBalancer.enabled: true`, see [The Flight SQL load balancer][semantic-connect-admin-lb].
+  REST and GraphQL go through the Hopsworks ingress and need nothing.
+
+The upgrade runs a new pre-upgrade hook Job, `semantic-gateway-signing-init`.
+It creates the Secret `semantic-gateway-signing` with a random key when the Secret holds none, and leaves a key that exists alone.
+It touches only that Secret, causes no outage and finishes in seconds.
+With `semantic-gateway.signingKey.existingSecret` set it does not run, see [The signing key][semantic-connect-admin-signing-key].
 
 ### Kueue outside the Hopsworks namespace { #upgrade-kueue-external }
 

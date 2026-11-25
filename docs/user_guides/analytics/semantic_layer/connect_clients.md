@@ -350,8 +350,6 @@ semantic-gateway:
   externalLoadBalancer:
     enabled: true
     hostname: semantic.hopsworks.example.com
-  signingKey:
-    existingSecret: semantic-gateway-signing-key
 
 hopsworks:
   variables:
@@ -360,7 +358,9 @@ hopsworks:
 
 ### The Flight SQL load balancer { #semantic-connect-admin-lb }
 
-- `semantic-gateway.externalLoadBalancer` makes the Service `semantic-gateway-external` on `flightPort`, 18446, as the other external load balancers of the chart do: `enabled`, `class` and `annotations`, `managed: false` for a NodePort Service with an optional `nodePort`, and on AWS a TargetGroupBinding to `global.unmanagedLoadBalancers.semanticGateway.targetGroupId`.
+- `semantic-gateway.externalLoadBalancer.enabled: true` makes the Service `semantic-gateway-external` on `flightPort`, 18446.
+  It is off by default, since REST and GraphQL reach the gateway through the Hopsworks ingress; `null` follows `global._hopsworks.externalLoadBalancers.enabled`.
+  The other settings are those of the chart's other external load balancers: `class` and `annotations`, `managed: false` for a NodePort Service with an optional `nodePort`, and on AWS a TargetGroupBinding to `global.unmanagedLoadBalancers.semanticGateway.targetGroupId`.
 - Clients check the name they dial against the gateway's certificate, so put the load balancer's DNS name, or IP address, in `externalLoadBalancer.hostname`.
   The chart adds it to the gateway's certificate, which otherwise holds only the names inside the cluster.
   Set it at install: the names of the certificate do not change on an upgrade unless the HopsworksCert `semantic-gateway` is deleted first.
@@ -373,8 +373,10 @@ hopsworks:
 The gateway signs query handles with a key from a Secret, under `current`, and also accepts a key under `previous`.
 Each key is at least 32 characters.
 
-- With `signingKey.existingSecret: null` and `global._hopsworks.mode: auto`, the chart creates the Secret `semantic-gateway-signing` with a random key and keeps it across upgrades.
-- In any other mode, such as under ArgoCD, the chart cannot read the Secret back, so the render fails until `existingSecret` names a Secret you create:
+- With `signingKey.existingSecret: null`, a pre-install and pre-upgrade hook Job, `semantic-gateway-signing-init`, creates the Secret `semantic-gateway-signing` with a random key when it holds none, and leaves a key that exists alone.
+  This works under ArgoCD too.
+  Uninstalling Hopsworks deletes the Secret.
+- To manage the key yourself, create a Secret and name it in `existingSecret`; the hook Job then does not run:
 
 ```bash
 kubectl -n hopsworks create secret generic semantic-gateway-signing-key \
