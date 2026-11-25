@@ -4,7 +4,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795613588` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795624763` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -1275,7 +1275,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
           modelNamePlaceholder: '{{.Name}}'
           sklearnserver:
             image: hopsworks/sklearnserver
-            tag: 0.21.0
+            tag: 0.21.1
           tensorflow:
             image: tensorflow/serving
             tag: 2.20.0
@@ -1584,7 +1584,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 :   Type `string`, default `"hopsworks/sklearnserver"`.
 
 `kserve.kserve.servingruntime.sklearnserver.tag` <a class="headerlink" href="#helm.kserve.kserve.servingruntime.sklearnserver.tag" title="Permanent link">#</a> { #helm.kserve.kserve.servingruntime.sklearnserver.tag }
-:   Type `string`, default `"0.21.0"`.
+:   Type `string`, default `"0.21.1"`.
 
 `kserve.kserve.servingruntime.tensorflow.image` <a class="headerlink" href="#helm.kserve.kserve.servingruntime.tensorflow.image" title="Permanent link">#</a> { #helm.kserve.kserve.servingruntime.tensorflow.image }
 :   Type `string`, default `"tensorflow/serving"`.
