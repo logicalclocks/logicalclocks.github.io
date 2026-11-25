@@ -4,6 +4,7 @@ This section serves to provide guides and examples for the common usage of agent
 
 - [Agent Tasks][how-to-run-an-agent-task]: Fire-and-forget agent executions that run as first-class Hopsworks jobs.
 - [Agent Deployments][how-to-run-an-agent-deployment]: Served conversational agents, the chat contract they answer by, and how to deploy, trace and talk to them.
+- [A2A][a2a-on-hopsworks]: How another agent talks to a deployment over the Agent2Agent protocol: the Agent Card, tasks and artifacts, questions for a person, and calling one from Python.
 - [Agent Memory][agent-memory]: The four memory tiers a deployment provides, how to configure them, and what a person can see and erase.
 - [Feedback][feedback-on-what-an-agent-answered]: Verdicts on what an agent answered, from reviewers and from end users, and what reads them.
 - [Evaluation][evaluating-an-agent]: Suites of tasks graded by checks, the runs that execute them, and the gate a release reads.
