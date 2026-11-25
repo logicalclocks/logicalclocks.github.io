@@ -1,4 +1,4 @@
-# Operator Notes: Kueue Outside the Hopsworks Namespace
+# Operator Notes: Kueue Outside the Hopsworks Namespace { #kueue-external }
 
 Administrative reference for cluster operators who run Kueue with Hopsworks, install a Hopsworks release that uses Kueue 0.20 (a 5.2.x patch release, or 5.3), or upgrade to one.
 
