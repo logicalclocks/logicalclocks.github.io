@@ -293,7 +293,7 @@ They apply to an upgrade from 5.1.x to 5.2.3 or later, and from 5.2.0, 5.2.1 or 
 
 Python apps pull their Envoy sidecar from `global._hopsworks.imageRegistry`, as `<registry>/envoyproxy/envoy:<tag>` with the tag in `hopsworks.variables.python_app_envoy_image_version` (`v1.38.0`); before, the chart did not set the backend's `python_app_envoy_image`, so clusters pulled `envoyproxy/envoy:v1.38.0` from Docker Hub.
 The default registry, `docker.hops.works`, has the image.
-A cluster whose `global._hopsworks.imageRegistry` is its own registry mirrors `envoyproxy/envoy:v1.38.0` there, at the path `envoyproxy/envoy`, before the upgrade, or its Python apps cannot start; the chart's `vendor_images.sh` does not list the image.
+A cluster whose `global._hopsworks.imageRegistry` is its own registry mirrors `envoyproxy/envoy:v1.38.0` there, at the path `envoyproxy/envoy`, before the upgrade, or its Python apps cannot start.
 The chart now writes `python_app_envoy_image` on every upgrade, replacing a value set by hand, so a cluster that pointed it at another image mirrors that image as above.
 
 ## Changes from 5.2.4 { #upgrade-changes-from-524 }
@@ -327,7 +327,7 @@ An upgrade from 5.1.x goes from Strimzi 0.45 straight to 1.3, satellites before 
   A single-broker cluster is unavailable while its broker is replaced, a single-controller cluster has no KRaft quorum while its controller is replaced, and OnlineFS catches up afterwards.
 - **A `Recreate` operator strategy also needs `rollingUpdate: null`.**
   The chart now sets `rollingUpdate` on the operator Deployment, so if your values set `kafka.strimzi-kafka-operator.deploymentStrategy.type: Recreate`, also set `rollingUpdate: null` there, or the merged strategy is rejected.
-- **Three new tags to mirror on an airgapped cluster**: `strimzi/operator`, `strimzi/kafka` and `strimzi/crds`, which `vendor_images.sh` lists.
+- **Three new tags to mirror on an airgapped cluster**: `strimzi/operator`, `strimzi/kafka` and `strimzi/crds`, which the [image list][private-registry-images] includes.
 - **The operator deletes pods with background propagation during a rolling update.**
   Strimzi 1.3 turns its `UseBackgroundPodDeletion` feature gate on by default, so that CNI plugins which remove a pod's network endpoints when its object is deleted, such as Cilium, no longer cut a broker off before it has shut down.
   To keep the earlier foreground deletion, set `kafka.strimzi-kafka-operator.featureGates: "-UseBackgroundPodDeletion"`.
@@ -436,8 +436,7 @@ Istio 1.30 supports Kubernetes 1.32 to 1.36, and Istio supports the 1.30 release
   The Istio ingress gateway and the cluster-local gateway restart once.
   Each rolls out its new pod before it stops the old one.
 - **Your own image registry.**
-  Mirror `istio/pilot` and `istio/proxyv2` at `1.30.8` before the upgrade.
-  The chart's `vendor_images.sh` lists both.
+  Mirror `istio/pilot` and `istio/proxyv2` at `1.30.8` before the upgrade, as [Images to mirror][private-registry-images] describes.
 - **Sidecars you injected yourself.**
   The chart injects no Istio sidecar.
   A workload you gave an Istio sidecar keeps its 1.29 proxy until it restarts, so restart it after the upgrade.

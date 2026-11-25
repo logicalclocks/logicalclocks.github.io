@@ -334,6 +334,7 @@
 - [HopsFS DataNode Drain](https://docs.hopsworks.ai/latest/setup_installation/admin/hopsfs_datanode_drain/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/hopsfs_datanode_drain/index.md))
 - [HopsFS CSI Driver](https://docs.hopsworks.ai/latest/setup_installation/admin/hopsfs_csi/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/hopsfs_csi/index.md))
 - [Dedicated Node Pools](https://docs.hopsworks.ai/latest/setup_installation/admin/node_pools/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/node_pools/index.md))
+- [Private Registries and Air Gap](https://docs.hopsworks.ai/latest/setup_installation/admin/private_registry/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/private_registry/index.md))
 - [KEDA Autoscaling](https://docs.hopsworks.ai/latest/setup_installation/admin/keda/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/keda/index.md))
 - [Model Serving Ingress Gateway](https://docs.hopsworks.ai/latest/setup_installation/admin/model_serving_gateway/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/model_serving_gateway/index.md))
 - [Kafka Quotas](https://docs.hopsworks.ai/latest/setup_installation/admin/kafka_quotas/) ([md](https://docs.hopsworks.ai/latest/setup_installation/admin/kafka_quotas/index.md))

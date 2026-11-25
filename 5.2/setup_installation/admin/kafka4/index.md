@@ -101,7 +101,7 @@ The upgrade refuses, or waits until it times out, on each problem they find.
 Then:
 
 - **Airgapped clusters** mirror three images with the rest: `strimzi/operator`, `strimzi/kafka` and `strimzi/crds`.
-  The chart's `vendor_images.sh` includes them; nothing is fetched from the internet during the upgrade.
+  The [image list][private-registry-images] includes them; nothing is fetched from the internet during the upgrade.
 - **A satellite cluster that shares the central operator** is upgraded before central.
   The CRD conversion re-stores every Kafka resource on the Kubernetes cluster, and a satellite still on ZooKeeper would lose its ZooKeeper configuration in the process.
   The conversion refuses while any other Kafka is not on KRaft, so the wrong order fails safely, but it blocks central's upgrade until the satellite is done.

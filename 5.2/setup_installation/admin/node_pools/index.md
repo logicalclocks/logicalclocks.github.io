@@ -30,6 +30,11 @@ kubectl taint nodes db-node-1 db-node-n node=RonDB:NoSchedule
 kubectl label nodes worker-node-1 worker-node-n node=Worker
 ```
 
+On a cloud provider's managed node groups, such as EKS, AKS or GKE, set these labels and taints in the node group configuration instead, because nodes that a group adds or replaces come up without labels and taints set with kubectl.
+The [AWS getting started guide][eks-dedicated-node-groups] shows this for EKS.
+
+Each HopsFS DataNode and each RonDB data node runs on a node of its own, so with the default settings the head pool needs at least five nodes, for five DataNodes, and the database pool at least two, for two data nodes.
+
 ## Values
 
 `global._hopsworks.nodeSelector` and `global._hopsworks.tolerations` apply to every Hopsworks subchart that reads the globals, so they send the platform services to the head nodes.
