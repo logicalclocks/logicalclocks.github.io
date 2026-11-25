@@ -144,6 +144,7 @@ Use the app’s `claude_options()` helper when creating the Claude client for yo
 from claude_agent_sdk import ClaudeAgentOptions, ClaudeSDKClient
 from hopsworks_agents.protocol import AgentApp
 
+
 agent_app = AgentApp(framework="claude_agents", platform_skills=["hops-data-discovery"])
 options = ClaudeAgentOptions(
     **agent_app.platform_skills.claude_options(),
