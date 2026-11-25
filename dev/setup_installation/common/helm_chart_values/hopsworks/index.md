@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795609101` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795611031` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -2793,6 +2793,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         agent_deployment_otel_enabled: 'true'
         agent_deployment_otel_image: otlp-sidecar
         agent_deployment_otel_memory_mb: '2048'
+        agent_deployment_task_drain_seconds: '600'
         agent_jobs_enabled: 'true'
         airflow_dir: /srv/hops/airflow
         airflow_enabled: true
@@ -3365,6 +3366,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.agent_deployment_otel_memory_mb` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_otel_memory_mb" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_otel_memory_mb }
 :   Type `string`, default `"2048"`.
+
+`hopsworks.variables.agent_deployment_task_drain_seconds` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_task_drain_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_task_drain_seconds }
+:   Type `string`, default `"600"`.
+    Seconds a replica of an agent deployment keeps running the A2A tasks it has after it is told to stop, before the ones still running fail with executor_shutdown. The replica's termination grace period is 30 seconds above this. In Knative mode the budget is capped at 570, since Knative's revision timeout, which is also the pod's grace period, cannot exceed 600 seconds.
 
 `hopsworks.variables.agent_jobs_enabled` <a class="headerlink" href="#helm.hopsworks.variables.agent_jobs_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_jobs_enabled }
 :   Type `string`, default `"true"`.
