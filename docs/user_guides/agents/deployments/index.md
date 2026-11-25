@@ -125,6 +125,51 @@ On a redeploy that passes neither, the framework follows the code when it names 
 So a framework changed in the UI is replaced on the next such redeploy when the code names a different one: to change the framework, change it in the code or pass `framework=`.
 `hops agent info` shows both.
 
+### Use Hopsworks skills in an agent
+
+Skills are the playbooks listed by `hops skills list` in the agent's Python environment.
+For Claude Agent SDK deployments, `AgentApp` makes all packaged skills available by default.
+Choose a subset with `platform_skills=["hops-data-discovery", "hops-analytics"]`, or turn them off with `platform_skills="none"`.
+For example, an agent with its own SQL tool can omit `hops-trino-sql`.
+You can also set `HOPSWORKS_AGENT_SKILLS` in the agent's environment to `all`, `none`, or comma-separated skill names.
+An explicit `platform_skills` argument takes precedence.
+The separate `AgentApp(skills=...)` argument describes capabilities advertised in the A2A Agent Card.
+
+Pass the prepared directory and names to the Claude Agent SDK when creating the client for your handler:
+
+```python
+from claude_agent_sdk import ClaudeAgentOptions, ClaudeSDKClient
+from hopsworks_agents.protocol import AgentApp
+
+agent_app = AgentApp(framework="claude_agents", platform_skills=["hops-data-discovery"])
+skills = agent_app.platform_skills
+options = ClaudeAgentOptions(
+    setting_sources=["project"],
+    add_dirs=skills.claude_dirs,
+    skills=skills.names,
+    allowed_tools=["Bash(hops *)"],
+)
+client = ClaudeSDKClient(options=options)
+```
+
+Claude discovers the linked playbooks and their supporting files in the additional project directory.
+Passing the names enables the `Skill` tool for each selected skill.
+The Bash rule lets Claude run `hops` commands under the deployment's identity, so choose the commands your agent should be allowed to run.
+
+For LangGraph, LlamaIndex, OpenAI Agents and custom agents, opt in with the same `platform_skills` argument.
+Append `agent_app.platform_skills.catalogue()` to the system prompt and register `agent_app.platform_skills.read_skill` as a tool.
+It accepts a selected skill name and returns its source path and instructions, so the model can load a playbook when needed.
+Register the operations your agent supports with the framework too.
+For example, a discovery agent can expose a tool that runs `subprocess.run(["hops", "fg", "list"], capture_output=True, text=True, check=True, timeout=30).stdout`.
+
+An entrypoint with its own web server can use `DeploymentSkills` directly from `hopsworks_agents.protocol.skills`.
+Construct it once with the framework name, for example `skills = DeploymentSkills(framework="claude_agents")`, and use the same SDK options or tools as above.
+
+Inside the serving pod, `hops` detects `REST_ENDPOINT` and `SECRETS_DIR` and logs in through the internal SDK client.
+The client reads a mounted `token.jwt` when present and otherwise reads `api.key` from the same directory.
+Agent deployments mount their own API key at `/keys/api.key` and supply the project identity and certificate material.
+Run `hops job list` in the agent container to check authenticated access without entering a personal key or running `hops setup`.
+
 ### Deploy from a Git repository
 
 An agent can be served from a Git repository instead of a project file.
