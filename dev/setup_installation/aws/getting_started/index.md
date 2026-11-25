@@ -8,8 +8,8 @@ This guide shows how to set up the Hopsworks platform on Amazon EKS in your orga
 
 To follow the instructions on this page you will need the following:
 
-- Kubernetes version: Hopsworks supports EKS clusters running Kubernetes >= 1.27.0 and < 1.35.0 (the chart's supported range, enforced by its `kubeVersion` constraint).
-  Pick a version in that range that is also under [AWS standard support](https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html), for example 1.33.
+- Kubernetes version: Hopsworks supports EKS clusters running Kubernetes >= 1.33.0 and < 1.38.0 (the chart's supported range, enforced by its `kubeVersion` constraint).
+  Pick a version in that range that is also under [AWS standard support](https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html), for example 1.37.
 - [aws-cli](https://aws.amazon.com/cli/) to provision the AWS resources.
 - [eksctl](https://eksctl.io/) to create and manage the EKS cluster.
 - [kubectl](https://kubernetes.io/docs/tasks/tools/) to interact with the cluster.
@@ -148,7 +148,7 @@ kind: ClusterConfig
 metadata:
   name: CLUSTER_NAME
   region: REGION
-  version: "1.33"
+  version: "1.37"
 
 iam:
   withOIDC: true
@@ -158,8 +158,8 @@ managedNodeGroups:
     amiFamily: AmazonLinux2023
     instanceType: m6i.2xlarge
     minSize: 1
-    maxSize: 5
-    desiredCapacity: 5
+    maxSize: 6
+    desiredCapacity: 6
     volumeSize: 100
     # ssh:                              # optional: enable SSH access to the nodes
     #   allow: true
@@ -177,6 +177,66 @@ addons:
     wellKnownPolicies:      # add IAM role and service account
       ebsCSIController: true
 ```
+
+The Hopsworks pods request close to the CPU of five m6i.2xlarge nodes, so the example uses six to leave room for scheduling them and for user jobs and notebooks.
+
+#### Optional: dedicated node groups { #eks-dedicated-node-groups }
+
+The configuration above runs every pod on one node group.
+To keep the RonDB data nodes, the platform services and user workloads on separate nodes, replace `managedNodeGroups` with three groups that carry the labels and taints of [Dedicated node pools][dedicated-node-pools], and save the values from that page in a second file, which Step 2.4 passes with another `--values`, because both files set `global` and `rondb`.
+Setting the labels and taints on the node groups, rather than with kubectl, keeps them on every node a group adds or replaces.
+
+```yaml
+managedNodeGroups:
+  - name: head
+    amiFamily: AmazonLinux2023
+    instanceType: m6i.2xlarge
+    minSize: 5
+    maxSize: 6
+    desiredCapacity: 5
+    volumeSize: 100
+    labels:
+      node: Head
+    taints:
+      - key: node
+        value: Head
+        effect: NoSchedule
+    iam: &iam
+      attachPolicyARNs:
+        - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+        - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+        - arn:aws:iam::ECR_AWS_ACCOUNT_ID:policy/POLICY_NAME
+      withAddonPolicies:
+        awsLoadBalancerController: true
+  - name: rondb
+    amiFamily: AmazonLinux2023
+    instanceType: m6i.xlarge
+    minSize: 2
+    maxSize: 2
+    desiredCapacity: 2
+    volumeSize: 100
+    labels:
+      node: RonDB
+    taints:
+      - key: node
+        value: RonDB
+        effect: NoSchedule
+    iam: *iam
+  - name: worker
+    amiFamily: AmazonLinux2023
+    instanceType: m6i.2xlarge
+    minSize: 1
+    maxSize: 3
+    desiredCapacity: 1
+    volumeSize: 100
+    labels:
+      node: Worker
+    iam: *iam
+```
+
+- The head group needs at least five nodes and the database group at least two: the chart runs five HopsFS DataNodes and two RonDB data nodes by default, each on a node of its own.
+- CoreDNS and the AWS Load Balancer Controller do not tolerate the two taints, so they run on the worker nodes.
 
 Create the EKS cluster:
 
@@ -208,8 +268,8 @@ If the controller cannot auto-detect the VPC, pass `--set region=REGION` and `--
 
 ### Step 1.6: Create a GP3 storage class
 
-EKS clusters typically provide `gp2` as the default storage class.
-`gp3` is more cost effective and is the storage class referenced by the Helm values below (`storageClassName: ebs-gp3`), so create it:
+`gp3` is more cost effective than `gp2` and is the storage class referenced by the Helm values below (`storageClassName: ebs-gp3`), so create it.
+Make it the cluster's default storage class as well: some components, such as the MySQL database of Superset, request volumes without naming a storage class, and without a default storage class those volumes stay pending and their pods never start.
 
 ```bash
 kubectl apply -f - <<EOF
@@ -217,6 +277,8 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: ebs-gp3
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
 provisioner: ebs.csi.aws.com
 parameters:
   csi.storage.k8s.io/fstype: xfs
@@ -227,7 +289,9 @@ allowVolumeExpansion: true
 EOF
 ```
 
-If you prefer to keep the default `gp2` storage class, set `storageClassName` to `gp2` in the Helm values and skip this step.
+Check with `kubectl get storageclass` that `ebs-gp3` is the only class marked `(default)`.
+If another class is marked too, remove its mark with `kubectl annotate --overwrite storageclass CLASS storageclass.kubernetes.io/is-default-class=false`, because with two defaults a volume that names no class gets the most recently created one.
+If you prefer `gp2`, set `storageClassName` to `gp2` in the Helm values, mark it as the default with `kubectl annotate --overwrite storageclass gp2 storageclass.kubernetes.io/is-default-class=true`, and skip this step.
 
 ### Step 1.7: Request an ACM certificate for your domain
 
@@ -351,6 +415,15 @@ kafka:
 
 rondb:
   rondb:
+    meta:
+      mysqld:
+        externalLoadBalancer:
+          annotations:
+            service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+      rdrs:
+        externalLoadBalancer:
+          annotations:
+            service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     resources:
       requests:
         storage:
@@ -392,6 +465,8 @@ kserve:
 ```bash
 helm install hopsworks hopsworks/hopsworks --namespace hopsworks --values values.aws.yaml --timeout=3600s
 ```
+
+With the [dedicated node groups][eks-dedicated-node-groups], add `--values` with the file that holds the values of [Dedicated node pools][dedicated-node-pools].
 
 A first install pulls and syncs large base images and provisions stateful services, so allow up to an hour to complete; the chart's own deployment examples use `--timeout=3600s`.
 A Helm timeout does not roll back the release, the deployment keeps reconciling in the background, so if it times out, track progress with kubectl rather than reinstalling:
@@ -453,9 +528,13 @@ Enabling the external load balancers in the values file provisions a load balanc
 - mysql: queries online feature store data using the MySQL APIs.
 - opensearch: queries the Hopsworks vector database.
 - namenode and datanode: external access to the HopsFS file system.
+- trino: runs SQL queries from external clients on Trino (when Trino is enabled, the default).
 
 On EKS, the AWS Load Balancer Controller installed above is responsible for provisioning these load balancers.
-You can configure them using the annotations documented in the [AWS Load Balancer Controller guide](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/ingress/annotations/).
+You can configure them using the annotations documented in the [AWS Load Balancer Controller guide](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/service/annotations/).
+
+The RonDB load balancers (mysql and rdrs) do not read `global._hopsworks.externalLoadBalancers.annotations`, so the values file sets their scheme under `rondb.rondb.meta.mysqld.externalLoadBalancer.annotations` and `rondb.rondb.meta.rdrs.externalLoadBalancer.annotations`.
+Without these, the AWS Load Balancer Controller creates them with its default scheme, `internal`, which only clients with private connectivity to the VPC can reach.
 
 Each service has its own `externalLoadBalancer.enabled` (or, for HopsFS, `loadBalancer.enabled`) value, nested inside the relevant subchart.
 When that value is left unset it inherits `global._hopsworks.externalLoadBalancers.enabled`, which defaults to `true`, so all of these load balancers are provisioned unless you disable them.
@@ -468,7 +547,7 @@ The exact value paths are:
 - `olk.opensearch.externalLoadBalancer.enabled` (opensearch)
 - `hopsfs.namenode.loadBalancer.enabled` (namenode)
 - `hopsfs.datanode.loadBalancer.enabled` (datanode)
-- `trino.externalLoadBalancer.enabled` (only when Trino is enabled)
+- `trino.externalLoadBalancer.enabled` (only when Trino is enabled, the default)
 
 Other load balancer providers are also supported by providing the appropriate controller, class, and annotations.
 
@@ -508,3 +587,4 @@ Check out our other guides for how to get started with Hopsworks and the Feature
 
 - Get started with the [Hopsworks Feature Store](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}
 - Follow one of our [guides](../../user_guides/index.md)
+- To pull the Hopsworks images from your own registry instead of `docker.hops.works`, see [Private registries and air-gapped installs][private-registry].

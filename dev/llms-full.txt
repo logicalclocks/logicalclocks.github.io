@@ -41085,8 +41085,8 @@ This guide shows how to set up the Hopsworks platform on Amazon EKS in your orga
 
 To follow the instructions on this page you will need the following:
 
-- Kubernetes version: Hopsworks supports EKS clusters running Kubernetes >= 1.27.0 and < 1.35.0 (the chart's supported range, enforced by its `kubeVersion` constraint).
-  Pick a version in that range that is also under [AWS standard support](https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html), for example 1.33.
+- Kubernetes version: Hopsworks supports EKS clusters running Kubernetes >= 1.33.0 and < 1.38.0 (the chart's supported range, enforced by its `kubeVersion` constraint).
+  Pick a version in that range that is also under [AWS standard support](https://docs.aws.amazon.com/eks/latest/userguide/kubernetes-versions.html), for example 1.37.
 - [aws-cli](https://aws.amazon.com/cli/) to provision the AWS resources.
 - [eksctl](https://eksctl.io/) to create and manage the EKS cluster.
 - [kubectl](https://kubernetes.io/docs/tasks/tools/) to interact with the cluster.
@@ -41225,7 +41225,7 @@ kind: ClusterConfig
 metadata:
   name: CLUSTER_NAME
   region: REGION
-  version: "1.33"
+  version: "1.37"
 
 iam:
   withOIDC: true
@@ -41235,8 +41235,8 @@ managedNodeGroups:
     amiFamily: AmazonLinux2023
     instanceType: m6i.2xlarge
     minSize: 1
-    maxSize: 5
-    desiredCapacity: 5
+    maxSize: 6
+    desiredCapacity: 6
     volumeSize: 100
     # ssh:                              # optional: enable SSH access to the nodes
     #   allow: true
@@ -41254,6 +41254,66 @@ addons:
     wellKnownPolicies:      # add IAM role and service account
       ebsCSIController: true
 ```
+
+The Hopsworks pods request close to the CPU of five m6i.2xlarge nodes, so the example uses six to leave room for scheduling them and for user jobs and notebooks.
+
+#### Optional: dedicated node groups { #eks-dedicated-node-groups }
+
+The configuration above runs every pod on one node group.
+To keep the RonDB data nodes, the platform services and user workloads on separate nodes, replace `managedNodeGroups` with three groups that carry the labels and taints of [Dedicated node pools][dedicated-node-pools], and save the values from that page in a second file, which Step 2.4 passes with another `--values`, because both files set `global` and `rondb`.
+Setting the labels and taints on the node groups, rather than with kubectl, keeps them on every node a group adds or replaces.
+
+```yaml
+managedNodeGroups:
+  - name: head
+    amiFamily: AmazonLinux2023
+    instanceType: m6i.2xlarge
+    minSize: 5
+    maxSize: 6
+    desiredCapacity: 5
+    volumeSize: 100
+    labels:
+      node: Head
+    taints:
+      - key: node
+        value: Head
+        effect: NoSchedule
+    iam: &iam
+      attachPolicyARNs:
+        - arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy
+        - arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy
+        - arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly
+        - arn:aws:iam::ECR_AWS_ACCOUNT_ID:policy/POLICY_NAME
+      withAddonPolicies:
+        awsLoadBalancerController: true
+  - name: rondb
+    amiFamily: AmazonLinux2023
+    instanceType: m6i.xlarge
+    minSize: 2
+    maxSize: 2
+    desiredCapacity: 2
+    volumeSize: 100
+    labels:
+      node: RonDB
+    taints:
+      - key: node
+        value: RonDB
+        effect: NoSchedule
+    iam: *iam
+  - name: worker
+    amiFamily: AmazonLinux2023
+    instanceType: m6i.2xlarge
+    minSize: 1
+    maxSize: 3
+    desiredCapacity: 1
+    volumeSize: 100
+    labels:
+      node: Worker
+    iam: *iam
+```
+
+- The head group needs at least five nodes and the database group at least two: the chart runs five HopsFS DataNodes and two RonDB data nodes by default, each on a node of its own.
+- CoreDNS and the AWS Load Balancer Controller do not tolerate the two taints, so they run on the worker nodes.
 
 Create the EKS cluster:
 
@@ -41285,8 +41345,8 @@ If the controller cannot auto-detect the VPC, pass `--set region=REGION` and `--
 
 ### Step 1.6: Create a GP3 storage class
 
-EKS clusters typically provide `gp2` as the default storage class.
-`gp3` is more cost effective and is the storage class referenced by the Helm values below (`storageClassName: ebs-gp3`), so create it:
+`gp3` is more cost effective than `gp2` and is the storage class referenced by the Helm values below (`storageClassName: ebs-gp3`), so create it.
+Make it the cluster's default storage class as well: some components, such as the MySQL database of Superset, request volumes without naming a storage class, and without a default storage class those volumes stay pending and their pods never start.
 
 ```bash
 kubectl apply -f - <<EOF
@@ -41294,6 +41354,8 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: ebs-gp3
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
 provisioner: ebs.csi.aws.com
 parameters:
   csi.storage.k8s.io/fstype: xfs
@@ -41304,7 +41366,9 @@ allowVolumeExpansion: true
 EOF
 ```
 
-If you prefer to keep the default `gp2` storage class, set `storageClassName` to `gp2` in the Helm values and skip this step.
+Check with `kubectl get storageclass` that `ebs-gp3` is the only class marked `(default)`.
+If another class is marked too, remove its mark with `kubectl annotate --overwrite storageclass CLASS storageclass.kubernetes.io/is-default-class=false`, because with two defaults a volume that names no class gets the most recently created one.
+If you prefer `gp2`, set `storageClassName` to `gp2` in the Helm values, mark it as the default with `kubectl annotate --overwrite storageclass gp2 storageclass.kubernetes.io/is-default-class=true`, and skip this step.
 
 ### Step 1.7: Request an ACM certificate for your domain
 
@@ -41428,6 +41492,15 @@ kafka:
 
 rondb:
   rondb:
+    meta:
+      mysqld:
+        externalLoadBalancer:
+          annotations:
+            service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+      rdrs:
+        externalLoadBalancer:
+          annotations:
+            service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
     resources:
       requests:
         storage:
@@ -41469,6 +41542,8 @@ kserve:
 ```bash
 helm install hopsworks hopsworks/hopsworks --namespace hopsworks --values values.aws.yaml --timeout=3600s
 ```
+
+With the [dedicated node groups][eks-dedicated-node-groups], add `--values` with the file that holds the values of [Dedicated node pools][dedicated-node-pools].
 
 A first install pulls and syncs large base images and provisions stateful services, so allow up to an hour to complete; the chart's own deployment examples use `--timeout=3600s`.
 A Helm timeout does not roll back the release, the deployment keeps reconciling in the background, so if it times out, track progress with kubectl rather than reinstalling:
@@ -41530,9 +41605,13 @@ Enabling the external load balancers in the values file provisions a load balanc
 - mysql: queries online feature store data using the MySQL APIs.
 - opensearch: queries the Hopsworks vector database.
 - namenode and datanode: external access to the HopsFS file system.
+- trino: runs SQL queries from external clients on Trino (when Trino is enabled, the default).
 
 On EKS, the AWS Load Balancer Controller installed above is responsible for provisioning these load balancers.
-You can configure them using the annotations documented in the [AWS Load Balancer Controller guide](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/ingress/annotations/).
+You can configure them using the annotations documented in the [AWS Load Balancer Controller guide](https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/guide/service/annotations/).
+
+The RonDB load balancers (mysql and rdrs) do not read `global._hopsworks.externalLoadBalancers.annotations`, so the values file sets their scheme under `rondb.rondb.meta.mysqld.externalLoadBalancer.annotations` and `rondb.rondb.meta.rdrs.externalLoadBalancer.annotations`.
+Without these, the AWS Load Balancer Controller creates them with its default scheme, `internal`, which only clients with private connectivity to the VPC can reach.
 
 Each service has its own `externalLoadBalancer.enabled` (or, for HopsFS, `loadBalancer.enabled`) value, nested inside the relevant subchart.
 When that value is left unset it inherits `global._hopsworks.externalLoadBalancers.enabled`, which defaults to `true`, so all of these load balancers are provisioned unless you disable them.
@@ -41545,7 +41624,7 @@ The exact value paths are:
 - `olk.opensearch.externalLoadBalancer.enabled` (opensearch)
 - `hopsfs.namenode.loadBalancer.enabled` (namenode)
 - `hopsfs.datanode.loadBalancer.enabled` (datanode)
-- `trino.externalLoadBalancer.enabled` (only when Trino is enabled)
+- `trino.externalLoadBalancer.enabled` (only when Trino is enabled, the default)
 
 Other load balancer providers are also supported by providing the appropriate controller, class, and annotations.
 
@@ -41585,6 +41664,7 @@ Check out our other guides for how to get started with Hopsworks and the Feature
 
 - Get started with the [Hopsworks Feature Store](https://colab.research.google.com/github/logicalclocks/hopsworks-tutorials/blob/master/quickstart.ipynb){:target="_blank"}
 - Follow one of our [guides](../../user_guides/index.md)
+- To pull the Hopsworks images from your own registry instead of `docker.hops.works`, see [Private registries and air-gapped installs][private-registry].
 
 ================================================================================
 # Azure - Getting Started
@@ -44971,6 +45051,11 @@ kubectl taint nodes db-node-1 db-node-n node=RonDB:NoSchedule
 kubectl label nodes worker-node-1 worker-node-n node=Worker
 ```
 
+On a cloud provider's managed node groups, such as EKS, AKS or GKE, set these labels and taints in the node group configuration instead, because nodes that a group adds or replaces come up without labels and taints set with kubectl.
+The [AWS getting started guide][eks-dedicated-node-groups] shows this for EKS.
+
+Each HopsFS DataNode and each RonDB data node runs on a node of its own, so with the default settings the head pool needs at least five nodes, for five DataNodes, and the database pool at least two, for two data nodes.
+
 ## Values
 
 `global._hopsworks.nodeSelector` and `global._hopsworks.tolerations` apply to every Hopsworks subchart that reads the globals, so they send the platform services to the head nodes.
@@ -45146,6 +45231,90 @@ ray:
 ```
 
 A subchart setting overrides the global one, so the same pattern moves a single service to another pool.
+
+================================================================================
+# Private Registries and Air Gap
+Source: https://docs.hopsworks.ai/latest/setup_installation/admin/private_registry/
+
+# Private registries and air-gapped installs { #private-registry }
+
+## Introduction
+
+The Hopsworks chart pulls every image from `docker.hops.works` by default.
+This guide installs it from your own registry instead, for a cluster without internet access or one that may pull only from an approved registry.
+It assumes the cluster's nodes can pull from that registry without image pull secrets, for example from Amazon ECR through the node IAM role.
+
+## How the chart names images { #private-registry-names }
+
+Every image the chart uses, including those of the third-party components it installs, is published under `docker.hops.works` at a fixed path, for example `docker.hops.works/hopsworks/rondb:<tag>` or `docker.hops.works/quay.io/jetstack/cert-manager-controller:<tag>`.
+Your registry holds the same images at the same paths, so `docker.hops.works/<path>` becomes `<registry>/<path>`.
+
+The Hopsworks images take their registry from `global._hopsworks.imageRegistry`.
+The third-party charts that the Hopsworks chart includes, such as Consul, Prometheus, Grafana, Strimzi, Superset, Trino and KEDA, take their registry or repository from their own values.
+The chart package includes `values.airgap.yaml`, which sets all of them to a placeholder registry, `private-docker.dev-cloud.hopsworks.ai:4443`.
+Download the chart version you install and write a copy of that file with your registry in its place:
+
+```bash
+helm pull hopsworks/hopsworks --version VERSION --untar
+sed 's#private-docker.dev-cloud.hopsworks.ai:4443#REGISTRY#g' hopsworks/values.airgap.yaml > values.registry.yaml
+```
+
+`REGISTRY` is the registry address with any path prefix, for example `111122223333.dkr.ecr.eu-west-1.amazonaws.com/hopsworks-mirror`.
+Take `values.airgap.yaml` from the chart version you install, because a release can add images and the values that name them.
+
+Then fill your registry, either by copying the images ([Images to mirror][private-registry-images]) or, on Amazon ECR, through a pull through cache ([Pull-through cache on Amazon ECR][private-registry-ecr-pull-through]), and install ([Install][private-registry-install]).
+
+## Images to mirror { #private-registry-images }
+
+Render the unpacked chart with your values file, such as `values.aws.yaml` from the AWS getting started guide, and the registry file, and list every image under your registry:
+
+```bash
+helm template hopsworks ./hopsworks --namespace hopsworks --skip-tests --values values.aws.yaml --values values.registry.yaml > rendered.yaml
+grep -oE 'REGISTRY/[A-Za-z0-9._/-]+[:@][A-Za-z0-9._:-]+' rendered.yaml | sort -u > images.txt
+helm show values hopsworks/charts/kserve --jsonpath '{.istio.istioctl.targetVersion}'
+```
+
+The list covers the images that an install and the platform's workloads pull, including those started later, such as the base images of jobs and notebooks and the Kafka brokers.
+Add `REGISTRY/istio/pilot` and `REGISTRY/istio/proxyv2`, tagged with the Istio version that the last command prints, because the Istio installation names them only when it runs.
+
+Copy each image from `docker.hops.works` to the same path in your registry, for example with [crane](https://github.com/google/go-containerregistry/blob/main/cmd/crane/README.md), and record every image that fails:
+
+```bash
+while read -r image; do
+  crane copy "docker.hops.works/${image#REGISTRY/}" "$image" || echo "$image" >> not-copied.txt
+done < images.txt
+```
+
+Check `not-copied.txt` before installing.
+It can list images that Hopsworks never starts, such as the Strimzi operator's defaults for other Kafka versions, which are not published.
+Copy any other entry again, because a pod whose image is missing cannot start.
+Mirror again from a render of the new chart version before each upgrade, because an upgrade pulls the images of the new release.
+
+Kueue, when enabled, is installed outside the Hopsworks chart with its own images and chart, which [Kueue outside the Hopsworks namespace][kueue-external] lists.
+
+## Pull-through cache on Amazon ECR { #private-registry-ecr-pull-through }
+
+On Amazon ECR, a pull through cache replaces the copy step.
+Hopsworks publishes its images to Amazon ECR Public under `public.ecr.aws/c8w3j7u1`, at the same paths as on `docker.hops.works`.
+Create a cache rule with that upstream, choosing your own repository prefix in place of `hopsworks-mirror`:
+
+```bash
+aws ecr create-pull-through-cache-rule --ecr-repository-prefix hopsworks-mirror --upstream-registry ecr-public --upstream-registry-url public.ecr.aws --upstream-repository-prefix c8w3j7u1 --region REGION --profile PROFILE
+```
+
+Use `ECR_AWS_ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/hopsworks-mirror` as `REGISTRY` when you write `values.registry.yaml`.
+Amazon ECR creates a repository and caches an image the first time a node pulls it, so the node role needs `ecr:CreateRepository` and `ecr:BatchImportUpstreamImage` on `arn:aws:ecr:REGION:ECR_AWS_ACCOUNT_ID:repository/hopsworks-mirror/*`, besides the read access of `AmazonEC2ContainerRegistryReadOnly`.
+Amazon ECR fetches the images from Amazon ECR Public itself, so the nodes pull from your registry only.
+When the nodes reach Amazon ECR through VPC endpoints, [AWS requires](https://docs.aws.amazon.com/AmazonECR/latest/userguide/vpc-endpoints.html#ecr-vpc-endpoint-considerations) an internet route from the VPC, such as a NAT gateway, for the first pull of each image through the cache.
+On a VPC without one, pull every image in the list from [Images to mirror][private-registry-images] once through the cache from a machine with internet access before installing.
+
+## Install { #private-registry-install }
+
+Install from the unpacked chart with the same values files:
+
+```bash
+helm install hopsworks ./hopsworks --namespace hopsworks --values values.aws.yaml --values values.registry.yaml --timeout=3600s
+```
 
 ================================================================================
 # KEDA Autoscaling
@@ -47215,7 +47384,7 @@ An upgrade from a release that already uses Strimzi 1.3 crosses none of this.
   The setting makes that unlikely rather than impossible: nothing waits for the old operator to exit.
   If your values set `kafka.strimzi-kafka-operator.deploymentStrategy.type: Recreate`, also set `rollingUpdate: null` there, or the merged strategy is rejected.
   A single-broker cluster is unavailable while its broker is replaced, a single-controller cluster has no KRaft quorum while its controller is replaced, and OnlineFS catches up afterwards.
-- **Three new tags to mirror on an airgapped cluster**: `strimzi/operator`, `strimzi/kafka` and `strimzi/crds`, which `vendor_images.sh` lists.
+- **Three new tags to mirror on an airgapped cluster**: `strimzi/operator`, `strimzi/kafka` and `strimzi/crds`, which the [image list][private-registry-images] includes.
 - **The operator deletes pods with background propagation during a rolling update.**
   Strimzi 1.3 turns its `UseBackgroundPodDeletion` feature gate on by default, so that CNI plugins which remove a pod's network endpoints when its object is deleted, such as Cilium, no longer cut a broker off before it has shut down.
   To keep the earlier foreground deletion, set `kafka.strimzi-kafka-operator.featureGates: "-UseBackgroundPodDeletion"`.
@@ -47768,8 +47937,7 @@ On a cluster still on Istio 1.29, the Istio install hook stops with an error bef
   The Istio ingress gateway and the cluster-local gateway restart once.
   Each rolls out its new pod before it stops the old one.
 - **Your own image registry.**
-  Mirror `istio/pilot` and `istio/proxyv2` at `1.31.4` before the upgrade.
-  The chart's `vendor_images.sh` lists both.
+  Mirror `istio/pilot` and `istio/proxyv2` at `1.31.4` before the upgrade, as [Images to mirror][private-registry-images] describes.
 - **Sidecars you injected yourself.**
   The chart injects no Istio sidecar.
   A workload you gave an Istio sidecar keeps its 1.30 proxy until it restarts, so restart it after the upgrade.
@@ -47844,7 +48012,7 @@ They apply to an upgrade from 5.1.x to 5.2.3 or later, and from 5.2.0, 5.2.1 or 
 
 Python apps pull their Envoy sidecar from `global._hopsworks.imageRegistry`, as `<registry>/envoyproxy/envoy:<tag>` with the tag in `hopsworks.variables.python_app_envoy_image_version` (`v1.38.0`); before, the chart did not set the backend's `python_app_envoy_image`, so clusters pulled `envoyproxy/envoy:v1.38.0` from Docker Hub.
 The default registry, `docker.hops.works`, has the image.
-A cluster whose `global._hopsworks.imageRegistry` is its own registry mirrors `envoyproxy/envoy:v1.38.0` there, at the path `envoyproxy/envoy`, before the upgrade, or its Python apps cannot start; the chart's `vendor_images.sh` does not list the image.
+A cluster whose `global._hopsworks.imageRegistry` is its own registry mirrors `envoyproxy/envoy:v1.38.0` there, at the path `envoyproxy/envoy`, before the upgrade, or its Python apps cannot start.
 The chart now writes `python_app_envoy_image` on every upgrade, replacing a value set by hand, so a cluster that pointed it at another image mirrors that image as above.
 
 ## Changes from 5.2.5 { #upgrade-changes-from-525 }
@@ -47863,8 +48031,7 @@ Istio 1.30 supports Kubernetes 1.32 to 1.36, and Istio supports the 1.30 release
   The Istio ingress gateway and the cluster-local gateway restart once.
   Each rolls out its new pod before it stops the old one.
 - **Your own image registry.**
-  Mirror `istio/pilot` and `istio/proxyv2` at `1.30.8` before the upgrade.
-  The chart's `vendor_images.sh` lists both.
+  Mirror `istio/pilot` and `istio/proxyv2` at `1.30.8` before the upgrade, as [Images to mirror][private-registry-images] describes.
 - **Sidecars you injected yourself.**
   The chart injects no Istio sidecar.
   A workload you gave an Istio sidecar keeps its 1.29 proxy until it restarts, so restart it after the upgrade.
@@ -48559,7 +48726,7 @@ The upgrade refuses, or waits until it times out, on each problem they find.
 Then:
 
 - **Airgapped clusters** mirror three images with the rest: `strimzi/operator`, `strimzi/kafka` and `strimzi/crds`.
-  The chart's `vendor_images.sh` includes them; nothing is fetched from the internet during the upgrade.
+  The [image list][private-registry-images] includes them; nothing is fetched from the internet during the upgrade.
 - **A satellite cluster that shares the central operator** is upgraded before central.
   The CRD conversion re-stores every Kafka resource on the Kubernetes cluster, and a satellite still on ZooKeeper would lose its ZooKeeper configuration in the process.
   The conversion refuses while any other Kafka is not on KRaft, so the wrong order fails safely, but it blocks central's upgrade until the satellite is done.
@@ -48704,7 +48871,7 @@ The same cut applies the other way round for a [bring-your-own Kafka cluster][ex
 # Kueue outside the Hopsworks namespace
 Source: https://docs.hopsworks.ai/latest/setup_installation/admin/kueue_external/
 
-# Operator Notes: Kueue Outside the Hopsworks Namespace
+# Operator Notes: Kueue Outside the Hopsworks Namespace { #kueue-external }
 
 Administrative reference for cluster operators who run Kueue with Hopsworks, install a Hopsworks release that uses Kueue 0.20 (a 5.2.x patch release, or 5.3), or upgrade to one.
 
