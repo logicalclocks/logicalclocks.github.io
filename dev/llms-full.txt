@@ -34773,6 +34773,9 @@ tool_call_parser: qwen3_coder
 When Hopsworks generates the file, from a Hugging Face import or the configuration generator, it adds both keys for the model families it knows and keeps any value the file already sets.
 For an existing file or another model family, set them yourself; [Coding agents][coding-agents-deployment] lists the parser of each family.
 
+For vLLM deployments created in Hopsworks 5.3 or later, Hopsworks sets `--tensor-parallel-size` to the current GPU count when the deployment requests more than one GPU, unless the configuration file sets `tensor-parallel-size`, `pipeline-parallel-size` or `data-parallel-size`.
+Deployments created before the upgrade keep their previous parallelism settings across restarts, edits and version rollbacks.
+vLLM-Omni deployments place their stages on GPUs through their own deploy configuration and get no tensor parallel size from Hopsworks.
 vLLM pods get a memory-backed `/dev/shm`, which the model server uses to pass data between processes, for example with tensor parallelism.
 It counts against the pod's memory limit, and the predictor's `shmSize` setting does not size it, so leave room for it in the memory resources.
 
@@ -35940,6 +35943,11 @@ For each component, you can set minimum (requests) and maximum (limits) resource
     A component that uses more than its limit is evicted and restarted; with no limit, it shares the node's free disk with the other pods on the node.
     A cluster can instead give vLLM deployments a fixed-size volume for their model files; their predictor then takes no disk setting, and the form shows the volume's size.
 
+!!! note "HopsFS mount"
+    With a [loading strategy][loading-strategy-guide] that mounts HopsFS, every predictor and transformer instance runs its own HopsFS mount container.
+    Per component you can set its memory (limit in MB, 512 to 1048576), cores (CPU request, 0.001 to 64) and namenode connections (1 to 32); an empty setting uses the cluster default, 0.5 cores for a model mount (`kube_scheduling_model_hopsfsmount_cpu_requests` in the [cluster configuration][cluster-configuration]).
+    The mount's memory and cores count towards the project's resource quota.
+
 !!! tip "Automatic downscale of inactive instances"
     Setting the number of instances to **0** for a component enables **scale-to-zero**: its instances scale down to zero after a period without requests and the next request wakes it.
     In ==Knative== mode this applies to the predictor and the transformer, once the stable window (60 seconds by default) has seen no traffic.
@@ -35976,9 +35984,10 @@ To navigate to the advanced creation form, click on `Advanced options`.
 
 ### Step 3: Configure resources
 
-In the `Resource allocation` section of the form, you can optionally set the resources to be allocated to the predictor and/or the transformer (if available).
+In the `Resources per Instance` card of the form, you can optionally set the resources to be allocated to the predictor and/or the transformer (if available).
 Moreover, you can choose the minimum number of replicas for each of these components.
 `Disk (GB)` limits a component's local disk; leave it empty for no limit.
+When the selected loading strategy mounts HopsFS, each component also shows `Mount memory (MB)`, `Mount cores` and `Namenode connections` for its HopsFS mount, prefilled with the cluster defaults.
 
 !!! note "Scale-to-zero capabilities"
     Set the number of instances to **0** to enable scale-to-zero on the component.
@@ -36024,11 +36033,17 @@ Once you are done with the changes, click on `Create new deployment` at the bott
   maximum_res = Resources(cores=2, memory=256, gpus=1)
 
   predictor_res = PredictorResources(
-      num_instances=1, requests=minimum_res, limits=maximum_res
+      num_instances=1,
+      requests=minimum_res,
+      limits=maximum_res,
+      # optional: the HopsFS mount of each predictor instance
+      hopsfs_mount={"cores": 0.5, "memory": 1024},
   )
   ```
 
 To limit a component's local disk, set `disk` in GB on its limits only, for example `Resources(cores=2, memory=256, gpus=1, disk=50)` or `"disk": 50` in a limits dict; the request is set to the same amount.
+To size a component's HopsFS mount, set `hopsfs_mount` on its resources to a dict with any of the keys `cores`, `memory` (MB) and `namenode_connections`.
+Leaving it out keeps a deployment's settings, and an empty dict resets them to the cluster defaults.
 
 ### Step 3 (Optional): Define the transformer resource configuration
 
@@ -36041,7 +36056,11 @@ To limit a component's local disk, set `disk` in GB on its limits only, for exam
   maximum_res = Resources(cores=2, memory=256, gpus=1)
 
   transformer_res = TransformerResources(
-      num_instances=2, requests=minimum_res, limits=maximum_res
+      num_instances=2,
+      requests=minimum_res,
+      limits=maximum_res,
+      # optional: the HopsFS mount of each transformer instance
+      hopsfs_mount={"memory": 1024, "namenode_connections": 2},
   )
   ```
 
@@ -36738,6 +36757,122 @@ Once you are done with the changes, click on `Create new deployment` at the bott
         - <code class="doc-symbol doc-symbol-attribute"></code> [`api_protocol`][hsml.deployment.Deployment.api_protocol]
 
     <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+
+================================================================================
+# Loading Strategy
+Source: https://docs.hopsworks.ai/latest/user_guides/mlops/serving/loading-strategy/
+
+# How to Select the Loading Strategy of a Deployment { #loading-strategy-guide }
+
+## Introduction
+
+The loading strategy decides how a deployment's pods get the model files and the deployment's own files, such as the predictor script.
+Every strategy puts them at the same paths, `/mnt/models` and `/mnt/artifacts`, so scripts work unchanged.
+
+| Strategy         | In the UI              | How the pods get the files                                                                                        | Model servers               |
+| ---------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| `RUNAI_STREAMER` | Stream to GPU          | Mounted from HopsFS; vLLM streams the weights to the GPUs with the [Run:ai Model Streamer][runai-model-streamer]. | vLLM on GPUs, not vLLM-Omni |
+| `DOWNLOAD`       | Download to local disk | Copied to the pod's local disk before the model server starts.                                                    | All                         |
+| `MOUNT`          | Stream from HopsFS     | Mounted read-only from HopsFS and read in place.                                                                  | All                         |
+
+The two mount strategies need the [HopsFS CSI driver][hopsfs-csi-driver].
+Without it, `DOWNLOAD` is the only strategy, and a deployment that mounts fails to start until it is switched to `DOWNLOAD`.
+
+A new deployment without a strategy gets `RUNAI_STREAMER` when it runs vLLM, not vLLM-Omni, on GPUs, the driver is enabled and the model has safetensors files at the top of its files.
+Every other deployment gets `DOWNLOAD`, as do the deployments that existed before loading strategies.
+Saving a deployment without a strategy keeps the one it has, and saving a new one on a running deployment replaces its pods right away.
+
+If an update removes all GPUs or selects a model without top-level safetensors files, a deployment using `RUNAI_STREAMER` must switch strategies.
+The Python SDK gained the `loading_strategy` setting in 5.3, so if you use an older SDK, make the change in the web UI or upgrade to SDK 5.3 or later and save the update with `DOWNLOAD` or `MOUNT`.
+
+### Which strategy to choose
+
+- **`RUNAI_STREAMER`** loads vLLM models fastest, especially on several GPUs: each GPU reads a share of the files and passes it to the others, so the model is read from HopsFS once.
+  It needs safetensors weights and vLLM's GPU image; the official `vllm/vllm-openai` images include the streamer, and a custom image needs `vllm[runai]`.
+- **`DOWNLOAD`** is usually faster than `MOUNT`: the copy reads the files at full speed, and the model server then loads them from local disk.
+  It needs local disk at least as large as the model.
+- **`MOUNT`** needs no copy and no local disk, but usually starts a deployment more slowly than `DOWNLOAD`.
+  For plain vLLM, Hopsworks adds `--safetensors-load-strategy eager` by default because vLLM's lazy loading reads a mount more slowly.
+  Hopsworks skips this flag for vLLM-Omni, and when the vLLM configuration file sets `safetensors-load-strategy`, enables `enable_multithread_load` in `model-loader-extra-config`, or cannot be read.
+  With eager loading, each file being loaded is held in host memory and counts against the deployment's memory limit, so a CPU-only deployment needs room for its largest weight file in addition to the model.
+
+Each pod that mounts runs its own HopsFS mount container, which the [Resources Guide](resources.md) shows how to size.
+
+!!! warning "A mounted deployment needs its HopsFS mount for as long as it runs"
+    A model server reads files it has not loaded yet from the mount, so it fails when the mount does.
+    The [failure modes][hopsfs-csi-failure-modes] of the driver describe how to recover.
+
+### Run:ai Model Streamer settings { #run-ai-model-streamer-settings }
+
+With `RUNAI_STREAMER`, Hopsworks starts vLLM with the defaults below, and the deployment's configuration file or environment variables override each of them.
+
+- **`--load-format runai_streamer`** loads the weights with the streamer.
+  A `load-format` in the configuration file, or an option only vLLM's default loader takes such as `enable_multithread_load`, keeps vLLM's own loader instead; choose `DOWNLOAD` or `MOUNT` then, since that loader reads a mount slowly.
+- **`--model-loader-extra-config '{"distributed": true}'`**, with more than one GPU, streams the model once for all GPUs.
+  A `model-loader-extra-config` in the configuration file replaces it, so add `distributed: true` to it to keep this.
+- **`RUNAI_STREAMER_MEMORY_LIMIT=0`** stages one tensor at a time in host memory.
+  A larger limit in bytes lets the streamer read ahead, and counts against the deployment's memory limit.
+
+## Web UI
+
+### Step 1: Create a new deployment
+
+Navigate to `Model Deployments` in the menu on the left and click on `New model deployment`.
+
+### Step 2: Select the loading strategy
+
+Choose the strategy in the `Model loading` field of the `Deployment configuration` card.
+The field offers only the strategies the deployment can use, with its default selected.
+Click on `Create new model deployment` to create the deployment.
+
+## Code
+
+### Step 1: Connect to Hopsworks
+
+=== "Python"
+
+  ```python
+  import hopsworks
+
+
+  project = hopsworks.login()
+
+  # get Hopsworks Model Registry handle
+  mr = project.get_model_registry()
+
+  # get Hopsworks Model Serving handle
+  ms = project.get_model_serving()
+  ```
+
+### Step 2: Create a deployment with a specific loading strategy
+
+=== "Python"
+
+  ```python
+  my_model = mr.get_model("my_model", version=1)
+
+  my_predictor = ms.create_predictor(
+      my_model,
+      loading_strategy="MOUNT",  # or "RUNAI_STREAMER" for vLLM, or "DOWNLOAD"
+  )
+  my_deployment = my_predictor.deploy()
+
+  # change it on an existing deployment: a running one rolls out new pods right away
+  my_deployment.loading_strategy = "DOWNLOAD"
+  my_deployment.save()
+  ```
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.create_predictor`][hsml.model_serving.ModelServing.create_predictor]
+    - <code class="doc-symbol doc-symbol-method"></code> [`Predictor.deploy`][hsml.predictor.Predictor.deploy]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Deployment`][hsml.deployment.Deployment]
+        - <code class="doc-symbol doc-symbol-attribute"></code> [`loading_strategy`][hsml.deployment.Deployment.loading_strategy]
+        - <code class="doc-symbol doc-symbol-method"></code> [`save`][hsml.deployment.Deployment.save]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
+
+[runai-model-streamer]: https://github.com/run-ai/runai-model-streamer
 
 ================================================================================
 # REST API
@@ -42692,6 +42827,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `kube_scheduling_jobinit_cpu_requests` | Double | `0.5` | Settings.java |
 | `kube_scheduling_jobinit_memory_limits_mb` | Double | `512.0` | Settings.java |
 | `kube_scheduling_jobinit_memory_requests_mb` | Double | `256.0` | Settings.java |
+| `kube_scheduling_model_hopsfsmount_cpu_requests` | Double | `0.5` | Settings.java |
 | `kube_serving_apikey_reaper_grace_minutes` | Integer | `10` | Settings.java |
 | `kube_serving_apikey_reaper_interval_minutes` | Integer | `15` | Settings.java |
 | `kube_serving_max_num_instances` | Integer | `-1` | Settings.java |
@@ -45011,6 +45147,7 @@ Trino requires the driver: its password file, group file, access-control rules, 
 `global._hopsworks.csi.enabled: false` therefore renders only together with `global._hopsworks.trino.enabled: false`, and the render fails otherwise, rather than leaving every Trino pod in `ContainerCreating`.
 
 With the driver off, Airflow and the workloads Hopsworks launches go back to mounting HopsFS from a privileged container in the pod.
+Model deployments that mount HopsFS are the exception: they fail to start until their [loading strategy][loading-strategy-guide] is changed to `DOWNLOAD`, which the edit form does when the deployment is saved.
 On OpenShift the chart grants no SCC for that container, because the SCC it ships is for the node plugin only.
 The Airflow pods are then admitted only if the cluster already grants the Airflow service account `privileged`; without that grant `restricted-v2` rejects them and the Airflow Deployments stay at zero replicas.
 The same holds for the workloads Hopsworks launches.
@@ -47947,6 +48084,12 @@ On a cluster still on Istio 1.29, the Istio install hook stops with an error bef
   Do not run `helm upgrade`, or an ArgoCD sync, with a release older than 5.2.5 afterwards: its hook installs Istio 1.29 over 1.31, a downgrade Istio does not support.
   To go back entirely, restore the backup on a new cluster, as described in [New Cluster Restore][new-cluster-restore].
   An in-place restore does not apply here, since it runs `helm upgrade` with the release of the backup, whose Istio install hook then runs over Istio 1.31.
+
+### Storage initializer of model deployments { #upgrade-storage-initializer }
+
+The storage initializer, the init container that copies a downloading model deployment's files, now has limits of 2 cores and 2 GiB instead of 1 core and 1 GiB, because the copy was CPU-bound.
+A pod's limits count its largest init container, so a small predictor can now exceed a `limits.cpu` or `limits.memory` ResourceQuota or a LimitRange.
+Set `kserve.storageInitializer.resources` to keep the old limits.
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
@@ -53117,7 +53260,8 @@ An image that meets these requirements needs no Hopsworks components: Hopsworks 
 
 - **Ports.** HTTP on 8080 (Open Inference Protocol REST), gRPC on 9000 (Open Inference Protocol gRPC, served as h2c), and Prometheus metrics on 8002 at `/metrics`.
   In Standard mode, Prometheus scrapes port 8002.
-- **Model files.** Before Triton starts, Hopsworks copies the model version's files to `/mnt/models/<deployment-name>/`, so the model repository holds one model named after the deployment.
+- **Model files.** The model version's files are at `/mnt/models/<deployment-name>/`, so the model repository holds one model named after the deployment.
+  With the `MOUNT` [loading strategy][loading-strategy-guide] they are mounted read-only from HopsFS; with `DOWNLOAD` Hopsworks copies them there before Triton starts.
 - **User.** With `global._hopsworks.securityContextEnabled`, the container runs as a non-root user (UID 1000, GID 1000) with privilege escalation disabled and all capabilities dropped, so the image must work as that user.
 - **Shared memory.** Hopsworks mounts a memory-backed volume at `/dev/shm`, used by the Python backend; it counts against the memory of the deployment.
 - **Backends.** The image contains the Triton backends the models need, for example `onnxruntime`, `pytorch`, `tensorrt`, `openvino` or `python`.

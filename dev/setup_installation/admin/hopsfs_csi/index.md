@@ -119,6 +119,7 @@ Trino requires the driver: its password file, group file, access-control rules, 
 `global._hopsworks.csi.enabled: false` therefore renders only together with `global._hopsworks.trino.enabled: false`, and the render fails otherwise, rather than leaving every Trino pod in `ContainerCreating`.
 
 With the driver off, Airflow and the workloads Hopsworks launches go back to mounting HopsFS from a privileged container in the pod.
+Model deployments that mount HopsFS are the exception: they fail to start until their [loading strategy][loading-strategy-guide] is changed to `DOWNLOAD`, which the edit form does when the deployment is saved.
 On OpenShift the chart grants no SCC for that container, because the SCC it ships is for the node plugin only.
 The Airflow pods are then admitted only if the cluster already grants the Airflow service account `privileged`; without that grant `restricted-v2` rejects them and the Airflow Deployments stay at zero replicas.
 The same holds for the workloads Hopsworks launches.

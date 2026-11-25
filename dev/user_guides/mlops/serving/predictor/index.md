@@ -421,6 +421,9 @@ tool_call_parser: qwen3_coder
 When Hopsworks generates the file, from a Hugging Face import or the configuration generator, it adds both keys for the model families it knows and keeps any value the file already sets.
 For an existing file or another model family, set them yourself; [Coding agents][coding-agents-deployment] lists the parser of each family.
 
+For vLLM deployments created in Hopsworks 5.3 or later, Hopsworks sets `--tensor-parallel-size` to the current GPU count when the deployment requests more than one GPU, unless the configuration file sets `tensor-parallel-size`, `pipeline-parallel-size` or `data-parallel-size`.
+Deployments created before the upgrade keep their previous parallelism settings across restarts, edits and version rollbacks.
+vLLM-Omni deployments place their stages on GPUs through their own deploy configuration and get no tensor parallel size from Hopsworks.
 vLLM pods get a memory-backed `/dev/shm`, which the model server uses to pass data between processes, for example with tensor parallelism.
 It counts against the pod's memory limit, and the predictor's `shmSize` setting does not size it, so leave room for it in the memory resources.
 

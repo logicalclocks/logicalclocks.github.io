@@ -369,6 +369,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `kube_scheduling_jobinit_cpu_requests` | Double | `0.5` | Settings.java |
 | `kube_scheduling_jobinit_memory_limits_mb` | Double | `512.0` | Settings.java |
 | `kube_scheduling_jobinit_memory_requests_mb` | Double | `256.0` | Settings.java |
+| `kube_scheduling_model_hopsfsmount_cpu_requests` | Double | `0.5` | Settings.java |
 | `kube_serving_apikey_reaper_grace_minutes` | Integer | `10` | Settings.java |
 | `kube_serving_apikey_reaper_interval_minutes` | Integer | `15` | Settings.java |
 | `kube_serving_max_num_instances` | Integer | `-1` | Settings.java |

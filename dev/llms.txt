@@ -316,6 +316,7 @@
 - [Autoscaling](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/autoscaling/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/autoscaling/index.md))
 - [Scheduling](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/scheduling/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/scheduling/index.md))
 - [API Protocol](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/api-protocol/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/api-protocol/index.md))
+- [Loading Strategy](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/loading-strategy/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/loading-strategy/index.md))
 - [REST API](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/rest-api/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/rest-api/index.md))
 - [Troubleshooting](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/troubleshooting/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/troubleshooting/index.md))
 - [External Access](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/external-access/) ([md](https://docs.hopsworks.ai/latest/user_guides/mlops/serving/external-access/index.md))

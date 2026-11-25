@@ -158,7 +158,8 @@ An image that meets these requirements needs no Hopsworks components: Hopsworks 
 
 - **Ports.** HTTP on 8080 (Open Inference Protocol REST), gRPC on 9000 (Open Inference Protocol gRPC, served as h2c), and Prometheus metrics on 8002 at `/metrics`.
   In Standard mode, Prometheus scrapes port 8002.
-- **Model files.** Before Triton starts, Hopsworks copies the model version's files to `/mnt/models/<deployment-name>/`, so the model repository holds one model named after the deployment.
+- **Model files.** The model version's files are at `/mnt/models/<deployment-name>/`, so the model repository holds one model named after the deployment.
+  With the `MOUNT` [loading strategy][loading-strategy-guide] they are mounted read-only from HopsFS; with `DOWNLOAD` Hopsworks copies them there before Triton starts.
 - **User.** With `global._hopsworks.securityContextEnabled`, the container runs as a non-root user (UID 1000, GID 1000) with privilege escalation disabled and all capabilities dropped, so the image must work as that user.
 - **Shared memory.** Hopsworks mounts a memory-backed volume at `/dev/shm`, used by the Python backend; it counts against the memory of the deployment.
 - **Backends.** The image contains the Triton backends the models need, for example `onnxruntime`, `pytorch`, `tensorrt`, `openvino` or `python`.
