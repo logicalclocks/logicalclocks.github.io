@@ -101,10 +101,11 @@ Artifacts whose media type the caller did not accept are left out, and their nam
 A stored task keeps small parts inline and large ones beside the database.
 A `raw` part larger than 256 KiB is written to the deployment's artifact storage when its task is saved.
 The stored task then carries a `url` part in its place, pointing at `/a2a/artifacts/...` under the deployment's URL, with the size and the SHA-256 digest of the bytes under `metadata.hopsworks`.
-The 2 MiB cap applies to everything a task holds: its artifacts, its history and its status.
-When a task is larger, its largest remaining parts are stored the same way, large text parts included.
-When it still does not fit, its oldest history messages are dropped first, and then the content of its largest parts is omitted and replaced by a line that gives the size.
+The 2 MiB cap applies to everything a task holds, as stored: its artifacts, its history, its status and its metadata.
+When a task is larger, its largest remaining parts are stored the same way, large text and `data` parts included.
+When it still does not fit, its oldest history messages are dropped first, then the content of its largest parts is omitted and replaced by a line that gives the size, and then any metadata other than `metadata.hopsworks`.
 The task's `metadata.hopsworks` then says `truncated: true`, with the counts in `dropped_history_messages` and `omitted_parts`.
+A task that still does not fit is stored without its artifacts and history, with a status message that says so.
 An administrator can change both limits, see [cluster settings][a2a-cluster-settings].
 
 A streaming caller receives the bytes inline in the events.
@@ -155,6 +156,7 @@ The tables are readable by the deployment's own database user and by the project
 Any replica reads, lists, cancels, answers or follows (`SubscribeToTask`) a task, whichever replica ran it, and a task outlives the pod that ran it.
 A deployment with several instances needs no setting for this.
 Finished tasks are deleted after a retention period, 30 days by default, see [cluster settings][a2a-cluster-settings].
+The large parts a task kept beside the database, under `Resources/agents/a2a/` in the project, are deleted with it.
 
 An agent can choose to keep its tasks in the process instead:
 
@@ -247,6 +249,7 @@ agent_app = AgentApp(
 
 A surviving replica then runs the task again from the start, up to `retry_lost_tasks` times, with `attempt` counted in the task's metadata.
 The task stays `WORKING` until it ends or the retries run out.
+Hopsworks applies the same limit when it finds the lost task first: it hands the task back to the deployment's replicas, and fails it as `executor_lost` only when no replica takes it within 90 seconds.
 `retry_lost_tasks` needs `idempotent=True`, and such an agent needs at least one replica left to run the task again.
 
 ## Push notifications
