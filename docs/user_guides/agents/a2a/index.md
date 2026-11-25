@@ -158,6 +158,7 @@ An agent can choose to keep its tasks in the process instead:
 from hopsworks_agents.protocol import AgentApp
 from hopsworks_agents.protocol.a2a import A2AConfig
 
+
 agent_app = AgentApp(name="Churn analyst", a2a=A2AConfig(task_store="memory"))
 ```
 
@@ -183,6 +184,7 @@ An agent built with `memory_routes=False` is **private**:
 
 ```python
 from hopsworks_agents.protocol import AgentApp
+
 
 agent_app = AgentApp(name="Support agent", memory_routes=False)
 ```
@@ -230,6 +232,7 @@ An agent whose handler is safe to run twice can have a lost task run again inste
 ```python
 from hopsworks_agents.protocol import AgentApp
 from hopsworks_agents.protocol.a2a import A2AConfig
+
 
 agent_app = AgentApp(
     name="Churn analyst",
