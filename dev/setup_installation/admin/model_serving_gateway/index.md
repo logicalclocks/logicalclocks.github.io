@@ -2,6 +2,10 @@
 
 ## Introduction
 
+!!! warning "Replaced by Envoy Gateway in 5.4"
+    Hopsworks 5.4 removes the Istio ingress gateway, and the [Envoy Gateway][envoy-gateway] becomes the entry point for model deployments.
+    Prepare while on 5.3, as described in [5.3.x to 5.4.x][upgrade-53-to-54].
+
 Inference requests to KServe model deployments enter through the Istio ingress gateway, the `istio-ingressgateway` Service in the Hopsworks namespace.
 It routes on the path: `/v1/<project namespace>/<deployment>/...` reaches that deployment.
 By default the chart creates the Service with three node ports, 32080 (HTTP), 32443 (HTTPS) and 32021 (status):

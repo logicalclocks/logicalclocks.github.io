@@ -25583,6 +25583,10 @@ Deployments automatically scale the number of replicas between a minimum and a m
 In Standard mode, the default, they are scaled by **KEDA** where the cluster has it, on CPU or memory utilization or on the requests at the gateway (concurrency or requests per second), and a minimum of 0 scales the deployment to zero when idle.
 In Knative mode they are scaled by the **Knative Pod Autoscaler (KPA)** on request traffic.
 
+!!! warning "Knative mode is deprecated"
+    Hopsworks 5.4 removes Knative mode.
+    [Convert existing Knative-mode deployments to Standard mode][knative-mode-deprecated].
+
 For full details on autoscaling parameters, see the [Autoscaling Guide](../../mlops/serving/autoscaling.md).
 
 ## Scheduling
@@ -33413,6 +33417,10 @@ Configure autoscaling for your model deployment, including scale metrics and sca
 How a deployment scales depends on whether it runs in KServe Standard mode, scaled by KEDA where the cluster has it, or Knative mode, see [Deployment mode](autoscaling.md#deployment-mode).
 A minimum of 0 instances scales a deployment to zero when idle in either mode, see [Scale to zero when idle](autoscaling.md#scale-to-zero-when-idle).
 
+!!! warning "Knative mode is deprecated"
+    Hopsworks 5.4 removes Knative mode.
+    [Convert existing Knative-mode deployments to Standard mode][knative-mode-deprecated].
+
 ### Scheduling
 
 !!! info "Kueue is required"
@@ -34885,6 +34893,10 @@ Each model server has specific requirements and supports different types of mode
 All deployments use [KServe](https://kserve.github.io/website/latest/) as the serving platform, providing autoscaling, fine-grained resource allocation, inference logging, inference batching, and transformers.
 KServe runs a deployment in either Knative or Standard mode, see [Deployment mode](autoscaling.md#deployment-mode).
 
+!!! warning "Knative mode is deprecated"
+    Hopsworks 5.4 removes Knative mode.
+    [Convert existing Knative-mode deployments to Standard mode][knative-mode-deprecated].
+
 ## Predictor script
 
 For **Python model deployments** ==only==, you can provide a custom Python script, called a predictor script, to load your model and serve predictions. This script is included in the [artifact files](../serving/deployment.md#artifact-files) of the deployment. The script must follow a specific template, as shown in [Step 2](#step-21-optional-implement-a-predictor-script).
@@ -36278,11 +36290,9 @@ To navigate to the advanced creation form, click on `Advanced options`.
 ### Step 3: Configure autoscaling
 
 In the `Autoscaling` section of the advanced form, you can configure the scaling parameters for the predictor and/or the transformer (if available).
-The `Knative` checkbox at the top of the section selects the [deployment mode](#deployment-mode) and decides which of the fields below are shown.
-It starts unchecked, so a new deployment runs in Standard mode unless you check it.
-The checkbox is disabled while the deployment is running, because the mode of a running deployment cannot be changed.
+The fields depend on the [deployment mode](#deployment-mode), and a new deployment runs in Standard mode.
 
-With the checkbox cleared, the deployment runs in Standard mode and the form shows the fields of the autoscaler the cluster provides.
+The form shows the fields of the autoscaler the cluster provides.
 Its tooltip names the one in effect: KEDA where the cluster has it, KServe's own Horizontal Pod Autoscaler (HPA) otherwise.
 
 - The minimum and maximum instances.
@@ -36296,7 +36306,14 @@ Its tooltip names the one in effect: KEDA where the cluster has it, KServe's own
 - With a minimum of 0, the idle cooldown and the cold-start timeout.
   A vLLM deployment shows a warning, because the model reloads on every wake.
 
-With the checkbox checked, the deployment runs in Knative mode and you can set the scale metric (concurrent requests or requests per second), the target value, the minimum and maximum instances, and the panic and stable window parameters.
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/mlops/serving/deployment_adv_form_scaling_standard.png" alt="Autoscaling configuration for the predictor and transformer components in Standard mode">
+    <figcaption>Autoscaling configuration for the predictor and transformer in Standard mode</figcaption>
+  </figure>
+</p>
+
+The edit form of an existing Knative-mode deployment shows the Knative fields instead: the scale metric (concurrent requests or requests per second), the target value, the minimum and maximum instances, and the panic and stable windows.
 
 <p align="center">
   <figure>
@@ -36305,12 +36322,9 @@ With the checkbox checked, the deployment runs in Knative mode and you can set t
   </figure>
 </p>
 
-<p align="center">
-  <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployment_adv_form_scaling_standard.png" alt="Autoscaling configuration for the predictor and transformer components in Standard mode">
-    <figcaption>Autoscaling configuration for the predictor and transformer in Standard mode</figcaption>
-  </figure>
-</p>
+!!! warning "Knative mode is deprecated"
+    Hopsworks 5.4 removes Knative mode, so it can no longer be selected for a new deployment.
+    [Convert existing Knative-mode deployments to Standard mode][knative-mode-deprecated].
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
@@ -36341,9 +36355,9 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 You can use the [`PredictorScalingConfig`][hsml.scaling_config.PredictorScalingConfig] class to configure the scaling options according to your preferences.
 Default values for scaling metrics and parameters are listed in the [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) sections below.
-Make sure the metric and parameters you set are valid for the [deployment mode](#deployment-mode) you deploy in.
+Make sure the metric and parameters you set are valid for the [autoscaler](#standard-mode-autoscaler) of the cluster.
 
-=== "Standard mode (KEDA)"
+=== "Request metrics"
 
     ```python
     from hsml.scaling_config import PredictorScalingConfig, ScaleMetric
@@ -36362,7 +36376,7 @@ Make sure the metric and parameters you set are valid for the [deployment mode](
     )
     ```
 
-=== "Standard mode (vLLM engine metrics)"
+=== "vLLM engine metrics"
 
     ```python
     from hsml.scaling_config import PredictorScalingConfig, ScaleMetric
@@ -36379,7 +36393,7 @@ Make sure the metric and parameters you set are valid for the [deployment mode](
     )
     ```
 
-=== "Standard mode (CPU)"
+=== "CPU"
 
     ```python
     from hsml.scaling_config import PredictorScalingConfig
@@ -36390,24 +36404,13 @@ Make sure the metric and parameters you set are valid for the [deployment mode](
     )
     ```
 
-=== "Knative mode"
-
-    ```python
-    from hsml.scaling_config import PredictorScalingConfig
-
-
-    predictor_scaling = PredictorScalingConfig(
-        min_instances=1, max_instances=5, scale_metric="RPS", target=100
-    )
-    ```
-
 ### Step 3 (Optional): Define the transformer scaling configuration
 
 If a transformer script is also provided, you can use the [`TransformerScalingConfig`][hsml.scaling_config.TransformerScalingConfig] class to configure the scaling options according to your preferences.
 Default values for scaling metrics and parameters are listed in the [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) sections below.
-In Standard mode a transformer scales on CPU or memory and keeps at least one instance; the request metrics and scale to zero are for a predictor without a transformer.
+A transformer scales on CPU or memory and keeps at least one instance; the request metrics and scale to zero are for a predictor without a transformer.
 
-=== "Standard mode"
+=== "Python"
 
     ```python
     from hsml.scaling_config import TransformerScalingConfig
@@ -36418,20 +36421,9 @@ In Standard mode a transformer scales on CPU or memory and keeps at least one in
     )
     ```
 
-=== "Knative mode"
-
-    ```python
-    from hsml.scaling_config import TransformerScalingConfig
-
-
-    transformer_scaling = TransformerScalingConfig(
-        min_instances=1, max_instances=3, scale_metric="CONCURRENCY", target=50
-    )
-    ```
-
 ### Step 4: Create a deployment with the scaling configuration
 
-=== "Standard mode"
+=== "Python"
 
     ```python
     my_model = mr.get_model("my_model", version=1)
@@ -36448,30 +36440,6 @@ In Standard mode a transformer scales on CPU or memory and keeps at least one in
         transformer=my_transformer,
     )
     ```
-
-=== "Knative mode"
-
-    ```python
-    my_model = mr.get_model("my_model", version=1)
-
-    # optional
-    my_transformer = ms.create_transformer(
-        script_file="Resources/my_transformer.py",
-        scaling_configuration=transformer_scaling,
-    )
-
-    my_deployment = my_model.deploy(
-        scaling_configuration=predictor_scaling,
-        knative_mode=True,
-        # optional:
-        transformer=my_transformer,
-    )
-    ```
-
-!!! note "Match the scaling configuration to the mode"
-    The `knative_mode` argument selects the [deployment mode](#deployment-mode) of the deployment.
-    Leaving it unset deploys in Standard mode for every model server, so a Knative scaling configuration needs `knative_mode=True` passed explicitly.
-    A scaling configuration that uses fields the chosen mode does not support is rejected, so set both together.
 
 !!! tip "Read the configuration back"
     The backend fills in the defaults and settles the configuration on every start and save.
@@ -36491,21 +36459,70 @@ In Standard mode a transformer scales on CPU or memory and keeps at least one in
 Every deployment runs on KServe in one of two modes.
 In ==Standard== mode, the deployment is backed by a plain Kubernetes Deployment and an autoscaler the cluster provides: KEDA where it is installed, KServe's own HPA otherwise.
 In ==Knative== mode, the deployment is backed by a Knative service that scales on request traffic.
-Inference requests reach both modes through the same Istio endpoint, so the mode does not change how you send predictions to a deployment.
+Both modes are reached through the same endpoint, so the mode does not change how you send predictions to a deployment.
 
-!!! info "Standard and Knative mode"
+| Mode | Backed by | Autoscaler | Scale to zero |
+| ---- | --------- | ---------- | ------------- |
+| Standard | Kubernetes Deployment | [KEDA](https://keda.sh/docs/latest/concepts/) where the cluster has it (the default), else [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) | With KEDA, for a predictor without a transformer |
+| Knative | Knative service | [Knative Pod Autoscaler (KPA)](https://knative.dev/docs/serving/autoscaling/) | Yes |
 
-    | Mode     | Backed by             | Autoscaler                                                                                                                                                                            | Scale-to-zero                                                                        |
-    | -------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-    | Standard | Kubernetes Deployment | [KEDA](https://keda.sh/docs/latest/concepts/) where the cluster has it (the default), else [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) | With KEDA, for a predictor without a transformer, through the KEDA HTTP add-on        |
-    | Knative  | Knative service       | [Knative Pod Autoscaler (KPA)](https://knative.dev/docs/serving/autoscaling/)                                                                                                           | Yes                                                                                  |
+!!! warning "Knative mode is deprecated"
+    Hopsworks 5.4 removes Knative mode, so new deployments run in Standard mode.
+    Existing Knative-mode deployments keep working until you [convert them][knative-mode-deprecated].
 
-A new deployment runs in Standard mode for every model server; Knative mode is the opt-in.
 An update that leaves the mode unset keeps the stored one.
 
-The two modes are backed by different Kubernetes resources, so the mode of a deployment cannot be changed while it is running.
-Stop the deployment, change the mode, and start it again.
-Switching the mode clears the scaling settings that do not carry over and re-derives the defaults of the new mode.
+### Convert a deployment to Standard mode { #knative-mode-deprecated }
+
+Converting a Knative-mode deployment restarts it once if it is running, and leaves it stopped if it is stopped.
+It needs a role that can edit, start and stop the deployment, such as Data Owner.
+
+=== "UI"
+
+    Open the deployment's overview and click **Convert to Standard mode** in the deprecation banner.
+
+=== "Python"
+
+    The mode can only change while the deployment is stopped.
+
+    ```python
+    import hopsworks
+
+
+    project = hopsworks.login()
+    ms = project.get_model_serving()
+
+    my_deployment = ms.get_deployment("my_deployment")
+    was_running = my_deployment.is_running()
+    if was_running:
+        my_deployment.stop()
+    my_deployment.knative_mode = False
+    my_deployment.save()
+    if was_running:
+        my_deployment.start()
+    ```
+
+After the conversion:
+
+- The Knative-only scaling settings are replaced by the Standard-mode defaults, so check the [scaling configuration](#scaling-parameters).
+- A minimum of 0 instances keeps the deployment [scaling to zero when idle](#scale-to-zero-when-idle) where Standard mode supports it, and becomes 1 otherwise.
+- You can still [roll back][deployment-versions] to a version saved in Knative mode; it runs in Standard mode.
+
+!!! info "Creating a Knative-mode deployment fails"
+    From the Python SDK or the REST API, creating a deployment in Knative mode, or switching a deployment to Knative mode, fails with error `240082`.
+    Your administrator can still allow it until 5.4.
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.get_deployment`][hsml.model_serving.ModelServing.get_deployment]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Deployment`][hsml.deployment.Deployment]
+        - <code class="doc-symbol doc-symbol-method"></code> [`is_running`][hsml.deployment.Deployment.is_running]
+        - <code class="doc-symbol doc-symbol-method"></code> [`stop`][hsml.deployment.Deployment.stop]
+        - <code class="doc-symbol doc-symbol-attribute"></code> [`knative_mode`][hsml.deployment.Deployment.knative_mode]
+        - <code class="doc-symbol doc-symbol-method"></code> [`save`][hsml.deployment.Deployment.save]
+        - <code class="doc-symbol doc-symbol-method"></code> [`start`][hsml.deployment.Deployment.start]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ### Standard-mode autoscaler
 
@@ -36580,7 +36597,7 @@ The cluster defaults of the stabilization windows are set by the administrator i
 
 ### Knative parameters
 
-These apply to a deployment in Knative mode and are rejected in Standard mode.
+These apply to existing Knative-mode deployments and are rejected in Standard mode.
 See [scale bounds](https://knative.dev/docs/serving/autoscaling/scale-bounds/), [autoscaling concepts](https://knative.dev/docs/serving/autoscaling/autoscaling-concepts/) and [scale-to-zero](https://knative.dev/docs/serving/autoscaling/scale-to-zero/) in the Knative documentation for more details.
 
 | Parameter                     | Default | Range  | Description                                 |
@@ -37170,7 +37187,7 @@ Requests go to `<base URL>/v1/messages`, and Claude Code takes the base URL as `
 
 !!! info "Deployments the LLM Gateway does not serve"
 
-    - A deployment in Knative mode.
+    - A deployment in Knative mode, until it is [converted to Standard mode][knative-mode-deprecated].
     - A deployment that scales to zero when idle (a minimum of 0 instances), or that autoscales on concurrency or requests per second.
     - Every deployment of a project with a started deployment named `v1`.
 
@@ -40897,6 +40914,7 @@ The Anthropic `count_tokens` operation answers `422`, which Claude Code does not
 
 The LLM Gateway serves a deployment when the cluster has it and both its project and deployment [switches][rest-api-llm-gateway] are on.
 A deployment in Knative mode or one that scales to zero is not served by it.
+To have a Knative-mode deployment served, [convert it to Standard mode][knative-mode-deprecated].
 
 ### Direct { #coding-agents-direct }
 
@@ -42948,6 +42966,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `kube_keystore_path` | String | `/srv/hops/certs-dir/kube/hopsworks/hopsworks__kstore.jks` | Settings.java |
 | `kube_knative_domain_name` | String | `hopsworks.ai` | Settings.java |
 | `kube_knative_lb_domain` | String | *(empty string)* | Settings.java |
+| `kube_knative_mode_allowed` | Boolean | `false` | Settings.java |
 | `kube_kserve_installed` | Boolean | `false` | Settings.java |
 | `kube_kserve_tensorflow_version` | String | *(empty string)* | Settings.java |
 | `kube_master_url` | String | `https://192.168.68.102:6443` | Settings.java |
@@ -45711,6 +45730,11 @@ Knative-mode deployments keep running through Istio as before.
     An upgrade to 5.3 that does not turn the feature on routes nothing differently.
     API keys are checked by `model-serving-authenticator` on both paths, so access rules stay the same.
 
+!!! warning "Required before 5.4"
+
+    Hopsworks 5.4 removes Istio, and Envoy Gateway becomes the only entry point for model deployments.
+    The 5.4 upgrade does not start while Envoy Gateway is off, so turn it on while on 5.3, as described in [5.3.x to 5.4.x][upgrade-53-to-54].
+
 ## How to enable it { #envoy-gateway-enable }
 
 Two values in `global._hopsworks.envoyGateway` control the feature:
@@ -46269,6 +46293,7 @@ The access logs carry the same user, model and token counts per request, for aud
 - Knative-mode LLM deployments and Standard-mode ones behind the KEDA HTTP interceptor are not served by the LLM Gateway, because the interceptor does not wake a deployment reached this way.
   A Standard-mode deployment is behind the interceptor when it scales to zero when idle, which is the case for a minimum of 0, or when it autoscales on a request metric, concurrency or requests per second.
   They stay on their per-deployment path, and the backend says so in the deployment's status note.
+  A Knative-mode deployment [converted to Standard mode][knative-mode-deprecated] keeps at least one instance, so the LLM Gateway serves it.
 - While the LLM Gateway is published, a vLLM deployment created without a minimum number of instances gets a minimum of 1, so it does not scale to zero when idle and the LLM Gateway serves it.
   An explicit minimum of 0 is allowed, and a deployment with it is not served by the LLM Gateway.
 - Any member of the project can reach every one of its deployments through the LLM Gateway, unless a Data Owner turns it off for the project or for a deployment, as described under [Access to the LLM Gateway][llm-gateway-access].
@@ -46384,6 +46409,10 @@ Source: https://docs.hopsworks.ai/latest/setup_installation/admin/model_serving_
 # Model Serving Ingress Gateway { #model-serving-ingress-gateway }
 
 ## Introduction
+
+!!! warning "Replaced by Envoy Gateway in 5.4"
+    Hopsworks 5.4 removes the Istio ingress gateway, and the [Envoy Gateway][envoy-gateway] becomes the entry point for model deployments.
+    Prepare while on 5.3, as described in [5.3.x to 5.4.x][upgrade-53-to-54].
 
 Inference requests to KServe model deployments enter through the Istio ingress gateway, the `istio-ingressgateway` Service in the Hopsworks namespace.
 It routes on the path: `/v1/<project namespace>/<deployment>/...` reaches that deployment.
@@ -47403,7 +47432,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
 | [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523], and from 5.2.5 [Istio 1.30][upgrade-istio-130]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Additional prerequisites][upgrade-additional-prerequisites], [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, from 5.2.5 or later [Istio 1.31][upgrade-istio-131], [Envoy Gateway][upgrade-envoy-gateway] and [LLM Gateway][upgrade-llm-gateway] when turned on, with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Additional prerequisites][upgrade-additional-prerequisites], [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, from 5.2.5 or later [Istio 1.31][upgrade-istio-131], [Envoy Gateway][upgrade-envoy-gateway] and [LLM Gateway][upgrade-llm-gateway] when turned on, [Knative mode deprecated][upgrade-knative-mode-deprecated], with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -48234,6 +48263,59 @@ On a cluster still on Istio 1.29, the Istio install hook stops with an error bef
 The storage initializer, the init container that copies a downloading model deployment's files, now has limits of 2 cores and 2 GiB instead of 1 core and 1 GiB, because the copy was CPU-bound.
 A pod's limits count its largest init container, so a small predictor can now exceed a `limits.cpu` or `limits.memory` ResourceQuota or a LimitRange.
 Set `kserve.storageInitializer.resources` to keep the old limits.
+
+### Knative mode is deprecated { #upgrade-knative-mode-deprecated }
+
+!!! warning "Knative mode is deprecated"
+    Hopsworks 5.4 removes Knative and Istio.
+    Prepare while on 5.3, as described in [5.3.x to 5.4.x][upgrade-53-to-54].
+
+- **New deployments run in Standard mode.**
+  The UI no longer offers Knative mode, and creating a Knative-mode deployment from the Python SDK or the REST API fails with error `240082`.
+- **Existing Knative-mode deployments keep working** until their owners [convert them to Standard mode][knative-mode-deprecated].
+  `helm upgrade` prints how many of them are running.
+- **To allow new Knative-mode deployments until 5.4**, set `hopsworks.variables.kube_knative_mode_allowed: "true"` in your values file.
+  The chart writes the value on every upgrade, so a change in the admin UI lasts only until the next one.
+
+## 5.3.x to 5.4.x { #upgrade-53-to-54 }
+
+!!! info "5.4 is not released yet"
+    This section lists what to prepare on 5.3.
+
+5.4 removes Knative and Istio: model deployments run in Standard mode only, and Envoy Gateway replaces the Istio ingress gateway.
+The 5.4 upgrade does not start while Envoy Gateway is off or a Knative-mode deployment is running.
+
+1. **Enable Envoy Gateway**, as described in [Envoy Gateway][upgrade-envoy-gateway].
+2. **Convert the running Knative-mode deployments.**
+    List them, with `<namespace>` the Hopsworks namespace:
+
+    ```bash
+    kubectl get isvc -A -l serving.hops.works/id,hopsworks-deployment=<namespace> -o json | jq -r '.items[] | select((.status.deploymentMode // .metadata.annotations["serving.kserve.io/deploymentMode"] // "Knative") | test("^(Knative|Serverless)$")) | .metadata.namespace + "/" + .metadata.name'
+    ```
+
+    Their owners [convert each one][knative-mode-deprecated], which restarts it once.
+    Stopped Knative-mode deployments can wait: the 5.4 upgrade converts them.
+3. **Check the HTTPS certificate.**
+    With `kserve.knative.https.enabled`, the Secret named in `kserve.knative.https.credentialsName` must have the type `kubernetes.io/tls`, the only type Envoy Gateway accepts:
+
+    ```bash
+    kubectl get secret -n <namespace> <credentialsName> -o jsonpath='{.type}'
+    ```
+
+4. **Keep the gateway address.**
+    Node ports stay the same, but the upgrade releases the load balancer address of the Istio ingress gateway.
+    To keep it, reserve it before the upgrade:
+
+    - With a cloud load balancer, reserve it with your provider.
+    - With MetalLB, reserve it, for example in an `IPAddressPool` with `autoAssign: false`, and request it for the Envoy Gateway Service with MetalLB's `loadBalancerIPs` annotation in `kserve.envoyGateway.service.annotations`.
+
+    Otherwise, plan to move your DNS records to the new address.
+5. **Move what points at the Istio gateway.**
+    Anything outside the chart that names `istio-ingressgateway`, such as an OpenShift Route or a DNS record, moves to the Envoy Gateway Service `kserve-ingress-gateway`.
+    On AWS with unmanaged load balancers, the target groups in `global.unmanagedLoadBalancers.istio` move to the Envoy Gateway Service; the 5.4 upgrade notes give the steps.
+6. **Check your clients.**
+    Envoy Gateway drops request headers whose names contain an underscore, see [Headers with underscores][upgrade-envoy-gateway], and a request path must name the project exactly, see [Expose the Gateway directly][envoy-gateway].
+    Hopsworks and the Python clients cache the inference endpoint until they restart.
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
@@ -53393,6 +53475,10 @@ hw-kyverno:
 The exception applies to pods labelled `serving.hops.works/model-server: triton`, which Hopsworks sets on Triton predictors.
 
 ## Knative
+
+!!! warning "Knative mode is deprecated"
+    Hopsworks 5.4 removes Knative mode, so this section applies only to existing Knative-mode deployments.
+    Their owners can [convert them to Standard mode][knative-mode-deprecated].
 
 In Knative mode, Knative resolves the image tag to a digest before it creates a revision.
 When the Knative controller cannot resolve the tag, for example because it cannot authenticate to the registry or verify its TLS certificate, the deployment fails before a pod is created.
@@ -82947,6 +83033,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 240077 | `SERVING_SHARING_NOT_SUPPORTED` | 400 BAD_REQUEST | Only a vLLM deployment served by the LLM gateway can be shared with other projects. |
 | 240078 | `SERVING_SHARING_DISABLED` | 400 BAD_REQUEST | Sharing deployments with other projects is disabled on this cluster. |
 | 240079 | `SERVING_SHARING_PROJECT_NOT_FOUND` | 404 NOT_FOUND | The project to share the deployment with does not exist or is the owner of the deployment. |
+| 240082 | `KNATIVE_MODE_DEPRECATED` | 400 BAD_REQUEST | Knative mode is deprecated: new deployments and mode changes must use Standard mode |
 
 ## InferenceErrorCode
 

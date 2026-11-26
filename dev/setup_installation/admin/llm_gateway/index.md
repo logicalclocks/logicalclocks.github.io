@@ -380,6 +380,7 @@ The access logs carry the same user, model and token counts per request, for aud
 - Knative-mode LLM deployments and Standard-mode ones behind the KEDA HTTP interceptor are not served by the LLM Gateway, because the interceptor does not wake a deployment reached this way.
   A Standard-mode deployment is behind the interceptor when it scales to zero when idle, which is the case for a minimum of 0, or when it autoscales on a request metric, concurrency or requests per second.
   They stay on their per-deployment path, and the backend says so in the deployment's status note.
+  A Knative-mode deployment [converted to Standard mode][knative-mode-deprecated] keeps at least one instance, so the LLM Gateway serves it.
 - While the LLM Gateway is published, a vLLM deployment created without a minimum number of instances gets a minimum of 1, so it does not scale to zero when idle and the LLM Gateway serves it.
   An explicit minimum of 0 is allowed, and a deployment with it is not served by the LLM Gateway.
 - Any member of the project can reach every one of its deployments through the LLM Gateway, unless a Data Owner turns it off for the project or for a deployment, as described under [Access to the LLM Gateway][llm-gateway-access].

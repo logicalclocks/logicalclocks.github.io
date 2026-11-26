@@ -69,6 +69,7 @@ The Anthropic `count_tokens` operation answers `422`, which Claude Code does not
 
 The LLM Gateway serves a deployment when the cluster has it and both its project and deployment [switches][rest-api-llm-gateway] are on.
 A deployment in Knative mode or one that scales to zero is not served by it.
+To have a Knative-mode deployment served, [convert it to Standard mode][knative-mode-deprecated].
 
 ### Direct { #coding-agents-direct }
 

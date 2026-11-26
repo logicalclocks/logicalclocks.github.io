@@ -14,6 +14,11 @@ Knative-mode deployments keep running through Istio as before.
     An upgrade to 5.3 that does not turn the feature on routes nothing differently.
     API keys are checked by `model-serving-authenticator` on both paths, so access rules stay the same.
 
+!!! warning "Required before 5.4"
+
+    Hopsworks 5.4 removes Istio, and Envoy Gateway becomes the only entry point for model deployments.
+    The 5.4 upgrade does not start while Envoy Gateway is off, so turn it on while on 5.3, as described in [5.3.x to 5.4.x][upgrade-53-to-54].
+
 ## How to enable it { #envoy-gateway-enable }
 
 Two values in `global._hopsworks.envoyGateway` control the feature:

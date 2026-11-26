@@ -223,6 +223,10 @@ Deployments automatically scale the number of replicas between a minimum and a m
 In Standard mode, the default, they are scaled by **KEDA** where the cluster has it, on CPU or memory utilization or on the requests at the gateway (concurrency or requests per second), and a minimum of 0 scales the deployment to zero when idle.
 In Knative mode they are scaled by the **Knative Pod Autoscaler (KPA)** on request traffic.
 
+!!! warning "Knative mode is deprecated"
+    Hopsworks 5.4 removes Knative mode.
+    [Convert existing Knative-mode deployments to Standard mode][knative-mode-deprecated].
+
 For full details on autoscaling parameters, see the [Autoscaling Guide](../../mlops/serving/autoscaling.md).
 
 ## Scheduling
