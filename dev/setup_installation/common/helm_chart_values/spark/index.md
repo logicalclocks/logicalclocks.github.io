@@ -4,7 +4,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -180,6 +180,103 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `spark.sql.ansiEnabled` <a class="headerlink" href="#helm.spark.sql.ansiEnabled" title="Permanent link">#</a> { #helm.spark.sql.ansiEnabled }
 :   Type `bool`, default `false`.
     Whether to enable ANSI SQL mode (`spark.sql.ansi.enabled`). Spark 4 changed the upstream default to `true`, which turns arithmetic overflow and invalid casts into runtime errors instead of returning `null`. Hopsworks pins it to `false` so SQL that ran on Spark 3.x keeps the same semantics after the upgrade. Set to `true` to opt in to standards-compliant behavior cluster-wide; individual jobs can still override `spark.sql.ansi.enabled` themselves.
+
+</div>
+
+## crdInstallJob { #helm-values-spark-crdinstalljob }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    spark:
+      crdInstallJob:
+        crdImage:
+          name: spark-operator-crds
+          registry: ''
+          tag: 2.5.1-h2-r1
+        enabled: true
+        imagePullPolicy: IfNotPresent
+        nodeSelector: {}
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        tolerations: []
+        ttlSecondsAfterFinished: null
+    ```
+
+<div class="hops-values" markdown>
+
+`spark.crdInstallJob` <a class="headerlink" href="#helm.spark.crdInstallJob" title="Permanent link">#</a> { #helm.spark.crdInstallJob }
+:   Type `object`.
+    the pre-install and pre-upgrade hook that applies the spark-operator CRDs, in place of the upstream chart's hook (spark-operator.hook.upgradeCrd is off). An init container copies the CRDs out of crdImage and the toolbox image (global._hopsworks.toolbox) applies them with server-side apply, which is idempotent and so safe under Argo CD.
+
+    ??? note "Default"
+
+        ```yaml
+        crdImage:
+          name: spark-operator-crds
+          registry: ''
+          tag: 2.5.1-h2-r1
+        enabled: true
+        imagePullPolicy: IfNotPresent
+        nodeSelector: {}
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        tolerations: []
+        ttlSecondsAfterFinished: null
+        ```
+
+`spark.crdInstallJob.crdImage` <a class="headerlink" href="#helm.spark.crdInstallJob.crdImage" title="Permanent link">#</a> { #helm.spark.crdInstallJob.crdImage }
+:   Type `object`, default `{"name":"spark-operator-crds","registry":"","tag":"2.5.1-h2-r1"}`.
+    the image that carries the spark-operator CRDs (docker-images spark-operator-crds: the files and a static busybox on scratch, no tools). Its CRDs must match the vendored spark-operator chart's crds/.
+
+`spark.crdInstallJob.crdImage.registry` <a class="headerlink" href="#helm.spark.crdInstallJob.crdImage.registry" title="Permanent link">#</a> { #helm.spark.crdInstallJob.crdImage.registry }
+:   Type `string`, default `""`.
+    registry prefix; empty means global._hopsworks.imageRegistry plus the hopsworks project
+
+`spark.crdInstallJob.enabled` <a class="headerlink" href="#helm.spark.crdInstallJob.enabled" title="Permanent link">#</a> { #helm.spark.crdInstallJob.enabled }
+:   Type `bool`, default `true`.
+    enable the CRD install hook
+
+`spark.crdInstallJob.imagePullPolicy` <a class="headerlink" href="#helm.spark.crdInstallJob.imagePullPolicy" title="Permanent link">#</a> { #helm.spark.crdInstallJob.imagePullPolicy }
+:   Type `string`, default `"IfNotPresent"`.
+    pull policy of the CRD image and the toolbox image; global._hopsworks.imagePullPolicy takes precedence when set
+
+`spark.crdInstallJob.nodeSelector` <a class="headerlink" href="#helm.spark.crdInstallJob.nodeSelector" title="Permanent link">#</a> { #helm.spark.crdInstallJob.nodeSelector }
+:   Type `object`, default `{}`.
+    nodeSelector of the Job; falls back to global._hopsworks.nodeSelector
+
+`spark.crdInstallJob.resources` <a class="headerlink" href="#helm.spark.crdInstallJob.resources" title="Permanent link">#</a> { #helm.spark.crdInstallJob.resources }
+:   Type `object`.
+    resources of the Job container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: 500m
+          memory: 256Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        ```
+
+`spark.crdInstallJob.tolerations` <a class="headerlink" href="#helm.spark.crdInstallJob.tolerations" title="Permanent link">#</a> { #helm.spark.crdInstallJob.tolerations }
+:   Type `list`, default `[]`.
+    tolerations of the Job; fall back to global._hopsworks.tolerations
+
+`spark.crdInstallJob.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.spark.crdInstallJob.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.spark.crdInstallJob.ttlSecondsAfterFinished }
+:   Type `string`, default `nil`.
+    TTL in seconds for the CRD install Job. Overrides the global default.
 
 </div>
 
@@ -624,7 +721,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             tag: 2.5.1-h2-1.10.1
           nodeSelector: {}
           tolerations: []
-          upgradeCrd: true
+          upgradeCrd: false
         image:
           pullPolicy: IfNotPresent
           pullSecrets: []
@@ -837,7 +934,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             tag: 2.5.1-h2-1.10.1
           nodeSelector: {}
           tolerations: []
-          upgradeCrd: true
+          upgradeCrd: false
         image:
           pullPolicy: IfNotPresent
           pullSecrets: []
@@ -1194,8 +1291,8 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     List of node taints to tolerate for the Helm hook Job.
 
 `spark.spark-operator.hook.upgradeCrd` <a class="headerlink" href="#helm.spark.spark-operator.hook.upgradeCrd" title="Permanent link">#</a> { #helm.spark.spark-operator.hook.upgradeCrd }
-:   Type `bool`, default `true`.
-    Whether to create a Helm pre-install/pre-upgrade hook Job to update CRDs.
+:   Type `bool`, default `false`.
+    Whether to create the upstream pre-install/pre-upgrade hook Job that updates the CRDs. Off: crdInstallJob applies them instead.
 
 `spark.spark-operator.image.pullPolicy` <a class="headerlink" href="#helm.spark.spark-operator.image.pullPolicy" title="Permanent link">#</a> { #helm.spark.spark-operator.image.pullPolicy }
 :   Type `string`, default `"IfNotPresent"`.
@@ -1547,10 +1644,6 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         tolerations: []
         ```
 
-`spark.sparkOperatorUpgradeJob.crdImage` <a class="headerlink" href="#helm.spark.sparkOperatorUpgradeJob.crdImage" title="Permanent link">#</a> { #helm.spark.sparkOperatorUpgradeJob.crdImage }
-:   Type `object`, default `{"repository":"spark-operator-crds","tag":"2.2.1-1.4"}`.
-    Image for the pre-upgrade Job. Must ship the spark-operator CRDs at `/opt/spark-operator-crds/` and provide `bash` and `kubectl`.
-
 `spark.sparkOperatorUpgradeJob.leaderElectionLockName` <a class="headerlink" href="#helm.spark.sparkOperatorUpgradeJob.leaderElectionLockName" title="Permanent link">#</a> { #helm.spark.sparkOperatorUpgradeJob.leaderElectionLockName }
 :   Type `string`, default `"spark-operator-lock"`.
     Leader election lease name used by the old chart (only if replicaCount > 1).
@@ -1574,6 +1667,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `spark.sparkOperatorUpgradeJob.sparkJobNamespace` <a class="headerlink" href="#helm.spark.sparkOperatorUpgradeJob.sparkJobNamespace" title="Permanent link">#</a> { #helm.spark.sparkOperatorUpgradeJob.sparkJobNamespace }
 :   Type `string`, default `""`.
     Namespace where spark app RBAC/SA were created by the old chart.
+
+`spark.sparkOperatorUpgradeJob.crdImage` <span class="hops-values-deprecated">Deprecated</span> <a class="headerlink" href="#helm.spark.sparkOperatorUpgradeJob.crdImage" title="Permanent link">#</a> { #helm.spark.sparkOperatorUpgradeJob.crdImage }
+:   Type `object`, default `{"repository":"spark-operator-crds","tag":"2.2.1-1.4"}`.
+    Deprecated and ignored: the Job runs on the toolbox image (global._hopsworks.toolbox), which has the bash and kubectl its cleanup script needs. Kept so values that set it still validate.
 
 </div>
 

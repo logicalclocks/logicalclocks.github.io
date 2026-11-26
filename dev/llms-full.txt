@@ -53911,7 +53911,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -53959,7 +53959,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.
 | [`prometheus`][helm-values-prometheus] | [`prometheus` 25.20.2](https://artifacthub.io/packages/helm/prometheus-community/prometheus/25.20.2), [`prometheus-adapter` 4.11.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-adapter/4.11.0) | 9 |
 | [`ray`][helm-values-ray] | [`kuberay-operator` 1.4.0](https://artifacthub.io/packages/helm/kuberay-operator/kuberay-operator/1.4.0) | 2 |
 | [`rondb`][helm-values-rondb] | [`rondb` 26.2.27](https://github.com/logicalclocks/rondb-helm/blob/v26.2.27/values.schema.json) | 500 |
-| [`spark`][helm-values-spark] | [`spark-operator` 2.5.1](https://github.com/kubeflow/spark-operator/blob/v2.5.1/charts/spark-operator-chart/README.md) | 160 |
+| [`spark`][helm-values-spark] | [`spark-operator` 2.5.1](https://github.com/kubeflow/spark-operator/blob/v2.5.1/charts/spark-operator-chart/README.md) | 169 |
 | [`superset`][helm-values-superset] | [`mysql` 12.3.5](https://artifacthub.io/packages/helm/bitnami/mysql/12.3.5), [`superset` 0.15.0](https://artifacthub.io/packages/helm/superset/superset/0.15.0) | 36 |
 | [`trino`][helm-values-trino] | [`trino` 1.41.0](https://artifacthub.io/packages/helm/trino/trino/1.41.0) | 41 |
 | [`vpa`][helm-values-vpa] |  | 18 |
@@ -54334,7 +54334,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -55670,7 +55670,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -56698,7 +56698,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -56980,7 +56980,7 @@ Values under `certs-operator` configure the operator that issues the TLS certifi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -57168,7 +57168,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -57502,7 +57502,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -57953,7 +57953,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -58451,7 +58451,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -58869,7 +58869,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -60034,7 +60034,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 
@@ -60304,7 +60304,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -66002,7 +66002,7 @@ The LLM Gateway's controller ships in the same subchart, and its values, under `
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: `global._hopsworks.envoyGateway.enabled`, [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -66015,7 +66015,7 @@ Deployed according to the first of these values that is set: `global._hopsworks.
       crdImage:
         name: envoy-gateway-crds
         registry: ''
-        tag: v1.9.2-h1
+        tag: v1.9.2-h2
       envoyProxy:
         image:
           registry: ''
@@ -66035,8 +66035,8 @@ Deployed according to the first of these values that is set: `global._hopsworks.
     override hw-envoy-gateway values
 
 `hw-envoy-gateway.crdImage` <a class="headerlink" href="#helm.hw-envoy-gateway.crdImage" title="Permanent link">#</a> { #helm.hw-envoy-gateway.crdImage }
-:   Type `object`, default `{"name":"envoy-gateway-crds","registry":"","tag":"v1.9.2-h1"}`.
-    the image that carries the Envoy Gateway and Gateway API CRDs (docker-images envoy-gateway-crds, on the hwutils toolbox image). The CRDs cannot ship in the chart: they are 3.8 MB and Helm keeps the chart files in a release Secret capped at 1 MiB, so the install and upgrade hook applies them from this image with server-side apply, the way the Istio CRDs are applied from the istioctl image. The tag starts with the Envoy Gateway release (Chart.yaml appVersion) followed by an image revision.
+:   Type `object`, default `{"name":"envoy-gateway-crds","registry":"","tag":"v1.9.2-h2"}`.
+    the image that carries the Envoy Gateway and Gateway API CRDs (docker-images envoy-gateway-crds: the files and a static busybox on scratch, no tools). The CRDs cannot ship in the chart: they are 3.8 MB and Helm keeps the chart files in a release Secret capped at 1 MiB, so the install and upgrade hook copies them out of this image in an init container and applies them server-side from the toolbox image (global._hopsworks.toolbox). The tag starts with the Envoy Gateway release (Chart.yaml appVersion) followed by an image revision.
 
 `hw-envoy-gateway.crdImage.registry` <a class="headerlink" href="#helm.hw-envoy-gateway.crdImage.registry" title="Permanent link">#</a> { #helm.hw-envoy-gateway.crdImage.registry }
 :   Type `string`, default `""`.
@@ -66396,7 +66396,7 @@ Deployed according to the first of these values that is set: `global._hopsworks.
 
 `hw-envoy-gateway.crdInstallJob.imagePullPolicy` <a class="headerlink" href="#helm.hw-envoy-gateway.crdInstallJob.imagePullPolicy" title="Permanent link">#</a> { #helm.hw-envoy-gateway.crdInstallJob.imagePullPolicy }
 :   Type `string`, default `"IfNotPresent"`.
-    pull policy of the CRD image; global._hopsworks.imagePullPolicy takes precedence when set
+    pull policy of the CRD images and the toolbox image the Jobs run; global._hopsworks.imagePullPolicy takes precedence when set
 
 `hw-envoy-gateway.crdInstallJob.nodeSelector` <a class="headerlink" href="#helm.hw-envoy-gateway.crdInstallJob.nodeSelector" title="Permanent link">#</a> { #helm.hw-envoy-gateway.crdInstallJob.nodeSelector }
 :   Type `object`, default `{}`.
@@ -66442,7 +66442,7 @@ See [LLM Gateway][llm-gateway] for what the feature installs and what the cluste
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 ## aiGateway { #helm-values-hw-envoy-ai-gateway-aigateway }
 
@@ -66475,7 +66475,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.
         crdImage:
           name: envoy-ai-gateway-crds
           registry: ''
-          tag: v1.2.0-h1
+          tag: v1.2.0-h2
         extProc:
           image:
             registry: ''
@@ -66558,7 +66558,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.
         crdImage:
           name: envoy-ai-gateway-crds
           registry: ''
-          tag: v1.2.0-h1
+          tag: v1.2.0-h2
         extProc:
           image:
             registry: ''
@@ -66693,8 +66693,8 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.
     tolerations of the controller; fall back to global._hopsworks.tolerations
 
 `hw-envoy-gateway.aiGateway.crdImage` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.crdImage" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.crdImage }
-:   Type `object`, default `{"name":"envoy-ai-gateway-crds","registry":"","tag":"v1.2.0-h1"}`.
-    the image that carries the six LLM Gateway CRDs (docker-images envoy-ai-gateway-crds, on the hwutils toolbox image). They are 2 MB and cannot ship in the chart (the release Secret cap, see crdImage above), so a second install and upgrade hook applies them server-side. The tag starts with the upstream Agent Router release followed by an image revision.
+:   Type `object`, default `{"name":"envoy-ai-gateway-crds","registry":"","tag":"v1.2.0-h2"}`.
+    the image that carries the six LLM Gateway CRDs (docker-images envoy-ai-gateway-crds: the files and a static busybox on scratch, no tools). They are 2 MB and cannot ship in the chart (the release Secret cap, see crdImage above), so a second install and upgrade hook copies them out and applies them server-side from the toolbox image. The tag starts with the upstream Agent Router release followed by an image revision.
 
 `hw-envoy-gateway.aiGateway.crdImage.registry` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.crdImage.registry" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.crdImage.registry }
 :   Type `string`, default `""`.
@@ -66939,7 +66939,7 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -67239,7 +67239,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
         image:
           name: keda-crds
           registry: ''
-          tag: 2.21.0-0.16.0-h1
+          tag: 2.21.0-0.16.0-h2
         imagePullPolicy: IfNotPresent
         nodeSelector: {}
         resources:
@@ -67266,7 +67266,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
         image:
           name: keda-crds
           registry: ''
-          tag: 2.21.0-0.16.0-h1
+          tag: 2.21.0-0.16.0-h2
         imagePullPolicy: IfNotPresent
         nodeSelector: {}
         resources:
@@ -67285,8 +67285,8 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     apply the shipped CRDs on upgrade
 
 `hw-keda.crdUpgradeJob.image` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.image" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.image }
-:   Type `object`, default `{"name":"keda-crds","registry":"","tag":"2.21.0-0.16.0-h1"}`.
-    the image that carries the CRDs, one directory per pinned version (keda-<version>, keda-add-ons-http-<version>). The Job checks every file's sha256 against this chart's crds/ before applying anything, so the tag must be the build for this chart's KEDA and HTTP add-on versions.
+:   Type `object`, default `{"name":"keda-crds","registry":"","tag":"2.21.0-0.16.0-h2"}`.
+    the image that carries the CRDs (docker-images keda-crds: the files and a static busybox on scratch, no tools), one directory per pinned version (keda-<version>, keda-add-ons-http-<version>). An init container copies them out and the Job's toolbox container checks every file's sha256 against this chart's crds/ before applying anything, so the tag must be the build for this chart's KEDA and HTTP add-on versions.
 
 `hw-keda.crdUpgradeJob.image.name` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.image.name" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.image.name }
 :   Type `string`, default `"keda-crds"`.
@@ -67297,7 +67297,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     registry and repository prefix of the image; empty means global._hopsworks.imageRegistry followed by /hopsworks
 
 `hw-keda.crdUpgradeJob.image.tag` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.image.tag" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.image.tag }
-:   Type `string`, default `"2.21.0-0.16.0-h1"`.
+:   Type `string`, default `"2.21.0-0.16.0-h2"`.
     image tag, <keda>-<http-add-on>-h<revision>
 
 `hw-keda.crdUpgradeJob.imagePullPolicy` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.imagePullPolicy" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.imagePullPolicy }
@@ -67346,7 +67346,7 @@ With `kueue.enabled=false` Hopsworks uses a Kueue installed outside its release;
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -67732,7 +67732,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -68170,11 +68170,11 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 
 `hw-kyverno.policyExceptions.spark` <a class="headerlink" href="#helm.hw-kyverno.policyExceptions.spark" title="Permanent link">#</a> { #helm.hw-kyverno.policyExceptions.spark }
 :   Type `object`, default `{"enabled":true,"rssAppName":"rss-hops"}`.
-    PolicyException for Spark-related resources including: (1) Spark driver and executor pods created by spark-operator - these pods have container-level security contexts but lack pod-level security context support in older spark-operator versions, (2) RSS (Remote Shuffle Service) coordinator and shuffle server Deployments/StatefulSets - these are dynamically created by the Uniffle controller with security contexts configured via CRD spec, and (3) the spark-operator Helm hook Job that applies CRDs on install/upgrade - the upstream chart hardcodes its securityContext without runAsNonRoot/seccompProfile and exposes no values to set them.
+    PolicyException for Spark-related resources: (1) Spark driver and executor pods created by spark-operator - these pods have container-level security contexts but lack pod-level security context support in older spark-operator versions, (2) RSS (Remote Shuffle Service) coordinator and shuffle server Deployments/StatefulSets - these are dynamically created by the Uniffle controller with security contexts configured via CRD spec.
 
 `hw-kyverno.policyExceptions.spark.enabled` <a class="headerlink" href="#helm.hw-kyverno.policyExceptions.spark.enabled" title="Permanent link">#</a> { #helm.hw-kyverno.policyExceptions.spark.enabled }
 :   Type `bool`, default `true`.
-    Enable PolicyException for Spark-related resources (spark-operator driver/executor pods, RSS coordinator/shuffle server Deployments/StatefulSets, and the spark-operator CRD upgrade hook Job)
+    Enable PolicyException for Spark-related resources (spark-operator driver/executor pods, RSS coordinator/shuffle server Deployments/StatefulSets)
 
 `hw-kyverno.policyExceptions.spark.rssAppName` <a class="headerlink" href="#helm.hw-kyverno.policyExceptions.spark.rssAppName" title="Permanent link">#</a> { #helm.hw-kyverno.policyExceptions.spark.rssAppName }
 :   Type `string`, default `"rss-hops"`.
@@ -68234,7 +68234,7 @@ Values under `judge` configure Judge, the active cluster arbitrator service.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -68369,7 +68369,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -69117,7 +69117,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
         enabled: true
         image:
           name: crds
-          tag: 1.3.1-h1
+          tag: 1.3.1-h2
         name: strimzi-crd-upgrade
         nodeSelector: {}
         resources:
@@ -69140,7 +69140,7 @@ Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopswor
     Run the Job that keeps the Strimzi CRDs in step with the operator this chart deploys, and preflights the KRaft migration. It runs pre-install and pre-upgrade: Helm applies the operator subchart's `crds/` on install only, where Helm 3 skips any CRD that already exists and Helm 4 applies the `v1`-only bundle over it, so every other path goes through here. A cluster whose objects are still stored as `v1beta2` is converted first (through the 0.51.0 bundle in `image`), and under Helm `v1beta2` stays served on that cluster from then on, next to the operator's bundle: a Helm release rendered at `v1beta2`, such as a satellite upgraded before central, can only be upgraded while it is served. On that cluster a failed apply, or a failed write of the marker that keeps `v1beta2` served after a Helm 4 install, stops the upgrade. Anywhere else a failed *refresh* is not fatal by itself - it repairs rather than gates, so it warns and lets the upgrade continue - but the Job then refuses the upgrade when the live CRDs are too old for the Kafka resource this chart renders. The preflight checks are fatal: they only fire on states that would corrupt or roll back a cluster.
 
 `kafka.crdUpgradeJob.image` <a class="headerlink" href="#helm.kafka.crdUpgradeJob.image" title="Permanent link">#</a> { #helm.kafka.crdUpgradeJob.image }
-:   Type `object`, default `{"name":"crds","tag":"1.3.1-h1"}`.
+:   Type `object`, default `{"name":"crds","tag":"1.3.1-h2"}`.
     Image carrying the CRD bundles the Job applies: `strimzi-crds-<version>.yaml` for the Strimzi version this chart depends on, and the 0.51.0 bundle a cluster still storing `v1beta2` is converted through (Kubernetes refuses to drop a version still listed in a CRD's `status.storedVersions`, and 0.51.0 is the last Strimzi release to serve both). The 0.51.0 bundle is also where the `v1beta2` schema the Job keeps served comes from, so every later upgrade of a converted cluster reads it too, and it has to stay in the image. Built by `strimzi-crds` in the docker-images repo and pulled from the operator's `defaultImageRegistry`/`defaultImageRepository` like the broker image, so an airgapped install mirrors it with the rest (`vendor_images.sh` includes it). The tag's Strimzi part must match the dependency version: the Job refuses the upgrade when the bundle it needs is not in the image.
 
 `kafka.crdUpgradeJob.name` <a class="headerlink" href="#helm.kafka.crdUpgradeJob.name" title="Permanent link">#</a> { #helm.kafka.crdUpgradeJob.name }
@@ -69259,7 +69259,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -71232,7 +71232,7 @@ Values under `minio` configure MinIO, an S3-compatible object store deployed ins
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) is `true`.
 
@@ -71487,7 +71487,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -72463,7 +72463,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -72998,7 +72998,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -73152,7 +73152,7 @@ Values under `ray` configure the KubeRay operator, which runs the Ray clusters b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.ray.enabled`](global.md#helm.global._hopsworks.ray.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -73299,7 +73299,7 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -76227,7 +76227,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -76403,6 +76403,103 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `spark.sql.ansiEnabled` <a class="headerlink" href="#helm.spark.sql.ansiEnabled" title="Permanent link">#</a> { #helm.spark.sql.ansiEnabled }
 :   Type `bool`, default `false`.
     Whether to enable ANSI SQL mode (`spark.sql.ansi.enabled`). Spark 4 changed the upstream default to `true`, which turns arithmetic overflow and invalid casts into runtime errors instead of returning `null`. Hopsworks pins it to `false` so SQL that ran on Spark 3.x keeps the same semantics after the upgrade. Set to `true` to opt in to standards-compliant behavior cluster-wide; individual jobs can still override `spark.sql.ansi.enabled` themselves.
+
+</div>
+
+## crdInstallJob { #helm-values-spark-crdinstalljob }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    spark:
+      crdInstallJob:
+        crdImage:
+          name: spark-operator-crds
+          registry: ''
+          tag: 2.5.1-h2-r1
+        enabled: true
+        imagePullPolicy: IfNotPresent
+        nodeSelector: {}
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        tolerations: []
+        ttlSecondsAfterFinished: null
+    ```
+
+<div class="hops-values" markdown>
+
+`spark.crdInstallJob` <a class="headerlink" href="#helm.spark.crdInstallJob" title="Permanent link">#</a> { #helm.spark.crdInstallJob }
+:   Type `object`.
+    the pre-install and pre-upgrade hook that applies the spark-operator CRDs, in place of the upstream chart's hook (spark-operator.hook.upgradeCrd is off). An init container copies the CRDs out of crdImage and the toolbox image (global._hopsworks.toolbox) applies them with server-side apply, which is idempotent and so safe under Argo CD.
+
+    ??? note "Default"
+
+        ```yaml
+        crdImage:
+          name: spark-operator-crds
+          registry: ''
+          tag: 2.5.1-h2-r1
+        enabled: true
+        imagePullPolicy: IfNotPresent
+        nodeSelector: {}
+        resources:
+          limits:
+            cpu: 500m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        tolerations: []
+        ttlSecondsAfterFinished: null
+        ```
+
+`spark.crdInstallJob.crdImage` <a class="headerlink" href="#helm.spark.crdInstallJob.crdImage" title="Permanent link">#</a> { #helm.spark.crdInstallJob.crdImage }
+:   Type `object`, default `{"name":"spark-operator-crds","registry":"","tag":"2.5.1-h2-r1"}`.
+    the image that carries the spark-operator CRDs (docker-images spark-operator-crds: the files and a static busybox on scratch, no tools). Its CRDs must match the vendored spark-operator chart's crds/.
+
+`spark.crdInstallJob.crdImage.registry` <a class="headerlink" href="#helm.spark.crdInstallJob.crdImage.registry" title="Permanent link">#</a> { #helm.spark.crdInstallJob.crdImage.registry }
+:   Type `string`, default `""`.
+    registry prefix; empty means global._hopsworks.imageRegistry plus the hopsworks project
+
+`spark.crdInstallJob.enabled` <a class="headerlink" href="#helm.spark.crdInstallJob.enabled" title="Permanent link">#</a> { #helm.spark.crdInstallJob.enabled }
+:   Type `bool`, default `true`.
+    enable the CRD install hook
+
+`spark.crdInstallJob.imagePullPolicy` <a class="headerlink" href="#helm.spark.crdInstallJob.imagePullPolicy" title="Permanent link">#</a> { #helm.spark.crdInstallJob.imagePullPolicy }
+:   Type `string`, default `"IfNotPresent"`.
+    pull policy of the CRD image and the toolbox image; global._hopsworks.imagePullPolicy takes precedence when set
+
+`spark.crdInstallJob.nodeSelector` <a class="headerlink" href="#helm.spark.crdInstallJob.nodeSelector" title="Permanent link">#</a> { #helm.spark.crdInstallJob.nodeSelector }
+:   Type `object`, default `{}`.
+    nodeSelector of the Job; falls back to global._hopsworks.nodeSelector
+
+`spark.crdInstallJob.resources` <a class="headerlink" href="#helm.spark.crdInstallJob.resources" title="Permanent link">#</a> { #helm.spark.crdInstallJob.resources }
+:   Type `object`.
+    resources of the Job container
+
+    ??? note "Default"
+
+        ```yaml
+        limits:
+          cpu: 500m
+          memory: 256Mi
+        requests:
+          cpu: 50m
+          memory: 64Mi
+        ```
+
+`spark.crdInstallJob.tolerations` <a class="headerlink" href="#helm.spark.crdInstallJob.tolerations" title="Permanent link">#</a> { #helm.spark.crdInstallJob.tolerations }
+:   Type `list`, default `[]`.
+    tolerations of the Job; fall back to global._hopsworks.tolerations
+
+`spark.crdInstallJob.ttlSecondsAfterFinished` <a class="headerlink" href="#helm.spark.crdInstallJob.ttlSecondsAfterFinished" title="Permanent link">#</a> { #helm.spark.crdInstallJob.ttlSecondsAfterFinished }
+:   Type `string`, default `nil`.
+    TTL in seconds for the CRD install Job. Overrides the global default.
 
 </div>
 
@@ -76847,7 +76944,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             tag: 2.5.1-h2-1.10.1
           nodeSelector: {}
           tolerations: []
-          upgradeCrd: true
+          upgradeCrd: false
         image:
           pullPolicy: IfNotPresent
           pullSecrets: []
@@ -77060,7 +77157,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             tag: 2.5.1-h2-1.10.1
           nodeSelector: {}
           tolerations: []
-          upgradeCrd: true
+          upgradeCrd: false
         image:
           pullPolicy: IfNotPresent
           pullSecrets: []
@@ -77417,8 +77514,8 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     List of node taints to tolerate for the Helm hook Job.
 
 `spark.spark-operator.hook.upgradeCrd` <a class="headerlink" href="#helm.spark.spark-operator.hook.upgradeCrd" title="Permanent link">#</a> { #helm.spark.spark-operator.hook.upgradeCrd }
-:   Type `bool`, default `true`.
-    Whether to create a Helm pre-install/pre-upgrade hook Job to update CRDs.
+:   Type `bool`, default `false`.
+    Whether to create the upstream pre-install/pre-upgrade hook Job that updates the CRDs. Off: crdInstallJob applies them instead.
 
 `spark.spark-operator.image.pullPolicy` <a class="headerlink" href="#helm.spark.spark-operator.image.pullPolicy" title="Permanent link">#</a> { #helm.spark.spark-operator.image.pullPolicy }
 :   Type `string`, default `"IfNotPresent"`.
@@ -77770,10 +77867,6 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         tolerations: []
         ```
 
-`spark.sparkOperatorUpgradeJob.crdImage` <a class="headerlink" href="#helm.spark.sparkOperatorUpgradeJob.crdImage" title="Permanent link">#</a> { #helm.spark.sparkOperatorUpgradeJob.crdImage }
-:   Type `object`, default `{"repository":"spark-operator-crds","tag":"2.2.1-1.4"}`.
-    Image for the pre-upgrade Job. Must ship the spark-operator CRDs at `/opt/spark-operator-crds/` and provide `bash` and `kubectl`.
-
 `spark.sparkOperatorUpgradeJob.leaderElectionLockName` <a class="headerlink" href="#helm.spark.sparkOperatorUpgradeJob.leaderElectionLockName" title="Permanent link">#</a> { #helm.spark.sparkOperatorUpgradeJob.leaderElectionLockName }
 :   Type `string`, default `"spark-operator-lock"`.
     Leader election lease name used by the old chart (only if replicaCount > 1).
@@ -77798,6 +77891,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `""`.
     Namespace where spark app RBAC/SA were created by the old chart.
 
+`spark.sparkOperatorUpgradeJob.crdImage` <span class="hops-values-deprecated">Deprecated</span> <a class="headerlink" href="#helm.spark.sparkOperatorUpgradeJob.crdImage" title="Permanent link">#</a> { #helm.spark.sparkOperatorUpgradeJob.crdImage }
+:   Type `object`, default `{"repository":"spark-operator-crds","tag":"2.2.1-1.4"}`.
+    Deprecated and ignored: the Job runs on the toolbox image (global._hopsworks.toolbox), which has the bash and kubectl its cleanup script needs. Kept so values that set it still validate.
+
 </div>
 
 <!-- END GENERATED VALUES -->
@@ -77812,7 +77909,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -79524,7 +79621,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -79852,7 +79949,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 

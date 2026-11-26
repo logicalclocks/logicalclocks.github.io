@@ -7,7 +7,7 @@ The LLM Gateway's controller ships in the same subchart, and its values, under `
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: `global._hopsworks.envoyGateway.enabled`, [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -20,7 +20,7 @@ Deployed according to the first of these values that is set: `global._hopsworks.
       crdImage:
         name: envoy-gateway-crds
         registry: ''
-        tag: v1.9.2-h1
+        tag: v1.9.2-h2
       envoyProxy:
         image:
           registry: ''
@@ -40,8 +40,8 @@ Deployed according to the first of these values that is set: `global._hopsworks.
     override hw-envoy-gateway values
 
 `hw-envoy-gateway.crdImage` <a class="headerlink" href="#helm.hw-envoy-gateway.crdImage" title="Permanent link">#</a> { #helm.hw-envoy-gateway.crdImage }
-:   Type `object`, default `{"name":"envoy-gateway-crds","registry":"","tag":"v1.9.2-h1"}`.
-    the image that carries the Envoy Gateway and Gateway API CRDs (docker-images envoy-gateway-crds, on the hwutils toolbox image). The CRDs cannot ship in the chart: they are 3.8 MB and Helm keeps the chart files in a release Secret capped at 1 MiB, so the install and upgrade hook applies them from this image with server-side apply, the way the Istio CRDs are applied from the istioctl image. The tag starts with the Envoy Gateway release (Chart.yaml appVersion) followed by an image revision.
+:   Type `object`, default `{"name":"envoy-gateway-crds","registry":"","tag":"v1.9.2-h2"}`.
+    the image that carries the Envoy Gateway and Gateway API CRDs (docker-images envoy-gateway-crds: the files and a static busybox on scratch, no tools). The CRDs cannot ship in the chart: they are 3.8 MB and Helm keeps the chart files in a release Secret capped at 1 MiB, so the install and upgrade hook copies them out of this image in an init container and applies them server-side from the toolbox image (global._hopsworks.toolbox). The tag starts with the Envoy Gateway release (Chart.yaml appVersion) followed by an image revision.
 
 `hw-envoy-gateway.crdImage.registry` <a class="headerlink" href="#helm.hw-envoy-gateway.crdImage.registry" title="Permanent link">#</a> { #helm.hw-envoy-gateway.crdImage.registry }
 :   Type `string`, default `""`.
@@ -401,7 +401,7 @@ Deployed according to the first of these values that is set: `global._hopsworks.
 
 `hw-envoy-gateway.crdInstallJob.imagePullPolicy` <a class="headerlink" href="#helm.hw-envoy-gateway.crdInstallJob.imagePullPolicy" title="Permanent link">#</a> { #helm.hw-envoy-gateway.crdInstallJob.imagePullPolicy }
 :   Type `string`, default `"IfNotPresent"`.
-    pull policy of the CRD image; global._hopsworks.imagePullPolicy takes precedence when set
+    pull policy of the CRD images and the toolbox image the Jobs run; global._hopsworks.imagePullPolicy takes precedence when set
 
 `hw-envoy-gateway.crdInstallJob.nodeSelector` <a class="headerlink" href="#helm.hw-envoy-gateway.crdInstallJob.nodeSelector" title="Permanent link">#</a> { #helm.hw-envoy-gateway.crdInstallJob.nodeSelector }
 :   Type `object`, default `{}`.

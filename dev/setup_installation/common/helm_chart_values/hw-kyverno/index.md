@@ -4,7 +4,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -442,11 +442,11 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 
 `hw-kyverno.policyExceptions.spark` <a class="headerlink" href="#helm.hw-kyverno.policyExceptions.spark" title="Permanent link">#</a> { #helm.hw-kyverno.policyExceptions.spark }
 :   Type `object`, default `{"enabled":true,"rssAppName":"rss-hops"}`.
-    PolicyException for Spark-related resources including: (1) Spark driver and executor pods created by spark-operator - these pods have container-level security contexts but lack pod-level security context support in older spark-operator versions, (2) RSS (Remote Shuffle Service) coordinator and shuffle server Deployments/StatefulSets - these are dynamically created by the Uniffle controller with security contexts configured via CRD spec, and (3) the spark-operator Helm hook Job that applies CRDs on install/upgrade - the upstream chart hardcodes its securityContext without runAsNonRoot/seccompProfile and exposes no values to set them.
+    PolicyException for Spark-related resources: (1) Spark driver and executor pods created by spark-operator - these pods have container-level security contexts but lack pod-level security context support in older spark-operator versions, (2) RSS (Remote Shuffle Service) coordinator and shuffle server Deployments/StatefulSets - these are dynamically created by the Uniffle controller with security contexts configured via CRD spec.
 
 `hw-kyverno.policyExceptions.spark.enabled` <a class="headerlink" href="#helm.hw-kyverno.policyExceptions.spark.enabled" title="Permanent link">#</a> { #helm.hw-kyverno.policyExceptions.spark.enabled }
 :   Type `bool`, default `true`.
-    Enable PolicyException for Spark-related resources (spark-operator driver/executor pods, RSS coordinator/shuffle server Deployments/StatefulSets, and the spark-operator CRD upgrade hook Job)
+    Enable PolicyException for Spark-related resources (spark-operator driver/executor pods, RSS coordinator/shuffle server Deployments/StatefulSets)
 
 `hw-kyverno.policyExceptions.spark.rssAppName` <a class="headerlink" href="#helm.hw-kyverno.policyExceptions.spark.rssAppName" title="Permanent link">#</a> { #helm.hw-kyverno.policyExceptions.spark.rssAppName }
 :   Type `string`, default `"rss-hops"`.

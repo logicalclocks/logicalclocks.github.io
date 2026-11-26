@@ -7,7 +7,7 @@ See [LLM Gateway][llm-gateway] for what the feature installs and what the cluste
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 ## aiGateway { #helm-values-hw-envoy-ai-gateway-aigateway }
 
@@ -40,7 +40,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.
         crdImage:
           name: envoy-ai-gateway-crds
           registry: ''
-          tag: v1.2.0-h1
+          tag: v1.2.0-h2
         extProc:
           image:
             registry: ''
@@ -123,7 +123,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.
         crdImage:
           name: envoy-ai-gateway-crds
           registry: ''
-          tag: v1.2.0-h1
+          tag: v1.2.0-h2
         extProc:
           image:
             registry: ''
@@ -258,8 +258,8 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.
     tolerations of the controller; fall back to global._hopsworks.tolerations
 
 `hw-envoy-gateway.aiGateway.crdImage` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.crdImage" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.crdImage }
-:   Type `object`, default `{"name":"envoy-ai-gateway-crds","registry":"","tag":"v1.2.0-h1"}`.
-    the image that carries the six LLM Gateway CRDs (docker-images envoy-ai-gateway-crds, on the hwutils toolbox image). They are 2 MB and cannot ship in the chart (the release Secret cap, see crdImage above), so a second install and upgrade hook applies them server-side. The tag starts with the upstream Agent Router release followed by an image revision.
+:   Type `object`, default `{"name":"envoy-ai-gateway-crds","registry":"","tag":"v1.2.0-h2"}`.
+    the image that carries the six LLM Gateway CRDs (docker-images envoy-ai-gateway-crds: the files and a static busybox on scratch, no tools). They are 2 MB and cannot ship in the chart (the release Secret cap, see crdImage above), so a second install and upgrade hook copies them out and applies them server-side from the toolbox image. The tag starts with the upstream Agent Router release followed by an image revision.
 
 `hw-envoy-gateway.aiGateway.crdImage.registry` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.crdImage.registry" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.crdImage.registry }
 :   Type `string`, default `""`.

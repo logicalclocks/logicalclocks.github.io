@@ -6,7 +6,7 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795728883` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -306,7 +306,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
         image:
           name: keda-crds
           registry: ''
-          tag: 2.21.0-0.16.0-h1
+          tag: 2.21.0-0.16.0-h2
         imagePullPolicy: IfNotPresent
         nodeSelector: {}
         resources:
@@ -333,7 +333,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
         image:
           name: keda-crds
           registry: ''
-          tag: 2.21.0-0.16.0-h1
+          tag: 2.21.0-0.16.0-h2
         imagePullPolicy: IfNotPresent
         nodeSelector: {}
         resources:
@@ -352,8 +352,8 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     apply the shipped CRDs on upgrade
 
 `hw-keda.crdUpgradeJob.image` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.image" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.image }
-:   Type `object`, default `{"name":"keda-crds","registry":"","tag":"2.21.0-0.16.0-h1"}`.
-    the image that carries the CRDs, one directory per pinned version (keda-<version>, keda-add-ons-http-<version>). The Job checks every file's sha256 against this chart's crds/ before applying anything, so the tag must be the build for this chart's KEDA and HTTP add-on versions.
+:   Type `object`, default `{"name":"keda-crds","registry":"","tag":"2.21.0-0.16.0-h2"}`.
+    the image that carries the CRDs (docker-images keda-crds: the files and a static busybox on scratch, no tools), one directory per pinned version (keda-<version>, keda-add-ons-http-<version>). An init container copies them out and the Job's toolbox container checks every file's sha256 against this chart's crds/ before applying anything, so the tag must be the build for this chart's KEDA and HTTP add-on versions.
 
 `hw-keda.crdUpgradeJob.image.name` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.image.name" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.image.name }
 :   Type `string`, default `"keda-crds"`.
@@ -364,7 +364,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     registry and repository prefix of the image; empty means global._hopsworks.imageRegistry followed by /hopsworks
 
 `hw-keda.crdUpgradeJob.image.tag` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.image.tag" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.image.tag }
-:   Type `string`, default `"2.21.0-0.16.0-h1"`.
+:   Type `string`, default `"2.21.0-0.16.0-h2"`.
     image tag, <keda>-<http-add-on>-h<revision>
 
 `hw-keda.crdUpgradeJob.imagePullPolicy` <a class="headerlink" href="#helm.hw-keda.crdUpgradeJob.imagePullPolicy" title="Permanent link">#</a> { #helm.hw-keda.crdUpgradeJob.imagePullPolicy }
