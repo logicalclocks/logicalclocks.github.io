@@ -64,7 +64,8 @@ This is useful for databases where Hopsworks lists tables only, such as Oracle a
 
 The ingestion job runs the query against the database configured in the data source, the same one `Fetch Schema` used, so qualify tables of other schemas or databases in the query itself.
 A feature group is ingested from either a table or a query, never both.
-The query must be a single `SELECT` or `WITH` statement, since the ingestion only reads from the data source.
+The query must be a single `SELECT` or `WITH` statement.
+This check catches mistakes; it does not stop every statement that writes, so give a data source that other members use a database user with read-only privileges.
 Give each result column a unique name, for example with `AS` for the `id` of both sides of a join, since the job refuses a query that returns two columns with the same name rather than guess which is which.
 
 A full load runs the query as written.
