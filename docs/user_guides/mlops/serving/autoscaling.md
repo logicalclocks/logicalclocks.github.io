@@ -41,11 +41,9 @@ To navigate to the advanced creation form, click on `Advanced options`.
 ### Step 3: Configure autoscaling
 
 In the `Autoscaling` section of the advanced form, you can configure the scaling parameters for the predictor and/or the transformer (if available).
-The `Knative` checkbox at the top of the section selects the [deployment mode](#deployment-mode) and decides which of the fields below are shown.
-It starts unchecked, so a new deployment runs in Standard mode unless you check it.
-The checkbox is disabled while the deployment is running, because the mode of a running deployment cannot be changed.
+The fields depend on the [deployment mode](#deployment-mode), and a new deployment runs in Standard mode.
 
-With the checkbox cleared, the deployment runs in Standard mode and the form shows the fields of the autoscaler the cluster provides.
+The form shows the fields of the autoscaler the cluster provides.
 Its tooltip names the one in effect: KEDA where the cluster has it, KServe's own Horizontal Pod Autoscaler (HPA) otherwise.
 
 - The minimum and maximum instances.
@@ -59,7 +57,14 @@ Its tooltip names the one in effect: KEDA where the cluster has it, KServe's own
 - With a minimum of 0, the idle cooldown and the cold-start timeout.
   A vLLM deployment shows a warning, because the model reloads on every wake.
 
-With the checkbox checked, the deployment runs in Knative mode and you can set the scale metric (concurrent requests or requests per second), the target value, the minimum and maximum instances, and the panic and stable window parameters.
+<p align="center">
+  <figure>
+    <img src="../../../../assets/images/guides/mlops/serving/deployment_adv_form_scaling_standard.png" alt="Autoscaling configuration for the predictor and transformer components in Standard mode">
+    <figcaption>Autoscaling configuration for the predictor and transformer in Standard mode</figcaption>
+  </figure>
+</p>
+
+The edit form of an existing Knative-mode deployment shows the Knative fields instead: the scale metric (concurrent requests or requests per second), the target value, the minimum and maximum instances, and the panic and stable windows.
 
 <p align="center">
   <figure>
@@ -68,12 +73,9 @@ With the checkbox checked, the deployment runs in Knative mode and you can set t
   </figure>
 </p>
 
-<p align="center">
-  <figure>
-    <img src="../../../../assets/images/guides/mlops/serving/deployment_adv_form_scaling_standard.png" alt="Autoscaling configuration for the predictor and transformer components in Standard mode">
-    <figcaption>Autoscaling configuration for the predictor and transformer in Standard mode</figcaption>
-  </figure>
-</p>
+!!! warning "Knative mode is deprecated"
+    Hopsworks 5.4 removes Knative mode, so it can no longer be selected for a new deployment.
+    [Convert existing Knative-mode deployments to Standard mode][knative-mode-deprecated].
 
 Once you are done with the changes, click on `Create new deployment` at the bottom of the page to create the deployment for your model.
 
@@ -104,9 +106,9 @@ Once you are done with the changes, click on `Create new deployment` at the bott
 
 You can use the [`PredictorScalingConfig`][hsml.scaling_config.PredictorScalingConfig] class to configure the scaling options according to your preferences.
 Default values for scaling metrics and parameters are listed in the [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) sections below.
-Make sure the metric and parameters you set are valid for the [deployment mode](#deployment-mode) you deploy in.
+Make sure the metric and parameters you set are valid for the [autoscaler](#standard-mode-autoscaler) of the cluster.
 
-=== "Standard mode (KEDA)"
+=== "Request metrics"
 
     ```python
     from hsml.scaling_config import PredictorScalingConfig, ScaleMetric
@@ -125,7 +127,7 @@ Make sure the metric and parameters you set are valid for the [deployment mode](
     )
     ```
 
-=== "Standard mode (vLLM engine metrics)"
+=== "vLLM engine metrics"
 
     ```python
     from hsml.scaling_config import PredictorScalingConfig, ScaleMetric
@@ -142,7 +144,7 @@ Make sure the metric and parameters you set are valid for the [deployment mode](
     )
     ```
 
-=== "Standard mode (CPU)"
+=== "CPU"
 
     ```python
     from hsml.scaling_config import PredictorScalingConfig
@@ -153,24 +155,13 @@ Make sure the metric and parameters you set are valid for the [deployment mode](
     )
     ```
 
-=== "Knative mode"
-
-    ```python
-    from hsml.scaling_config import PredictorScalingConfig
-
-
-    predictor_scaling = PredictorScalingConfig(
-        min_instances=1, max_instances=5, scale_metric="RPS", target=100
-    )
-    ```
-
 ### Step 3 (Optional): Define the transformer scaling configuration
 
 If a transformer script is also provided, you can use the [`TransformerScalingConfig`][hsml.scaling_config.TransformerScalingConfig] class to configure the scaling options according to your preferences.
 Default values for scaling metrics and parameters are listed in the [Scale metrics](#scale-metrics) and [Scaling parameters](#scaling-parameters) sections below.
-In Standard mode a transformer scales on CPU or memory and keeps at least one instance; the request metrics and scale to zero are for a predictor without a transformer.
+A transformer scales on CPU or memory and keeps at least one instance; the request metrics and scale to zero are for a predictor without a transformer.
 
-=== "Standard mode"
+=== "Python"
 
     ```python
     from hsml.scaling_config import TransformerScalingConfig
@@ -181,20 +172,9 @@ In Standard mode a transformer scales on CPU or memory and keeps at least one in
     )
     ```
 
-=== "Knative mode"
-
-    ```python
-    from hsml.scaling_config import TransformerScalingConfig
-
-
-    transformer_scaling = TransformerScalingConfig(
-        min_instances=1, max_instances=3, scale_metric="CONCURRENCY", target=50
-    )
-    ```
-
 ### Step 4: Create a deployment with the scaling configuration
 
-=== "Standard mode"
+=== "Python"
 
     ```python
     my_model = mr.get_model("my_model", version=1)
@@ -211,30 +191,6 @@ In Standard mode a transformer scales on CPU or memory and keeps at least one in
         transformer=my_transformer,
     )
     ```
-
-=== "Knative mode"
-
-    ```python
-    my_model = mr.get_model("my_model", version=1)
-
-    # optional
-    my_transformer = ms.create_transformer(
-        script_file="Resources/my_transformer.py",
-        scaling_configuration=transformer_scaling,
-    )
-
-    my_deployment = my_model.deploy(
-        scaling_configuration=predictor_scaling,
-        knative_mode=True,
-        # optional:
-        transformer=my_transformer,
-    )
-    ```
-
-!!! note "Match the scaling configuration to the mode"
-    The `knative_mode` argument selects the [deployment mode](#deployment-mode) of the deployment.
-    Leaving it unset deploys in Standard mode for every model server, so a Knative scaling configuration needs `knative_mode=True` passed explicitly.
-    A scaling configuration that uses fields the chosen mode does not support is rejected, so set both together.
 
 !!! tip "Read the configuration back"
     The backend fills in the defaults and settles the configuration on every start and save.
@@ -254,21 +210,70 @@ In Standard mode a transformer scales on CPU or memory and keeps at least one in
 Every deployment runs on KServe in one of two modes.
 In ==Standard== mode, the deployment is backed by a plain Kubernetes Deployment and an autoscaler the cluster provides: KEDA where it is installed, KServe's own HPA otherwise.
 In ==Knative== mode, the deployment is backed by a Knative service that scales on request traffic.
-Inference requests reach both modes through the same Istio endpoint, so the mode does not change how you send predictions to a deployment.
+Both modes are reached through the same endpoint, so the mode does not change how you send predictions to a deployment.
 
-!!! info "Standard and Knative mode"
+| Mode | Backed by | Autoscaler | Scale to zero |
+| ---- | --------- | ---------- | ------------- |
+| Standard | Kubernetes Deployment | [KEDA](https://keda.sh/docs/latest/concepts/) where the cluster has it (the default), else [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) | With KEDA, for a predictor without a transformer |
+| Knative | Knative service | [Knative Pod Autoscaler (KPA)](https://knative.dev/docs/serving/autoscaling/) | Yes |
 
-    | Mode     | Backed by             | Autoscaler                                                                                                                                                                            | Scale-to-zero                                                                        |
-    | -------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-    | Standard | Kubernetes Deployment | [KEDA](https://keda.sh/docs/latest/concepts/) where the cluster has it (the default), else [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) | With KEDA, for a predictor without a transformer, through the KEDA HTTP add-on        |
-    | Knative  | Knative service       | [Knative Pod Autoscaler (KPA)](https://knative.dev/docs/serving/autoscaling/)                                                                                                           | Yes                                                                                  |
+!!! warning "Knative mode is deprecated"
+    Hopsworks 5.4 removes Knative mode, so new deployments run in Standard mode.
+    Existing Knative-mode deployments keep working until you [convert them][knative-mode-deprecated].
 
-A new deployment runs in Standard mode for every model server; Knative mode is the opt-in.
 An update that leaves the mode unset keeps the stored one.
 
-The two modes are backed by different Kubernetes resources, so the mode of a deployment cannot be changed while it is running.
-Stop the deployment, change the mode, and start it again.
-Switching the mode clears the scaling settings that do not carry over and re-derives the defaults of the new mode.
+### Convert a deployment to Standard mode { #knative-mode-deprecated }
+
+Converting a Knative-mode deployment restarts it once if it is running, and leaves it stopped if it is stopped.
+It needs a role that can edit, start and stop the deployment, such as Data Owner.
+
+=== "UI"
+
+    Open the deployment's overview and click **Convert to Standard mode** in the deprecation banner.
+
+=== "Python"
+
+    The mode can only change while the deployment is stopped.
+
+    ```python
+    import hopsworks
+
+
+    project = hopsworks.login()
+    ms = project.get_model_serving()
+
+    my_deployment = ms.get_deployment("my_deployment")
+    was_running = my_deployment.is_running()
+    if was_running:
+        my_deployment.stop()
+    my_deployment.knative_mode = False
+    my_deployment.save()
+    if was_running:
+        my_deployment.start()
+    ```
+
+After the conversion:
+
+- The Knative-only scaling settings are replaced by the Standard-mode defaults, so check the [scaling configuration](#scaling-parameters).
+- A minimum of 0 instances keeps the deployment [scaling to zero when idle](#scale-to-zero-when-idle) where Standard mode supports it, and becomes 1 otherwise.
+- You can still [roll back][deployment-versions] to a version saved in Knative mode; it runs in Standard mode.
+
+!!! info "Creating a Knative-mode deployment fails"
+    From the Python SDK or the REST API, creating a deployment in Knative mode, or switching a deployment to Knative mode, fails with error `240082`.
+    Your administrator can still allow it until 5.4.
+
+!!! api "API reference"
+
+    - <code class="doc-symbol doc-symbol-method"></code> [`ModelServing.get_deployment`][hsml.model_serving.ModelServing.get_deployment]
+    - <code class="doc-symbol doc-symbol-class"></code> [`Deployment`][hsml.deployment.Deployment]
+        - <code class="doc-symbol doc-symbol-method"></code> [`is_running`][hsml.deployment.Deployment.is_running]
+        - <code class="doc-symbol doc-symbol-method"></code> [`stop`][hsml.deployment.Deployment.stop]
+        - <code class="doc-symbol doc-symbol-attribute"></code> [`knative_mode`][hsml.deployment.Deployment.knative_mode]
+        - <code class="doc-symbol doc-symbol-method"></code> [`save`][hsml.deployment.Deployment.save]
+        - <code class="doc-symbol doc-symbol-method"></code> [`start`][hsml.deployment.Deployment.start]
+
+    <a class="hops-api-cta" href="../../../../python-api/hopsworks/">Browse the full Python API :material-arrow-right:</a>
 
 ### Standard-mode autoscaler
 
@@ -343,7 +348,7 @@ The cluster defaults of the stabilization windows are set by the administrator i
 
 ### Knative parameters
 
-These apply to a deployment in Knative mode and are rejected in Standard mode.
+These apply to existing Knative-mode deployments and are rejected in Standard mode.
 See [scale bounds](https://knative.dev/docs/serving/autoscaling/scale-bounds/), [autoscaling concepts](https://knative.dev/docs/serving/autoscaling/autoscaling-concepts/) and [scale-to-zero](https://knative.dev/docs/serving/autoscaling/scale-to-zero/) in the Knative documentation for more details.
 
 | Parameter                     | Default | Range  | Description                                 |

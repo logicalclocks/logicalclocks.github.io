@@ -45,6 +45,10 @@ Configure autoscaling for your model deployment, including scale metrics and sca
 How a deployment scales depends on whether it runs in KServe Standard mode, scaled by KEDA where the cluster has it, or Knative mode, see [Deployment mode](autoscaling.md#deployment-mode).
 A minimum of 0 instances scales a deployment to zero when idle in either mode, see [Scale to zero when idle](autoscaling.md#scale-to-zero-when-idle).
 
+!!! warning "Knative mode is deprecated"
+    Hopsworks 5.4 removes Knative mode.
+    [Convert existing Knative-mode deployments to Standard mode][knative-mode-deprecated].
+
 ### Scheduling
 
 !!! info "Kueue is required"
