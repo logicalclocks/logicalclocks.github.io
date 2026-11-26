@@ -27,7 +27,7 @@ Use `Ingest Data to New Feature Group` when you want to:
 This ingestion flow supports multiple data sources:
 
 - SQL-like sources can either create an external feature group or ingest data into a new feature group.
-- The ingestion job reads a table and cannot run a SQL query, so a SQL query can only define an [external feature group][create-external-feature-group].
+- A SQL-like source is ingested from a table or from a SQL query, see [Ingest from a SQL query][ingest-from-a-sql-query].
 - The SQL family currently includes Snowflake, BigQuery, Redshift, generic JDBC (MySQL, PostgreSQL, Oracle, SQL Server), and SAP HANA.
 - A [Hopsworks][data-source-hopsworks] source copies a feature group from another Hopsworks cluster, with full or incremental loads.
 - CRM and REST API sources use the ingestion path only.
@@ -40,13 +40,37 @@ This ingestion flow supports multiple data sources:
 Navigate to the data source you want to use and start the feature-group creation flow from the UI.
 
 For SQL-based sources, open the data source, click `Next: Select Tables`, select a database and a table, then choose `Ingest Data to New Feature Group`.
-The `Query` tab does not offer this option, since the ingestion job cannot run a query; select the table in the `Table` tab instead.
+To ingest the result of a query instead of a whole table, use the `Query` tab, see [Ingest from a SQL query][ingest-from-a-sql-query].
 Once the ingest option is selected, the column table gains a `Partition key` column and an `Add a feature` button for features that do not exist in the source; the transformation script computes their values.
 
 <figure markdown>
   ![dltHub SQL Feature Group Selection](../../../assets/images/guides/fs/feature_group/dlthub_select_sql_table.png)
   <figcaption>Select a source table, set the keys and choose Ingest Data to New Feature Group</figcaption>
 </figure>
+
+### Ingest from a SQL query { #ingest-from-a-sql-query }
+
+A SQL-like source can also be ingested from a SQL query, for example to keep only some rows, join two tables or rename columns, without creating a view in the source database.
+This is useful for databases where Hopsworks lists tables only, such as Oracle and SAP HANA.
+
+1. Open the data source, click `Next: Select Tables` and switch to the `Query` tab.
+2. Write the query in the `SQL Query` box and click `Fetch Schema`.
+   Hopsworks runs the query to read its columns and a preview of its rows.
+3. Choose `Ingest Data to New Feature Group` and configure the feature group schema as in [Step 2](#step-2-configure-the-feature-group-schema).
+
+The ingestion job runs the query against the database configured in the data source, the same one `Fetch Schema` used, so qualify tables of other schemas or databases in the query itself.
+A feature group is ingested from either a table or a query, never both.
+The query must be a single `SELECT` or `WITH` statement.
+This check catches mistakes; it does not stop every statement that writes, so give a data source that other members use a database user with read-only privileges.
+Give each result column a unique name, for example with `AS` for the `id` of both sides of a join, since the job refuses a query that returns two columns with the same name rather than guess which is which.
+
+A full load runs the query as written.
+An incremental load, or a full load with a source cursor field, wraps the query in a derived table and filters the cursor field over its result, so:
+
+- The query must return the source cursor field as one of its columns.
+- SQL Server and Teradata reject an `ORDER BY` inside a derived table, and SQL Server rejects a `WITH` clause there; leave them out of a query loaded incrementally or with a source cursor field, since the ingested rows are not ordered anyway.
+
+Each feature group ingested from a query keeps its own progress, so two feature groups can load different queries over the same table independently.
 
 For CRM sources, choose the source resource, click `Fetch Schema` and then configure the feature schema for the new feature group the same way.
 
@@ -217,6 +241,7 @@ Compared to `FULL_LOAD`, incremental loading typically:
 - Avoids rebuilding the destination feature group from scratch on every run.
 
 To work reliably, the selected cursor field should be monotonic or consistently ordered for the records you want to ingest.
+For a feature group ingested from a SQL query, the cursor field is a column of the query's result.
 If the source does not provide such a field, `FULL_LOAD` is usually the safer option.
 
 The common incremental field is:
@@ -286,8 +311,8 @@ After creation:
 
 You can also configure data source ingestion programmatically with the Hopsworks Python APIs.
 This is done by creating a sink-enabled feature group and passing a sink job configuration, including loading strategy and, for REST sources, endpoint and pagination settings.
-For a SQL source, the data source must name a database and a table, such as one returned by `get_tables()`.
-A data source with a `query` and no table is rejected with error code 270136, because the ingestion job cannot run a query.
+For a SQL source, the data source names either a database and a table, such as one returned by `get_tables()`, or a SQL `query`, never both.
+A data source with both a table and a query is rejected with error code 270136, because it is ambiguous which of them to ingest.
 
 ### Example: create a sink-enabled feature group
 
@@ -317,6 +342,46 @@ fg = fs.get_or_create_feature_group(
 fg.save()
 
 # Run the ingestion job
+fg.sink_job.run(await_termination=True)
+```
+
+### Example: ingest the result of a SQL query
+
+```python
+from hopsworks_common.core import sink_job_configuration
+from hsfs.core import data_source as ds
+
+fs = project.get_feature_store()
+parent_data_source = fs.get_data_source("my_sql_source")
+
+query_data_source = ds.DataSource(
+    query="SELECT id, amount, created_at FROM sales.orders WHERE status = 'PAID'",
+    storage_connector=parent_data_source.storage_connector,
+)
+data = query_data_source.get_data(use_cached=False)
+
+loading_config = sink_job_configuration.LoadingConfig(
+    loading_strategy=sink_job_configuration.LoadingStrategy.INCREMENTAL_ID,
+    source_cursor_field="id",
+    initial_value=0,
+)
+
+fg = fs.get_or_create_feature_group(
+    name="paid_orders_fg",
+    version=1,
+    description="Managed feature group populated from a SQL query.",
+    primary_key=["id"],
+    features=data.features,
+    data_source=query_data_source,
+    time_travel_format="DELTA",
+    sink_enabled=True,
+    sink_job_conf=sink_job_configuration.SinkJobConfiguration(
+        name="paid_orders_ingestion",
+        loading_config=loading_config,
+    ),
+)
+fg.save()
+
 fg.sink_job.run(await_termination=True)
 ```
 
