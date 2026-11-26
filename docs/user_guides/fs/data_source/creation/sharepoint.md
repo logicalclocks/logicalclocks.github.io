@@ -158,6 +158,32 @@ A run that is killed can leave one behind; the next mirror run removes it.
 The synced files count against the project's storage quota, which an administrator sets per project; the maximum file size limits each file, not the total.
 When the quota is full, the files that do not fit fail, the run is reported as partial with the error `the project's storage quota is full`, and the next run copies them once there is room.
 
+### File and folder names { #data-source-sharepoint-names }
+
+HopsFS stores names in Latin-1, so every folder and file name of a path is stored mapped:
+
+1. In Unicode NFC form, so a name SharePoint keeps decomposed, as files uploaded from macOS often are, is stored with precomposed letters such as `Å`.
+2. Typographic characters as their ASCII forms: dashes and the minus sign as `-`, curly single quotes and the prime as `'`, curly double quotes and the double prime as `"`, Unicode spaces such as the thin space as a space, `…` as `...`, `€` as `EUR` and `™` as `TM`.
+3. Any other character outside Latin-1, such as `ł` or a Chinese character, as `_`.
+
+| Name in SharePoint | Stored as |
+| --- | --- |
+| `Kontroll 2026 – 2029.pdf` | `Kontroll 2026 - 2029.pdf` |
+| `Remiss ”Cykelplan”.pdf` | `Remiss "Cykelplan".pdf` |
+| `Łódź.pdf` | `_ód_.pdf` |
+| `äöå é.pdf` | `äöå é.pdf` |
+
+The audit log and the index's `hopsfs_path` and `file_name` hold the stored names, and `sharepoint_path` the path in SharePoint.
+A name already in NFC form and Latin-1 is stored as it is.
+
+Two names that map to one stored name, such as the folders `F-` and `F–`, or `plan-v1.pdf` and `plan–v1.pdf`, are not synced.
+The run is partial, its error names both, and a copy already stored under that name stays, as does its row in the index.
+Renaming all but one of them in SharePoint lets the next run sync them.
+While such names are left out, a mirror run does not remove the files that the include and exclude patterns or the maximum file size exclude; the first run after the rename does.
+
+A data source created on an earlier version keeps its own copy of the sync script, which fails each file whose name is outside Latin-1 instead.
+Its `Code` tab then shows that the script no longer matches the platform template; `Reset to default` brings in the current one, and every name stored before keeps its path.
+
 ### The audit log
 
 Every run that changes the dataset writes one CSV file:
@@ -182,9 +208,6 @@ execution_id,op,kind,path,src_path
 Files that failed to copy are not listed, since they did not change.
 
 rclone skips OneNote notebooks and shortcuts to other libraries; they are counted as skipped and are not copied.
-
-File and folder names are stored in Unicode NFC form, so a name SharePoint keeps decomposed, as files uploaded from macOS often are, is stored with precomposed letters such as `Å`.
-HopsFS stores names in Latin-1, so a name with a character outside it, such as `ł`, `€` or Chinese characters, cannot be copied; the run fails for that file and its error names the file, and renaming it in SharePoint lets the next run copy it.
 
 The `date=` directories are Hive-style partitions, so a filter on `date` reads only the matching days.
 From a Python job, with DuckDB from the `python-feature-pipeline` environment:
