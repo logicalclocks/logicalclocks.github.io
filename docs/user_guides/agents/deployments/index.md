@@ -128,13 +128,13 @@ So a framework changed in the UI is replaced on the next such redeploy when the 
 ### Use Hopsworks skills in an agent
 
 Choose from the playbooks packaged with the deployment’s installed `hopsworks` library.
-For Claude Agent SDK deployments, `AgentApp` makes all packaged skills available by default.
+`AgentApp` makes all packaged skills available by default, whatever the agent's framework.
 Choose a subset with `platform_skills=["hops-data-discovery", "hops-analytics"]`, or turn them off with `platform_skills="none"`.
 For example, an agent with its own SQL tool can omit `hops-trino-sql`.
 You can also set `HOPSWORKS_AGENT_SKILLS` in the agent's environment to `all`, `none`, or comma-separated skill names.
-The environment setting accepts spaces and trailing commas, and a blank value uses the framework default.
+The environment setting accepts spaces and trailing commas, and a blank value selects all skills, the default.
 An explicit selection in `platform_skills` takes precedence.
-If the default Claude selection cannot be prepared, the agent logs a warning and starts without the packaged skills.
+If the default selection cannot be prepared, the agent logs a warning and starts without the packaged skills.
 An unknown skill name in the argument or environment stops startup and the error lists the valid names.
 An explicit selection also reports a startup error if its files cannot be prepared.
 The separate `AgentApp(skills=...)` argument describes capabilities advertised in the A2A Agent Card.
@@ -177,7 +177,8 @@ The example’s Bash rule authorizes `hops` commands under the deployment’s AP
 Narrow that rule to the commands your agent should run.
 Project-owned skills, including copies installed by `hops skills install --agent claude`, keep their own tool settings and remain discoverable even with `platform_skills="none"`.
 
-For LangGraph, LlamaIndex, OpenAI Agents and custom agents, opt in with the same `platform_skills` argument.
+LangGraph, LlamaIndex, OpenAI Agents and custom agents get the same selection, controlled by the same `platform_skills` argument.
+These frameworks have no loader for skill folders, so the agent wires them in itself.
 Append `agent_app.platform_skills.catalogue()` to the system prompt and register `agent_app.platform_skills.read_skill` as a tool.
 Call `read_skill(name)` for the instructions or supply a text file path relative to the named skill, such as `read_skill("hops-analytics", "references/silver-tasks.md")`.
 The reader accepts files inside that skill and other packaged playbooks its Markdown links to.
