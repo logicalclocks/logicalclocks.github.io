@@ -813,7 +813,7 @@ Before updating, check custom deployment files against the [vLLM-Omni v0.34.0 re
 Every stage must use a supported Model Runner V2 profile.
 For multi-stage pipelines, put stage-specific settings such as `max_model_len`, `enforce_eager`, `gpu_memory_utilization`, and `tensor_parallel_size` in `stage_overrides` or the stage's deployment YAML.
 Remove `shm_threshold_bytes` (`--shm-threshold-bytes`) from the vLLM configuration file and select a supported model for deployments using JoyAI-Image-Edit, whose first-party support was removed.
-A cluster that pulls from a mirror needs `vllm/vllm-omni:v0.34.0` mirrored before the upgrade.
+A cluster that pulls from a mirror needs `vllm/vllm-omni:v0.34.0` mirrored before the upgrade, and keeps `v0.32.0` for the Omni deployments that still use it.
 vLLM-Omni can now be disabled per cluster, see [Disable vLLM-Omni][vllm-disable-omni].
 
 ### Security response headers { #upgrade-security-headers }
