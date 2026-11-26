@@ -861,6 +861,8 @@ Set `kserve.storageInitializer.resources` to keep the old limits.
 5.3 addresses vulnerabilities in Grafana.
 While the upgrade replaces the Grafana and Hopsworks pods, Grafana dashboards opened from Hopsworks answer 401; they work again once both run the new release.
 Because of a security fix, remove any `auth.proxy` settings from the `grafana.ini` key under `grafana.grafana` in your own values.
+If your values set `grafana.grafana.extraSecretMounts`, add the chart's `assertion-key` entry to your list, since your list replaces the chart's: the Secret `grafana-assertion-key` at `/etc/grafana/assertion`, with the item `jwks.json`.
+`helm upgrade` stops with an error that names the entry until the list has it.
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
