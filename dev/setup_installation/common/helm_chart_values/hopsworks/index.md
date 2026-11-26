@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -593,6 +593,109 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.agentRouter.tracing.ttlSeconds` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.ttlSeconds" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.ttlSeconds }
 :   Type `int`, default `604800`.
     how long a span stays in agent__router.spans, in seconds, by RonDB's native row TTL on created_at. The Job alters the table when this changes. The default is seven days.
+
+</div>
+
+## agents { #helm-values-hopsworks-agents }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    hopsworks:
+      agents:
+        egressPolicy:
+          allowProjectNamespace: true
+          allowedCidrs: []
+          allowedNamespaces: []
+          clusterCidrs:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
+          - 100.64.0.0/10
+          - 169.254.0.0/16
+          dnsPorts:
+          - 53
+          enabled: false
+    ```
+
+<div class="hops-values" markdown>
+
+`hopsworks.agents` <a class="headerlink" href="#helm.hopsworks.agents" title="Permanent link">#</a> { #helm.hopsworks.agents }
+:   Type `object`.
+    settings of agent deployments that are applied in the cluster and not by the Hopsworks backend
+
+    ??? note "Default"
+
+        ```yaml
+        egressPolicy:
+          allowProjectNamespace: true
+          allowedCidrs: []
+          allowedNamespaces: []
+          clusterCidrs:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
+          - 100.64.0.0/10
+          - 169.254.0.0/16
+          dnsPorts:
+          - 53
+          enabled: false
+        ```
+
+`hopsworks.agents.egressPolicy` <a class="headerlink" href="#helm.hopsworks.agents.egressPolicy" title="Permanent link">#</a> { #helm.hopsworks.agents.egressPolicy }
+:   Type `object`.
+    an egress NetworkPolicy for the pods of agent deployments, in every project namespace. An agent sends A2A push notifications to URLs its callers choose, and runs tools that fetch what a model asks for. The policy keeps such requests away from the cluster's own pods and Services. It lets the pods reach DNS, the Hopsworks namespace (the backend, RonDB, HopsFS, Kafka, OpenSearch, the OTLP collector and the inference gateway), the pods of their own project and public addresses. Kyverno generates the policy in each project namespace and keeps it in place, so it needs Kyverno (global._hopsworks.kyverno.enabled) and a CNI that enforces egress policies.
+
+    ??? note "Default"
+
+        ```yaml
+        allowProjectNamespace: true
+        allowedCidrs: []
+        allowedNamespaces: []
+        clusterCidrs:
+        - 10.0.0.0/8
+        - 172.16.0.0/12
+        - 192.168.0.0/16
+        - 100.64.0.0/10
+        - 169.254.0.0/16
+        dnsPorts:
+        - 53
+        enabled: false
+        ```
+
+`hopsworks.agents.egressPolicy.allowProjectNamespace` <a class="headerlink" href="#helm.hopsworks.agents.egressPolicy.allowProjectNamespace" title="Permanent link">#</a> { #helm.hopsworks.agents.egressPolicy.allowProjectNamespace }
+:   Type `bool`, default `true`.
+    Let the pods reach the other pods of their own project namespace.
+
+`hopsworks.agents.egressPolicy.allowedCidrs` <a class="headerlink" href="#helm.hopsworks.agents.egressPolicy.allowedCidrs" title="Permanent link">#</a> { #helm.hopsworks.agents.egressPolicy.allowedCidrs }
+:   Type `list`, default `[]`.
+    Address ranges inside clusterCidrs the pods may reach all the same. List the nodes' range when RonDB, HopsFS or Kafka run on the host network, and any private network an agent must call.
+
+`hopsworks.agents.egressPolicy.allowedNamespaces` <a class="headerlink" href="#helm.hopsworks.agents.egressPolicy.allowedNamespaces" title="Permanent link">#</a> { #helm.hopsworks.agents.egressPolicy.allowedNamespaces }
+:   Type `list`, default `[]`.
+    Namespaces the pods may reach, on top of the Hopsworks namespace. List the namespace of a component installed elsewhere that agent pods call, such as an istio control plane.
+
+`hopsworks.agents.egressPolicy.clusterCidrs` <a class="headerlink" href="#helm.hopsworks.agents.egressPolicy.clusterCidrs" title="Permanent link">#</a> { #helm.hopsworks.agents.egressPolicy.clusterCidrs }
+:   Type `list`.
+    Address ranges the pods may not reach, taken out of the rule that allows every other address. They must cover the pod and Service ranges of the cluster. The default is every private, carrier-grade NAT and link-local range, the cloud metadata address among them.
+
+    ??? note "Default"
+
+        ```yaml
+        - 10.0.0.0/8
+        - 172.16.0.0/12
+        - 192.168.0.0/16
+        - 100.64.0.0/10
+        - 169.254.0.0/16
+        ```
+
+`hopsworks.agents.egressPolicy.dnsPorts` <a class="headerlink" href="#helm.hopsworks.agents.egressPolicy.dnsPorts" title="Permanent link">#</a> { #helm.hopsworks.agents.egressPolicy.dnsPorts }
+:   Type `list`, default `[53]`.
+    Ports the pods may reach on any address for DNS, over UDP and TCP. OpenShift's DNS pods listen on 5353.
+
+`hopsworks.agents.egressPolicy.enabled` <a class="headerlink" href="#helm.hopsworks.agents.egressPolicy.enabled" title="Permanent link">#</a> { #helm.hopsworks.agents.egressPolicy.enabled }
+:   Type `bool`, default `false`.
+    Create the policy. Off by default so that an upgrade does not cut a connection a running agent relies on. Turn it on for a new cluster.
 
 </div>
 
@@ -2788,12 +2891,19 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
       variables:
         admin_email: admin@hopsworks.ai
         admin_password: admin
+        agent_deployment_artifact_inline_bytes: '262144'
         agent_deployment_claude_login_enabled: 'true'
         agent_deployment_otel_cpu: '0.5'
         agent_deployment_otel_enabled: 'true'
         agent_deployment_otel_image: otlp-sidecar
         agent_deployment_otel_memory_mb: '2048'
+        agent_deployment_push_allowed_hosts: ''
+        agent_deployment_push_internal_allow: ''
         agent_deployment_task_drain_seconds: '600'
+        agent_deployment_task_max_bytes: '2097152'
+        agent_deployment_task_reaper_enabled: 'true'
+        agent_deployment_task_reaper_interval_ms: '15000'
+        agent_deployment_task_retention_days: '30'
         agent_jobs_enabled: 'true'
         airflow_dir: /srv/hops/airflow
         airflow_enabled: true
@@ -3039,6 +3149,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         kube_keda_installed: true
         kube_knative_domain_name: hopsworks.ai
         kube_knative_lb_domain: ''
+        kube_knative_mode_allowed: 'false'
         kube_kserve_installed: true
         kube_kserve_tensorflow_version: 2.20.0
         kube_node_taints_monitor_interval: 10m
@@ -3351,6 +3462,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.admin_password` <a class="headerlink" href="#helm.hopsworks.variables.admin_password" title="Permanent link">#</a> { #helm.hopsworks.variables.admin_password }
 :   Type `string`, default `"admin"`.
 
+`hopsworks.variables.agent_deployment_artifact_inline_bytes` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_artifact_inline_bytes" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_artifact_inline_bytes }
+:   Type `string`, default `"262144"`.
+    Largest A2A artifact part, in bytes, an agent deployment keeps in the task's database row. A larger part is written to the deployment's HopsFS folder and the task keeps a URL to it.
+
 `hopsworks.variables.agent_deployment_claude_login_enabled` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_claude_login_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_claude_login_enabled }
 :   Type `string`, default `"true"`.
     Let an agent deployment run on the Claude Code login of the user who started it: a `claude setup-token` token kept in the user's private secret claude_code_oauth_token, handed to the pod as CLAUDE_CODE_OAUTH_TOKEN, instead of needing an ANTHROPIC_API_KEY. A user opts in by creating the secret. Anthropic allows a third-party product to offer claude.ai login only with prior approval; set "false" to turn it off.
@@ -3367,9 +3482,33 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.agent_deployment_otel_memory_mb` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_otel_memory_mb" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_otel_memory_mb }
 :   Type `string`, default `"2048"`.
 
+`hopsworks.variables.agent_deployment_push_allowed_hosts` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_push_allowed_hosts" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_push_allowed_hosts }
+:   Type `string`, default `""`.
+    Comma-separated hosts. When set, they are the only hosts an A2A push notification of an agent deployment may be sent to. Empty allows any public https destination and the internal ones of agent_deployment_push_internal_allow.
+
+`hopsworks.variables.agent_deployment_push_internal_allow` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_push_internal_allow" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_push_internal_allow }
+:   Type `string`, default `""`.
+    Comma-separated hosts or CIDRs with private addresses that an A2A push notification of an agent deployment may be sent to. Private addresses are refused otherwise. The inference gateway's own address is always allowed.
+
 `hopsworks.variables.agent_deployment_task_drain_seconds` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_task_drain_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_task_drain_seconds }
 :   Type `string`, default `"600"`.
     Seconds a replica of an agent deployment keeps running the A2A tasks it has after it is told to stop, before the ones still running fail with executor_shutdown. The replica's termination grace period is 30 seconds above this. In Knative mode the budget is capped at 570, since Knative's revision timeout, which is also the pod's grace period, cannot exceed 600 seconds.
+
+`hopsworks.variables.agent_deployment_task_max_bytes` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_task_max_bytes" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_task_max_bytes }
+:   Type `string`, default `"2097152"`.
+    Largest A2A task, in bytes, an agent deployment keeps in the database. A larger task moves its older history to the deployment's HopsFS folder.
+
+`hopsworks.variables.agent_deployment_task_reaper_enabled` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_task_reaper_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_task_reaper_enabled }
+:   Type `string`, default `"true"`.
+    Let Hopsworks fail the A2A tasks whose replica was lost and deliver the final notifications still owed. With "false", such a task stays unfinished when its deployment has no replica left.
+
+`hopsworks.variables.agent_deployment_task_reaper_interval_ms` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_task_reaper_interval_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_task_reaper_interval_ms }
+:   Type `string`, default `"15000"`.
+    Milliseconds between two rounds in which Hopsworks looks for A2A tasks whose replica was lost and for final notifications still owed. Read when Hopsworks starts.
+
+`hopsworks.variables.agent_deployment_task_retention_days` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_task_retention_days" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_task_retention_days }
+:   Type `string`, default `"30"`.
+    Days a finished A2A task of an agent deployment is kept before Hopsworks deletes it. A key issued for the deployment's notification route expires after the same number of days.
 
 `hopsworks.variables.agent_jobs_enabled` <a class="headerlink" href="#helm.hopsworks.variables.agent_jobs_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_jobs_enabled }
 :   Type `string`, default `"true"`.
@@ -4152,6 +4291,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.kube_knative_lb_domain` <a class="headerlink" href="#helm.hopsworks.variables.kube_knative_lb_domain" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_knative_lb_domain }
 :   Type `string`, default `""`.
+
+`hopsworks.variables.kube_knative_mode_allowed` <a class="headerlink" href="#helm.hopsworks.variables.kube_knative_mode_allowed" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_knative_mode_allowed }
+:   Type `string`, default `"false"`.
+    Knative mode is deprecated: with "false" the backend refuses creating a Knative-mode deployment or switching a deployment to Knative mode; existing Knative-mode deployments keep working and can be converted to Standard mode. "true" is a temporary escape hatch that allows both again. Knative mode is removed in 5.4.
 
 `hopsworks.variables.kube_kserve_installed` <a class="headerlink" href="#helm.hopsworks.variables.kube_kserve_installed" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_kserve_installed }
 :   Type `bool`, default `true`.

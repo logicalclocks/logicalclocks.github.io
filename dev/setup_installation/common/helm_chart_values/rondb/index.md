@@ -4,13 +4,13 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
 !!! info "Upstream charts"
 
-    - Values under `rondb.rondb` go to [`rondb` 26.2.26](https://github.com/logicalclocks/rondb-helm/blob/v26.2.26/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+    - Values under `rondb.rondb` go to [`rondb` 26.2.27](https://github.com/logicalclocks/rondb-helm/blob/v26.2.27/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
 
 ??? example "Defaults as YAML"
 
@@ -220,7 +220,7 @@ Always deployed.
         ```
 
 `rondb.rondb` <a class="headerlink" href="#helm.rondb.rondb" title="Permanent link">#</a> { #helm.rondb.rondb }
-:   Type `object`, passed to the [`rondb` 26.2.26](https://github.com/logicalclocks/rondb-helm/blob/v26.2.26/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+:   Type `object`, passed to the [`rondb` 26.2.27](https://github.com/logicalclocks/rondb-helm/blob/v26.2.27/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
     override rondb values
 
     ??? note "Default"
@@ -355,7 +355,7 @@ Always deployed.
 
 ## `rondb` chart values { #helm-values-rondb-rondb }
 
-These are the values of the [`rondb` 26.2.26](https://github.com/logicalclocks/rondb-helm/blob/v26.2.26/values.schema.json) chart, set under `rondb.rondb`.
+These are the values of the [`rondb` 26.2.27](https://github.com/logicalclocks/rondb-helm/blob/v26.2.27/values.schema.json) chart, set under `rondb.rondb`.
 The defaults are what Hopsworks deploys: the chart's own, with the `rondb` and `rondb.rondb` overrides above applied.
 Where Hopsworks overrides a value, the entry also gives the chart's own default.
 
@@ -817,7 +817,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
             name: rondb
             registry: docker.hops.works
             repository: hopsworks
-            tag: 26.02.14
+            tag: 26.02.15
           toolbox:
             name: hwutils
             registry: docker.hops.works
@@ -879,7 +879,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 :   Type `string`, default `"hopsworks"`.
 
 `rondb.rondb.images.rondb.tag` <a class="headerlink" href="#helm.rondb.rondb.images.rondb.tag" title="Permanent link">#</a> { #helm.rondb.rondb.images.rondb.tag }
-:   Type `string`, default `"26.02.14"`.
+:   Type `string`, default `"26.02.15"`.
     The version of RonDB to use; This should always be equivalent to .Chart.AppVersion
 
 `rondb.rondb.images.toolbox` <a class="headerlink" href="#helm.rondb.rondb.images.toolbox" title="Permanent link">#</a> { #helm.rondb.rondb.images.toolbox }
@@ -1634,7 +1634,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 
 `rondb.rondb.mysql.users[].existingSecret.rotationId` <a class="headerlink" href="#helm.rondb.rondb.mysql.users.existingSecret.rotationId" title="Permanent link">#</a> { #helm.rondb.rondb.mysql.users.existingSecret.rotationId }
 :   Type `string`.
-    Opaque rotation marker. Bump this (e.g. to a date or counter) whenever the Secret's password is rotated. It participates in the user-setup Job's name, forcing a re-run that converges the MySQL password to the Secret (ALTER USER). Required for rotation under Argo CD / template-only rendering, where the release revision is constant; plain `helm upgrade` re-runs the Job on every upgrade regardless.
+    Opaque rotation marker. Bump this (e.g. to a date or counter) when rotating the Secret's password under Argo CD or another template-only renderer. Changing the marker gives the users Job a new name so it applies the password. On ordinary Helm upgrades the release revision already gives the Job a new name. On in-place restores the mysqld setup Job applies the password.
 
 `rondb.rondb.mysql.users[].host` <a class="headerlink" href="#helm.rondb.rondb.mysql.users.host" title="Permanent link">#</a> { #helm.rondb.rondb.mysql.users.host }
 :   Type `string`, example `"%"`.

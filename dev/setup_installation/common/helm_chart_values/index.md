@@ -17,7 +17,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -50,7 +50,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.
 | [`hive`][helm-values-hive] |  | 79 |
 | [`hopsfs`][helm-values-hopsfs] |  | 226 |
 | [`hopsfs-csi`][helm-values-hopsfs-csi] |  | 29 |
-| [`hopsworks`][helm-values-hopsworks] |  | 1066 |
+| [`hopsworks`][helm-values-hopsworks] |  | 1082 |
 | [`hw-envoy-ai-gateway`][helm-values-hw-envoy-ai-gateway] |  | 43 |
 | [`hw-envoy-gateway`][helm-values-hw-envoy-gateway] |  | 40 |
 | [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) | 24 |
@@ -64,7 +64,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.
 | [`onlinefs`][helm-values-onlinefs] |  | 99 |
 | [`prometheus`][helm-values-prometheus] | [`prometheus` 25.20.2](https://artifacthub.io/packages/helm/prometheus-community/prometheus/25.20.2), [`prometheus-adapter` 4.11.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-adapter/4.11.0) | 9 |
 | [`ray`][helm-values-ray] | [`kuberay-operator` 1.4.0](https://artifacthub.io/packages/helm/kuberay-operator/kuberay-operator/1.4.0) | 2 |
-| [`rondb`][helm-values-rondb] | [`rondb` 26.2.26](https://github.com/logicalclocks/rondb-helm/blob/v26.2.26/values.schema.json) | 500 |
+| [`rondb`][helm-values-rondb] | [`rondb` 26.2.27](https://github.com/logicalclocks/rondb-helm/blob/v26.2.27/values.schema.json) | 500 |
 | [`spark`][helm-values-spark] | [`spark-operator` 2.5.1](https://github.com/kubeflow/spark-operator/blob/v2.5.1/charts/spark-operator-chart/README.md) | 160 |
 | [`superset`][helm-values-superset] | [`mysql` 12.3.5](https://artifacthub.io/packages/helm/bitnami/mysql/12.3.5), [`superset` 0.15.0](https://artifacthub.io/packages/helm/superset/superset/0.15.0) | 36 |
 | [`trino`][helm-values-trino] | [`trino` 1.41.0](https://artifacthub.io/packages/helm/trino/trino/1.41.0) | 41 |

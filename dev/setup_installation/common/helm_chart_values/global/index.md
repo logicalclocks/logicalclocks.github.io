@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -563,7 +563,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.
 
 `global._hopsworks.envoyGateway` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway }
 :   Type `object`.
-    Envoy Gateway: Standard-mode model deployments routed through the Kubernetes Gateway API on Envoy Gateway, installed next to Istio and Knative, which keep working as they are and stay the external front door. Two flags stage the rollout. `enabled` installs the hw-envoy-gateway subchart, the Hopsworks Gateway with its policies, and a lowest-precedence forward rule from the Istio ingress to the Gateway; with `kserveStandardMode: false` that routes nothing. `kserveStandardMode` (with `enabled`, and true by default, so `enabled` alone does both stages) switches KServe's Standard-mode InferenceServices from Istio-class Ingresses to HTTPRoutes on that Gateway, and the backend then moves each running deployment over once its new routes are accepted, with no downtime; set it to false first when rolling back, and roll back with helm upgrade, not helm rollback. See the Envoy Gateway page and the upgrade guide on docs.hopsworks.ai.
+    Envoy Gateway: Standard-mode model deployments routed through the Kubernetes Gateway API on Envoy Gateway, installed next to Istio and Knative, which keep working as they are and stay the external front door. Two flags stage the rollout. `enabled` installs the hw-envoy-gateway subchart, the Hopsworks Gateway with its policies, and a lowest-precedence forward rule from the Istio ingress to the Gateway; with `kserveStandardMode: false` that routes nothing. `kserveStandardMode` (with `enabled`, and true by default, so `enabled` alone does both stages) switches KServe's Standard-mode InferenceServices from Istio-class Ingresses to HTTPRoutes on that Gateway, and the backend then moves each running deployment over once its new routes are accepted, with no downtime; set it to false first when rolling back, and roll back with helm upgrade, not helm rollback. Required before upgrading to 5.4, which removes Istio and Knative and refuses to upgrade while it is off. See the Envoy Gateway page and the upgrade guide on docs.hopsworks.ai.
 
     ??? note "Default"
 

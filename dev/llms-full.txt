@@ -53637,7 +53637,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -53670,7 +53670,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.
 | [`hive`][helm-values-hive] |  | 79 |
 | [`hopsfs`][helm-values-hopsfs] |  | 226 |
 | [`hopsfs-csi`][helm-values-hopsfs-csi] |  | 29 |
-| [`hopsworks`][helm-values-hopsworks] |  | 1066 |
+| [`hopsworks`][helm-values-hopsworks] |  | 1082 |
 | [`hw-envoy-ai-gateway`][helm-values-hw-envoy-ai-gateway] |  | 43 |
 | [`hw-envoy-gateway`][helm-values-hw-envoy-gateway] |  | 40 |
 | [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) | 24 |
@@ -53684,7 +53684,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.
 | [`onlinefs`][helm-values-onlinefs] |  | 99 |
 | [`prometheus`][helm-values-prometheus] | [`prometheus` 25.20.2](https://artifacthub.io/packages/helm/prometheus-community/prometheus/25.20.2), [`prometheus-adapter` 4.11.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-adapter/4.11.0) | 9 |
 | [`ray`][helm-values-ray] | [`kuberay-operator` 1.4.0](https://artifacthub.io/packages/helm/kuberay-operator/kuberay-operator/1.4.0) | 2 |
-| [`rondb`][helm-values-rondb] | [`rondb` 26.2.26](https://github.com/logicalclocks/rondb-helm/blob/v26.2.26/values.schema.json) | 500 |
+| [`rondb`][helm-values-rondb] | [`rondb` 26.2.27](https://github.com/logicalclocks/rondb-helm/blob/v26.2.27/values.schema.json) | 500 |
 | [`spark`][helm-values-spark] | [`spark-operator` 2.5.1](https://github.com/kubeflow/spark-operator/blob/v2.5.1/charts/spark-operator-chart/README.md) | 160 |
 | [`superset`][helm-values-superset] | [`mysql` 12.3.5](https://artifacthub.io/packages/helm/bitnami/mysql/12.3.5), [`superset` 0.15.0](https://artifacthub.io/packages/helm/superset/superset/0.15.0) | 36 |
 | [`trino`][helm-values-trino] | [`trino` 1.41.0](https://artifacthub.io/packages/helm/trino/trino/1.41.0) | 41 |
@@ -54060,7 +54060,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -54619,7 +54619,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.
 
 `global._hopsworks.envoyGateway` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway }
 :   Type `object`.
-    Envoy Gateway: Standard-mode model deployments routed through the Kubernetes Gateway API on Envoy Gateway, installed next to Istio and Knative, which keep working as they are and stay the external front door. Two flags stage the rollout. `enabled` installs the hw-envoy-gateway subchart, the Hopsworks Gateway with its policies, and a lowest-precedence forward rule from the Istio ingress to the Gateway; with `kserveStandardMode: false` that routes nothing. `kserveStandardMode` (with `enabled`, and true by default, so `enabled` alone does both stages) switches KServe's Standard-mode InferenceServices from Istio-class Ingresses to HTTPRoutes on that Gateway, and the backend then moves each running deployment over once its new routes are accepted, with no downtime; set it to false first when rolling back, and roll back with helm upgrade, not helm rollback. See the Envoy Gateway page and the upgrade guide on docs.hopsworks.ai.
+    Envoy Gateway: Standard-mode model deployments routed through the Kubernetes Gateway API on Envoy Gateway, installed next to Istio and Knative, which keep working as they are and stay the external front door. Two flags stage the rollout. `enabled` installs the hw-envoy-gateway subchart, the Hopsworks Gateway with its policies, and a lowest-precedence forward rule from the Istio ingress to the Gateway; with `kserveStandardMode: false` that routes nothing. `kserveStandardMode` (with `enabled`, and true by default, so `enabled` alone does both stages) switches KServe's Standard-mode InferenceServices from Istio-class Ingresses to HTTPRoutes on that Gateway, and the backend then moves each running deployment over once its new routes are accepted, with no downtime; set it to false first when rolling back, and roll back with helm upgrade, not helm rollback. Required before upgrading to 5.4, which removes Istio and Knative and refuses to upgrade while it is off. See the Envoy Gateway page and the upgrade guide on docs.hopsworks.ai.
 
     ??? note "Default"
 
@@ -55396,7 +55396,7 @@ Values under `airflow` configure Apache Airflow, which schedules and orchestrate
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.airflow.enabled`](global.md#helm.global._hopsworks.airflow.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -56424,7 +56424,7 @@ Values under `arrowflight` configure the Arrow Flight server, which serves fast 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -56706,7 +56706,7 @@ Values under `certs-operator` configure the operator that issues the TLS certifi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -56894,7 +56894,7 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -57228,7 +57228,7 @@ Values under `docker-registry` configure the in-cluster Docker registry that sto
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -57679,7 +57679,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -58177,7 +58177,7 @@ Values under `hive` configure the Hive metastore, which holds the table metadata
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -58595,7 +58595,7 @@ Values under `hopsfs` configure HopsFS, the distributed file system behind datas
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -59760,7 +59760,7 @@ Values under `hopsfs-csi` configure the CSI driver that mounts HopsFS into pods.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed when `global._hopsworks.csi.enabled` is `true`.
 
@@ -60030,7 +60030,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -60619,6 +60619,109 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.agentRouter.tracing.ttlSeconds` <a class="headerlink" href="#helm.hopsworks.agentRouter.tracing.ttlSeconds" title="Permanent link">#</a> { #helm.hopsworks.agentRouter.tracing.ttlSeconds }
 :   Type `int`, default `604800`.
     how long a span stays in agent__router.spans, in seconds, by RonDB's native row TTL on created_at. The Job alters the table when this changes. The default is seven days.
+
+</div>
+
+## agents { #helm-values-hopsworks-agents }
+
+??? example "Defaults as YAML"
+
+    ```yaml
+    hopsworks:
+      agents:
+        egressPolicy:
+          allowProjectNamespace: true
+          allowedCidrs: []
+          allowedNamespaces: []
+          clusterCidrs:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
+          - 100.64.0.0/10
+          - 169.254.0.0/16
+          dnsPorts:
+          - 53
+          enabled: false
+    ```
+
+<div class="hops-values" markdown>
+
+`hopsworks.agents` <a class="headerlink" href="#helm.hopsworks.agents" title="Permanent link">#</a> { #helm.hopsworks.agents }
+:   Type `object`.
+    settings of agent deployments that are applied in the cluster and not by the Hopsworks backend
+
+    ??? note "Default"
+
+        ```yaml
+        egressPolicy:
+          allowProjectNamespace: true
+          allowedCidrs: []
+          allowedNamespaces: []
+          clusterCidrs:
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
+          - 100.64.0.0/10
+          - 169.254.0.0/16
+          dnsPorts:
+          - 53
+          enabled: false
+        ```
+
+`hopsworks.agents.egressPolicy` <a class="headerlink" href="#helm.hopsworks.agents.egressPolicy" title="Permanent link">#</a> { #helm.hopsworks.agents.egressPolicy }
+:   Type `object`.
+    an egress NetworkPolicy for the pods of agent deployments, in every project namespace. An agent sends A2A push notifications to URLs its callers choose, and runs tools that fetch what a model asks for. The policy keeps such requests away from the cluster's own pods and Services. It lets the pods reach DNS, the Hopsworks namespace (the backend, RonDB, HopsFS, Kafka, OpenSearch, the OTLP collector and the inference gateway), the pods of their own project and public addresses. Kyverno generates the policy in each project namespace and keeps it in place, so it needs Kyverno (global._hopsworks.kyverno.enabled) and a CNI that enforces egress policies.
+
+    ??? note "Default"
+
+        ```yaml
+        allowProjectNamespace: true
+        allowedCidrs: []
+        allowedNamespaces: []
+        clusterCidrs:
+        - 10.0.0.0/8
+        - 172.16.0.0/12
+        - 192.168.0.0/16
+        - 100.64.0.0/10
+        - 169.254.0.0/16
+        dnsPorts:
+        - 53
+        enabled: false
+        ```
+
+`hopsworks.agents.egressPolicy.allowProjectNamespace` <a class="headerlink" href="#helm.hopsworks.agents.egressPolicy.allowProjectNamespace" title="Permanent link">#</a> { #helm.hopsworks.agents.egressPolicy.allowProjectNamespace }
+:   Type `bool`, default `true`.
+    Let the pods reach the other pods of their own project namespace.
+
+`hopsworks.agents.egressPolicy.allowedCidrs` <a class="headerlink" href="#helm.hopsworks.agents.egressPolicy.allowedCidrs" title="Permanent link">#</a> { #helm.hopsworks.agents.egressPolicy.allowedCidrs }
+:   Type `list`, default `[]`.
+    Address ranges inside clusterCidrs the pods may reach all the same. List the nodes' range when RonDB, HopsFS or Kafka run on the host network, and any private network an agent must call.
+
+`hopsworks.agents.egressPolicy.allowedNamespaces` <a class="headerlink" href="#helm.hopsworks.agents.egressPolicy.allowedNamespaces" title="Permanent link">#</a> { #helm.hopsworks.agents.egressPolicy.allowedNamespaces }
+:   Type `list`, default `[]`.
+    Namespaces the pods may reach, on top of the Hopsworks namespace. List the namespace of a component installed elsewhere that agent pods call, such as an istio control plane.
+
+`hopsworks.agents.egressPolicy.clusterCidrs` <a class="headerlink" href="#helm.hopsworks.agents.egressPolicy.clusterCidrs" title="Permanent link">#</a> { #helm.hopsworks.agents.egressPolicy.clusterCidrs }
+:   Type `list`.
+    Address ranges the pods may not reach, taken out of the rule that allows every other address. They must cover the pod and Service ranges of the cluster. The default is every private, carrier-grade NAT and link-local range, the cloud metadata address among them.
+
+    ??? note "Default"
+
+        ```yaml
+        - 10.0.0.0/8
+        - 172.16.0.0/12
+        - 192.168.0.0/16
+        - 100.64.0.0/10
+        - 169.254.0.0/16
+        ```
+
+`hopsworks.agents.egressPolicy.dnsPorts` <a class="headerlink" href="#helm.hopsworks.agents.egressPolicy.dnsPorts" title="Permanent link">#</a> { #helm.hopsworks.agents.egressPolicy.dnsPorts }
+:   Type `list`, default `[53]`.
+    Ports the pods may reach on any address for DNS, over UDP and TCP. OpenShift's DNS pods listen on 5353.
+
+`hopsworks.agents.egressPolicy.enabled` <a class="headerlink" href="#helm.hopsworks.agents.egressPolicy.enabled" title="Permanent link">#</a> { #helm.hopsworks.agents.egressPolicy.enabled }
+:   Type `bool`, default `false`.
+    Create the policy. Off by default so that an upgrade does not cut a connection a running agent relies on. Turn it on for a new cluster.
 
 </div>
 
@@ -62814,12 +62917,19 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
       variables:
         admin_email: admin@hopsworks.ai
         admin_password: admin
+        agent_deployment_artifact_inline_bytes: '262144'
         agent_deployment_claude_login_enabled: 'true'
         agent_deployment_otel_cpu: '0.5'
         agent_deployment_otel_enabled: 'true'
         agent_deployment_otel_image: otlp-sidecar
         agent_deployment_otel_memory_mb: '2048'
+        agent_deployment_push_allowed_hosts: ''
+        agent_deployment_push_internal_allow: ''
         agent_deployment_task_drain_seconds: '600'
+        agent_deployment_task_max_bytes: '2097152'
+        agent_deployment_task_reaper_enabled: 'true'
+        agent_deployment_task_reaper_interval_ms: '15000'
+        agent_deployment_task_retention_days: '30'
         agent_jobs_enabled: 'true'
         airflow_dir: /srv/hops/airflow
         airflow_enabled: true
@@ -63065,6 +63175,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         kube_keda_installed: true
         kube_knative_domain_name: hopsworks.ai
         kube_knative_lb_domain: ''
+        kube_knative_mode_allowed: 'false'
         kube_kserve_installed: true
         kube_kserve_tensorflow_version: 2.20.0
         kube_node_taints_monitor_interval: 10m
@@ -63377,6 +63488,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.admin_password` <a class="headerlink" href="#helm.hopsworks.variables.admin_password" title="Permanent link">#</a> { #helm.hopsworks.variables.admin_password }
 :   Type `string`, default `"admin"`.
 
+`hopsworks.variables.agent_deployment_artifact_inline_bytes` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_artifact_inline_bytes" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_artifact_inline_bytes }
+:   Type `string`, default `"262144"`.
+    Largest A2A artifact part, in bytes, an agent deployment keeps in the task's database row. A larger part is written to the deployment's HopsFS folder and the task keeps a URL to it.
+
 `hopsworks.variables.agent_deployment_claude_login_enabled` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_claude_login_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_claude_login_enabled }
 :   Type `string`, default `"true"`.
     Let an agent deployment run on the Claude Code login of the user who started it: a `claude setup-token` token kept in the user's private secret claude_code_oauth_token, handed to the pod as CLAUDE_CODE_OAUTH_TOKEN, instead of needing an ANTHROPIC_API_KEY. A user opts in by creating the secret. Anthropic allows a third-party product to offer claude.ai login only with prior approval; set "false" to turn it off.
@@ -63393,9 +63508,33 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 `hopsworks.variables.agent_deployment_otel_memory_mb` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_otel_memory_mb" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_otel_memory_mb }
 :   Type `string`, default `"2048"`.
 
+`hopsworks.variables.agent_deployment_push_allowed_hosts` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_push_allowed_hosts" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_push_allowed_hosts }
+:   Type `string`, default `""`.
+    Comma-separated hosts. When set, they are the only hosts an A2A push notification of an agent deployment may be sent to. Empty allows any public https destination and the internal ones of agent_deployment_push_internal_allow.
+
+`hopsworks.variables.agent_deployment_push_internal_allow` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_push_internal_allow" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_push_internal_allow }
+:   Type `string`, default `""`.
+    Comma-separated hosts or CIDRs with private addresses that an A2A push notification of an agent deployment may be sent to. Private addresses are refused otherwise. The inference gateway's own address is always allowed.
+
 `hopsworks.variables.agent_deployment_task_drain_seconds` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_task_drain_seconds" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_task_drain_seconds }
 :   Type `string`, default `"600"`.
     Seconds a replica of an agent deployment keeps running the A2A tasks it has after it is told to stop, before the ones still running fail with executor_shutdown. The replica's termination grace period is 30 seconds above this. In Knative mode the budget is capped at 570, since Knative's revision timeout, which is also the pod's grace period, cannot exceed 600 seconds.
+
+`hopsworks.variables.agent_deployment_task_max_bytes` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_task_max_bytes" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_task_max_bytes }
+:   Type `string`, default `"2097152"`.
+    Largest A2A task, in bytes, an agent deployment keeps in the database. A larger task moves its older history to the deployment's HopsFS folder.
+
+`hopsworks.variables.agent_deployment_task_reaper_enabled` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_task_reaper_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_task_reaper_enabled }
+:   Type `string`, default `"true"`.
+    Let Hopsworks fail the A2A tasks whose replica was lost and deliver the final notifications still owed. With "false", such a task stays unfinished when its deployment has no replica left.
+
+`hopsworks.variables.agent_deployment_task_reaper_interval_ms` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_task_reaper_interval_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_task_reaper_interval_ms }
+:   Type `string`, default `"15000"`.
+    Milliseconds between two rounds in which Hopsworks looks for A2A tasks whose replica was lost and for final notifications still owed. Read when Hopsworks starts.
+
+`hopsworks.variables.agent_deployment_task_retention_days` <a class="headerlink" href="#helm.hopsworks.variables.agent_deployment_task_retention_days" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_deployment_task_retention_days }
+:   Type `string`, default `"30"`.
+    Days a finished A2A task of an agent deployment is kept before Hopsworks deletes it. A key issued for the deployment's notification route expires after the same number of days.
 
 `hopsworks.variables.agent_jobs_enabled` <a class="headerlink" href="#helm.hopsworks.variables.agent_jobs_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.agent_jobs_enabled }
 :   Type `string`, default `"true"`.
@@ -64178,6 +64317,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.kube_knative_lb_domain` <a class="headerlink" href="#helm.hopsworks.variables.kube_knative_lb_domain" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_knative_lb_domain }
 :   Type `string`, default `""`.
+
+`hopsworks.variables.kube_knative_mode_allowed` <a class="headerlink" href="#helm.hopsworks.variables.kube_knative_mode_allowed" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_knative_mode_allowed }
+:   Type `string`, default `"false"`.
+    Knative mode is deprecated: with "false" the backend refuses creating a Knative-mode deployment or switching a deployment to Knative mode; existing Knative-mode deployments keep working and can be converted to Standard mode. "true" is a temporary escape hatch that allows both again. Knative mode is removed in 5.4.
 
 `hopsworks.variables.kube_kserve_installed` <a class="headerlink" href="#helm.hopsworks.variables.kube_kserve_installed" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_kserve_installed }
 :   Type `bool`, default `true`.
@@ -65585,7 +65728,7 @@ The LLM Gateway's controller ships in the same subchart, and its values, under `
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: `global._hopsworks.envoyGateway.enabled`, [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -66025,7 +66168,7 @@ See [LLM Gateway][llm-gateway] for what the feature installs and what the cluste
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 ## aiGateway { #helm-values-hw-envoy-ai-gateway-aigateway }
 
@@ -66522,7 +66665,7 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -66929,7 +67072,7 @@ With `kueue.enabled=false` Hopsworks uses a Kueue installed outside its release;
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kueue.enabled`](global.md#helm.global._hopsworks.kueue.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -67315,7 +67458,7 @@ Values under `hw-kyverno` configure the Kyverno cluster policies and the policy 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.kyverno.enabled`](global.md#helm.global._hopsworks.kyverno.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -67817,7 +67960,7 @@ Values under `judge` configure Judge, the active cluster arbitrator service.
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -67952,7 +68095,7 @@ Values under `kafka` configure Kafka, run by the Strimzi operator, which carries
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.kafka.enabled`](global.md#helm.global._hopsworks.kafka.enabled) is `true`.
 
@@ -68842,7 +68985,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -70815,7 +70958,7 @@ Values under `minio` configure MinIO, an S3-compatible object store deployed ins
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.minio.enabled`](global.md#helm.global._hopsworks.minio.enabled) is `true`.
 
@@ -71070,7 +71213,7 @@ Values under `olk` configure OpenSearch, OpenSearch Dashboards, Logstash and Fil
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.opensearch.enabled`](global.md#helm.global._hopsworks.opensearch.enabled) is `true`.
 
@@ -72046,7 +72189,7 @@ Values under `onlinefs` configure OnlineFS, which consumes feature rows from Kaf
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
@@ -72581,7 +72724,7 @@ Values under `prometheus` configure Prometheus, which collects cluster and servi
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -72735,7 +72878,7 @@ Values under `ray` configure the KubeRay operator, which runs the Ray clusters b
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.ray.enabled`](global.md#helm.global._hopsworks.ray.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -72882,13 +73025,13 @@ Values under `rondb` configure RonDB, the online feature store database, install
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Always deployed.
 
 !!! info "Upstream charts"
 
-    - Values under `rondb.rondb` go to [`rondb` 26.2.26](https://github.com/logicalclocks/rondb-helm/blob/v26.2.26/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+    - Values under `rondb.rondb` go to [`rondb` 26.2.27](https://github.com/logicalclocks/rondb-helm/blob/v26.2.27/values.schema.json) from `https://logicalclocks.github.io/rondb-helm/`, and all of them are listed under [`rondb` chart values](#helm-values-rondb-rondb).
 
 ??? example "Defaults as YAML"
 
@@ -73098,7 +73241,7 @@ Always deployed.
         ```
 
 `rondb.rondb` <a class="headerlink" href="#helm.rondb.rondb" title="Permanent link">#</a> { #helm.rondb.rondb }
-:   Type `object`, passed to the [`rondb` 26.2.26](https://github.com/logicalclocks/rondb-helm/blob/v26.2.26/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
+:   Type `object`, passed to the [`rondb` 26.2.27](https://github.com/logicalclocks/rondb-helm/blob/v26.2.27/values.schema.json) chart, whose values are listed under [`rondb` chart values](#helm-values-rondb-rondb).
     override rondb values
 
     ??? note "Default"
@@ -73233,7 +73376,7 @@ Always deployed.
 
 ## `rondb` chart values { #helm-values-rondb-rondb }
 
-These are the values of the [`rondb` 26.2.26](https://github.com/logicalclocks/rondb-helm/blob/v26.2.26/values.schema.json) chart, set under `rondb.rondb`.
+These are the values of the [`rondb` 26.2.27](https://github.com/logicalclocks/rondb-helm/blob/v26.2.27/values.schema.json) chart, set under `rondb.rondb`.
 The defaults are what Hopsworks deploys: the chart's own, with the `rondb` and `rondb.rondb` overrides above applied.
 Where Hopsworks overrides a value, the entry also gives the chart's own default.
 
@@ -73695,7 +73838,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
             name: rondb
             registry: docker.hops.works
             repository: hopsworks
-            tag: 26.02.14
+            tag: 26.02.15
           toolbox:
             name: hwutils
             registry: docker.hops.works
@@ -73757,7 +73900,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 :   Type `string`, default `"hopsworks"`.
 
 `rondb.rondb.images.rondb.tag` <a class="headerlink" href="#helm.rondb.rondb.images.rondb.tag" title="Permanent link">#</a> { #helm.rondb.rondb.images.rondb.tag }
-:   Type `string`, default `"26.02.14"`.
+:   Type `string`, default `"26.02.15"`.
     The version of RonDB to use; This should always be equivalent to .Chart.AppVersion
 
 `rondb.rondb.images.toolbox` <a class="headerlink" href="#helm.rondb.rondb.images.toolbox" title="Permanent link">#</a> { #helm.rondb.rondb.images.toolbox }
@@ -74512,7 +74655,7 @@ Where Hopsworks overrides a value, the entry also gives the chart's own default.
 
 `rondb.rondb.mysql.users[].existingSecret.rotationId` <a class="headerlink" href="#helm.rondb.rondb.mysql.users.existingSecret.rotationId" title="Permanent link">#</a> { #helm.rondb.rondb.mysql.users.existingSecret.rotationId }
 :   Type `string`.
-    Opaque rotation marker. Bump this (e.g. to a date or counter) whenever the Secret's password is rotated. It participates in the user-setup Job's name, forcing a re-run that converges the MySQL password to the Secret (ALTER USER). Required for rotation under Argo CD / template-only rendering, where the release revision is constant; plain `helm upgrade` re-runs the Job on every upgrade regardless.
+    Opaque rotation marker. Bump this (e.g. to a date or counter) when rotating the Secret's password under Argo CD or another template-only renderer. Changing the marker gives the users Job a new name so it applies the password. On ordinary Helm upgrades the release revision already gives the Job a new name. On in-place restores the mysqld setup Job applies the password.
 
 `rondb.rondb.mysql.users[].host` <a class="headerlink" href="#helm.rondb.rondb.mysql.users.host" title="Permanent link">#</a> { #helm.rondb.rondb.mysql.users.host }
 :   Type `string`, example `"%"`.
@@ -75810,7 +75953,7 @@ Values under `spark` configure the Spark operator, the Spark history server and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -77395,7 +77538,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -79107,7 +79250,7 @@ Values under `trino` configure Trino, the SQL query engine, and its test coordin
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.trino.enabled`](global.md#helm.global._hopsworks.trino.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -79435,7 +79578,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795712920` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
