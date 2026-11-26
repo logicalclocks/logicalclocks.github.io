@@ -847,9 +847,10 @@ Set `kserve.storageInitializer.resources` to keep the old limits.
 - **Several releases on one Kubernetes cluster.**
   Upgrade the release that runs the KubeRay operator first, because the other releases use its operator and its CRDs.
 - **`hopsworks.variables.ray_token_auth`.**
-  The default, `enabled`, needs no action.
-  With it, two kinds of Ray cluster start with a warning in the Hopsworks log: one on a project environment whose Ray is older than 2.52, and a new one from a Jupyter server that was started before the upgrade.
-  Because of a security fix, recreate such environments from a Ray environment of 5.3, restart such Jupyter servers, and then set the value to `required`, which refuses both.
+  The default, `enabled`, needs no action during the upgrade.
+  Because of a security fix, recreate project environments whose Ray is older than 2.52 from a Ray environment of 5.3, and restart Jupyter servers that were started before the upgrade.
+  Hopsworks logs a warning that names each Ray cluster still started from such an environment or Jupyter server.
+  Once no new warnings appear, set the value to `required`.
   `disabled` keeps the behaviour of 5.2, without the fix.
   Set the value in your Helm values, because the next upgrade resets a change made in the cluster configuration.
 - **Ray dashboard.**
