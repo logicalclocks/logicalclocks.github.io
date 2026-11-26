@@ -206,3 +206,8 @@ Things to know:
 ## Next Steps
 
 Move on to the [usage guide for data sources][data-source-usage] to see how you can use your newly created S3 connector.
+
+### Copy files into a dataset
+
+The same data source can also copy the files under a prefix of the bucket, whatever their format, into a dataset of the project, once or on a schedule, with optional mirroring of deletions and a file index feature group.
+See [Copy files from S3, GCS or ADLS into a dataset][files-ingestion].

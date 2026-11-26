@@ -267,7 +267,7 @@ An upgrade from a release that already uses Strimzi 1.3 crosses none of this.
   The setting makes that unlikely rather than impossible: nothing waits for the old operator to exit.
   If your values set `kafka.strimzi-kafka-operator.deploymentStrategy.type: Recreate`, also set `rollingUpdate: null` there, or the merged strategy is rejected.
   A single-broker cluster is unavailable while its broker is replaced, a single-controller cluster has no KRaft quorum while its controller is replaced, and OnlineFS catches up afterwards.
-- **Three new tags to mirror on an airgapped cluster**: `strimzi/operator`, `strimzi/kafka` and `strimzi/crds`, which `vendor_images.sh` lists.
+- **Three new tags to mirror on an airgapped cluster**: `strimzi/operator`, `strimzi/kafka` and `strimzi/crds`, which the [image list][private-registry-images] includes.
 - **The operator deletes pods with background propagation during a rolling update.**
   Strimzi 1.3 turns its `UseBackgroundPodDeletion` feature gate on by default, so that CNI plugins which remove a pod's network endpoints when its object is deleted, such as Cilium, no longer cut a broker off before it has shut down.
   To keep the earlier foreground deletion, set `kafka.strimzi-kafka-operator.featureGates: "-UseBackgroundPodDeletion"`.
@@ -683,13 +683,13 @@ With the topic ID, OnlineFS reads a topic that was deleted and created again und
   A pod that starts later copies only project tables not listed yet.
 - **The project tables stay until every OnlineFS pod runs 5.3.**
   An OnlineFS pod of 5.2 reads its project's table each time Kafka gives it partitions, as during the rollout.
-  The `onlinefs-drop-legacy-offsets-<hash>-r<revision>` Job waits for the rollout of the OnlineFS Deployment to finish, then drops the listed project tables.
+  The `onlinefs-drop-legacy-offsets-<hash>-r<revision>` Job waits for the rollouts of the RonDB StatefulSets and of the OnlineFS Deployment to finish, then drops the listed project tables.
   On a cluster with `global._hopsworks.full_platform: true` it holds the Flyway lease while it drops them, as the schema migrations do.
 - **The init container and the Job connect to the DDL SQL node of the release as `hopsworksroot`**, as the schema migrations do: the `ddl-mysqld` Service of the release, or, when RonDB is managed externally on a release with `global._hopsworks.full_platform: true`, the consul name in `onlinefs.dependencies.mysql.ddlConsulServiceName` (`mysqlddl`).
   A satellite cluster (`global._hopsworks.full_platform: false`) always connects to the Service, also with an external RonDB.
   A cluster that disables the DDL SQL node (`rondb.rondb.meta.ddlMySQLd.enabled: false`) sets `onlinefs.dependencies.mysql.serviceName: mysqld`, and also `onlinefs.dependencies.mysql.ddlConsulServiceName: mysql` when it is not a satellite and RonDB is managed externally.
   `onlinefs.dependencies.mysql.url` overrides both.
-- **With `onlinefs.rbac.useExistingRole`**, the role needs `get`, `list` and `watch` on `deployments`, and on a cluster with `global._hopsworks.full_platform: true` the lease rules of the chart's `onlinefs-role`, for the Job.
+- **With `onlinefs.rbac.useExistingRole`**, the role needs `get`, `list` and `watch` on `deployments` and `statefulsets`, `get` and `watch` on `statefulsets/status`, and on a cluster with `global._hopsworks.full_platform: true` the lease rules of the chart's `onlinefs-role`, for the Job.
 - **A step that fails keeps the pod from starting.**
   It reads every project table before it writes, so a step that fails while it copies leaves every project table as it is, and the next start copies them again.
   The pod stays in `Init:Error` or `Init:CrashLoopBackOff`, and the log names the database:
@@ -820,8 +820,7 @@ On a cluster still on Istio 1.29, the Istio install hook stops with an error bef
   The Istio ingress gateway and the cluster-local gateway restart once.
   Each rolls out its new pod before it stops the old one.
 - **Your own image registry.**
-  Mirror `istio/pilot` and `istio/proxyv2` at `1.31.4` before the upgrade.
-  The chart's `vendor_images.sh` lists both.
+  Mirror `istio/pilot` and `istio/proxyv2` at `1.31.4` before the upgrade, as [Images to mirror][private-registry-images] describes.
 - **Sidecars you injected yourself.**
   The chart injects no Istio sidecar.
   A workload you gave an Istio sidecar keeps its 1.30 proxy until it restarts, so restart it after the upgrade.
@@ -842,9 +841,9 @@ The statistics settings added in 5.3 default to the previous behaviour, so an un
 
 - `statistics_job_driver_memory`, `statistics_job_executor_memory`, `statistics_job_executor_cores` and `statistics_job_max_executors` override the generic Spark job values for the statistics jobs only when set, and are empty by default.
   Before each ingestion statistics run they are applied to the existing job too.
-  The memory and cores settings are floors, so a job given more in the Jobs UI keeps it, while `statistics_job_max_executors` caps the job's maximum executors.
+  The memory and cores settings are floors, so a job given more in the Jobs UI keeps it, while `statistics_job_max_executors` replaces the job's maximum executors before each ingestion statistics run.
 - `statistics_job_bytes_per_executor` sizes the executors of a statistics run from the size of the table it profiles; at the default 0 a run keeps the job's configured executors.
-  When it is set, each ingestion statistics run sets the job's maximum executors from the table size, up to `statistics_job_max_executors` or the generic Spark job default.
+  When it is set, each ingestion statistics run gets a maximum executors of its own from the table size, never above the job's maximum, and the job keeps its maximum for the next run.
 - `statistics_retention_rows_per_entity` keeps that many statistics rows per feature group and feature view, newest first; at the default 0 every row is kept.
 - `statistics_incremental_enabled` (default `false`) is the setting of feature groups that do not set their own `incremental` statistics flag: with it on, each append is merged into the previous statistics instead of profiling the whole table.
   `statistics_incremental_allowed` (default `true`) is the admin switch, which makes every feature group run full profiles when off, and `statistics_incremental_full_profile_every` (default 50) is the number of merged commits after which a feature group gets a full profile again.
@@ -855,7 +854,14 @@ A change made on the admin variables page, such as turning `statistics_increment
 From this hop, a statistics computation stores the histograms, correlations and KLL sketches of up to 32 features in one file, a format earlier releases cannot read.
 The Hopsworks workers are replaced one at a time during the upgrade, so while the rollout runs, a worker still on 5.2 returns statistics computed after the first worker was upgraded without those values.
 Statistics read after the rollout are complete.
-A feature monitoring run that finishes during the rollout can compare against these incomplete statistics, so check the results of runs from that period and run any that report a shift again after the upgrade.
+A feature monitoring run during the rollout can compare against these incomplete statistics, so it can fail, miss a shift or report one that is not there.
+After the upgrade, run again every feature monitoring configuration that ran during the rollout.
+
+### Storage initializer of model deployments { #upgrade-storage-initializer }
+
+The storage initializer, the init container that copies a downloading model deployment's files, now has limits of 2 cores and 2 GiB instead of 1 core and 1 GiB, because the copy was CPU-bound.
+A pod's limits count its largest init container, so a small predictor can now exceed a `limits.cpu` or `limits.memory` ResourceQuota or a LimitRange.
+Set `kserve.storageInitializer.resources` to keep the old limits.
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }
 
@@ -921,7 +927,7 @@ They apply to an upgrade from 5.1.x to 5.2.3 or later, and from 5.2.0, 5.2.1 or 
 
 Python apps pull their Envoy sidecar from `global._hopsworks.imageRegistry`, as `<registry>/envoyproxy/envoy:<tag>` with the tag in `hopsworks.variables.python_app_envoy_image_version` (`v1.38.0`); before, the chart did not set the backend's `python_app_envoy_image`, so clusters pulled `envoyproxy/envoy:v1.38.0` from Docker Hub.
 The default registry, `docker.hops.works`, has the image.
-A cluster whose `global._hopsworks.imageRegistry` is its own registry mirrors `envoyproxy/envoy:v1.38.0` there, at the path `envoyproxy/envoy`, before the upgrade, or its Python apps cannot start; the chart's `vendor_images.sh` does not list the image.
+A cluster whose `global._hopsworks.imageRegistry` is its own registry mirrors `envoyproxy/envoy:v1.38.0` there, at the path `envoyproxy/envoy`, before the upgrade, or its Python apps cannot start.
 The chart now writes `python_app_envoy_image` on every upgrade, replacing a value set by hand, so a cluster that pointed it at another image mirrors that image as above.
 
 ## Changes from 5.2.5 { #upgrade-changes-from-525 }
@@ -940,8 +946,7 @@ Istio 1.30 supports Kubernetes 1.32 to 1.36, and Istio supports the 1.30 release
   The Istio ingress gateway and the cluster-local gateway restart once.
   Each rolls out its new pod before it stops the old one.
 - **Your own image registry.**
-  Mirror `istio/pilot` and `istio/proxyv2` at `1.30.8` before the upgrade.
-  The chart's `vendor_images.sh` lists both.
+  Mirror `istio/pilot` and `istio/proxyv2` at `1.30.8` before the upgrade, as [Images to mirror][private-registry-images] describes.
 - **Sidecars you injected yourself.**
   The chart injects no Istio sidecar.
   A workload you gave an Istio sidecar keeps its 1.29 proxy until it restarts, so restart it after the upgrade.
