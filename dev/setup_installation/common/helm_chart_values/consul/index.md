@@ -4,13 +4,13 @@ Values under `consul` configure Consul, which provides service discovery and DNS
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795697949` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
 !!! info "Upstream charts"
 
-    - Values under `consul.consul` go to [`consul` 1.8.16](https://artifacthub.io/packages/helm/hashicorp/consul/1.8.16) from `https://helm.releases.hashicorp.com`.
+    - Values under `consul.consul` go to [`consul` 1.8.18](https://artifacthub.io/packages/helm/hashicorp/consul/1.8.18) from `https://helm.releases.hashicorp.com`.
 
     Only the values Hopsworks sets under `consul.consul` are listed on this page.
     Any other value of the chart can be set there too; the link opens its documentation for the version Hopsworks pins.
@@ -52,7 +52,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           gossipEncryption:
             autoGenerate: true
           image: docker.hops.works/hashicorp/consul:1.16.4-alpine-h1
-          imageK8S: docker.hops.works/hashicorp/consul-k8s-control-plane:1.8.16
+          imageK8S: docker.hops.works/hashicorp/consul-k8s-control-plane:1.8.18
           logLevel: info
           metrics:
             disableAgentHostName: true
@@ -168,7 +168,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
     ttlSecondsAfterFinished for the cleanup Job; null falls through to the global default
 
 `consul.consul` <a class="headerlink" href="#helm.consul.consul" title="Permanent link">#</a> { #helm.consul.consul }
-:   Type `object`, passed to the [`consul` 1.8.16](https://artifacthub.io/packages/helm/hashicorp/consul/1.8.16) chart, whose other values are documented there.
+:   Type `object`, passed to the [`consul` 1.8.18](https://artifacthub.io/packages/helm/hashicorp/consul/1.8.18) chart, whose other values are documented there.
     override consul values
 
     ??? note "Default"
@@ -192,7 +192,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           gossipEncryption:
             autoGenerate: true
           image: docker.hops.works/hashicorp/consul:1.16.4-alpine-h1
-          imageK8S: docker.hops.works/hashicorp/consul-k8s-control-plane:1.8.16
+          imageK8S: docker.hops.works/hashicorp/consul-k8s-control-plane:1.8.18
           logLevel: info
           metrics:
             disableAgentHostName: true

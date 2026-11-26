@@ -17,7 +17,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795697949` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795703272` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -44,7 +44,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795697949` (Hopsworks `5.
 | [`airflow`][helm-values-airflow] |  | 162 |
 | [`arrowflight`][helm-values-arrowflight] |  | 46 |
 | [`certs-operator`][helm-values-certs-operator] |  | 29 |
-| [`consul`][helm-values-consul] | [`consul` 1.8.16](https://artifacthub.io/packages/helm/hashicorp/consul/1.8.16) | 24 |
+| [`consul`][helm-values-consul] | [`consul` 1.8.18](https://artifacthub.io/packages/helm/hashicorp/consul/1.8.18) | 24 |
 | [`docker-registry`][helm-values-docker-registry] |  | 90 |
 | [`grafana`][helm-values-grafana] | [`grafana` 7.0.17](https://artifacthub.io/packages/helm/grafana/grafana/7.0.17) | 7 |
 | [`hive`][helm-values-hive] |  | 79 |
