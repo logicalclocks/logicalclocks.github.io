@@ -4,7 +4,7 @@ Values under `superset` configure Apache Superset, the BI dashboards over featur
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795696477` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795697949` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.superset.enabled`](global.md#helm.global._hopsworks.superset.enabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -529,7 +529,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/hopsworks/superset
-          tag: 6.1.0.1
+          tag: 6.1.0.2
         init:
           adminUser:
             email: admin@superset.com
@@ -1193,7 +1193,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
         image:
           pullPolicy: IfNotPresent
           repository: docker.hops.works/hopsworks/superset
-          tag: 6.1.0.1
+          tag: 6.1.0.2
         init:
           adminUser:
             email: admin@superset.com
