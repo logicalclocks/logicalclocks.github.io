@@ -429,8 +429,9 @@ On a cluster upgraded from a 6.0.0p4 database it ran 6 migrations in about a min
 ### Semantic layer { #upgrade-semantic-layer }
 
 5.3 adds the semantic layer and installs it by default on a full platform with Trino and the nginx ingress class, see [Install or leave it out][semantic-admin-enable].
-A satellite, a release with Trino off, and a release with another ingress class get none of it by default.
-With another ingress class, such as the AWS Load Balancer Controller or the OpenShift router, set `global._hopsworks.semanticLayer.enabled: true` to install it, and give its Ingresses that controller's settings, see [Ingress annotations][semantic-admin-ingress].
+A satellite and a release with Trino off get none of it by default.
+A release with another ingress class, such as the AWS Load Balancer Controller or the OpenShift router, gets the gateway, which serves nothing there, but not its Ingresses or the backend side; the chart's `values.aws.yaml` and `values.openshift.yaml` set `global._hopsworks.semanticLayer.enabled: false` to leave it out entirely.
+To serve the semantic layer behind such a controller, set `global._hopsworks.semanticLayer.enabled: true` and give its Ingresses that controller's settings, see [Ingress annotations][semantic-admin-ingress].
 Check the following before the upgrade, or leave the semantic layer out with `global._hopsworks.semanticLayer.enabled: false`:
 
 - **Room in `ts_1`.**
