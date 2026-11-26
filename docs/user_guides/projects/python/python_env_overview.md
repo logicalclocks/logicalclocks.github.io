@@ -46,9 +46,14 @@ The `FEATURE ENGINEERING` environments can be used in [Jupyter notebooks](../jup
 
 The `MODEL TRAINING` environments can be used in [Jupyter notebooks](../jupyter/python_notebook.md) or a [Python job](../jobs/python_job.md).
 
-- `tensorflow-training-pipeline` to train TensorFlow models
-- `torch-training-pipeline` to train and fine-tune PyTorch models and LLMs
+- `torch-training-pipeline` to train PyTorch models, and to fine-tune LLMs on one host with LoRA and QLoRA, using TRL, PEFT, Unsloth or DeepSpeed
 - `pandas-training-pipeline` to train XGBoost, Catboost and Sklearn models
+
+The Ray environments are used in [Ray notebooks](../jupyter/ray_notebook.md) and [Ray jobs](../jobs/ray_job.md).
+
+- `ray-training-pipeline` to run Ray Train, Tune and Data workloads
+- `ray-torch-training-pipeline` to train PyTorch models across several nodes with Ray Train
+- `rl-post-training` for reinforcement learning post-training of LLMs with SkyRL, training with FSDP and generating rollouts with vLLM
 
 ### Inference, agents and apps
 
@@ -61,6 +66,10 @@ The `INFERENCE / AGENTS / APPS` environments can be used in a deployment using a
 - `python-app-pipeline` to build interactive applications with Streamlit
 - `vllm-inference-pipeline` to load and serve LLMs with vLLM inference engine
 - `minimal-inference-pipeline` to install your own custom framework, contains a minimal set of dependencies
+
+A TensorFlow Serving deployment runs its transformer in `tensorflow-inference-pipeline` unless the deployment names another environment.
+A cluster installed with the Helm value `hopsworks.variables.tensorflow_inference_enabled` set to `false` has no `tensorflow-inference-pipeline`, which keeps 3.65 GB of image layers out of its registry.
+On such a cluster a deployment that would run in it is refused, because its image is not in the registry, so name another environment for the transformer, such as `pandas-inference-pipeline`.
 
 ## Next steps
 

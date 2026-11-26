@@ -274,7 +274,7 @@ Switching the mode clears the scaling settings that do not carry over and re-der
 
 Knative mode is deprecated, and Hopsworks 5.4 removes it.
 Standard mode scales to zero when idle and on request metrics through KEDA for a predictor without a transformer; a deployment with a transformer keeps at least one instance and scales on CPU or memory.
-Creating a deployment in Knative mode, or switching a Standard-mode deployment to Knative mode, fails with error `240080`, unless your administrator still allows it for the time being.
+Creating a deployment in Knative mode, or switching a Standard-mode deployment to Knative mode, fails with error `240082`, unless your administrator still allows it for the time being.
 Existing Knative-mode deployments keep working until you convert them, and their overview shows a deprecation banner.
 
 To convert a deployment, use **Convert to Standard mode** on its overview, or switch off Knative mode from the Python SDK while the deployment is stopped.

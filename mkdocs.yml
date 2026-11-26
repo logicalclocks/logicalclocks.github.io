@@ -89,7 +89,10 @@ nav:
                   - Gmail: user_guides/fs/data_source/creation/gmail.md
                   - Outlook: user_guides/fs/data_source/creation/outlook.md
                   - SharePoint: user_guides/fs/data_source/creation/sharepoint.md
+                  - SFTP: user_guides/fs/data_source/creation/sftp.md
+                  - Google Drive: user_guides/fs/data_source/creation/google_drive.md
               - Usage: user_guides/fs/data_source/usage.md
+              - Copy files into a dataset: user_guides/fs/data_source/files_ingestion.md
           - Feature Group:
               - user_guides/fs/feature_group/index.md
               - Create: user_guides/fs/feature_group/create.md
@@ -139,7 +142,6 @@ nav:
                   - Designer: user_guides/integrations/mlstudio_designer.md
                   - Notebooks: user_guides/integrations/mlstudio_notebooks.md
               - Apache Spark: user_guides/integrations/spark.md
-              - Apache Beam: user_guides/integrations/beam.md
               - Java: user_guides/integrations/java.md
             # TODO: update the docs and uncomment:
             #   - Databricks:
@@ -216,6 +218,7 @@ nav:
               - Run Spark Job: user_guides/projects/jobs/spark_job.md
               - Run Ray Job: user_guides/projects/jobs/ray_job.md
               - Scheduling: user_guides/projects/jobs/schedule_job.md
+              - Run with Different Resources: user_guides/projects/jobs/run_with_resources.md
               - Batch Feature Pipelines: user_guides/projects/jobs/batch_feature_pipeline.md
           - K8s Scheduling:
               - Base: user_guides/projects/scheduling/kube_scheduler.md
@@ -235,6 +238,29 @@ nav:
               - Query Engine: user_guides/projects/trino/query_engine.md
               - Trino Catalogs: user_guides/projects/trino/catalogs.md
               - Sharing: user_guides/projects/trino/sharing.md
+          - Semantic Layer:
+              - user_guides/analytics/semantic_layer/index.md
+              - Overview: user_guides/analytics/semantic_layer/overview.md
+              - Roles and Permissions: user_guides/analytics/semantic_layer/roles.md
+              - Get Started: user_guides/analytics/semantic_layer/get_started.md
+              - Ecommerce Blueprint: user_guides/analytics/semantic_layer/ecommerce_blueprint.md
+              - Define Metrics: user_guides/analytics/semantic_layer/define_metrics.md
+              - Metric Types: user_guides/analytics/semantic_layer/metric_types.md
+              - Time Spine: user_guides/analytics/semantic_layer/time_spine.md
+              - Edit Definitions in the UI: user_guides/analytics/semantic_layer/editor.md
+              - Compile and Builds: user_guides/analytics/semantic_layer/builds.md
+              - Validation Rules: user_guides/analytics/semantic_layer/validation_rules.md
+              - Tags: user_guides/analytics/semantic_layer/tags.md
+              - Query Metrics: user_guides/analytics/semantic_layer/query.md
+              - Saved Queries: user_guides/analytics/semantic_layer/saved_queries.md
+              - Result Cache: user_guides/analytics/semantic_layer/caching.md
+              - Query History: user_guides/analytics/semantic_layer/query_history.md
+              - Connect dbt Clients: user_guides/analytics/semantic_layer/connect_clients.md
+              - Connect BI Tools: user_guides/analytics/semantic_layer/bi_tools.md
+              - Excel and ODBC: user_guides/analytics/semantic_layer/excel_odbc.md
+              - Metric Exports: user_guides/analytics/semantic_layer/exports.md
+              - Dashboards in Superset: user_guides/analytics/semantic_layer/dashboards.md
+              - Agent Tools: user_guides/analytics/semantic_layer/agent_tools.md
           - Superset: user_guides/projects/superset/superset.md
       - MLOps:
           - user_guides/mlops/index.md
@@ -267,6 +293,7 @@ nav:
                   - Autoscaling: user_guides/mlops/serving/autoscaling.md
                   - Scheduling: user_guides/mlops/serving/scheduling.md
                   - API Protocol: user_guides/mlops/serving/api-protocol.md
+                  - Loading Strategy: user_guides/mlops/serving/loading-strategy.md
               - REST API: user_guides/mlops/serving/rest-api.md
               - Troubleshooting: user_guides/mlops/serving/troubleshooting.md
               - External Access: user_guides/mlops/serving/external-access.md
@@ -283,6 +310,7 @@ nav:
           - Agent Tasks: user_guides/agents/tasks/index.md
           - Agent Deployments:
               - user_guides/agents/deployments/index.md
+              - A2A: user_guides/agents/a2a/index.md
               - Agent Memory: user_guides/agents/memory/index.md
               - Feedback: user_guides/agents/feedback/index.md
               - Evaluation: user_guides/agents/evaluation/index.md
@@ -309,12 +337,14 @@ nav:
           - Custom Project Roles: setup_installation/admin/project_roles.md
           - Configure Alerts: setup_installation/admin/alert.md
           - IAM Role Chaining: setup_installation/admin/roleChaining.md
+          - Private CA Trust: setup_installation/admin/private_ca.md
           - Configure Project Mapping: setup_installation/admin/configure-project-mapping.md
           - Airflow 3 operator notes: setup_installation/admin/airflow3.md
           - Search Index: setup_installation/admin/search_index.md
           - HopsFS DataNode Drain: setup_installation/admin/hopsfs_datanode_drain.md
           - HopsFS CSI Driver: setup_installation/admin/hopsfs_csi.md
           - Dedicated Node Pools: setup_installation/admin/node_pools.md
+          - Private Registries and Air Gap: setup_installation/admin/private_registry.md
           - KEDA Autoscaling: setup_installation/admin/keda.md
           - Envoy Gateway: setup_installation/admin/envoy_gateway.md
           - LLM Gateway: setup_installation/admin/llm_gateway.md
@@ -357,8 +387,10 @@ nav:
           - Service Operations: setup_installation/admin/operationLogs.md
           - Query Engine (Trino): setup_installation/admin/trino.md
           - Superset: setup_installation/admin/superset.md
+          - Semantic Layer: setup_installation/admin/semantic_layer.md
           - GPU Scheduling with Run:ai: setup_installation/admin/run_ai.md
           - Triton Inference Server: setup_installation/admin/triton.md
+          - vLLM Serving Runtimes: setup_installation/admin/vllm.md
       - Helm Chart Values Reference:
           - setup_installation/common/helm_chart_values/index.md
           - global: setup_installation/common/helm_chart_values/global.md
@@ -496,6 +528,7 @@ plugins:
         concepts/fs/feature_view/feature_monitoring.md: concepts/fs/feature_group/feature_monitoring.md#monitoring-a-feature-view
         concepts/fs/feature_view/versioning.md: concepts/fs/feature_group/versioning.md#feature-view-and-training-data-versioning
         user_guides/integrations/flink.md: user_guides/integrations/index.md
+        user_guides/integrations/beam.md: user_guides/integrations/index.md
         tutorials/index.md: index.md
         setup_installation/common/arrow_flight_duckdb.md: user_guides/fs/feature_view/training-data.md
         user_guides/agents/chat_contract/index.md: user_guides/agents/deployments/index.md#the-chat-contract

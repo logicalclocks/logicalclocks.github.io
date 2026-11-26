@@ -1,7 +1,7 @@
 # Analytics Guides
 
-Analytics is the SQL and dashboard layer over the feature store: Trino queries the offline data, Superset charts it.
-Start with a query, then turn it into a dashboard.
+Analytics is the SQL, metrics and dashboard layer over the feature store: Trino queries the offline data, the semantic layer defines metrics over it, Superset charts it.
+Start with a query, then define metrics or turn it into a dashboard.
 
 <!-- markdownlint-disable MD030 -->
 <div class="grid cards hops-start" markdown>
@@ -42,11 +42,30 @@ Start with a query, then turn it into a dashboard.
 </div>
 
 <div class="hops-task-group" markdown>
+:material-sigma:{ .hops-role-ico } Metrics
+{ .hops-role-cap }
+
+- [Semantic layer][semantic-layer-overview]
+  Metrics defined once in YAML over feature groups, queried by name.
+- [Define metrics][semantic-define-metrics]
+  Semantic models, and simple, ratio, derived, cumulative and conversion metrics.
+- [Query metrics][semantic-query-metrics]
+  From Python, the CLI, the UI or an agent, as SQL or rows, or by saved query.
+- [Connect dbt clients and BI tools][semantic-bi-tools]
+  dbt-sl-sdk, JDBC, ADBC and GraphQL, and semantic projects as tables for BI tools.
+- [Metric exports][semantic-exports]
+  Saved queries kept in feature groups by scheduled jobs.
+
+</div>
+
+<div class="hops-task-group" markdown>
 :material-view-dashboard-outline:{ .hops-role-ico } Visualize
 { .hops-role-cap }
 
 - [Superset](../projects/superset/superset.md)
   SQL Lab, datasets, charts and dashboards inside the project.
+- [Dashboards from metrics][semantic-superset-dashboards]
+  Superset dashboards built from a semantic project's metrics.
 - [Share a dashboard](../projects/superset/superset.md#sharing-and-collaboration)
   Give project members access to a dashboard.
 - [Enable Superset](../../setup_installation/admin/superset.md)

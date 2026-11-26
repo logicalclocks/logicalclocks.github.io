@@ -266,9 +266,11 @@ def _parse_settings(text: str, source: str) -> list[ConfigVar]:
         name, args_text = m.group(1), m.group(2)
         args = _split_top_level(args_text, ",")
         args = [a.strip() for a in args]
-        if len(args) == 2:
+        # The 4- and 5-arg forms append a validator and its valid values, which
+        # the table does not show.
+        if len(args) in (2, 4):
             key_arg, default_arg, type_arg = None, args[0], args[1]
-        elif len(args) == 3:
+        elif len(args) in (3, 5):
             key_arg, default_arg, type_arg = args[0], args[1], args[2]
         else:
             msg = f"unexpected arity for Settings.java entry {name}: {args!r}"

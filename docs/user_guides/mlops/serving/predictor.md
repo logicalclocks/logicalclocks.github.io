@@ -426,6 +426,9 @@ tool_call_parser: qwen3_coder
 When Hopsworks generates the file, from a Hugging Face import or the configuration generator, it adds both keys for the model families it knows and keeps any value the file already sets.
 For an existing file or another model family, set them yourself; [Coding agents][coding-agents-deployment] lists the parser of each family.
 
+For vLLM deployments created in Hopsworks 5.3 or later, Hopsworks sets `--tensor-parallel-size` to the current GPU count when the deployment requests more than one GPU, unless the configuration file sets `tensor-parallel-size`, `pipeline-parallel-size` or `data-parallel-size`.
+Deployments created before the upgrade keep their previous parallelism settings across restarts, edits and version rollbacks.
+vLLM-Omni deployments place their stages on GPUs through their own deploy configuration and get no tensor parallel size from Hopsworks.
 vLLM pods get a memory-backed `/dev/shm`, which the model server uses to pass data between processes, for example with tensor parallelism.
 It counts against the pod's memory limit, and the predictor's `shmSize` setting does not size it, so leave room for it in the memory resources.
 
@@ -448,6 +451,10 @@ They are first-class fields on the predictor configuration.
 
 Both the `VLLM` and `VLLM_OMNI` variants run the official upstream vLLM images published on [Docker Hub](https://hub.docker.com): [`vllm/vllm-openai`](https://hub.docker.com/r/vllm/vllm-openai) and [`vllm/vllm-omni`](https://hub.docker.com/r/vllm/vllm-omni) respectively.
 
+!!! note "vLLM-Omni can be disabled per cluster"
+    The `VLLM_OMNI` variant is offered only on clusters where the administrator has not disabled it, see [vLLM serving runtimes][vllm-disable-omni].
+    On a cluster where it is disabled, an existing vLLM-Omni deployment cannot be started or updated until you switch it to the `VLLM` variant; it can still be stopped and deleted.
+
 !!! tip "Python SDK"
     From the Python SDK, the variant is selected with the `vllm_variant` keyword
     argument. See [`Model.deploy()`][hsml.model.Model.deploy] in the API reference.
@@ -459,7 +466,7 @@ If not set, Hopsworks picks the **highest** image version advertised for the cho
 Set it explicitly to pin a deployment to a specific image, which is useful when you need a stable, reproducible runtime.
 
 The list of available versions per variant is advertised by the cluster administrator through the
-`kube_serving_vllm_versions` and `kube_serving_vllm_omni_versions` Hopsworks variables.
+`kube_serving_vllm_versions` and `kube_serving_vllm_omni_versions` Hopsworks variables, see [vLLM serving runtimes][vllm-image-tags].
 
 Hopsworks ships exactly one default image version for each of the **vLLM** and **vLLM-Omni** variants.
 Any additional versions exposed in the **Version** dropdown are managed by the cluster administrator.
