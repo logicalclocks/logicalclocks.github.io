@@ -57,7 +57,7 @@ A query that runs on Trino reads the data and the access of that moment, as with
 ## What is never cached { #semantic-result-cache-never }
 
 - A query over a feature group shared with the project with only some of its features: the shared features can change without a commit, so Hopsworks reports it as not readable for the cache, and every such query runs on Trino.
-- A query over a feature group without commits, such as one without time travel or an external feature group: it has no commit time to key on.
+- A query over a feature group without commits, such as one without time travel or a [mounted table][semantic-define-mounted]: it has no commit time to key on.
 - A result larger than 8 MiB: it streams to the client and is not kept.
 - A query while Hopsworks cannot answer for commits, access or the Trino rules revision: it runs on Trino.
 - The runs of [metric exports][semantic-exports], which always read the data as it is.

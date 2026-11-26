@@ -17,8 +17,9 @@ The Hopsworks host is `hopsworks.example.com`, and the load balancer of the Flig
 | Both, dbt's layout | `https://<layout host>/api/graphql` and `grpc+tls://<layout host>:443` | dbt's Tableau and Power BI connectors, and tools that take a dbt host, when an administrator turns on the [dbt-compatible endpoint layout][semantic-bi-dbt-layout] |
 
 - The environment id is the semantic project's id, which `hops semantic list` prints under `ID`.
-- The Flight SQL host is the load balancer of the semantic gateway, see [For administrators][semantic-connect-admin].
-  Inside the cluster, it is `semantic-gateway.service.consul` or `semantic-gateway.<namespace>.svc`, on the same port.
+- The Flight SQL host is the one in the connection details: the semantic gateway's load balancer when an administrator set one up, see [For administrators][semantic-connect-admin].
+  Otherwise it is the gateway's Service, `semantic-gateway.<namespace>.svc.cluster.local`, which only clients inside the cluster reach.
+  Inside the cluster, `semantic-gateway.service.consul` and `semantic-gateway.<namespace>.svc` work as well, on the same port.
 - Both APIs take an API key with the `FEATURESTORE` and `TRINO` scopes, as `Authorization: Bearer <api key>`, the form dbt's clients send, or as `Authorization: ApiKey <api key>`.
   The caller must be a member of the semantic project's project.
 - Both APIs use TLS.
@@ -68,7 +69,7 @@ Hopsworks hands out what a client needs, apart from the API key.
 It writes the cluster's CA to `/tmp/hopsworks_semantic_<project id>_<semantic project id>_ca.pem`, or to `--ca-path`, and `connection_info(ca_path=...)` does the same.
 `hops semantic connect sales --json` prints every field.
 
-`DBT_SL_ADBC_URL_FORMAT` is a template with `{server_host}` only when the Flight SQL port is on the Hopsworks host, and that host has no port; otherwise it is the full URL of the load balancer.
+`DBT_SL_ADBC_URL_FORMAT` is a template with `{server_host}` only when the Flight SQL port is on the Hopsworks host, and that host has no port; otherwise it is the full URL of the Flight SQL host.
 
 In the UI, open the semantic project and click **Connect a client**, next to **Query metrics**.
 The dialog shows the **Environment ID**, the **GraphQL URL**, the **ADBC URL**, the **JDBC URL**, the `export` lines for dbt-sl-sdk under **dbt-sl-sdk environment**, and the **Cluster CA** with **Download ca.pem**.
@@ -337,7 +338,7 @@ Any replica of the gateway serves a handle, so a client can fetch from another r
 
 ## For administrators { #semantic-connect-admin }
 
-The semantic gateway is installed with `global._hopsworks.semanticLayer.enabled: true`.
+The semantic gateway is installed with `global._hopsworks.semanticLayer.enabled`, `true` by default.
 GraphQL needs nothing more: the `hopsworks` chart adds an Ingress for `/semantic-layer/api/graphql` on the ingress hosts.
 Clients outside the cluster reach the Flight SQL port through a load balancer.
 
@@ -346,8 +347,6 @@ semantic-gateway:
   externalLoadBalancer:
     enabled: true
     hostname: semantic.hopsworks.example.com
-  signingKey:
-    existingSecret: semantic-gateway-signing-key
 
 hopsworks:
   variables:
@@ -356,12 +355,14 @@ hopsworks:
 
 ### The Flight SQL load balancer { #semantic-connect-admin-lb }
 
-- `semantic-gateway.externalLoadBalancer` makes the Service `semantic-gateway-external` on `flightPort`, 18446, as the other external load balancers of the chart do: `enabled`, `class` and `annotations`, `managed: false` for a NodePort Service with an optional `nodePort`, and on AWS a TargetGroupBinding to `global.unmanagedLoadBalancers.semanticGateway.targetGroupId`.
+- `semantic-gateway.externalLoadBalancer.enabled: true` makes the Service `semantic-gateway-external` on `flightPort`, 18446.
+  It is off by default, since REST and GraphQL reach the gateway through the Hopsworks ingress; `null` follows `global._hopsworks.externalLoadBalancers.enabled`.
+  The other settings are those of the chart's other external load balancers: `class` and `annotations`, `managed: false` for a NodePort Service with an optional `nodePort`, and on AWS a TargetGroupBinding to `global.unmanagedLoadBalancers.semanticGateway.targetGroupId`.
 - Clients check the name they dial against the gateway's certificate, so put the load balancer's DNS name, or IP address, in `externalLoadBalancer.hostname`.
   The chart adds it to the gateway's certificate, which otherwise holds only the names inside the cluster.
   Set it at install: the names of the certificate do not change on an upgrade unless the HopsworksCert `semantic-gateway` is deleted first.
 - Set `hopsworks.variables.loadbalancer_external_domain_semantic_gateway` to the same name, so the connection details carry it.
-  Left unset, the `hopsworks-update-lb-domains` job sets it from the load balancer's address, which is not in the certificate.
+  Left unset, the connection details carry the gateway's Service inside the cluster, which clients outside it cannot reach.
 - `hopsworks.variables.semantic_gateway_flight_port`, `"18446"`, is the port the connection details carry; change it with `flightPort`, or when the load balancer listens on another port.
 
 ### The signing key { #semantic-connect-admin-signing-key }
@@ -369,8 +370,10 @@ hopsworks:
 The gateway signs query handles with a key from a Secret, under `current`, and also accepts a key under `previous`.
 Each key is at least 32 characters.
 
-- With `signingKey.existingSecret: null` and `global._hopsworks.mode: auto`, the chart creates the Secret `semantic-gateway-signing` with a random key and keeps it across upgrades.
-- In any other mode, such as under ArgoCD, the chart cannot read the Secret back, so the render fails until `existingSecret` names a Secret you create:
+- With `signingKey.existingSecret: null`, a pre-install and pre-upgrade hook Job, `semantic-gateway-signing-init`, creates the Secret `semantic-gateway-signing` with a random key when it holds none, and leaves a key that exists alone.
+  This works under ArgoCD too.
+  Uninstalling Hopsworks deletes the Secret, with `hopsworks.cleanupOnUninstall.enabled`, `true` by default.
+- To manage the key yourself, create a Secret and name it in `existingSecret`; the hook Job then does not run:
 
 ```bash
 kubectl -n hopsworks create secret generic semantic-gateway-signing-key \

@@ -20,6 +20,7 @@ Uncomment the metrics to serve in models/semantic.yml, then run `hops semantic c
 ```
 
 `--from-fg` takes a feature group at its latest version, or `<name>:<version>`, and repeats.
+An external feature group compiles once the project has a Trino catalog of its data source, see [Mounted tables][semantic-define-mounted]; a spine group is refused.
 The files go to `Resources/semantic/<name>`, or to `--path`, which must not exist yet:
 
 ```text

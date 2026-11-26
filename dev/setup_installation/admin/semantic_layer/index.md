@@ -1,32 +1,52 @@
 # Semantic Layer { #semantic-admin }
 
 The Semantic Layer compiles metric definitions written in YAML over feature groups, answers metric queries over REST and Arrow Flight SQL, and answers metadata over GraphQL.
-This page turns it on and configures it; [Semantic Layer Guides][semantic-layer-guides] cover its use.
+This page covers what it installs and how to configure it; [Semantic Layer Guides][semantic-layer-guides] cover its use.
 
-## Turn it on { #semantic-admin-enable }
+## Install or leave it out { #semantic-admin-enable }
 
-```yaml
-global:
-  _hopsworks:
-    semanticLayer:
-      enabled: true
-```
-
-`global._hopsworks.semanticLayer.enabled`, `false` by default, installs:
+The semantic layer is:
 
 - the `semantic-gateway` subchart, the semantic gateway;
 - the Ingresses that route `/semantic-layer/` and `/semantic-layer/api/graphql` on the Hopsworks ingress hosts to the gateway;
 - the backend and UI side: the cluster variable `semantic_layer_enabled` is `true`, and projects show **Semantic Layer** in their sidebar.
 
+`global._hopsworks.semanticLayer.enabled` decides whether a release has it:
+
+| Value | The release has the semantic layer |
+| --- | --- |
+| Unset (`null`), the default | On a full platform with Trino and the nginx ingress class: `global._hopsworks.full_platform` and `global._hopsworks.trino.enabled` are not `false`, and `hopsworks.ingress.ingressClassName` is `nginx` or unset. |
+| `true` | Always. The install fails on a satellite (`global._hopsworks.full_platform: false`), which has no backend for it, and with Trino off, since the gateway runs its queries on Trino. |
+| `false` | Never. |
+
+A satellite and a release with Trino off install none of it by default.
+With another ingress class, such as the AWS Load Balancer Controller or the OpenShift router, the default leaves out the Ingresses and the backend side, while the gateway subchart, which cannot read the ingress class, is still installed and serves nothing.
+The chart's `values.aws.yaml` and `values.openshift.yaml` therefore set `false`.
+To serve the semantic layer behind another controller, set `true` and give the Ingresses that controller's settings, see [Ingress annotations][semantic-admin-ingress].
+
+To leave the semantic layer out:
+
+```yaml
+global:
+  _hopsworks:
+    semanticLayer:
+      enabled: false
+```
+
 While it is off, the semantic layer endpoints answer 404 `SEMANTIC_LAYER_DISABLED`.
-Queries run on Trino, so Trino must be installed too.
+
+### Ingress annotations { #semantic-admin-ingress }
+
+`hopsworks.semanticLayer.ingress.annotations` and `hopsworks.semanticLayer.graphqlIngress.annotations` apply over `hopsworks.ingress.annotations`, so the main Ingress's access rules and load balancer settings hold for the semantic layer too.
+Their defaults are nginx's: the gateway serves TLS only, so `backend-protocol: HTTPS`, read and send timeouts of 360 seconds, which a JSON answer needs since it sends nothing until its query ends, and a request body of at most 1 MiB.
+With another ingress class, set that controller's equivalents there, its backend TLS setting first: for the AWS Load Balancer Controller, `alb.ingress.kubernetes.io/backend-protocol: HTTPS`; for the OpenShift router, `route.openshift.io/termination: reencrypt`.
 
 ## What runs where { #semantic-admin-components }
 
 | Component | Runs in | Does |
 | --- | --- | --- |
 | Control plane | Hopsworks (Payara) | Semantic projects and their builds, sessions for the gateway, the definitions editor, tags, metric exports and their jobs, the query history and its cleaner. Its tables are in the `hopsworks` database in RonDB, and the compiled definitions of each build are files in the project's directory in HopsFS, which only Hopsworks reads and writes and which go with the project. |
-| Semantic gateway | The Deployment `semantic-gateway`, 2 replicas by default | Compiles the definitions for the control plane, plans metric queries, runs them on Trino as the caller, and serves REST, GraphQL, Arrow Flight SQL, the BI tables and the result cache. It keeps no state of its own beyond memory. |
+| Semantic gateway | The Deployment `semantic-gateway`, 1 replica by default; set `semantic-gateway.replicas` to 2 or more to keep queries running through a pod's restart | Compiles the definitions for the control plane, plans metric queries, runs them on Trino as the caller, and serves REST, GraphQL, Arrow Flight SQL, the BI tables and the result cache. It keeps no state of its own beyond memory. |
 | Trino | The `trino` chart | Runs the SQL the gateway plans, as the caller's own Trino user, see [Who a query runs as][semantic-overview-identity]. |
 | Export jobs | Python jobs in each project, in the `python-feature-pipeline` environment | Write saved queries into feature groups, see [Metric exports][semantic-exports]. |
 | Superset | The `superset` chart | Dashboards from metrics: each member's database connection of a project reads the gateway's Arrow Flight SQL port inside the cluster, at `semantic-gateway.<namespace>.svc.cluster.local:18446`, see [Dashboards in Superset][semantic-superset-dashboards]. |
@@ -36,7 +56,7 @@ The gateway's Service, `semantic-gateway`, has four ports:
 | Port | Name | Serves |
 | --- | --- | --- |
 | 18443 | `public` | REST and GraphQL, behind the Ingresses. |
-| 18444 | `internal` | Hopsworks' compile and validation requests; not for clients. |
+| 18444 | `internal` | Hopsworks' compile and validation requests; not for clients. It asks for a client certificate of the cluster's CA and answers 403 to any but Payara's, `hopsworks.glassfish.service.<consul domain>`. |
 | 18445 | `metrics` | Prometheus metrics, in the release namespace. |
 | 18446 | `flight` | Arrow Flight SQL. The Service keeps this port when `flightPort`, the port of the container and of the external load balancer, changes. |
 
@@ -57,8 +77,6 @@ semantic-gateway:
   externalLoadBalancer:
     enabled: true
     hostname: semantic.hopsworks.example.com
-  signingKey:
-    existingSecret: semantic-gateway-signing-key
 
 hopsworks:
   variables:
@@ -79,7 +97,7 @@ Under `semantic-gateway:`:
 
 | Value | Default | Meaning |
 | --- | --- | --- |
-| `replicas` | `2` | Replicas of the Deployment; not rendered while `hpa.enabled`, which then uses it as its minimum. |
+| `replicas` | `1` | Replicas of the Deployment; not rendered while `hpa.enabled`, which then uses it as its minimum. |
 | `hpa.enabled`, `hpa.maxReplicas`, `hpa.targetCPUUtilizationPercentage` | `false`, `4`, `80` | Autoscale the Deployment on CPU. |
 | `podDisruptionBudget.enabled`, `podDisruptionBudget.minAvailable` | `true`, `1` | Keep replicas available through voluntary disruptions, with more than one replica. |
 | `resources` | requests `500m`, `4Gi`; limits `2`, `4Gi` | Resources of the gateway container, see [Memory][semantic-admin-memory]. |
@@ -99,8 +117,9 @@ Under `semantic-gateway:`:
 | `handleTtlSeconds` | `3600` | Seconds a Flight ticket or prepared statement stays valid. |
 | `cache.maxBytes`, `cache.ttlSeconds`, `cache.entryMaxBytes`, `cache.dataVersionSeconds` | `268435456`, `300`, `8388608`, `30` | The [result cache][semantic-result-cache-admin]. |
 | `arrowMemoryLimitBytes` | `null` | Arrow buffers a replica's queries hold at once; null is half the JVM heap. |
-| `signingKey.existingSecret` | `null` | The Secret with the handle signing key, see [The signing key][semantic-connect-admin-signing-key]. |
-| `externalLoadBalancer.*` | | The Flight SQL load balancer: `enabled`, `class`, `annotations`, `managed`, `nodePort`, `nodeSelector`, `hostname`. |
+| `signingKey.existingSecret` | `null` | The Secret with the handle signing key; null has a hook Job create it, see [The signing key][semantic-connect-admin-signing-key]. |
+| `ttlSecondsAfterFinished` | `null` | Seconds the signing key's hook Job is kept after it finishes; null is the global Job TTL. |
+| `externalLoadBalancer.*` | `enabled: false` | The Flight SQL load balancer, off unless enabled: `enabled`, `class`, `annotations`, `managed`, `nodePort`, `nodeSelector`, `hostname`. |
 | `networkPolicy.enabled` | `true` | The gateway's NetworkPolicy, which limits the gateway's traffic and who reaches each of its ports. Keep it on, on a CNI that enforces NetworkPolicies. |
 | `image.registry`, `image.repository`, `image.tag`, `image.pullPolicy` | `null`, `hopsworks/semantic-gateway`, `null`, `null` | The gateway image; the tag defaults to the chart's version. |
 | `nodeSelector`, `tolerations`, `topologySpreadConstraint` | empty | Scheduling; the global values apply when empty. |
@@ -151,7 +170,7 @@ The chart writes them on every install and upgrade, so a change made on the [Clu
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
-| `semantic_layer_enabled` | `"false"` | The backend and UI side; `true` while `global._hopsworks.semanticLayer.enabled`. Set it alone only for a gateway that runs elsewhere. |
+| `semantic_layer_enabled` | `"true"` | The backend and UI side; `true` while `global._hopsworks.semanticLayer.enabled`, `false` otherwise. Set it alone only for a gateway that runs elsewhere. |
 | `semantic_layer_gateway_internal_url` | `""` | Where Payara sends compile requests; empty is the gateway's internal port in the release namespace. |
 | `semantic_layer_gateway_cluster_url` | `""` | The gateway's public port for callers inside the cluster; empty is the `semantic-gateway` Service in the release namespace. |
 | `superset_semantic_enabled` | `"true"` | The members' semantic connections in Superset and dashboards from metrics. |

@@ -135,8 +135,42 @@ semantic_models:
 
 In the `NATIVE` format, a semantic model names its feature group table with `node_relation`, as `schema_name` and `alias`, such as `sales_featurestore` and `orders_1`.
 
-A semantic model reads a feature group that has an offline table: the project's own, or one shared with the project.
+A semantic model reads a feature group of the project, or one shared with it:
+
+- a cached or stream feature group, through its offline table;
+- an external feature group over a table of a data source, a mounted table, through a Trino catalog of the project created from that data source, see [Mounted tables][semantic-define-mounted].
+
 Any other relation is a `RELATION` error.
+
+### Mounted tables { #semantic-define-mounted }
+
+An external feature group reads a table of a data source, such as a PostgreSQL, Snowflake or MySQL database, where it is.
+A semantic model reads it when the project has a Trino catalog created from that data source:
+
+1. A Data owner creates the catalog from the data source: **Add Trino Catalog** when creating the external feature group, or `create_trino_catalog()` on the data source, see [Trino catalogs][trino-catalogs].
+2. The catalog serves queries once the query engine has loaded it, at its next restart.
+3. The next compile resolves `ref()` to the external feature group, with its features, primary key and event time, as for any other feature group.
+
+The compile reads the table as `<catalog>.<schema>.<table>`, with the data source's schema as `<schema>`.
+On a catalog that names each database a schema, such as MySQL, MariaDB, ClickHouse, Oracle or Teradata, a data source that names no schema uses its database instead.
+On a catalog bound to one database, such as PostgreSQL, SQL Server, Redshift, Snowflake or BigQuery, the data source must name a schema and be in the catalog's database, or the feature group does not resolve.
+Queries run on Trino as the member who asks, like any other query on the catalog.
+
+A catalog counts when it is a project catalog of the project, or one another project [shares][sharing-a-catalog] with it:
+
+- not a private catalog, since a semantic project serves every member of the project and only the owner reads a private catalog, so a data source whose credentials each member provides has no catalog that counts;
+- not a catalog waiting for its first restart, being deleted, or one the query engine refused; a catalog being edited counts, since the query engine keeps the definition it loaded until the restart;
+- a shared catalog only while its share is active, once the query engine's rules grant it.
+
+The project's own catalogs come first, and among several of a kind, the oldest is read.
+Through a share of a whole catalog, schema or table, a semantic model reads every column of the table.
+Through a share narrowed to columns, it reads the shared columns without a mask: a masked column, and a column the table gained after the share was saved, are unknown to the model, so no metric aggregates masked values unnoticed.
+A table the share does not grant, or one whose shared columns are all masked, does not resolve.
+A catalog created from a data source before Hopsworks 5.3 counts when it takes its credentials from the data source.
+An external feature group over a SQL query or a path names no table, and does not resolve.
+
+A mounted table has no commits, so no result that reads it is cached, see [What is never cached][semantic-result-cache-never], and no saved query that reads it is answered from its export.
+In the `NATIVE` format, `node_relation` names a mounted table by its feature store as `schema_name` and its table as `alias`.
 
 ## Event time { #semantic-define-event-time }
 
