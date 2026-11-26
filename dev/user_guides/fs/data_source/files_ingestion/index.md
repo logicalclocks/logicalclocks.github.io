@@ -262,6 +262,11 @@ A run goes through these steps.
    Any other file is downloaded, several at a time, into a temporary file outside the dataset and renamed into place once complete, so readers of the dataset never see a partial file; it is counted as `copied` when new and `updated` when it replaced an earlier copy.
    When the data source provides a checksum of the file, the download is verified against it before the rename: GCS, Google Drive, S3 objects uploaded in a single part, and ADLS files that have a content MD5 set.
    The copy keeps the path relative to the prefix, so `handbook/2026/a/b.pdf` under prefix `handbook/2026/` lands at `<dataset>/a/b.pdf`.
+   HopsFS stores names in Latin-1, so every name of that path is stored in Unicode NFC form, with typographic dashes, quotes and spaces, `…`, `€` and `™` as their ASCII forms and any other character outside Latin-1 as `_`, as for [SharePoint names][data-source-sharepoint-names].
+   `Kontroll 2026 – 2029.pdf` lands as `Kontroll 2026 - 2029.pdf` and `Łódź.pdf` as `_ód_.pdf`, and the manifest's `source_url` keeps the name in the source.
+   When two listed files map to one path, one is stored and the other is counted as `failed`, with an error naming the file that holds the path.
+   A file an earlier run stored keeps its path for as long as its source is listed, so `plan-v1.pdf` added next to a stored `plan–v1.pdf` fails until one of them is renamed or deleted in the source.
+   A file over the size cap holds the path only when an earlier copy of it is stored there.
 4. **Failures**.
    A file that cannot be downloaded or written, or whose download does not match the checksum of the data source, is counted as `failed`, logged with its error, and the run continues with the next file unless `Fail on first error` is on.
    The previous copy of a failed file, if any, stays in place and in the manifest, and the file is retried on the next run.
