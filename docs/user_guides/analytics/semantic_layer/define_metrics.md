@@ -155,7 +155,9 @@ A semantic model reads it when the project has a Trino catalog created from that
 2. The catalog serves queries once the query engine has loaded it, at its next restart.
 3. The next compile resolves `ref()` to the external feature group, with its features, primary key and event time, as for any other feature group.
 
-The compile reads the table as `<catalog>.<schema>.<table>`, with the data source's schema as `<schema>`, or its database when it names no schema.
+The compile reads the table as `<catalog>.<schema>.<table>`, with the data source's schema as `<schema>`.
+On a catalog that names each database a schema, such as MySQL, MariaDB, ClickHouse, Oracle or Teradata, a data source that names no schema uses its database instead.
+On a catalog bound to one database, such as PostgreSQL, SQL Server, Redshift, Snowflake or BigQuery, the data source must name a schema and be in the catalog's database, or the feature group does not resolve.
 Queries run on Trino as the member who asks, like any other query on the catalog.
 
 A catalog counts when it is a project catalog of the project, or one another project [shares][sharing-a-catalog] with it:
