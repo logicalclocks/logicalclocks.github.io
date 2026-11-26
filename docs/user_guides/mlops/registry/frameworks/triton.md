@@ -298,7 +298,7 @@ See the [REST API guide][open-inference-protocol-v2] for the inference URL, the 
 | gRPC | Open Inference Protocol v2 | Triton's gRPC endpoint, see [API protocol](../../serving/api-protocol.md) |
 | Binary tensor extension | Direct requests to the Istio gateway only | The Hopsworks REST API forwards JSON bodies only |
 | CPU and GPU | Yes, no GPU by default | The backends that run on a GPU depend on the image |
-| Standard and Knative modes | Yes | See [Deployment mode](../../serving/autoscaling.md#deployment-mode); Knative mode is [deprecated][knative-mode-deprecated] |
+| Standard and Knative modes | Yes | See [Deployment mode](../../serving/autoscaling.md#deployment-mode) |
 | Dynamic batching | `dynamic_batching` in `config.pbtxt` | Triton batches in its own scheduler |
 | KServe inference batcher | No | Triton batches in its own scheduler |
 | Predictor script | No | The model directory holds the model code, for example `model.py` |

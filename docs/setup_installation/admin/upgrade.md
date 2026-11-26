@@ -839,57 +839,55 @@ Set `kserve.storageInitializer.resources` to keep the old limits.
 
 ### Knative mode is deprecated { #upgrade-knative-mode-deprecated }
 
-[Knative mode][knative-mode-deprecated] is deprecated in 5.3, and 5.4 removes Knative and Istio.
+!!! warning "Knative mode is deprecated"
+    Hopsworks 5.4 removes Knative and Istio.
+    Prepare while on 5.3, as described in [5.3.x to 5.4.x][upgrade-53-to-54].
 
-- **New Knative-mode deployments are refused.**
-  The UI no longer offers Knative mode.
-  From the Python SDK or the REST API, creating a deployment in Knative mode, or switching a Standard-mode deployment to Knative mode, fails with error `240082`.
-  A deployment created without a mode runs in Standard mode, as in 5.2.
-- **Existing Knative-mode deployments keep working.**
-  They start, stop, update, roll back and serve as before, and their owners convert them to Standard mode when it suits them.
-  `helm upgrade` prints how many Knative-mode deployments of the installation are running.
-- **Escape hatch.**
-  `hopsworks.variables.kube_knative_mode_allowed: "true"` allows creating Knative-mode deployments again, until 5.4.
-  The chart writes the value on every upgrade, so set it in your values file; a change in the admin UI lasts only until the next upgrade.
-
-Prepare for 5.4 while on 5.3, as described in [5.3.x to 5.4.x][upgrade-53-to-54].
+- **New deployments run in Standard mode.**
+  The UI no longer offers Knative mode, and creating a Knative-mode deployment from the Python SDK or the REST API fails with error `240082`.
+- **Existing Knative-mode deployments keep working** until their owners [convert them to Standard mode][knative-mode-deprecated].
+  `helm upgrade` prints how many of them are running.
+- **To allow new Knative-mode deployments until 5.4**, set `hopsworks.variables.kube_knative_mode_allowed: "true"` in your values file.
+  The chart writes the value on every upgrade, so a change in the admin UI lasts only until the next one.
 
 ## 5.3.x to 5.4.x { #upgrade-53-to-54 }
 
-5.4 is not released yet.
-It removes Knative and Istio: model deployments run in Standard mode only, and Envoy Gateway replaces the Istio ingress gateway as the entry point.
-Node ports stay the same; a load balancer address carries over only when you pin or reserve it, as described in step 4.
-The 5.4 upgrade refuses to start while Envoy Gateway is off or a Knative-mode deployment is running, so prepare on 5.3:
+!!! info "5.4 is not released yet"
+    This section lists what to prepare on 5.3.
 
-1. **Enable Envoy Gateway**, as described in [Envoy Gateway][upgrade-envoy-gateway], and check that every Standard-mode deployment moved.
-2. **Convert the Knative-mode deployments.**
-    List the ones that run in this installation, `<namespace>` being its namespace:
+5.4 removes Knative and Istio: model deployments run in Standard mode only, and Envoy Gateway replaces the Istio ingress gateway.
+The 5.4 upgrade does not start while Envoy Gateway is off or a Knative-mode deployment is running.
+
+1. **Enable Envoy Gateway**, as described in [Envoy Gateway][upgrade-envoy-gateway].
+2. **Convert the running Knative-mode deployments.**
+    List them, with `<namespace>` the Hopsworks namespace:
 
     ```bash
     kubectl get isvc -A -l serving.hops.works/id,hopsworks-deployment=<namespace> -o json | jq -r '.items[] | select((.status.deploymentMode // .metadata.annotations["serving.kserve.io/deploymentMode"] // "Knative") | test("^(Knative|Serverless)$")) | .metadata.namespace + "/" + .metadata.name'
     ```
 
-    Their owners convert each one, as described in [Knative mode is deprecated][knative-mode-deprecated]; each conversion restarts that deployment once.
-    The `hopsworks-deployment` label keeps out the deployments of other Hopsworks installations on the same cluster.
-    A stopped Knative-mode deployment may stay as it is: the 5.4 upgrade converts it.
-3. **HTTPS at the gateway.**
-    With `kserve.knative.https.enabled`, check that the Secret named in `kserve.knative.https.credentialsName` has the type `kubernetes.io/tls`: Envoy Gateway accepts no other type, where Istio also accepted a generic Secret.
+    Their owners [convert each one][knative-mode-deprecated], which restarts it once.
+    Stopped Knative-mode deployments can wait: the 5.4 upgrade converts them.
+3. **Check the HTTPS certificate.**
+    With `kserve.knative.https.enabled`, the Secret named in `kserve.knative.https.credentialsName` must have the type `kubernetes.io/tls`, the only type Envoy Gateway accepts:
 
     ```bash
     kubectl get secret -n <namespace> <credentialsName> -o jsonpath='{.type}'
     ```
 
-4. **The gateway address.**
-    With a `LoadBalancer` Service, note the address of the Istio ingress gateway.
-    On MetalLB, the 5.4 upgrade releases that address when it removes the Istio Service, and MetalLB can give it to another Service at once when it belongs to a pool it assigns automatically.
-    Reserve it before the upgrade, for example in an `IPAddressPool` with `autoAssign: false`, and request it on the Envoy Gateway Service with MetalLB's `loadBalancerIPs` annotation in `kserve.envoyGateway.service.annotations` of the 5.4 upgrade values; if you cannot reserve it, plan to move your DNS records to the new address.
-    With a cloud load balancer, reserve the address with your provider, or plan to move your DNS records to the new one.
-    With `NodePort`, the node ports stay the same.
-5. **AWS with unmanaged load balancers.**
-    Note the target groups bound to the Istio ingress gateway through `global.unmanagedLoadBalancers.istio`: in 5.4 they move to the Envoy Gateway Service, and the 5.4 upgrade notes give the exact steps.
-6. **Anything outside the chart that names `istio-ingressgateway`**, such as an OpenShift Route or a DNS record, moves to the Envoy Gateway Service `kserve-ingress-gateway` after the upgrade.
-7. **Clients.**
-    Requests through Envoy Gateway drop headers whose names contain an underscore, and a path must name the project exactly, as described in [Headers with underscores][upgrade-envoy-gateway] and under [Expose the Gateway directly][envoy-gateway].
+4. **Keep the gateway address.**
+    Node ports stay the same, but the upgrade releases the load balancer address of the Istio ingress gateway.
+    To keep it, reserve it before the upgrade:
+
+    - With a cloud load balancer, reserve it with your provider.
+    - With MetalLB, reserve it, for example in an `IPAddressPool` with `autoAssign: false`, and request it for the Envoy Gateway Service with MetalLB's `loadBalancerIPs` annotation in `kserve.envoyGateway.service.annotations`.
+
+    Otherwise, plan to move your DNS records to the new address.
+5. **Move what points at the Istio gateway.**
+    Anything outside the chart that names `istio-ingressgateway`, such as an OpenShift Route or a DNS record, moves to the Envoy Gateway Service `kserve-ingress-gateway`.
+    On AWS with unmanaged load balancers, the target groups in `global.unmanagedLoadBalancers.istio` move to the Envoy Gateway Service; the 5.4 upgrade notes give the steps.
+6. **Check your clients.**
+    Envoy Gateway drops request headers whose names contain an underscore, see [Headers with underscores][upgrade-envoy-gateway], and a request path must name the project exactly, see [Expose the Gateway directly][envoy-gateway].
     Hopsworks and the Python clients cache the inference endpoint until they restart.
 
 ## Changes from 5.2.2 { #upgrade-changes-from-522 }

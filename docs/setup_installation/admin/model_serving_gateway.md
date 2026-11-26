@@ -6,8 +6,11 @@ description: How the Hopsworks Helm chart exposes the Istio ingress gateway of m
 
 ## Introduction
 
+!!! warning "Replaced by Envoy Gateway in 5.4"
+    Hopsworks 5.4 removes the Istio ingress gateway, and the [Envoy Gateway][envoy-gateway] becomes the entry point for model deployments.
+    Prepare while on 5.3, as described in [5.3.x to 5.4.x][upgrade-53-to-54].
+
 Inference requests to KServe model deployments enter through the Istio ingress gateway, the `istio-ingressgateway` Service in the Hopsworks namespace.
-5.4 removes it, and the [Envoy Gateway][envoy-gateway] Service replaces it as the entry point, keeping its node ports; a load balancer address carries over only when pinned or reserved, as described in [5.3.x to 5.4.x][upgrade-53-to-54].
 It routes on the path: `/v1/<project namespace>/<deployment>/...` reaches that deployment.
 By default the chart creates the Service with three node ports, 32080 (HTTP), 32443 (HTTPS) and 32021 (status):
 

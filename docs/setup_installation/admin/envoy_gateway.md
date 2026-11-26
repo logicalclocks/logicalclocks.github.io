@@ -20,8 +20,8 @@ Knative-mode deployments keep running through Istio as before.
 
 !!! warning "Required before 5.4"
 
-    5.4 removes Istio and Knative, and Envoy Gateway becomes the only front door.
-    The 5.4 upgrade refuses to start while the feature is off, so turn it on while on 5.3, as described in [5.3.x to 5.4.x][upgrade-53-to-54].
+    Hopsworks 5.4 removes Istio, and Envoy Gateway becomes the only entry point for model deployments.
+    The 5.4 upgrade does not start while Envoy Gateway is off, so turn it on while on 5.3, as described in [5.3.x to 5.4.x][upgrade-53-to-54].
 
 ## How to enable it { #envoy-gateway-enable }
 
