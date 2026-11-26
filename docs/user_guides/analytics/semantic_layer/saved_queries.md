@@ -290,7 +290,7 @@ A Superset dashboard can chart a saved query instead of a list of metrics, see [
     ```
 
     ```text
-    Created dashboard 14 "sales: Revenue by country": https://<hopsworks host>/hopsworks-api/superset/dashboard/14/?projectId=119
+    Created dashboard 14 "sales: Revenue by country": https://<hopsworks host>/hopsworks-api/superset/superset/dashboard/14/?projectId=119
     ```
 
 === "Python"
