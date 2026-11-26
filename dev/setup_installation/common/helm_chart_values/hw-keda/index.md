@@ -6,7 +6,7 @@ See [How To Configure Scaling For A Deployment][how-to-configure-scaling-for-a-d
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795626601` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795693170` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_keda_installed`](hopsworks.md#helm.hopsworks.variables.kube_keda_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -60,7 +60,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
           interceptor: docker.hops.works/ghcr.io/kedacore/http-add-on-interceptor
           operator: docker.hops.works/ghcr.io/kedacore/http-add-on-operator
           scaler: docker.hops.works/ghcr.io/kedacore/http-add-on-scaler
-          tag: 0.16.0-h2
+          tag: 0.16.0-h3
         interceptor:
           pullPolicy: IfNotPresent
           readinessTimeout: 600s
@@ -160,7 +160,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
           interceptor: docker.hops.works/ghcr.io/kedacore/http-add-on-interceptor
           operator: docker.hops.works/ghcr.io/kedacore/http-add-on-operator
           scaler: docker.hops.works/ghcr.io/kedacore/http-add-on-scaler
-          tag: 0.16.0-h2
+          tag: 0.16.0-h3
         interceptor:
           pullPolicy: IfNotPresent
           readinessTimeout: 600s

@@ -4,7 +4,7 @@ Values under `vpa` configure the Vertical Pod Autoscaler: its admission controll
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795626601` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795693170` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`global._hopsworks.vpaEnabled`](global.md#helm.global._hopsworks.vpaEnabled), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -22,7 +22,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
       hopsworkslib: {}
       image:
         name: k8s-vpa
-        tag: 1.7.1-3
+        tag: 1.7.1-4
       imagesTag: 1.7.1
       installController: true
       recommenderSettings:
@@ -73,7 +73,7 @@ Deployed according to the first of these values that is set: [`global._hopsworks
 :   Type `string`, default `"k8s-vpa"`.
 
 `vpa.image.tag` <a class="headerlink" href="#helm.vpa.image.tag" title="Permanent link">#</a> { #helm.vpa.image.tag }
-:   Type `string`, default `"1.7.1-3"`.
+:   Type `string`, default `"1.7.1-4"`.
     Installer toolbox version. Independent of imagesTag.
 
 `vpa.imagesTag` <a class="headerlink" href="#helm.vpa.imagesTag" title="Permanent link">#</a> { #helm.vpa.imagesTag }

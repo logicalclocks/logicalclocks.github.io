@@ -4,7 +4,7 @@ Values under `kserve` configure KServe and Knative Serving, which run model depl
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795626601` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795693170` (Hopsworks `5.3.0`)._
 
 Deployed according to the first of these values that is set: [`hopsworks.variables.kube_kserve_installed`](hopsworks.md#helm.hopsworks.variables.kube_kserve_installed), [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform).
 
@@ -43,7 +43,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
             tag: v0.34.0
       kserveUtilsImage:
         name: hopsworks/kserve-utils
-        tag: 0.1.16
+        tag: 0.1.17
       manager:
         serviceAccount:
           annotations: {}
@@ -119,7 +119,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
 :   Type `string`, default `"hopsworks/kserve-utils"`.
 
 `kserve.kserveUtilsImage.tag` <a class="headerlink" href="#helm.kserve.kserveUtilsImage.tag" title="Permanent link">#</a> { #helm.kserve.kserveUtilsImage.tag }
-:   Type `string`, default `"0.1.16"`.
+:   Type `string`, default `"0.1.17"`.
 
 `kserve.manager.serviceAccount.annotations` <a class="headerlink" href="#helm.kserve.manager.serviceAccount.annotations" title="Permanent link">#</a> { #helm.kserve.manager.serviceAccount.annotations }
 :   Type `object`, default `{}`.
@@ -1248,7 +1248,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
               type: RuntimeDefault
           serviceAccount:
             annotations: {}
-          tag: 0.21.0-h1
+          tag: 0.21.0-h2
           tolerations: []
           topologySpreadConstraint: {}
           topologySpreadConstraints: []
@@ -1519,7 +1519,7 @@ Deployed according to the first of these values that is set: [`hopsworks.variabl
     service account annotations
 
 `kserve.kserve.controller.tag` <a class="headerlink" href="#helm.kserve.kserve.controller.tag" title="Permanent link">#</a> { #helm.kserve.kserve.controller.tag }
-:   Type `string`, default `"0.21.0-h1"`.
+:   Type `string`, default `"0.21.0-h2"`.
     KServe controller container image tag. Pinned to a Hopsworks rebuild published under the same name (docker-images/kserve-controller, HWORKS-3473): upstream's v0.21.0 binary links github.com/kedacore/keda/v2 2.20.2, which carries CVE-2026-77524 (CVSS 9.9); the controller never runs the vulnerable code, but a Go binary reports its module versions to every scanner and only a recompile changes them. The tag is `<kserve.version>-h<rebuild revision>`, so it does not follow the version anchor; bump it with `kserve.version` and the image's README. The -h tags exist only on docker.hops.works and the public ECR mirrors, not on Docker Hub. Once upstream releases with keda/v2 2.21.0 this goes back to the `kserve.version` anchor.
 
 `kserve.kserve.controller.tolerations` <a class="headerlink" href="#helm.kserve.kserve.controller.tolerations" title="Permanent link">#</a> { #helm.kserve.kserve.controller.tolerations }
