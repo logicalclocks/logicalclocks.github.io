@@ -50,11 +50,12 @@ Click `Save Configuration` to save the configuration.
 #### Log in with GitHub instead of a token
 
 For `github.com` you can log in through your browser instead of creating a personal access token.
-The option is shown when your administrator has configured it (see below).
+The option is on by default; your administrator can turn it off or swap the app it uses (see below).
 
 1. Tick the `GitHub` checkbox and click `Log in with GitHub`.
 2. Hopsworks shows a one-time code.
    Click `Open GitHub's device page`, which also copies the code, paste the code on the GitHub page and authorize the request.
+   Unless your administrator set up an app of their own, GitHub asks you to authorize `GitHub CLI`: that is the app Hopsworks logs you in with, the same one the Factory's `Login to GitHub` and `gh auth login` use.
    Enter a code on that page only when you started the login yourself: whoever started it gets access to your GitHub account.
 3. Hopsworks notices the authorization within a few seconds and saves the login as the `github.com` host of the GitHub provider, with your GitHub login as the username.
 
@@ -69,14 +70,15 @@ Other GitHub hosts, GitLab and BitBucket are configured with a token.
     If clones of an organization's repositories fail after you logged in, including ones that worked with the token the login replaced, ask an owner of that organization to approve the app (GitHub's authorization page has a `Request` button next to each organization), or remove the login and configure a personal access token again.
 
 !!! notice "Administrator setup"
-    The login needs a GitHub OAuth app.
-    Register one under your GitHub organization (`Settings` > `Developer settings` > `OAuth Apps`), tick `Enable Device Flow`, and set its client ID as the cluster configuration variable `github_device_login_client_id` (`variables.github_device_login_client_id` in the values of the `hopsworks` Helm chart).
+    By default the login uses the GitHub CLI's OAuth app, so it works with no setup.
+    To have your own name on GitHub's authorization page, and organizations approve your app instead of the GitHub CLI, register an OAuth app under your GitHub organization (`Settings` > `Developer settings` > `OAuth Apps`), tick `Enable Device Flow`, and set its client ID as the cluster configuration variable `github_device_login_client_id` (`variables.github_device_login_client_id` in the values of the `hopsworks` Helm chart).
     No client secret is needed.
+    Set the variable to an empty value to turn the login off and leave only the token form.
     The login requests the `repo` and `workflow` scopes.
     If GitHub is reached through the proxy set in `git_github_https_proxy`, the login uses that proxy too.
     The login supports an `http://` proxy, with or without a user name and password in the URL (percent-encode special characters); a proxy without a port is taken to listen on 1080, as git does.
     With an `https://` or SOCKS proxy the login fails and says so, while git itself keeps working: users then configure a token.
-    If your organization restricts OAuth apps, approve this app for it, or its members' logins cannot reach the organization's private repositories.
+    If your organization restricts OAuth apps, approve the app the login uses for it (the GitHub CLI, or your own), or its members' logins cannot reach the organization's private repositories.
 
 ### Step 3: Provider is configured
 
