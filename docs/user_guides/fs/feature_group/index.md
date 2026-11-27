@@ -74,7 +74,7 @@ These guides cover creating one, keeping its data correct, and managing it over 
   Expire rows after a retention period.
 - [Deprecate](deprecation.md)
   Mark a group as retired without deleting it.
-- [Delete](delete.md)
+- [Delete][how-to-delete-a-feature-group]
   Delete a group, optionally keeping its data on the data source.
 
 </div>
