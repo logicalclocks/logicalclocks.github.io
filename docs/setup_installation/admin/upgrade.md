@@ -17,7 +17,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
 | [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523], and from 5.2.5 [Istio 1.30][upgrade-istio-130]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Additional prerequisites][upgrade-additional-prerequisites], [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, from 5.2.5 or later [Istio 1.31][upgrade-istio-131], [Envoy Gateway][upgrade-envoy-gateway] and [LLM Gateway][upgrade-llm-gateway] when turned on, [Knative mode deprecated][upgrade-knative-mode-deprecated], with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], the statistics defaults, from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Additional prerequisites][upgrade-additional-prerequisites], [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, from 5.2.5 or later [Istio 1.31][upgrade-istio-131], [Envoy Gateway][upgrade-envoy-gateway] and [LLM Gateway][upgrade-llm-gateway] when turned on, [Knative mode deprecated][upgrade-knative-mode-deprecated], with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], [the statistics settings][upgrade-statistics-defaults], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -843,31 +843,31 @@ On a cluster still on Istio 1.29, the Istio install hook stops with an error bef
   To go back entirely, restore the backup on a new cluster, as described in [New Cluster Restore][new-cluster-restore].
   An in-place restore does not apply here, since it runs `helm upgrade` with the release of the backup, whose Istio install hook then runs over Istio 1.31.
 
-### Statistics defaults { #upgrade-statistics-defaults }
+### Statistics settings { #upgrade-statistics-defaults }
 
-The chart writes its variables from the values file on every upgrade, so `feature_monitoring_max_num_features` rises from 15 to 32 with this hop.
-One feature monitoring configuration may then cover up to 32 features, and its runs grow with them.
-`hopsworks.variables.feature_monitoring_max_num_features: "15"` keeps the old limit.
+5.3 adds cluster settings for statistics jobs.
+Their defaults keep the behaviour of 5.2, so a cluster that changes none of them computes and keeps statistics as before.
 
-The statistics settings added in 5.3 default to the previous behaviour, so an untouched cluster computes and keeps statistics as before:
+- **Feature monitoring covers up to 32 features.**
+  `feature_monitoring_max_num_features` rises from 15 to 32, so one configuration can monitor more features, and its runs take longer.
+  Set `hopsworks.variables.feature_monitoring_max_num_features: "15"` to keep the old limit.
+- **Statistics jobs can be sized on their own.**
+  `statistics_job_driver_memory`, `statistics_job_executor_memory`, `statistics_job_executor_cores` and `statistics_job_max_executors` size statistics jobs separately from other Spark jobs, existing ones included, and are empty by default.
+  Memory and cores only raise what a job already has, so resources given to a job in the Jobs UI are kept, while the maximum executors replaces the job's.
+  `statistics_job_bytes_per_executor` scales the executors of each run with the size of the table, up to the job's maximum, and is off at its default of 0.
+- **Old statistics can be pruned.**
+  `statistics_retention_rows_per_entity` keeps the newest statistics of each feature group and feature view up to that number, and keeps all of them at its default of 0.
+- **Incremental statistics are opt-in.**
+  With `statistics_incremental_enabled`, a commit's statistics are merged into the previous ones instead of profiling the whole table again, for feature groups that do not choose for themselves.
+  `statistics_incremental_allowed` turns incremental statistics off for the whole cluster, and `statistics_incremental_full_profile_every` sets how many commits are merged before a full profile runs again (50 by default).
+- **Change them in the values file.**
+  The chart writes its variables on every upgrade, so a change made only on the admin variables page is undone by the next upgrade.
 
-- `statistics_job_driver_memory`, `statistics_job_executor_memory`, `statistics_job_executor_cores` and `statistics_job_max_executors` override the generic Spark job values for the statistics jobs only when set, and are empty by default.
-  Before each ingestion statistics run they are applied to the existing job too.
-  The memory and cores settings are floors, so a job given more in the Jobs UI keeps it, while `statistics_job_max_executors` replaces the job's maximum executors before each ingestion statistics run.
-- `statistics_job_bytes_per_executor` sizes the executors of a statistics run from the size of the table it profiles; at the default 0 a run keeps the job's configured executors.
-  When it is set, each ingestion statistics run gets a maximum executors of its own from the table size, never above the job's maximum, and the job keeps its maximum for the next run.
-- `statistics_retention_rows_per_entity` keeps that many statistics rows per feature group and feature view, newest first; at the default 0 every row is kept.
-- `statistics_incremental_enabled` (default `false`) is the setting of feature groups that do not set their own `incremental` statistics flag: with it on, each append is merged into the previous statistics instead of profiling the whole table.
-  `statistics_incremental_allowed` (default `true`) is the admin switch, which makes every feature group run full profiles when off, and `statistics_incremental_full_profile_every` (default 50) is the number of merged commits after which a feature group gets a full profile again.
+!!! warning "Feature monitoring during the rollout"
 
-Like every chart variable, these are rewritten from the values file on each upgrade.
-A change made on the admin variables page, such as turning `statistics_incremental_allowed` off, lasts only until the next upgrade unless it is made in the values file as well.
-
-From this hop, a statistics computation stores the histograms, correlations and KLL sketches of up to 32 features in one file, a format earlier releases cannot read.
-The Hopsworks workers are replaced one at a time during the upgrade, so while the rollout runs, a worker still on 5.2 returns statistics computed after the first worker was upgraded without those values.
-Statistics read after the rollout are complete.
-A feature monitoring run during the rollout can compare against these incomplete statistics, so it can fail, miss a shift or report one that is not there.
-After the upgrade, run again every feature monitoring configuration that ran during the rollout.
+    The Hopsworks workers are replaced one at a time, and statistics written in the new format are incomplete when a worker still on 5.2 reads them.
+    A feature monitoring run during the rollout can therefore fail, miss a shift or report one that is not there.
+    After the upgrade, run again every feature monitoring configuration that ran during the rollout.
 
 ### Storage initializer of model deployments { #upgrade-storage-initializer }
 
