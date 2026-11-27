@@ -61,7 +61,8 @@ From the command line, `hops fg delete <name> --version <version> --keep-data` d
 
 ### Recreate a feature group on the kept data
 
-A feature group created later at the same table location, with the original table format, schema and primary key, reads and writes the kept table.
+A feature group created later at the same table location, with the original table format, schema, primary key, event time and partition key, reads and writes the kept table.
+An upsert matches rows on the primary key, event time and partition key, so changing any of them changes which kept rows it updates.
 On S3 or GCS, the same name and version reach that location only when the original feature group used the default path; otherwise pass the original `path`.
 On Glue, the location of an existing catalog table takes precedence over the path, so the same database and table name reach it.
 
@@ -86,7 +87,7 @@ To start with an empty table instead, give the new feature group an unused `path
 
 ## Delete using the UI
 
-Navigate to the `Feature Groups` section, select the feature group and the version to delete, and click the delete icon in the top right corner.
+Navigate to the `Catalog` section of the project sidebar, select the feature group and the version to delete, and click the delete icon in the top right corner.
 Type `confirm` in the dialog to enable the delete button.
 
 The dialog offers the options of the API:
