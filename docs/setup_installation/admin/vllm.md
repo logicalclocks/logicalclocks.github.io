@@ -47,7 +47,7 @@ curl -H "authorization: ApiKey <api_key>" \
 ```json
 {"items": [
   {"variant": "VLLM", "tags": ["v0.34.0", "v0.32.0"], "defaultTag": "v0.34.0"},
-  {"variant": "VLLM_OMNI", "tags": ["v0.32.0"], "defaultTag": "v0.32.0"}
+  {"variant": "VLLM_OMNI", "tags": ["v0.34.0"], "defaultTag": "v0.34.0"}
 ]}
 ```
 
