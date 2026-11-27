@@ -36,7 +36,8 @@ Choose the role, set the maximum number of projects the user can create, or set 
 - _Max projects_ takes a whole number, where 0 means the user cannot create projects; turn on _Unlimited_ to remove the limit.
 - _Rate limit_ sets the user's API request burst and rate per second; leave both fields empty to use the cluster default.
 
-You cannot change your own role, and the role of a user who signs in through LDAP, Kerberos or OAuth2 is set through group mapping.
+You cannot change your own role.
+The role of a user who signs in through OAuth2 is set through group mapping while `oauth_group_mapping_enabled` is on, and that of an LDAP or Kerberos user while `ldap_group_mapping_enabled` is on; with mapping off, their role is changed here like any other.
 
 <figure>
   <img width="400px" src="../../../assets/images/admin/user-management/edit-user.png" alt="The side panel for editing a user, with role, max projects, rate limit and password settings" />

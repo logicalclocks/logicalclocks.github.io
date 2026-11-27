@@ -26,6 +26,7 @@ You can find the Project management page by clicking on your name, in the top ri
 This page will list all the projects in a cluster, their name, owner and when its quota was last updated.
 Click the pencil icon at the end of a project's row to open its configuration.
 The configuration is split into the _Quotas_, _LLM gateway_, _Kubernetes_, _Governance_ and _Manage_ tabs, and _Save_ at the bottom saves the changes of every tab.
+A department change on the _Manage_ tab is the exception: it is applied with the _Save_ button of the _Department_ panel, not the one at the bottom.
 
 <figure>
   <img src="../../../assets/images/admin/projects/project_quotas.png" alt="Project quotas" />

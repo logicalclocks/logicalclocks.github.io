@@ -20,8 +20,9 @@ To configure Authentication methods click on your name in the top right corner o
 On the **Authentication configuration** page you can configure how users authenticate.
 Each control is applied as soon as you change it, there is no save step.
 
-1. **Hopsworks accounts**: users can register and log in with credentials managed by Hopsworks itself.
+1. **Hopsworks accounts**: users log in with credentials managed by Hopsworks itself.
    The card shows _On_ unless password sign-in is turned off with the `disable_password_login` variable, which is not changed from this page.
+   Registration is controlled separately: users can register themselves unless `disable_registration` is set, and `disable_registration_ui` only hides the registration form from the login page.
 2. **TOTP Two-factor Authentication**: can be _disabled_, _optional_ or _mandatory_.
    If set to mandatory all users are required to set up two-factor authentication when registering.
 

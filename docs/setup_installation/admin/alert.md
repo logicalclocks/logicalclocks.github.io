@@ -98,6 +98,8 @@ A global receiver is created when a webhook is configured and can be used by any
 
 To remove the webhook channel, open its form again, click _Delete_ and type `confirm`.
 The alert routes at the top level of the alert manager configuration that send to the webhook are removed with it, so those alerts are no longer delivered there.
+_Delete_ is disabled while the webhook is the default receiver of the configuration, or while a nested route sends to it, because the delete would leave that reference pointing at nothing.
+Choose another default receiver, or remove the nested route, in the _Advanced configuration_ of Step 6 first.
 
 ### Step 6: Advanced configuration
 
