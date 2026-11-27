@@ -807,13 +807,14 @@ Move each of them to v0.34.0 by editing the deployment and selecting v0.34.0 as 
 Check its vLLM configuration file first against the [vLLM v0.34.0 upgrade notes](https://github.com/vllm-project/vllm/releases/tag/v0.34.0): v0.34.0 no longer starts with `VLLM_USE_V2_MODEL_RUNNER=0`, and an unset `gpu_memory_utilization` now defaults to `1.0`.
 A cluster that pulls from a mirror needs `vllm/vllm-openai:v0.34.0` mirrored before the upgrade, or `vllm/vllm-openai-cpu:v0.34.0` when it runs vLLM on CPU, and keeps the versions its existing deployments use, see [Image tags][vllm-image-tags].
 
-New vLLM-Omni deployments default to `vllm/vllm-omni:v0.34.0`.
+New vLLM-Omni deployments default to `vllm/vllm-omni:v0.34.0`, which is the only vLLM-Omni image version the chart advertises.
+Existing vLLM-Omni deployments keep the image version they were created with through the upgrade and later restarts.
 To update an existing Omni deployment, edit it and select `v0.34.0` as its image version.
 Before updating, check custom deployment files against the [vLLM-Omni v0.34.0 release notes](https://github.com/vllm-project/vllm-omni/releases/tag/v0.34.0).
 Every stage must use a supported Model Runner V2 profile.
-For multi-stage pipelines, put stage-specific settings such as `max_model_len`, `enforce_eager`, `gpu_memory_utilization`, and `tensor_parallel_size` in `stage_overrides` or the stage's deployment YAML.
+For multi-stage pipelines, put stage-specific settings such as `max_model_len`, `enforce_eager`, `gpu_memory_utilization`, and `tensor_parallel_size` under `stage_overrides` in the vLLM configuration file, keyed by stage ID, for example `stage_overrides: {"0": {"max_model_len": 2048}}`.
 Remove `shm_threshold_bytes` (`--shm-threshold-bytes`) from the vLLM configuration file and select a supported model for deployments using JoyAI-Image-Edit, whose first-party support was removed.
-A cluster that pulls from a mirror needs `vllm/vllm-omni:v0.34.0` mirrored before the upgrade, and keeps `v0.32.0` for the Omni deployments that still use it.
+A cluster that pulls from a mirror needs `vllm/vllm-omni:v0.34.0` mirrored before the upgrade, and keeps the versions its existing Omni deployments use, see [Image tags][vllm-image-tags].
 vLLM-Omni can now be disabled per cluster, see [Disable vLLM-Omni][vllm-disable-omni].
 
 ### Security response headers { #upgrade-security-headers }
