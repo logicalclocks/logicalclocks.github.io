@@ -17518,7 +17518,7 @@ Mandatory tags are configured in two scopes.
     <img src="../../../../assets/images/guides/tags/cluster_wide_mandatory_tags.png" alt="Configure cluster-wide mandatory tags under Cluster settings, Tag Schemas">
 
 - Project-specific mandatory tags apply only to a single project.
-  They are configured by an administrator in the `Cluster settings` > `Projects` section, by selecting the project.
+  They are configured by an administrator in the `Cluster settings` > `Projects` section, by clicking the pencil icon of the project and opening its `Governance` tab.
 
     <img src="../../../../assets/images/guides/tags/project_mandatory_tags.png" alt="Configure project-specific mandatory tags under Cluster settings, Projects, by editing a project">
 
@@ -24173,7 +24173,7 @@ In the figure above, in the sub-section `Available in Project` Hopsworks admins 
 
 Hopsworks admins can also override the default project configuration on a per-project basis.
 That is, Hopsworks admins can make certain labels and priority classes available only to certain projects.
-This can be achieved from the `Cluster Settings -> Project -> <ProjectName> -> edit configuration` configuration page:
+This is done in the `Cluster settings` > `Projects` section, by clicking the pencil icon of the project and opening its `Kubernetes` tab:
 
 ![Custom Project Configuration - Node Labels and Priority Classes](../../../assets/images/guides/project/scheduler/admin_project_scheduler.png)
 
@@ -44029,7 +44029,10 @@ You can find them by clicking on your name in the top right corner of the naviga
   <figcaption>Active Users</figcaption>
 </figure>
 
-### Step 2: Manage user roles
+The page has an _Active_ and a _Blocked_ tab, each showing how many users it holds.
+Each row shows the user's account type, role, number of projects, project limit, rate limit and last login.
+
+### Step 2: Edit a user
 
 Roles let you manage the access rights of a user to the cluster.
 
@@ -44037,7 +44040,20 @@ Roles let you manage the access rights of a user to the cluster.
 - Admin: users with this role are allowed to manage the cluster.
   This includes accepting new users to the cluster or blocking them, managing user quota, [configure alerts](./alert.md) and setting up [authentication methods](./auth.md).
 
-You can change the role of a user by clicking on the _select dropdown_ that shows the current role of the user.
+To change a user, click their row or the pencil icon at the end of it.
+A side panel opens with the user's details.
+Choose the role, set the maximum number of projects the user can create, or set their rate limit, then click _Save_.
+
+- _Max projects_ takes a whole number, where 0 means the user cannot create projects; turn on _Unlimited_ to remove the limit.
+- _Rate limit_ sets the user's API request burst and rate per second; leave both fields empty to use the cluster default.
+
+You cannot change your own role.
+The role of a user who signs in through OAuth2 is set through group mapping while `oauth_group_mapping_enabled` is on, and that of an LDAP or Kerberos user while `ldap_group_mapping_enabled` is on; with mapping off, their role is changed here like any other.
+
+<figure>
+  <img width="400px" src="../../../assets/images/admin/user-management/edit-user.png" alt="The side panel for editing a user, with role, max projects, rate limit and password settings" />
+  <figcaption>Edit a user</figcaption>
+</figure>
 
 ### Step 3: Validating and blocking users
 
@@ -44055,22 +44071,22 @@ Each pending row carries an _Activate_ and a _Block_ button.
 A marker next to the email address shows that the address has not been validated yet.
 
 Similarly, if a user is no longer allowed access to the cluster you can block them.
-To keep consistency with the history of your datasets, a user can not be deleted but only blocked.
-If necessary a user can be deleted manually in the cluster using the command line.
-You can block a user by clicking on the block icon on the right side of the user in the list.
+Open the user's side panel, click _Block_ and confirm.
+A blocked user can no longer log in and moves to the _Blocked_ tab.
 
 <figure>
   <img src="../../../assets/images/admin/user-management/blocked-users.png" alt="blocked users" />
   <figcaption>Blocked Users</figcaption>
 </figure>
 
-Blocked users will appear on the lower section of the page.
-Click on _Show blocked users_ to show all the blocked users in your cluster.
-If a user is blocked by mistake you can reactivate it by clicking on the check mark icon that corresponds to that user in the blocked users list.
+The _Blocked_ tab lists every blocked user with the reason, such as being blocked by an administrator or after too many failed logins.
+If a user is blocked by mistake, click _Unblock_ in their row to give them access again.
+
+A user who has no projects can also be deleted: open their side panel, click _Delete_ and type `confirm`.
 
 If there are too many users in your cluster, use the search box (available for blocked users too) to filter users by name or email.
 It is also possible to filter activated users by role.
-For example to see all administrators in you cluster click on the _select dropdown_ to the right of the search box and choose _Admin_.
+For example to see all administrators in your cluster click on the _select dropdown_ to the right of the search box and choose _Admin_.
 
 ### Step 4: Create a new users
 
@@ -44100,9 +44116,10 @@ Copy the password and pass it securely to the user.
 
 In the case where a user loses her/his password and can not recover it with the [password recovery](../../user_guides/projects/auth/recovery.md), an administrator can reset it for them.
 
-On the bottom of the _Users_ page, under _Advanced features_, click on _Reset a user password_.
-A popup window with a dropdown for searching users by name or email will open.
-Find the user and click on _Reset new password_.
+Open the user's side panel, click _Reset password_ and confirm.
+The password is replaced with a temporary one, and the user receives an email saying that an administrator reset it.
+Only Hopsworks accounts have a password to reset: users who sign in through LDAP, Kerberos or OAuth2 use their directory's password.
+
 <figure>
   <img src="../../../assets/images/admin/user-management/reset-password.png" alt="reset password" />
   <figcaption>Reset user password</figcaption>
@@ -44194,7 +44211,9 @@ You can find the Project management page by clicking on your name, in the top ri
 </figure>
 
 This page will list all the projects in a cluster, their name, owner and when its quota was last updated.
-By clicking on the _edit configuration_ link of a project you will be able to edit the quotas of that project.
+Click the pencil icon at the end of a project's row to open its configuration.
+The configuration is split into the _Quotas_, _LLM gateway_, _Kubernetes_, _Governance_ and _Manage_ tabs, and _Save_ at the bottom saves the changes of every tab.
+A department change on the _Manage_ tab is the exception: it is applied with the _Save_ button of the _Department_ panel, not the one at the bottom.
 
 <figure>
   <img src="../../../assets/images/admin/projects/project_quotas.png" alt="Project quotas" />
@@ -44283,14 +44302,14 @@ Raising a project's index size limit makes its read-only indices writable again 
 Administrators have the option to force delete a project.
 This is useful if the project was not created or deleted properly, e.g., because of an error.
 It is also how an administrator deletes a project they do not own, since only the owner can delete a project from its settings.
-To force delete a project, click _Edit configuration_ next to it on the Project management page, then click _Force delete project_ under _Manage project_ and confirm.
+To force delete a project, open its configuration from the Project management page, then on the _Manage_ tab click _Force delete project_ and type `confirm`.
 
 ## Transferring a project to a new owner
 
 Every project has one owner, the user who created it unless it has been transferred since.
 The owner cannot be removed from the project and their role cannot be changed, so a project stays attached to an owner who has left until it is transferred.
 
-To transfer a project, click _Edit configuration_ next to it on the Project management page, then click _Transfer ownership_ under _Manage project_, choose the new owner and confirm.
+To transfer a project, open its configuration from the Project management page, then on the _Manage_ tab click _Transfer ownership_, choose the new owner and confirm.
 Any activated user with the user or administrator role can be chosen.
 The new owner is added to the project as a Data owner, or promoted to one, if they are not one already.
 A member holding a custom role is given the built-in Data owner role in its place.
@@ -44614,8 +44633,7 @@ pagerduty or webhook.
 ### Step 2: Configure Email Alerts
 
 To send alerts via email you need to configure an SMTP server.
-Click on the _Configure_
-button on the right side of the **email** row and fill out the form that pops up.
+Click the pencil icon at the end of the **email** row and fill out the form that pops up.
 
 <figure>
   <img src="../../../assets/images/alerts/smtp-config.png" alt="Configure Email Alerts"/>
@@ -44636,7 +44654,7 @@ These receivers will be available to all users when they create event triggered 
 Alerts can also be sent via Slack messages.
 To be able to send Slack messages you first need to configure
 a Slack webhook.
-Click on the _Configure_ button on the right side of the **slack** row and past in your
+Click the pencil icon at the end of the **slack** row and paste in your
 [Slack webhook](https://api.slack.com/messaging/webhooks) in _Webhook_.
 
 <figure>
@@ -44650,8 +44668,7 @@ These receivers will be available to all users when they create event triggered 
 ### Step 4: Configure Pagerduty Alerts
 
 Pagerduty is another way you can send alerts from Hopsworks.
-Click on the _Configure_ button on the right side of
-the **pager duty** row and fill out the form that pops up.
+Click the pencil icon at the end of the **pager duty** row and fill out the form that pops up.
 
 <figure>
   <img src="../../../assets/images/alerts/pagerduty-config.png" alt="Configure Pagerduty Alerts"/>
@@ -44675,7 +44692,7 @@ Prometheus' Alert manager.
 
 You can also use webhooks to send alerts.
 A Webhook Alert is sent as an HTTP POST command with a JSON-encoded parameter payload.
-Click on the _Configure_ button on the right side of the **webhook** row and fill out the form that pops up.
+Click the pencil icon at the end of the **webhook** row and fill out the form that pops up.
 
 <figure>
   <img src="../../../assets/images/alerts/webhook-config.png" alt="Configure Webhook Alerts"/>
@@ -44685,6 +44702,11 @@ Click on the _Configure_ button on the right side of the **webhook** row and fil
 Fill in the unique URL of your Webhook: the endpoint to send HTTP POST requests to.
 
 A global receiver is created when a webhook is configured and can be used by any project in the cluster.
+
+To remove the webhook channel, open its form again, click _Delete_ and type `confirm`.
+The alert routes at the top level of the alert manager configuration that send to the webhook are removed with it, so those alerts are no longer delivered there.
+_Delete_ is disabled while the webhook is the default receiver of the configuration, or while a nested route sends to it, because the delete would leave that reference pointing at nothing.
+Choose another default receiver, or remove the nested route, in the _Advanced configuration_ of Step 6 first.
 
 ### Step 6: Advanced configuration
 
@@ -46504,7 +46526,7 @@ An administrator edits them in the cluster settings, on the Quotas and Rate Limi
 
 ### Per-project overrides
 
-An override per project is set on the admin page that edits the project, under LLM Gateway limits, with the same scopes, kinds and units, and applies immediately.
+An override per project is set on the `LLM gateway` tab of the admin page that edits the project, with the same scopes, kinds and units, and applies immediately.
 The value range is the same, and `-1` makes the scope unlimited for that project.
 Removing the override makes the cluster default apply again.
 The same limits are available as `llmGatewayLimits` of `projectQuotas` in `PUT /admin/projects/{id}`, and `GET /admin/projects/{id}?expand=quotas` returns the effective ones with a `source` of `DEFAULT` or `PROJECT`.
@@ -50644,7 +50666,9 @@ To configure Authentication methods click on your name in the top right corner o
 On the **Authentication configuration** page you can configure how users authenticate.
 Each control is applied as soon as you change it, there is no save step.
 
-1. **Hopsworks accounts**: when checked, users can register and log in with credentials managed by Hopsworks itself.
+1. **Hopsworks accounts**: users log in with credentials managed by Hopsworks itself.
+   The card shows _On_ unless password sign-in is turned off with the `disable_password_login` variable, which is not changed from this page.
+   Registration is controlled separately: users can register themselves unless `disable_registration` is set, and `disable_registration_ui` only hides the registration form from the login page.
 2. **TOTP Two-factor Authentication**: can be _disabled_, _optional_ or _mandatory_.
    If set to mandatory all users are required to set up two-factor authentication when registering.
 
@@ -50652,11 +50676,12 @@ Each control is applied as soon as you change it, there is no save step.
        If two-factor is set to _mandatory_ on a cluster with preexisting users all users will need to go through lost device recovery step to enable two-factor.
        So consider setting it to _optional_ first and allow users to enable it before setting it to mandatory.
 
-3. **OAuth2**: if your organization already have an identity management system compatible with [OpenID Connect (OIDC)](https://openid.net/connect/) you can configure Hopsworks to use your identity provider by ticking the **OAuth** checkbox.
-   After enabling OAuth you can register your identity provider by clicking on **Add Identity Provider** button.
+3. **OAuth2**: if your organization already have an identity management system compatible with [OpenID Connect (OIDC)](https://openid.net/connect/) you can configure Hopsworks to use your identity provider by turning on the **OAuth** switch.
+   After enabling OAuth you can register your identity provider by clicking **Add identity provider**.
+   Registered providers are listed in a table, where the pencil and trash icons edit or remove one.
    See [Create client](./oauth2/create-client.md) for details.
 4. **LDAP/Kerberos**: if your organization is using LDAP or Kerberos to manage users and services you can configure Hopsworks to use it as the user management system.
-   You can enable LDAP/Kerberos by ticking the **LDAP/Kerberos** checkbox and choosing LDAP or Kerberos.
+   You can enable it by turning on the **LDAP / Kerberos** switch and choosing LDAP or Kerberos.
    For more information on how to configure LDAP and Kerberos see [Configure LDAP](./ldap/configure-ldap.md) and [Configure Kerberos](./ldap/configure-krb.md).
 
 <figure>
@@ -50664,8 +50689,7 @@ Each control is applied as soon as you change it, there is no save step.
   <figcaption>Setup Authentication Methods</figcaption>
 </figure>
 
-In the figure above we see a cluster with Hopsworks accounts enabled, Two-factor authentication disabled, and both
-OAuth and LDAP/Kerberos unchecked.
+In the figure above, two-factor authentication is disabled, OAuth is on with one identity provider, and LDAP/Kerberos is off.
 
 ================================================================================
 # Register an Identity Provider
@@ -50684,7 +50708,7 @@ Acquired a _client id_ and a _client secret_ from your identity provider.
 
 ### Step 1: Register a client
 
-After acquiring the _client id_ and _client secret_ create the client in Hopsworks by [enabling OAuth2](../auth.md) and clicking on _add another identity provider_ in the [Authentication configuration page](../auth.md).
+After acquiring the _client id_ and _client secret_ create the client in Hopsworks by [enabling OAuth2](../auth.md) and clicking on _Add identity provider_ in the [Authentication configuration page](../auth.md).
 Then set base uri of your identity provider in _Connection URL_ give a name to your identity provider (the name will be used in the login page as an alternative login method) and set the _client id_ and _client secret_ in their respective fields, as shown in the figure below.
 
 <figure>
@@ -51064,18 +51088,18 @@ See [Server Configuration for LDAP](./configure-server.md#step-1-server-configur
 ### Step 1: Enable LDAP
 
 After configuring the server you can configure Authentication methods by clicking on your name in the top right corner of the navigation bar and choosing *Cluster Settings* from the dropdown menu.
-On the *Authentication* page, found under *Security & Access* in the left sidebar of **Cluster Settings**, you can enable LDAP by clicking on the LDAP checkbox.
+On the *Authentication* page, found under *Security & Access* in the left sidebar of **Cluster Settings**, you can enable LDAP by turning on the **LDAP / Kerberos** switch and choosing **LDAP**.
 
-If LDAP/Kerberos checkbox is not checked make sure that you configured your application server and enable it by clicking on the checkbox.
+If the switch is off, make sure that you configured your application server, then turn it on.
 
 <figure>
-  <img src="../../../../assets/images/admin/auth-config.png" alt="Authentication config" />
+  <img src="../../../../assets/images/admin/ldap/auth-config-ldap.png" alt="The Authentication page with LDAP sign-in turned on" />
   <figcaption>Setup Authentication Methods</figcaption>
 </figure>
 
 ### Step 2: Edit configuration
 
-Finally, click on edit configuration and fill in the attributes.
+Finally, click the pencil icon in the LDAP row and fill in the attributes.
 
 <figure>
   <img src="../../../../assets/images/admin/ldap/configure-ldap.png" alt="LDAP config" />
@@ -51144,19 +51168,18 @@ See [Server Configuration for Kerberos](./configure-server.md#step-2-server-conf
 ### Step 1: Enable Kerberos
 
 After configuring the server you can configure Authentication methods by clicking on your name in the top right corner of the navigation bar and choosing *Cluster Settings* from the dropdown menu.
-On the *Authentication* page, found under *Security & Access* in the left sidebar of **Cluster Settings**, you can enable Kerberos by clicking on the Kerberos checkbox.
+On the *Authentication* page, found under *Security & Access* in the left sidebar of **Cluster Settings**, you can enable Kerberos by turning on the **LDAP / Kerberos** switch and choosing **Kerberos**.
 
-If LDAP/Kerberos checkbox is not checked, make sure that you configured your application server and enable it by
-clicking on the checkbox.
+If the switch is off, make sure that you configured your application server, then turn it on.
 
 <figure>
-  <img src="../../../../assets/images/admin/ldap/auth-config-krb.png" alt="Authentication config" />
+  <img src="../../../../assets/images/admin/ldap/auth-config-krb.png" alt="The Authentication page with Kerberos sign-in turned on" />
   <figcaption>Setup Authentication Methods</figcaption>
 </figure>
 
 ### Step 2: Edit configuration
 
-Finally, click on edit configuration and fill in the attributes.
+Finally, click the pencil icon in the Kerberos row and fill in the attributes.
 
 <figure>
   <img src="../../../../assets/images/admin/ldap/configure-krb.png" alt="Kerberos config" />
@@ -52600,15 +52623,15 @@ Saving needs no redeploy: every Hopsworks instance derives its schedule from the
 ### A single project's allowance
 
 The cluster-wide maximum is a ceiling on the deployment; how many catalogs any one project may create is set per project.
-Open **Cluster Settings** → **Projects**, click **Edit configuration** on the project's row, and scroll to **Query engine**, **Trino catalogs**, just after the Kafka topic quota.
+Open **Cluster Settings** → **Projects**, click the pencil icon on the project's row, and on the **Quotas** tab find **Trino catalogs** in the **Query engine** panel, just after the Kafka topic quota.
 
 <figure>
   <img src="../../../assets/images/admin/trino/project-catalog-limit.png" alt="A project's Trino catalog allowance" />
-  <figcaption>The project's catalog count, its own limit, and the unlimited checkbox</figcaption>
+  <figcaption>The project's catalog count, its own limit, and the Unlimited checkbox</figcaption>
 </figure>
 
 A new project starts on the cluster default (`trino_catalog_max_per_project`, 10), so raising one project here raises that project only.
-Checking **unlimited** removes the project's own bound, leaving only the cluster-wide ceiling; a limit of 0 blocks new catalogs in the project.
+Checking **Unlimited** removes the project's own bound, leaving only the cluster-wide ceiling; a limit of 0 blocks new catalogs in the project.
 Both bounds apply to a create: the project must be under its own allowance, and the cluster must be under the ceiling.
 
 ### The wait for a quiet moment

@@ -132,15 +132,15 @@ Saving needs no redeploy: every Hopsworks instance derives its schedule from the
 ### A single project's allowance
 
 The cluster-wide maximum is a ceiling on the deployment; how many catalogs any one project may create is set per project.
-Open **Cluster Settings** → **Projects**, click **Edit configuration** on the project's row, and scroll to **Query engine**, **Trino catalogs**, just after the Kafka topic quota.
+Open **Cluster Settings** → **Projects**, click the pencil icon on the project's row, and on the **Quotas** tab find **Trino catalogs** in the **Query engine** panel, just after the Kafka topic quota.
 
 <figure>
   <img src="../../../assets/images/admin/trino/project-catalog-limit.png" alt="A project's Trino catalog allowance" />
-  <figcaption>The project's catalog count, its own limit, and the unlimited checkbox</figcaption>
+  <figcaption>The project's catalog count, its own limit, and the Unlimited checkbox</figcaption>
 </figure>
 
 A new project starts on the cluster default (`trino_catalog_max_per_project`, 10), so raising one project here raises that project only.
-Checking **unlimited** removes the project's own bound, leaving only the cluster-wide ceiling; a limit of 0 blocks new catalogs in the project.
+Checking **Unlimited** removes the project's own bound, leaving only the cluster-wide ceiling; a limit of 0 blocks new catalogs in the project.
 Both bounds apply to a create: the project must be under its own allowance, and the cluster must be under the ceiling.
 
 ### The wait for a quiet moment

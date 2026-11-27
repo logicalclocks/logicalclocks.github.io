@@ -121,7 +121,7 @@ In the figure above, in the sub-section `Available in Project` Hopsworks admins 
 
 Hopsworks admins can also override the default project configuration on a per-project basis.
 That is, Hopsworks admins can make certain labels and priority classes available only to certain projects.
-This can be achieved from the `Cluster Settings -> Project -> <ProjectName> -> edit configuration` configuration page:
+This is done in the `Cluster settings` > `Projects` section, by clicking the pencil icon of the project and opening its `Kubernetes` tab:
 
 ![Custom Project Configuration - Node Labels and Priority Classes](../../../assets/images/guides/project/scheduler/admin_project_scheduler.png)
 

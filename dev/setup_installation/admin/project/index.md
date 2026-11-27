@@ -20,7 +20,9 @@ You can find the Project management page by clicking on your name, in the top ri
 </figure>
 
 This page will list all the projects in a cluster, their name, owner and when its quota was last updated.
-By clicking on the _edit configuration_ link of a project you will be able to edit the quotas of that project.
+Click the pencil icon at the end of a project's row to open its configuration.
+The configuration is split into the _Quotas_, _LLM gateway_, _Kubernetes_, _Governance_ and _Manage_ tabs, and _Save_ at the bottom saves the changes of every tab.
+A department change on the _Manage_ tab is the exception: it is applied with the _Save_ button of the _Department_ panel, not the one at the bottom.
 
 <figure>
   <img src="../../../assets/images/admin/projects/project_quotas.png" alt="Project quotas" />
@@ -109,14 +111,14 @@ Raising a project's index size limit makes its read-only indices writable again 
 Administrators have the option to force delete a project.
 This is useful if the project was not created or deleted properly, e.g., because of an error.
 It is also how an administrator deletes a project they do not own, since only the owner can delete a project from its settings.
-To force delete a project, click _Edit configuration_ next to it on the Project management page, then click _Force delete project_ under _Manage project_ and confirm.
+To force delete a project, open its configuration from the Project management page, then on the _Manage_ tab click _Force delete project_ and type `confirm`.
 
 ## Transferring a project to a new owner
 
 Every project has one owner, the user who created it unless it has been transferred since.
 The owner cannot be removed from the project and their role cannot be changed, so a project stays attached to an owner who has left until it is transferred.
 
-To transfer a project, click _Edit configuration_ next to it on the Project management page, then click _Transfer ownership_ under _Manage project_, choose the new owner and confirm.
+To transfer a project, open its configuration from the Project management page, then on the _Manage_ tab click _Transfer ownership_, choose the new owner and confirm.
 Any activated user with the user or administrator role can be chosen.
 The new owner is added to the project as a Data owner, or promoted to one, if they are not one already.
 A member holding a custom role is given the built-in Data owner role in its place.
