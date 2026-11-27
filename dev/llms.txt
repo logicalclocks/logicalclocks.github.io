@@ -457,6 +457,7 @@
 - [prometheus](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/prometheus/) ([md](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/prometheus/index.md))
 - [ray](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/ray/) ([md](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/ray/index.md))
 - [rondb](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/rondb/) ([md](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/rondb/index.md))
+- [semantic-gateway](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/semantic-gateway/) ([md](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/semantic-gateway/index.md))
 - [spark](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/spark/) ([md](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/spark/index.md))
 - [superset](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/superset/) ([md](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/superset/index.md))
 - [trino](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/trino/) ([md](https://docs.hopsworks.ai/latest/setup_installation/common/helm_chart_values/trino/index.md))
