@@ -99,4 +99,5 @@ The dialog offers the options of the API:
 
 ## Delete a data source
 
-Deleting a data source deletes the feature groups that use it, see [Deleting a Data Source][deleting-a-data-source].
+Deleting a data source deletes the feature groups that use it.
+[Deleting a Data Source][deleting-a-data-source] describes how to keep their data.

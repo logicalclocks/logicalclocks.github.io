@@ -223,7 +223,8 @@ hops datasource delete <name> --keep-data
 
 Keeping the data needs Hopsworks 5.3 or later.
 Feature groups whose offline data is stored in Hopsworks, such as ones a dltHub job ingests from the data source, are deleted with their data either way.
-A feature group that a feature view uses stops the deletion; delete it first, see [How to delete a Feature Group][how-to-delete-a-feature-group].
+A feature group that a feature view uses stops the deletion.
+Delete it first, as [How to delete a Feature Group][how-to-delete-a-feature-group] describes.
 
 ## Next Steps
 
