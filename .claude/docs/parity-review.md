@@ -128,7 +128,7 @@ Status: `[ ]` pending, `[x]` reviewed OK, `[!]` reviewed with a follow-up noted 
 | [x] | `user_guides/projects/auth/krb.md` | modified | Kerberos login, Kerberos-only and missing-ticket captures new |
 | [x] | `user_guides/projects/auth/ldap.md` | modified | LDAP login and landing captures new; consent page still needs a real provider |
 | [x] | `user_guides/mlops/serving/deployment-state.md` | modified | list, condition and resources captures on the new UI from a live deployment |
-| [ ] | `user_guides/projects/scheduling/kube_scheduler.md` | modified | +2/-2 |
+| [ ] | `user_guides/projects/scheduling/kube_scheduler.md` | modified | per-project override capture on the new Kubernetes tab; the other captures are still old |
 | [ ] | `user_guides/projects/scheduling/kueue_details.md` | modified | +1/-1 |
 | [ ] | `user_guides/projects/airflow/airflow.md` | modified | +1/-1 |
 | [ ] | `user_guides/projects/airflow/airflow3_upgrade.md` | modified | +7/-7 |

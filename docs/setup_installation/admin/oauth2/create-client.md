@@ -11,7 +11,7 @@ Acquired a _client id_ and a _client secret_ from your identity provider.
 
 ### Step 1: Register a client
 
-After acquiring the _client id_ and _client secret_ create the client in Hopsworks by [enabling OAuth2](../auth.md) and clicking on _add another identity provider_ in the [Authentication configuration page](../auth.md).
+After acquiring the _client id_ and _client secret_ create the client in Hopsworks by [enabling OAuth2](../auth.md) and clicking on _Add identity provider_ in the [Authentication configuration page](../auth.md).
 Then set base uri of your identity provider in _Connection URL_ give a name to your identity provider (the name will be used in the login page as an alternative login method) and set the _client id_ and _client secret_ in their respective fields, as shown in the figure below.
 
 <figure>
