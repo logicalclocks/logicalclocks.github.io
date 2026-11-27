@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795804542` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795805506` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -3146,6 +3146,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         kibana_version: 3.8.0
         kube_api_max_attempts: '20'
         kube_hopsworks_default_service_account: hopsworks-default
+        kube_img_pull_policy: Always
         kube_keda_installed: true
         kube_knative_domain_name: hopsworks.ai
         kube_knative_lb_domain: ''
@@ -4290,6 +4291,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.kube_hopsworks_default_service_account` <a class="headerlink" href="#helm.hopsworks.variables.kube_hopsworks_default_service_account" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_hopsworks_default_service_account }
 :   Type `string`, default `"hopsworks-default"`.
+
+`hopsworks.variables.kube_img_pull_policy` <a class="headerlink" href="#helm.hopsworks.variables.kube_img_pull_policy" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_img_pull_policy }
+:   Type `string`, default `"Always"`.
+    imagePullPolicy the backend sets on the containers of the pods it creates for users: jobs, Jupyter, terminals, apps, model and agent deployments, and their sidecars. "Always", "IfNotPresent" or "Never". The pods of the chart itself follow `global._hopsworks.imagePullPolicy` instead. "IfNotPresent" starts pods without a registry round trip and keeps them starting while the registry is unreachable, and suits clusters where a pushed tag is never overwritten.
 
 `hopsworks.variables.kube_keda_installed` <a class="headerlink" href="#helm.hopsworks.variables.kube_keda_installed" title="Permanent link">#</a> { #helm.hopsworks.variables.kube_keda_installed }
 :   Type `bool`, default `true`.
