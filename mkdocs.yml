@@ -418,6 +418,7 @@ nav:
           - prometheus: setup_installation/common/helm_chart_values/prometheus.md
           - ray: setup_installation/common/helm_chart_values/ray.md
           - rondb: setup_installation/common/helm_chart_values/rondb.md
+          - semantic-gateway: setup_installation/common/helm_chart_values/semantic-gateway.md
           - spark: setup_installation/common/helm_chart_values/spark.md
           - superset: setup_installation/common/helm_chart_values/superset.md
           - trino: setup_installation/common/helm_chart_values/trino.md
