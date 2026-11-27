@@ -6,7 +6,8 @@ description: Documentation on how to delete a feature group in Hopsworks, and ho
 
 ## Introduction
 
-Deleting a feature group removes this version of it from Hopsworks: its metadata, online data, Kafka topic, commits, statistics, validation reports and the jobs that write to it.
+Deleting a feature group removes this version of it from Hopsworks: its metadata, online data, commits, statistics, validation reports and the jobs that write to it.
+Its Kafka topic is deleted too, unless it is the project's shared topic, or another feature group or a model deployment uses it.
 By default the offline data of a cached or stream feature group is deleted too, whether Hopsworks stores it or it sits on an S3, GCS or Glue data source.
 A feature group on such a data source can keep that data instead, for example when the bucket holds data you manage outside Hopsworks.
 An external feature group only reads its data source, so deleting it never deletes the data there.
