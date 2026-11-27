@@ -102,6 +102,7 @@ nav:
               - Ingest Data with dltHub: user_guides/fs/feature_group/ingest_with_dlthub.md
               - Create Spine: user_guides/fs/feature_group/create_spine.md
               - Deprecate: user_guides/fs/feature_group/deprecation.md
+              - Delete: user_guides/fs/feature_group/delete.md
               - Data Types and Schema management: user_guides/fs/feature_group/data_types.md
               - Statistics: user_guides/fs/feature_group/statistics.md
               - Data Validation:

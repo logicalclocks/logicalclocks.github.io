@@ -211,6 +211,21 @@ While calling the [Feature View](../../../concepts/fs/feature_view/fv_overview.m
 
 For a detailed walkthrough on managing and utilizing training data, refer to the [training data guide](../feature_view/training-data.md).
 
+## Deleting a Data Source
+
+Deleting a data source also deletes every feature group that uses it.
+By default, the offline data those feature groups store on an S3, GCS or Glue data source is deleted with them.
+To keep that data, tick **Keep the data its feature groups store on it** in the delete dialog, or pass `--keep-data` on the command line:
+
+```bash
+hops datasource delete <name> --keep-data
+```
+
+Keeping the data needs Hopsworks 5.3 or later.
+Feature groups whose offline data is stored in Hopsworks, such as ones a dltHub job ingests from the data source, are deleted with their data either way.
+A feature group that a feature view uses stops the deletion.
+Delete it first, as [How to delete a Feature Group][how-to-delete-a-feature-group] describes.
+
 ## Next Steps
 
 We have gone through the basic use cases of a data source.
