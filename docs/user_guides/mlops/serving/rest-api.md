@@ -158,7 +158,7 @@ Requests go to `<base URL>/v1/messages`, and Claude Code takes the base URL as `
 
 !!! info "Deployments the LLM Gateway does not serve"
 
-    - A deployment in Knative mode.
+    - A deployment in Knative mode, until it is [converted to Standard mode][knative-mode-deprecated].
     - A deployment that scales to zero when idle (a minimum of 0 instances), or that autoscales on concurrency or requests per second.
     - Every deployment of a project with a started deployment named `v1`.
 

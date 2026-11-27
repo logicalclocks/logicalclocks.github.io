@@ -709,6 +709,7 @@ Do not hand-edit the tables below; regenerate them instead.
 | 240077 | `SERVING_SHARING_NOT_SUPPORTED` | 400 BAD_REQUEST | Only a vLLM deployment served by the LLM gateway can be shared with other projects. |
 | 240078 | `SERVING_SHARING_DISABLED` | 400 BAD_REQUEST | Sharing deployments with other projects is disabled on this cluster. |
 | 240079 | `SERVING_SHARING_PROJECT_NOT_FOUND` | 404 NOT_FOUND | The project to share the deployment with does not exist or is the owner of the deployment. |
+| 240082 | `KNATIVE_MODE_DEPRECATED` | 400 BAD_REQUEST | Knative mode is deprecated: new deployments and mode changes must use Standard mode |
 
 ## InferenceErrorCode
 

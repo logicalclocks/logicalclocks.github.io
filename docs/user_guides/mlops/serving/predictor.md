@@ -405,6 +405,10 @@ Each model server has specific requirements and supports different types of mode
 All deployments use [KServe](https://kserve.github.io/website/latest/) as the serving platform, providing autoscaling, fine-grained resource allocation, inference logging, inference batching, and transformers.
 KServe runs a deployment in either Knative or Standard mode, see [Deployment mode](autoscaling.md#deployment-mode).
 
+!!! warning "Knative mode is deprecated"
+    Hopsworks 5.4 removes Knative mode.
+    [Convert existing Knative-mode deployments to Standard mode][knative-mode-deprecated].
+
 ## Predictor script
 
 For **Python model deployments** ==only==, you can provide a custom Python script, called a predictor script, to load your model and serve predictions. This script is included in the [artifact files](../serving/deployment.md#artifact-files) of the deployment. The script must follow a specific template, as shown in [Step 2](#step-21-optional-implement-a-predictor-script).
