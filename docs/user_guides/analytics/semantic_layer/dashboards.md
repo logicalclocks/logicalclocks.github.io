@@ -67,7 +67,7 @@ hops semantic dashboard sales --metrics revenue,orders --group-by customer__coun
 ```
 
 ```text
-Created dashboard 12 "Sales overview": https://<hopsworks host>/hopsworks-api/superset/dashboard/12/?projectId=119
+Created dashboard 12 "Sales overview": https://<hopsworks host>/hopsworks-api/superset/superset/dashboard/12/?projectId=119
 ```
 
 ```bash
@@ -78,7 +78,7 @@ hops semantic dashboard sales --metrics revenue,revenue_per_order --json
 {
   "id": 13,
   "title": "sales: Revenue, Average order value",
-  "url": "https://<hopsworks host>/hopsworks-api/superset/dashboard/13/?projectId=119"
+  "url": "https://<hopsworks host>/hopsworks-api/superset/superset/dashboard/13/?projectId=119"
 }
 ```
 
@@ -107,7 +107,7 @@ print(dashboard["id"], dashboard["url"])
 ```
 
 ```text
-12 https://<hopsworks host>/hopsworks-api/superset/dashboard/12/?projectId=119
+12 https://<hopsworks host>/hopsworks-api/superset/superset/dashboard/12/?projectId=119
 ```
 
 `create_dashboard` returns a dict with the dashboard's Superset `id`, its `title`, and the `url` that opens it through Hopsworks.
@@ -124,7 +124,7 @@ The Hopsworks MCP server has the tool `create_dashboard_from_metrics`, tagged WR
 ```
 
 ```json
-{"id": 12, "title": "Sales overview", "url": "https://<hopsworks host>/hopsworks-api/superset/dashboard/12/?projectId=119"}
+{"id": 12, "title": "Sales overview", "url": "https://<hopsworks host>/hopsworks-api/superset/superset/dashboard/12/?projectId=119"}
 ```
 
 The dashboard belongs to the user the server is logged in as.
