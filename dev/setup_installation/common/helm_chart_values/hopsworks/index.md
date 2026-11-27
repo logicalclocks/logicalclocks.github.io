@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795766855` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795772007` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -3050,7 +3050,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         executions_cleaner_batch_size: '50'
         executions_cleaner_interval_ms: '600000'
         executions_per_job_limit: '10000'
-        feature_monitoring_max_num_features: '15'
+        feature_monitoring_max_num_features: '32'
         featurestore_asof_spine_max_bytes: '1073741824'
         featurestore_asof_spine_max_columns: '256'
         featurestore_asof_spine_max_file_age_ms: '86400000'
@@ -3416,6 +3416,15 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         staging_dir: /srv/hops/staging
         statistics_cleaner_batch_size: '1000'
         statistics_cleaner_interval_ms: '900000'
+        statistics_incremental_allowed: 'true'
+        statistics_incremental_enabled: 'false'
+        statistics_incremental_full_profile_every: '50'
+        statistics_job_bytes_per_executor: '0'
+        statistics_job_driver_memory: ''
+        statistics_job_executor_cores: ''
+        statistics_job_executor_memory: ''
+        statistics_job_max_executors: ''
+        statistics_retention_rows_per_entity: '0'
         streamlit_sharing: false
         sudoers_dir: /srv/hops/sbin
         superset_admin_roles: Admin
@@ -3977,7 +3986,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 :   Type `string`, default `"10000"`.
 
 `hopsworks.variables.feature_monitoring_max_num_features` <a class="headerlink" href="#helm.hopsworks.variables.feature_monitoring_max_num_features" title="Permanent link">#</a> { #helm.hopsworks.variables.feature_monitoring_max_num_features }
-:   Type `string`, default `"15"`.
+:   Type `string`, default `"32"`.
 
 `hopsworks.variables.featurestore_asof_spine_max_bytes` <a class="headerlink" href="#helm.hopsworks.variables.featurestore_asof_spine_max_bytes" title="Permanent link">#</a> { #helm.hopsworks.variables.featurestore_asof_spine_max_bytes }
 :   Type `string`, default `"1073741824"`.
@@ -5179,6 +5188,42 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.statistics_cleaner_interval_ms` <a class="headerlink" href="#helm.hopsworks.variables.statistics_cleaner_interval_ms" title="Permanent link">#</a> { #helm.hopsworks.variables.statistics_cleaner_interval_ms }
 :   Type `string`, default `"900000"`.
+
+`hopsworks.variables.statistics_incremental_allowed` <a class="headerlink" href="#helm.hopsworks.variables.statistics_incremental_allowed" title="Permanent link">#</a> { #helm.hopsworks.variables.statistics_incremental_allowed }
+:   Type `string`, default `"true"`.
+    Admin switch for incremental statistics; false makes every feature group run full profiles, whatever it sets. Set it here: the chart writes this value on every install and upgrade, so a change from the admin variables page lasts only until the next upgrade.
+
+`hopsworks.variables.statistics_incremental_enabled` <a class="headerlink" href="#helm.hopsworks.variables.statistics_incremental_enabled" title="Permanent link">#</a> { #helm.hopsworks.variables.statistics_incremental_enabled }
+:   Type `string`, default `"false"`.
+    Default for feature groups that do not set incremental statistics: merge each append into the previous statistics instead of a full profile; readable by project users.
+
+`hopsworks.variables.statistics_incremental_full_profile_every` <a class="headerlink" href="#helm.hopsworks.variables.statistics_incremental_full_profile_every" title="Permanent link">#</a> { #helm.hopsworks.variables.statistics_incremental_full_profile_every }
+:   Type `string`, default `"50"`.
+    Merged commits after which a feature group with incremental statistics gets a full profile again; 0 never forces one.
+
+`hopsworks.variables.statistics_job_bytes_per_executor` <a class="headerlink" href="#helm.hopsworks.variables.statistics_job_bytes_per_executor" title="Permanent link">#</a> { #helm.hopsworks.variables.statistics_job_bytes_per_executor }
+:   Type `string`, default `"0"`.
+    Table bytes per statistics job executor when sizing from the table; 0 turns sizing off. Sizing gives each ingestion statistics run a maximum executors of its own from the table size its commit reports, never above the job's maximum, which the job keeps. No effect with Kueue, where statistics jobs run a fixed number of executors.
+
+`hopsworks.variables.statistics_job_driver_memory` <a class="headerlink" href="#helm.hopsworks.variables.statistics_job_driver_memory" title="Permanent link">#</a> { #helm.hopsworks.variables.statistics_job_driver_memory }
+:   Type `string`, default `""`.
+    Statistics job driver memory in MB; empty keeps the generic Spark job default. A floor for existing jobs: one given more keeps it.
+
+`hopsworks.variables.statistics_job_executor_cores` <a class="headerlink" href="#helm.hopsworks.variables.statistics_job_executor_cores" title="Permanent link">#</a> { #helm.hopsworks.variables.statistics_job_executor_cores }
+:   Type `string`, default `""`.
+    Statistics job executor cores; empty keeps the generic Spark job default. A floor for existing jobs: one given more keeps it.
+
+`hopsworks.variables.statistics_job_executor_memory` <a class="headerlink" href="#helm.hopsworks.variables.statistics_job_executor_memory" title="Permanent link">#</a> { #helm.hopsworks.variables.statistics_job_executor_memory }
+:   Type `string`, default `""`.
+    Statistics job executor memory in MB; empty keeps the generic Spark job default. A floor for existing jobs: one given more keeps it.
+
+`hopsworks.variables.statistics_job_max_executors` <a class="headerlink" href="#helm.hopsworks.variables.statistics_job_max_executors" title="Permanent link">#</a> { #helm.hopsworks.variables.statistics_job_max_executors }
+:   Type `string`, default `""`.
+    Statistics job maximum executors; empty keeps the generic Spark job default. It replaces the job's maximum executors before each ingestion statistics run. No effect with Kueue, where statistics jobs run a fixed number of executors.
+
+`hopsworks.variables.statistics_retention_rows_per_entity` <a class="headerlink" href="#helm.hopsworks.variables.statistics_retention_rows_per_entity" title="Permanent link">#</a> { #helm.hopsworks.variables.statistics_retention_rows_per_entity }
+:   Type `string`, default `"0"`.
+    Statistics rows kept per feature group or feature view, newest first; 0 keeps every row.
 
 `hopsworks.variables.streamlit_sharing` <a class="headerlink" href="#helm.hopsworks.variables.streamlit_sharing" title="Permanent link">#</a> { #helm.hopsworks.variables.streamlit_sharing }
 :   Type `bool`, default `false`.
