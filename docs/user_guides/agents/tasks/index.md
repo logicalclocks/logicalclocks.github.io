@@ -186,7 +186,7 @@ cat > my-agent-task.json <<EOF
   "type": "agentJobConfiguration",
   "appName": "data-quality-check",
   "prompt": "Check all feature groups for nulls and report findings",
-  "model": "claude-sonnet-4-5",
+  "model": "claude-sonnet-5-5",
   "maxTurns": 25,
   "permissionPreset": "READ_ONLY",
   "refs": [
@@ -219,7 +219,7 @@ fields are:
 | `prompt` | string | yes | - | The task |
 | `provider` | string | no | `"claude"` | `"claude"` or `"codex"` |
 | `cliArgs` | string | no | - | Extra codex CLI flags (codex only) |
-| `model` | string | no | `claude-sonnet-4-5` | Provider-specific model ID |
+| `model` | string | no | `claude-sonnet-5-5` | Provider-specific model ID |
 | `maxTurns` | int | no | 50 | Claude only |
 | `maxBudgetUsd` | float | no | - | Claude only, max 100 |
 | `permissionPreset` | string | no | `READ_ONLY` | `READ_ONLY` / `OPERATOR` / `FULL` |
