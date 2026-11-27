@@ -7,7 +7,7 @@ See [LLM Gateway][llm-gateway] for what the feature installs and what the cluste
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795791992` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795804542` (Hopsworks `5.3.0`)._
 
 ## aiGateway { #helm-values-hw-envoy-ai-gateway-aigateway }
 
@@ -86,7 +86,8 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795791992` (Hopsworks `5.
               memory: 128Mi
           tolerations: []
         requestHeaderAttributes:
-          metrics: x-hopsworks-user:hopsworks.user
+          log: x-hopsworks-user:hopsworks.user,x-hopsworks-project:hopsworks.project,x-hopsworks-project-id:hopsworks.project.id
+          metrics: x-hopsworks-user:hopsworks.user,x-hopsworks-project:hopsworks.project
           span: agent-session-id:session.id,x-hopsworks-user:hopsworks.user,x-hopsworks-project-id:hopsworks.project.id
     ```
 
@@ -169,7 +170,8 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795791992` (Hopsworks `5.
               memory: 128Mi
           tolerations: []
         requestHeaderAttributes:
-          metrics: x-hopsworks-user:hopsworks.user
+          log: x-hopsworks-user:hopsworks.user,x-hopsworks-project:hopsworks.project,x-hopsworks-project-id:hopsworks.project.id
+          metrics: x-hopsworks-user:hopsworks.user,x-hopsworks-project:hopsworks.project
           span: agent-session-id:session.id,x-hopsworks-user:hopsworks.user,x-hopsworks-project-id:hopsworks.project.id
         ```
 
@@ -465,18 +467,29 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795791992` (Hopsworks `5.
 
 `hw-envoy-gateway.aiGateway.requestHeaderAttributes` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.requestHeaderAttributes" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.requestHeaderAttributes }
 :   Type `object`.
-    the arguments of the controller that attribute traces and metrics to the caller. Each entry is `<request header>:<attribute>`; the ext_proc sidecar copies the header's value onto the span (spanRequestHeaderAttributes) or onto the gen_ai metrics as a label (metricsRequestHeaderAttributes). The headers are set by model-serving-authenticator. Metric labels multiply the series, so the metrics list holds only the user, whose values are bounded by the project members.
+    the arguments of the controller that attribute traces, metrics and the access log to the caller. Each entry is `<request header>:<attribute>`; the ext_proc sidecar copies the header's value onto the span (spanRequestHeaderAttributes), onto the gen_ai metrics as a label (metricsRequestHeaderAttributes) or into the dynamic metadata the access log reads (logRequestHeaderAttributes), before its header mutation removes the headers on the way to an external provider. The headers are set by model-serving-authenticator. Metric labels multiply the series, so the metrics list holds only the user and the project namespace, whose values are bounded by the project members and the projects; Prometheus takes the series' namespace from the project label.
 
     ??? note "Default"
 
         ```yaml
-        metrics: x-hopsworks-user:hopsworks.user
+        log: x-hopsworks-user:hopsworks.user,x-hopsworks-project:hopsworks.project,x-hopsworks-project-id:hopsworks.project.id
+        metrics: x-hopsworks-user:hopsworks.user,x-hopsworks-project:hopsworks.project
         span: agent-session-id:session.id,x-hopsworks-user:hopsworks.user,x-hopsworks-project-id:hopsworks.project.id
         ```
 
+`hw-envoy-gateway.aiGateway.requestHeaderAttributes.log` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.requestHeaderAttributes.log" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.requestHeaderAttributes.log }
+:   Type `string`.
+    access log attributes, comma-separated; the AI Gateway's access log reads them as io.envoy.ai_gateway dynamic metadata, so the three hopsworks.* entries are required and more can be added
+
+    ??? note "Default"
+
+        ```yaml
+        x-hopsworks-user:hopsworks.user,x-hopsworks-project:hopsworks.project,x-hopsworks-project-id:hopsworks.project.id
+        ```
+
 `hw-envoy-gateway.aiGateway.requestHeaderAttributes.metrics` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.requestHeaderAttributes.metrics" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.requestHeaderAttributes.metrics }
-:   Type `string`, default `"x-hopsworks-user:hopsworks.user"`.
-    metric labels, comma-separated; empty drops the flag
+:   Type `string`, default `"x-hopsworks-user:hopsworks.user,x-hopsworks-project:hopsworks.project"`.
+    metric labels, comma-separated; empty drops the flag. When set and external providers are enabled it must keep x-hopsworks-project:hopsworks.project, which Prometheus attributes the external models' usage to a project by
 
 `hw-envoy-gateway.aiGateway.requestHeaderAttributes.span` <a class="headerlink" href="#helm.hw-envoy-gateway.aiGateway.requestHeaderAttributes.span" title="Permanent link">#</a> { #helm.hw-envoy-gateway.aiGateway.requestHeaderAttributes.span }
 :   Type `string`.

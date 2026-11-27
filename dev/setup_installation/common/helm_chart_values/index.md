@@ -17,7 +17,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795791992` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795804542` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -40,7 +40,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795791992` (Hopsworks `5.
 
 | Values | Upstream charts | Keys |
 | --- | --- | --- |
-| [`global`][helm-values-global] |  | 172 |
+| [`global`][helm-values-global] |  | 173 |
 | [`airflow`][helm-values-airflow] |  | 162 |
 | [`arrowflight`][helm-values-arrowflight] |  | 46 |
 | [`certs-operator`][helm-values-certs-operator] |  | 29 |
@@ -51,7 +51,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795791992` (Hopsworks `5.
 | [`hopsfs`][helm-values-hopsfs] |  | 226 |
 | [`hopsfs-csi`][helm-values-hopsfs-csi] |  | 29 |
 | [`hopsworks`][helm-values-hopsworks] |  | 1091 |
-| [`hw-envoy-ai-gateway`][helm-values-hw-envoy-ai-gateway] |  | 43 |
+| [`hw-envoy-ai-gateway`][helm-values-hw-envoy-ai-gateway] |  | 44 |
 | [`hw-envoy-gateway`][helm-values-hw-envoy-gateway] |  | 40 |
 | [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) | 24 |
 | [`hw-kueue`][helm-values-hw-kueue] |  | 63 |

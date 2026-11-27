@@ -4,7 +4,7 @@ Values under `global` are shared by every subchart: image registry and pull secr
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795791992` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795804542` (Hopsworks `5.3.0`)._
 
 ## General { #helm-values-global-general }
 
@@ -551,6 +551,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795791992` (Hopsworks `5.
         envoyGateway:
           aiGateway:
             enabled: false
+            externalProviders: true
             gatewayName: kserve-ai-gateway
             tracing:
               enabled: false
@@ -570,6 +571,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795791992` (Hopsworks `5.
         ```yaml
         aiGateway:
           enabled: false
+          externalProviders: true
           gatewayName: kserve-ai-gateway
           tracing:
             enabled: false
@@ -586,10 +588,15 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795791992` (Hopsworks `5.
 
         ```yaml
         enabled: false
+        externalProviders: true
         gatewayName: kserve-ai-gateway
         tracing:
           enabled: false
         ```
+
+`global._hopsworks.envoyGateway.aiGateway.externalProviders` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway.aiGateway.externalProviders" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway.aiGateway.externalProviders }
+:   Type `bool`, default `true`.
+    let cluster admins register external LLM providers (OpenAI, Anthropic and compatible APIs) and grant them to projects on the LLM Gateway. Off, registration and grants are refused and the backend removes the external providers' routes and gateway objects, keeping the providers, grants and keys so turning it on again restores them. `values.airgap.yaml` turns it off.
 
 `global._hopsworks.envoyGateway.aiGateway.gatewayName` <a class="headerlink" href="#helm.global._hopsworks.envoyGateway.aiGateway.gatewayName" title="Permanent link">#</a> { #helm.global._hopsworks.envoyGateway.aiGateway.gatewayName }
 :   Type `string`, default `"kserve-ai-gateway"`.
