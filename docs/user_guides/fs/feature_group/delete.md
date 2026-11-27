@@ -61,9 +61,20 @@ From the command line, `hops fg delete <name> --version <version> --keep-data` d
 
 ### Recreate a feature group on the kept data
 
-A feature group created later with the same name, version and data source reads and writes the kept table.
-To start with an empty table, give the new feature group another `path` on S3 or GCS.
-On Glue, the location of an existing catalog table takes precedence over the path, so give it another table name instead.
+A feature group created later at the same table location, with the original table format, schema and primary key, reads and writes the kept table.
+On S3 or GCS, the same name and version reach that location only when the original feature group used the default path; otherwise pass the original `path`.
+On Glue, the location of an existing catalog table takes precedence over the path, so the same database and table name reach it.
+
+!!! warning "Hopsworks metadata is not restored"
+
+    The recreated feature group starts without commit history, statistics or online data.
+    `commit_details()` is empty, and `as_of` and incremental reads fail until an insert registers a commit, because Hopsworks resolves them against its own commits.
+    The Delta or Iceberg history stays in the table, so a later incremental read can span changes made before the recreate.
+
+`insert()` upserts into the kept table by default, and `operation="insert"` appends to it.
+`insert(overwrite=True)` deletes the kept table and its history before writing.
+
+To start with an empty table instead, give the new feature group an unused `path` on S3 or GCS, or another table name on Glue.
 
 !!! api "API reference"
 
