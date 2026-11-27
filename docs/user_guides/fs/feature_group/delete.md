@@ -73,7 +73,8 @@ On Glue, the location of an existing catalog table takes precedence over the pat
     `commit_details()` is empty, and `as_of` and incremental reads fail until an insert registers a commit, because Hopsworks resolves them against its own commits.
     The Delta or Iceberg history stays in the table, so a later incremental read can span changes made before the recreate.
 
-`insert()` upserts into the kept table by default, and `operation="insert"` appends to it.
+`insert()` upserts into the kept table by default.
+`operation="insert"` appends to it instead, except on a stream feature group written from Python, whose client does not pass `operation` on to the materialization job.
 `insert(overwrite=True)` deletes the kept table and its history before writing.
 
 To start with an empty table instead, give the new feature group an unused `path` on S3 or GCS, or another table name on Glue.
