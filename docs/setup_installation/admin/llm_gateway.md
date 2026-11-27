@@ -237,7 +237,7 @@ An administrator edits them in the cluster settings, on the Quotas and Rate Limi
 
 ### Per-project overrides
 
-An override per project is set on the admin page that edits the project, under LLM Gateway limits, with the same scopes, kinds and units, and applies immediately.
+An override per project is set on the `LLM gateway` tab of the admin page that edits the project, with the same scopes, kinds and units, and applies immediately.
 The value range is the same, and `-1` makes the scope unlimited for that project.
 Removing the override makes the cluster default apply again.
 The same limits are available as `llmGatewayLimits` of `projectQuotas` in `PUT /admin/projects/{id}`, and `GET /admin/projects/{id}?expand=quotas` returns the effective ones with a `source` of `DEFAULT` or `PROJECT`.

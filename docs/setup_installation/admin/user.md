@@ -18,7 +18,10 @@ You can find them by clicking on your name in the top right corner of the naviga
   <figcaption>Active Users</figcaption>
 </figure>
 
-### Step 2: Manage user roles
+The page has an _Active_ and a _Blocked_ tab, each showing how many users it holds.
+Each row shows the user's account type, role, number of projects, project limit, rate limit and last login.
+
+### Step 2: Edit a user
 
 Roles let you manage the access rights of a user to the cluster.
 
@@ -26,7 +29,20 @@ Roles let you manage the access rights of a user to the cluster.
 - Admin: users with this role are allowed to manage the cluster.
   This includes accepting new users to the cluster or blocking them, managing user quota, [configure alerts](./alert.md) and setting up [authentication methods](./auth.md).
 
-You can change the role of a user by clicking on the _select dropdown_ that shows the current role of the user.
+To change a user, click their row or the pencil icon at the end of it.
+A side panel opens with the user's details.
+Choose the role, set the maximum number of projects the user can create, or set their rate limit, then click _Save_.
+
+- _Max projects_ takes a whole number, where 0 means the user cannot create projects; turn on _Unlimited_ to remove the limit.
+- _Rate limit_ sets the user's API request burst and rate per second; leave both fields empty to use the cluster default.
+
+You cannot change your own role.
+The role of a user who signs in through OAuth2 is set through group mapping while `oauth_group_mapping_enabled` is on, and that of an LDAP or Kerberos user while `ldap_group_mapping_enabled` is on; with mapping off, their role is changed here like any other.
+
+<figure>
+  <img width="400px" src="../../../assets/images/admin/user-management/edit-user.png" alt="The side panel for editing a user, with role, max projects, rate limit and password settings" />
+  <figcaption>Edit a user</figcaption>
+</figure>
 
 ### Step 3: Validating and blocking users
 
@@ -44,22 +60,22 @@ Each pending row carries an _Activate_ and a _Block_ button.
 A marker next to the email address shows that the address has not been validated yet.
 
 Similarly, if a user is no longer allowed access to the cluster you can block them.
-To keep consistency with the history of your datasets, a user can not be deleted but only blocked.
-If necessary a user can be deleted manually in the cluster using the command line.
-You can block a user by clicking on the block icon on the right side of the user in the list.
+Open the user's side panel, click _Block_ and confirm.
+A blocked user can no longer log in and moves to the _Blocked_ tab.
 
 <figure>
   <img src="../../../assets/images/admin/user-management/blocked-users.png" alt="blocked users" />
   <figcaption>Blocked Users</figcaption>
 </figure>
 
-Blocked users will appear on the lower section of the page.
-Click on _Show blocked users_ to show all the blocked users in your cluster.
-If a user is blocked by mistake you can reactivate it by clicking on the check mark icon that corresponds to that user in the blocked users list.
+The _Blocked_ tab lists every blocked user with the reason, such as being blocked by an administrator or after too many failed logins.
+If a user is blocked by mistake, click _Unblock_ in their row to give them access again.
+
+A user who has no projects can also be deleted: open their side panel, click _Delete_ and type `confirm`.
 
 If there are too many users in your cluster, use the search box (available for blocked users too) to filter users by name or email.
 It is also possible to filter activated users by role.
-For example to see all administrators in you cluster click on the _select dropdown_ to the right of the search box and choose _Admin_.
+For example to see all administrators in your cluster click on the _select dropdown_ to the right of the search box and choose _Admin_.
 
 ### Step 4: Create a new users
 
@@ -89,9 +105,10 @@ Copy the password and pass it securely to the user.
 
 In the case where a user loses her/his password and can not recover it with the [password recovery](../../user_guides/projects/auth/recovery.md), an administrator can reset it for them.
 
-On the bottom of the _Users_ page, under _Advanced features_, click on _Reset a user password_.
-A popup window with a dropdown for searching users by name or email will open.
-Find the user and click on _Reset new password_.
+Open the user's side panel, click _Reset password_ and confirm.
+The password is replaced with a temporary one, and the user receives an email saying that an administrator reset it.
+Only Hopsworks accounts have a password to reset: users who sign in through LDAP, Kerberos or OAuth2 use their directory's password.
+
 <figure>
   <img src="../../../assets/images/admin/user-management/reset-password.png" alt="reset password" />
   <figcaption>Reset user password</figcaption>
