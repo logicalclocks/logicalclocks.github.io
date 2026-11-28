@@ -4,7 +4,7 @@ Values under `hopsworks` configure the Hopsworks backend: the Payara worker and 
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795805506` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795867152` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -3081,6 +3081,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         git_gitlab_http_proxy: ''
         git_gitlab_https_proxy: ''
         git_image_version: 1.7-SNAPSHOT
+        grafana_assertion_key_file: /srv/hops/secrets/grafana-assertion/key
         grafana_version: 9.3.16
         ha_enabled: 'true'
         hadoop_dir: /srv/hops/hadoop
@@ -3326,6 +3327,7 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
         ray_job_worker_gpus: '0'
         ray_job_worker_memory: '4096'
         ray_materialization_dir: /srv/hops/ray/job
+        ray_token_auth: enabled
         ray_version: 2.59.0
         recovery_path: ''
         reject_remote_user_no_group: 'false'
@@ -4085,6 +4087,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.git_image_version` <a class="headerlink" href="#helm.hopsworks.variables.git_image_version" title="Permanent link">#</a> { #helm.hopsworks.variables.git_image_version }
 :   Type `string`, default `"1.7-SNAPSHOT"`.
+
+`hopsworks.variables.grafana_assertion_key_file` <a class="headerlink" href="#helm.hopsworks.variables.grafana_assertion_key_file" title="Permanent link">#</a> { #helm.hopsworks.variables.grafana_assertion_key_file }
+:   Type `string`, default `"/srv/hops/secrets/grafana-assertion/key"`.
+    File the backend reads the key it signs Grafana assertions with. The chart mounts the key Secret its grafana-assertion-key hook creates at this path, so there is no reason to change it.
 
 `hopsworks.variables.grafana_version` <a class="headerlink" href="#helm.hopsworks.variables.grafana_version" title="Permanent link">#</a> { #helm.hopsworks.variables.grafana_version }
 :   Type `string`, default `"9.3.16"`.
@@ -4877,6 +4883,10 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
 
 `hopsworks.variables.ray_materialization_dir` <a class="headerlink" href="#helm.hopsworks.variables.ray_materialization_dir" title="Permanent link">#</a> { #helm.hopsworks.variables.ray_materialization_dir }
 :   Type `string`, default `"/srv/hops/ray/job"`.
+
+`hopsworks.variables.ray_token_auth` <a class="headerlink" href="#helm.hopsworks.variables.ray_token_auth" title="Permanent link">#</a> { #helm.hopsworks.variables.ray_token_auth }
+:   Type `string`, default `"enabled"`.
+    Ray token authentication for the Ray clusters Hopsworks starts. `disabled` starts them without it. `enabled` starts every new cluster with it, and reports a cluster whose Ray runtime does not enforce the token (Ray older than 2.52 in a cloned environment) and a notebook cluster started from a Jupyter server that predates the setting. `required` refuses those instead of reporting them. Set it here: a value changed through the admin API does not survive the next upgrade.
 
 `hopsworks.variables.ray_version` <a class="headerlink" href="#helm.hopsworks.variables.ray_version" title="Permanent link">#</a> { #helm.hopsworks.variables.ray_version }
 :   Type `string`, default `"2.59.0"`.

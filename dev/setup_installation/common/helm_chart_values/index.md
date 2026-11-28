@@ -17,7 +17,7 @@ Every value has its own link (the `#` next to its key), and each section has its
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795805506` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795867152` (Hopsworks `5.3.0`)._
 
 ## Common values { #helm-values-common }
 
@@ -50,7 +50,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795805506` (Hopsworks `5.
 | [`hive`][helm-values-hive] |  | 79 |
 | [`hopsfs`][helm-values-hopsfs] |  | 226 |
 | [`hopsfs-csi`][helm-values-hopsfs-csi] |  | 29 |
-| [`hopsworks`][helm-values-hopsworks] |  | 1092 |
+| [`hopsworks`][helm-values-hopsworks] |  | 1094 |
 | [`hw-envoy-ai-gateway`][helm-values-hw-envoy-ai-gateway] |  | 44 |
 | [`hw-envoy-gateway`][helm-values-hw-envoy-gateway] |  | 40 |
 | [`hw-keda`][helm-values-hw-keda] | [`keda` 2.21.0](https://artifacthub.io/packages/helm/kedacore/keda/2.21.0) | 24 |
@@ -63,7 +63,7 @@ _Generated from the Hopsworks Helm chart `5.3.0-alpha-1795805506` (Hopsworks `5.
 | [`olk`][helm-values-olk] | [`prometheus-elasticsearch-exporter` 5.8.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-elasticsearch-exporter/5.8.0) | 165 |
 | [`onlinefs`][helm-values-onlinefs] |  | 99 |
 | [`prometheus`][helm-values-prometheus] | [`prometheus` 25.20.2](https://artifacthub.io/packages/helm/prometheus-community/prometheus/25.20.2), [`prometheus-adapter` 4.11.0](https://artifacthub.io/packages/helm/prometheus-community/prometheus-adapter/4.11.0) | 9 |
-| [`ray`][helm-values-ray] | [`kuberay-operator` 1.4.0](https://artifacthub.io/packages/helm/kuberay-operator/kuberay-operator/1.4.0) | 2 |
+| [`ray`][helm-values-ray] | [`kuberay-operator` 1.7.3](https://artifacthub.io/packages/helm/kuberay-operator/kuberay-operator/1.7.3) | 14 |
 | [`rondb`][helm-values-rondb] | [`rondb` 26.2.27](https://github.com/logicalclocks/rondb-helm/blob/v26.2.27/values.schema.json) | 500 |
 | [`semantic-gateway`][helm-values-semantic-gateway] |  | 57 |
 | [`spark`][helm-values-spark] | [`spark-operator` 2.5.1](https://github.com/kubeflow/spark-operator/blob/v2.5.1/charts/spark-operator-chart/README.md) | 169 |

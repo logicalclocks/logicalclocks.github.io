@@ -4,7 +4,7 @@ Values under `grafana` configure Grafana and the Hopsworks monitoring dashboards
 
 <!-- BEGIN GENERATED VALUES -->
 
-_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795805506` (Hopsworks `5.3.0`)._
+_Generated from the Hopsworks Helm chart `5.3.0-alpha-1795867152` (Hopsworks `5.3.0`)._
 
 Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopsworks.full_platform) is `true`.
 
@@ -174,6 +174,15 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           - mountPath: /etc/grafana/provisioning/dashboards/hopsworks-dashboardproviders.yaml
             name: hopsworks-dashboardproviders
             subPath: providers.yaml
+        extraSecretMounts:
+        - defaultMode: 292
+          items:
+          - key: jwks.json
+            path: jwks.json
+          mountPath: /etc/grafana/assertion
+          name: assertion-key
+          readOnly: true
+          secretName: grafana-assertion-key
         global:
           imageRegistry: docker.hops.works
         grafana.ini:
@@ -184,16 +193,19 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             enabled: false
           auth.basic:
             enabled: false
-          auth.proxy:
+          auth.jwt:
             auto_sign_up: true
-            enable_login_token: false
+            email_claim: email
             enabled: true
-            header_name: X-WEBAUTH-USER
-            header_property: username
-            headers: Name:X-WEBAUTH-NAME Role:X-WEBAUTH-ROLE Email:X-WEBAUTH-EMAIL
-            headers_encoded: false
-            sync_ttl: '60'
-            whitelist: null
+            expect_claims: '{"iss":"hopsworks","aud":"grafana"}'
+            header_name: X-JWT-Assertion
+            jwk_set_file: /etc/grafana/assertion/jwks.json
+            role_attribute_path: role
+            role_attribute_strict: true
+            url_login: false
+            username_claim: sub
+          auth.proxy:
+            enabled: false
           rbac:
             enabled: true
           security:
@@ -413,6 +425,15 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
           - mountPath: /etc/grafana/provisioning/dashboards/hopsworks-dashboardproviders.yaml
             name: hopsworks-dashboardproviders
             subPath: providers.yaml
+        extraSecretMounts:
+        - defaultMode: 292
+          items:
+          - key: jwks.json
+            path: jwks.json
+          mountPath: /etc/grafana/assertion
+          name: assertion-key
+          readOnly: true
+          secretName: grafana-assertion-key
         global:
           imageRegistry: docker.hops.works
         grafana.ini:
@@ -423,16 +444,19 @@ Deployed when [`global._hopsworks.full_platform`](global.md#helm.global._hopswor
             enabled: false
           auth.basic:
             enabled: false
-          auth.proxy:
+          auth.jwt:
             auto_sign_up: true
-            enable_login_token: false
+            email_claim: email
             enabled: true
-            header_name: X-WEBAUTH-USER
-            header_property: username
-            headers: Name:X-WEBAUTH-NAME Role:X-WEBAUTH-ROLE Email:X-WEBAUTH-EMAIL
-            headers_encoded: false
-            sync_ttl: '60'
-            whitelist: null
+            expect_claims: '{"iss":"hopsworks","aud":"grafana"}'
+            header_name: X-JWT-Assertion
+            jwk_set_file: /etc/grafana/assertion/jwks.json
+            role_attribute_path: role
+            role_attribute_strict: true
+            url_login: false
+            username_claim: sub
+          auth.proxy:
+            enabled: false
           rbac:
             enabled: true
           security:
