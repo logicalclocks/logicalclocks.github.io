@@ -387,7 +387,8 @@ A project can hold several ontology systems, and each one builds:
 | Python environment: a clone of `python-feature-pipeline` with Auto-Ontology installed | `ontology-<commit>`, where `<commit>` is the first 8 characters of the Auto-Ontology commit it installs |
 | App: the HTTP API, the web UI and the chat | `<name>`, a custom app in that environment |
 | App tables: the catalog, the ontology, conversations and settings | `<table prefix><table>`, in the project's online database |
-| Jobs, in that environment | `<name>-ingest`, `<name>-compile`, `<name>-embed`, `<name>-reset`, `<name>-import` |
+| Jobs, in that environment | `<name>-ingest`, `<name>-compile`, `<name>-embed`, `<name>-reset`, `<name>-import`, `<name>-graph` |
+| The ontology as a read-only graph | `relate.db`, a [relate](https://github.com/relatedb/relate) graph store in the system's directory |
 | Online feature groups, each with an embedding index | `<name_>_data_objects` (tables and columns), `<name_>_semantic` (the ontology) |
 | Models in the Model Registry, imported from Hugging Face | `Nemotron_3_5_Embed_1B_BF16`, `NVIDIA_Nemotron_3_5_Lightning_30B_A3B_FP8` |
 | vLLM deployments | `nemotronembed`, `nemotronllm` |
@@ -430,8 +431,8 @@ The build runs these phases:
 | Python environment with Auto-Ontology | Clones `python-feature-pipeline` and installs Auto-Ontology into the clone, or reuses the environment another ontology system made |
 | Import the models and deploy them with vLLM | Imports each local model from Hugging Face at a pinned revision and deploys it, or reuses what another ontology system made; skipped when both models are external |
 | Ontology app | Creates and starts the app, which creates its tables |
-| Jobs, and ingest the sources' metadata | Creates the five jobs, schedules ingest and compile, and runs ingest |
-| Compile the ontology | Runs compile and embed, then checks that every table has a term, except a table whose columns are all foreign keys, and that every ontology row has its vector in `<name_>_semantic` |
+| Jobs, and ingest the sources' metadata | Creates the six jobs, schedules ingest and compile, and runs ingest |
+| Compile the ontology | Runs compile and embed, then checks that every table has a term, except a table whose columns are all foreign keys, and that every ontology row has its vector in `<name_>_semantic`; then publishes the ontology graph and reads it back |
 | Verify | Asks three questions drawn from **Who asks questions, and about what?**, or the sales example's five, records each answer, its SQL and its time in `system.yaml`, and runs `hops factory system status` |
 
 Compiling sends many LLM calls: on one GPU it takes tens of minutes for a few dozen tables.
@@ -531,11 +532,48 @@ The Hopsworks MCP server, `hopsworks-mcp`, which ships with the `hopsworks` libr
 | `check_answerable` | How well the ontology covers the entities of a question, without running the agent |
 | `ask_question` | The answer, its SQL and up to 100 rows; it takes tens of seconds and reports each step as progress |
 
+#### Query the ontology graph
+
+The graph job publishes the ontology as a [relate](https://github.com/relatedb/relate) graph, `relate.db` in the system's directory, so a job, an app, an agent or a terminal reads it with Cypher, without the app.
+The graph job is its only writer: it rebuilds the graph from the app's tables on the container's own disk and replaces `relate.db` with one checkpoint whose write-ahead log is empty.
+Everything else opens it read-only, which loads the graph into memory once; open it again to see a newer graph.
+The `relate` CLI and the `relate-db` Python package are in the `python-feature-pipeline`, `python-app-pipeline` and `python-agent-pipeline` environments and in the terminal, whose coding agents also have relate's skill.
+
+```bash
+G=/hopsfs/Users/<user>/sales-ontology/relate.db
+relate --read-only -d $G "MATCH (o:Ontology) RETURN o.published_at AS published_at"
+relate --read-only -d $G --json "MATCH (t:Table)-[:REPRESENTS]->(term:Term) RETURN t.name AS table, term.name AS term, term.synonyms AS synonyms"
+```
+
+```python
+import relate
+
+
+graph = relate.connect("/hopsfs/Users/<user>/sales-ontology/relate.db", read_only=True)
+measures = graph.execute(
+    "MATCH (a:SqlAttribute)-[:PROPERTY_OF]->(t:Term {name: $term}) "
+    "RETURN a.name AS measure, a.expression AS sql",
+    {"term": "Order"},
+)
+for row in measures:
+    print(row)
+graph.close()
+```
+
+Open the graph read-only: a writable open writes a write-ahead log beside the checkpoint on HopsFS, and the graph job's next run replaces whatever it wrote.
+The graph keeps Auto-Ontology's labels and relationship types:
+
+- **Nodes**: `Database`, `Schema`, `Table`, `Column`, `Term`, `ColumnAttribute`, `SqlAttribute` (a reviewed SQL expression of a term), `Sql` (a statement from the query history), `CustomAnalysis`, `PqlAnalysis`, `Tag`, `Acronym`, and one `Ontology` node with the system's name, `published_at` and `graph_model`.
+- **Relationships**: `CONTAINS` from a database down to its columns, `FOREIGN_KEY` and `JOIN` between columns, `JOIN` between tables of an imported model, `UNION`, `SQL` from a statement to what it reads, `REPRESENTS` from a table to its term, `HAS_ATTRIBUTE` and `SEMANTIC_FK` from a column to an attribute, `PROPERTY_OF` from an attribute to its term, `HAS_SQL`, and `TAGGED` to a tag.
+
+Columns have no sample values in the graph, since Observers can read the system's directory and the app does not show them sample values.
+The `hops-ontology` skill lists every property, with more queries.
+
 #### Ontology jobs
 
-The five jobs run in the system's `ontology-<commit>` environment with 2 cores, 4096 MB and no GPU.
+The six jobs run in the system's `ontology-<commit>` environment with 2 cores, 4096 MB and no GPU.
 Their default arguments name the system's configuration, `--config <dir>/ontology.yaml`, where `<dir>` is the system's directory relative to the project, such as `Users/<user>/sales-ontology`.
-One job works on the ontology at a time: a job that starts while another runs fails with `another ontology pipeline job is running`.
+One job works on the ontology at a time: a job that starts while another runs fails with `another ontology pipeline job is running`, except the graph job, which waits up to 30 minutes for it.
 
 - `<name>-ingest [--source <data source>]` reads the sources' metadata into the catalog and embeds the tables and columns into `<name_>_data_objects`, then starts the compile job when compilation is switched on.
   `--source` ingests one source.
@@ -549,6 +587,9 @@ One job works on the ontology at a time: a job that starts while another runs fa
   `<name>-reset --all --database <database>` deletes a database's catalog, ontology and vectors; **Remove** on **Sources** starts it.
 - `<name>-import --file <path> [--merge]` imports an export, native or Apache Ossie YAML, from a file in the project, for a file too large to upload on **Import / Export**, and embeds it.
   The file's definitions replace the existing ones, and `--merge` keeps the ones the file does not mention.
+- `<name>-graph` rebuilds the ontology graph from the app's tables and publishes it as `relate.db` in the system's directory.
+  Compile, reset and import start it when they end, and ingest does when compilation is off; `POST api/graph/publish` on the app starts it too, and `GET api/graph` says when the graph was published and what it holds.
+  A system built before the graph job existed has none: build it again to add it.
 
 An execution runs with the arguments it is given instead of the job's default arguments, so arguments given by hand repeat `--config`:
 
