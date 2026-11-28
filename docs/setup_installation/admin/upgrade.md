@@ -17,7 +17,7 @@ The commands assume Hopsworks is installed in the `hopsworks` namespace.
 | ------- | ---------- | ----------------- |
 | [5.0.x to 5.1.x][upgrade-50-to-51] | 1.3.x to 2.19.x | Kubernetes 1.34 or later before the upgrade, a first Helm 4 upgrade, and from 5.0.13 or earlier to 5.1.2 or later [the Trino query history][upgrade-trino-query-history]. |
 | [5.1.x to 5.2.x][upgrade-51-to-52] | 2.19.x to 3.8.0: upgrade to 5.2.1 or later | The index pass, Kafka moves to KRaft, KEDA, Kubernetes 1.37 only afterwards, Trino, from 5.2.2 [OnlineFS and the schema migrations][upgrade-changes-from-522], from 5.2.3 with your own image registry [the Envoy image of Python apps][upgrade-changes-from-523], and from 5.2.5 [Istio 1.30][upgrade-istio-130]. |
-| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Additional prerequisites][upgrade-additional-prerequisites], [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, from 5.2.5 or later [Istio 1.31][upgrade-istio-131], [Envoy Gateway][upgrade-envoy-gateway] and [LLM Gateway][upgrade-llm-gateway] when turned on, [Knative mode deprecated][upgrade-knative-mode-deprecated], with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], [the statistics settings][upgrade-statistics-defaults], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
+| [5.2.x to 5.3.x][upgrade-52-to-53] | stays on 3.8.0 | [Additional prerequisites][upgrade-additional-prerequisites], [Strimzi 1.3][upgrade-strimzi-13] with central before its satellites, ICEBERG feature groups in Trino, the Filebeat registry, with your own pipelines, outputs or plugins [Logstash 9][upgrade-logstash-9], the memory of the OTLP sidecar of agent deployments, [Ray clusters][upgrade-ray-clusters], with your own Grafana settings [Grafana sign-in][upgrade-grafana-sign-in], from 5.2.5 or later [Istio 1.31][upgrade-istio-131], [Envoy Gateway][upgrade-envoy-gateway] and [LLM Gateway][upgrade-llm-gateway] when turned on, [Knative mode deprecated][upgrade-knative-mode-deprecated], with an external Kafka [the topics Hopsworks creates and deletes on it][upgrade-byok-topics], [notification topics and shared feature stores][upgrade-notification-topics], [the statistics settings][upgrade-statistics-defaults], from 5.2.0 [the subset shares in Trino][upgrade-trino-subset-shares] and the OpenSearch security configuration, and from 5.2.0 or 5.2.1 [OnlineFS and the schema migrations][upgrade-changes-from-522]. |
 
 ## Before every upgrade { #upgrade-before-every-upgrade }
 
@@ -874,6 +874,33 @@ Their defaults keep the behaviour of 5.2, so a cluster that changes none of them
 The storage initializer, the init container that copies a downloading model deployment's files, now has limits of 2 cores and 2 GiB instead of 1 core and 1 GiB, because the copy was CPU-bound.
 A pod's limits count its largest init container, so a small predictor can now exceed a `limits.cpu` or `limits.memory` ResourceQuota or a LimitRange.
 Set `kserve.storageInitializer.resources` to keep the old limits.
+
+### Ray clusters { #upgrade-ray-clusters }
+
+5.3 addresses vulnerabilities in Ray clusters and moves the KubeRay operator from 1.4 to 1.7.
+
+- **KubeRay CRDs.**
+  A pre-upgrade hook applies the CRDs of the new operator, with no step before `helm upgrade`.
+  With your own image registry, mirror the new `hopsworks/kuberay-operator` tag and `hopsworks/kuberay-crds`, which the hook reads the CRDs from; the [image list][private-registry-images] includes both.
+- **Several releases on one Kubernetes cluster.**
+  Upgrade the release that runs the KubeRay operator first, because the other releases use its operator and its CRDs.
+- **`hopsworks.variables.ray_token_auth`.**
+  The default, `enabled`, needs no action during the upgrade.
+  Because of a security fix, recreate project environments whose Ray is older than 2.52 from a Ray environment of 5.3, and restart Jupyter servers that were started before the upgrade.
+  Hopsworks logs a warning that names each Ray cluster still started from such an environment or Jupyter server.
+  Once no new warnings appear, set the value to `required`.
+  `disabled` keeps the behaviour of 5.2, without the fix.
+  Set the value in your Helm values, because the next upgrade resets a change made in the cluster configuration.
+- **Ray dashboard.**
+  Its Ray Data page no longer shows figures read from Prometheus; its metric panels are unchanged.
+
+### Grafana sign-in { #upgrade-grafana-sign-in }
+
+5.3 addresses vulnerabilities in Grafana.
+While the upgrade replaces the Grafana and Hopsworks pods, Grafana dashboards opened from Hopsworks answer 401; they work again once both run the new release.
+Because of a security fix, remove any `auth.proxy` settings from the `grafana.ini` key under `grafana.grafana` in your own values.
+If your values set `grafana.grafana.extraSecretMounts`, add the chart's `assertion-key` entry to your list, since your list replaces the chart's: the Secret `grafana-assertion-key` at `/etc/grafana/assertion`, with the item `jwks.json`.
+`helm upgrade` stops with an error that names the entry until the list has it.
 
 ### Knative mode is deprecated { #upgrade-knative-mode-deprecated }
 
