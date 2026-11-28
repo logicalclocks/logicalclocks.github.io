@@ -103,6 +103,35 @@ There are few important things to be aware of when writing the bash script:
   You can install or uninstall packages in it using pip like: `/srv/hops/anaconda/envs/hopsworks_environment/bin/pip install spotify==0.10.2`.
   If the command requires some input, write the command together with the expected input otherwise the build will fail.
 
+## Installing Ubuntu packages in Jupyter and terminals
+
+Custom commands change the environment for every job, app and server that uses it.
+To try a package in your own Jupyter server or terminal first, use `hops apt` instead.
+There is no `sudo` at runtime, because Hopsworks containers never run with privilege escalation.
+`hops apt` works without it.
+It downloads the package and the dependencies the image does not have from the same repositories a custom-commands build uses, as your user.
+It then unpacks them into `/srv/hops/apt-packages`, whose programs and libraries are already on your `PATH` and `LD_LIBRARY_PATH`.
+
+```bash
+hops apt install jq pv
+hops apt list
+hops apt remove jq
+```
+
+From a notebook, run the same commands with `!hops apt install ...`.
+New programs are found right away; restart the kernel before importing a Python library that needs a newly installed system library.
+
+`hops apt` cannot do everything a custom-commands build does:
+
+- The packages stay in your container and are gone when the server or terminal restarts, and jobs that use the same environment do not have them.
+- Package install scripts do not run, because they would need root.
+  `hops apt` prints the packages that have one.
+  It creates the commands that `update-alternatives` would, so most of those still work.
+- Programs that look for their files under a fixed `/usr/...` path, rather than next to themselves, may not find them, since the files live under `/srv/hops/apt-packages/root`.
+- It refuses a package that needs a different version of something the image already has, such as a newer `libc6`, because the second copy would shadow the image's own.
+
+When a package hits one of these limits, or a job or app needs it too, install it with custom commands as described above.
+
 ## Installing a compiler
 
 The PyTorch and Ray environments contain a C and C++ compiler, since they compile code at runtime for `torch.compile` and for CUDA extensions.
