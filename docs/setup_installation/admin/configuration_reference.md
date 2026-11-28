@@ -20,7 +20,7 @@ See [Cluster Configuration][cluster-configuration] for how to view and change th
 | `admin_email` | String | `admin@hopsworks.ai` | Settings.java |
 | `agent_base_image_name` | String | `agent-job` | Settings.java |
 | `agent_default_max_turns` | Integer | `50` | Settings.java |
-| `agent_default_model` | String | `claude-sonnet-4-5` | Settings.java |
+| `agent_default_model` | String | `claude-sonnet-5-5` | Settings.java |
 | `agent_deployment_claude_login_enabled` | Boolean | `true` | Settings.java |
 | `agent_deployment_otel_cpu` | Double | `0.5` | Settings.java |
 | `agent_deployment_otel_enabled` | Boolean | `true` | Settings.java |
