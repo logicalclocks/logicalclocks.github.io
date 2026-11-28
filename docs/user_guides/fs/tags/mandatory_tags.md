@@ -27,7 +27,7 @@ Mandatory tags are configured in two scopes.
     <img src="../../../../assets/images/guides/tags/cluster_wide_mandatory_tags.png" alt="Configure cluster-wide mandatory tags under Cluster settings, Tag Schemas">
 
 - Project-specific mandatory tags apply only to a single project.
-  They are configured by an administrator in the `Cluster settings` > `Projects` section, by selecting the project.
+  They are configured by an administrator in the `Cluster settings` > `Projects` section, by clicking the pencil icon of the project and opening its `Governance` tab.
 
     <img src="../../../../assets/images/guides/tags/project_mandatory_tags.png" alt="Configure project-specific mandatory tags under Cluster settings, Projects, by editing a project">
 

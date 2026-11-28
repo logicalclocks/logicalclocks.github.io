@@ -128,7 +128,7 @@ Status: `[ ]` pending, `[x]` reviewed OK, `[!]` reviewed with a follow-up noted 
 | [x] | `user_guides/projects/auth/krb.md` | modified | Kerberos login, Kerberos-only and missing-ticket captures new |
 | [x] | `user_guides/projects/auth/ldap.md` | modified | LDAP login and landing captures new; consent page still needs a real provider |
 | [x] | `user_guides/mlops/serving/deployment-state.md` | modified | list, condition and resources captures on the new UI from a live deployment |
-| [ ] | `user_guides/projects/scheduling/kube_scheduler.md` | modified | +2/-2 |
+| [ ] | `user_guides/projects/scheduling/kube_scheduler.md` | modified | per-project override capture on the new Kubernetes tab; the other captures are still old |
 | [ ] | `user_guides/projects/scheduling/kueue_details.md` | modified | +1/-1 |
 | [ ] | `user_guides/projects/airflow/airflow.md` | modified | +1/-1 |
 | [ ] | `user_guides/projects/airflow/airflow3_upgrade.md` | modified | +7/-7 |
@@ -158,20 +158,20 @@ Status: `[ ]` pending, `[x]` reviewed OK, `[!]` reviewed with a follow-up noted 
 | [ ] | `setup_installation/admin/variables.md` | modified | +1/-1 |
 | [ ] | `setup_installation/admin/configuration_reference.md` | added | +517/-0 |
 | [ ] | `setup_installation/admin/build_performance.md` | added | +261/-0 |
-| [ ] | `setup_installation/admin/user.md` | modified | +52/-10 |
-| [ ] | `setup_installation/admin/project.md` | modified | +2/-2 |
-| [ ] | `setup_installation/admin/alert.md` | modified | +25/-11 |
+| [x] | `setup_installation/admin/user.md` | modified | users list, blocked tab, edit side panel (new), new user, temporary password, reset password captures on the new UI; text follows the side panel |
+| [x] | `setup_installation/admin/project.md` | modified | project list and tabbed configuration captures on the new UI; text follows the tabs |
+| [x] | `setup_installation/admin/alert.md` | modified | channel list and webhook form captures on the new UI; email, Slack and PagerDuty forms unchanged |
 | [ ] | `setup_installation/admin/configure-project-mapping.md` | modified | mapping list, create and edit captures on the new UI; the two configuration captures are still old |
 | [ ] | `setup_installation/admin/airflow3.md` | modified | +4/-4 |
 | [ ] | `setup_installation/admin/search_index.md` | added | +93/-0 |
 | [ ] | `setup_installation/admin/monitoring/grafana.md` | modified | +4/-4 |
 | [ ] | `setup_installation/admin/monitoring/services-logs.md` | modified | +4/-4 |
 | [ ] | `setup_installation/admin/monitoring/websocket-pool.md` | modified | +3/-2 |
-| [ ] | `setup_installation/admin/auth.md` | modified | +10/-8 |
+| [x] | `setup_installation/admin/auth.md` | modified | authentication capture on the new card layout |
 | [ ] | `setup_installation/admin/oauth2/create-client.md` | modified | +1/-1 |
 | [ ] | `setup_installation/admin/oauth2/configure-project-mapping.md` | modified | mapping list, create and edit captures on the new UI; the two configuration captures are still old |
-| [ ] | `setup_installation/admin/ldap/configure-ldap.md` | modified | +1/-1 |
-| [ ] | `setup_installation/admin/ldap/configure-krb.md` | modified | +1/-1 |
+| [x] | `setup_installation/admin/ldap/configure-ldap.md` | modified | LDAP-on authentication capture (new) |
+| [x] | `setup_installation/admin/ldap/configure-krb.md` | modified | Kerberos-on authentication capture on the new UI |
 | [ ] | `setup_installation/admin/ldap/configure-project-mapping.md` | modified | mapping list, create and edit captures on the new UI; the two configuration captures are still old |
 | [ ] | `setup_installation/admin/ha-dr/dr.md` | modified | +3/-3 |
 | [ ] | `setup_installation/admin/audit/audit-logs.md` | modified | +9/-9 |

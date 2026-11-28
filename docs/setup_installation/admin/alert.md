@@ -26,8 +26,7 @@ pagerduty or webhook.
 ### Step 2: Configure Email Alerts
 
 To send alerts via email you need to configure an SMTP server.
-Click on the _Configure_
-button on the right side of the **email** row and fill out the form that pops up.
+Click the pencil icon at the end of the **email** row and fill out the form that pops up.
 
 <figure>
   <img src="../../../assets/images/alerts/smtp-config.png" alt="Configure Email Alerts"/>
@@ -48,7 +47,7 @@ These receivers will be available to all users when they create event triggered 
 Alerts can also be sent via Slack messages.
 To be able to send Slack messages you first need to configure
 a Slack webhook.
-Click on the _Configure_ button on the right side of the **slack** row and past in your
+Click the pencil icon at the end of the **slack** row and paste in your
 [Slack webhook](https://api.slack.com/messaging/webhooks) in _Webhook_.
 
 <figure>
@@ -62,8 +61,7 @@ These receivers will be available to all users when they create event triggered 
 ### Step 4: Configure Pagerduty Alerts
 
 Pagerduty is another way you can send alerts from Hopsworks.
-Click on the _Configure_ button on the right side of
-the **pager duty** row and fill out the form that pops up.
+Click the pencil icon at the end of the **pager duty** row and fill out the form that pops up.
 
 <figure>
   <img src="../../../assets/images/alerts/pagerduty-config.png" alt="Configure Pagerduty Alerts"/>
@@ -87,7 +85,7 @@ Prometheus' Alert manager.
 
 You can also use webhooks to send alerts.
 A Webhook Alert is sent as an HTTP POST command with a JSON-encoded parameter payload.
-Click on the _Configure_ button on the right side of the **webhook** row and fill out the form that pops up.
+Click the pencil icon at the end of the **webhook** row and fill out the form that pops up.
 
 <figure>
   <img src="../../../assets/images/alerts/webhook-config.png" alt="Configure Webhook Alerts"/>
@@ -97,6 +95,11 @@ Click on the _Configure_ button on the right side of the **webhook** row and fil
 Fill in the unique URL of your Webhook: the endpoint to send HTTP POST requests to.
 
 A global receiver is created when a webhook is configured and can be used by any project in the cluster.
+
+To remove the webhook channel, open its form again, click _Delete_ and type `confirm`.
+The alert routes at the top level of the alert manager configuration that send to the webhook are removed with it, so those alerts are no longer delivered there.
+_Delete_ is disabled while the webhook is the default receiver of the configuration, or while a nested route sends to it, because the delete would leave that reference pointing at nothing.
+Choose another default receiver, or remove the nested route, in the _Advanced configuration_ of Step 6 first.
 
 ### Step 6: Advanced configuration
 
